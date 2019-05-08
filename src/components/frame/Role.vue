@@ -1,20 +1,12 @@
 <template>
-  <ListPage ref="page" title="" api="/api/role/list" 
-  :model="this" :beforeLoad="beforeLoad">  
-    <Tabs :animated="false" v-model="tabName" @on-click="goTab">
-      <TabPane label="用户管理" name="0" ></TabPane>
-      <TabPane label="角色设置" name="1" ></TabPane>
-    </Tabs>
-
-    <div class="page-tools" style="margin-top:0px;">
+  <ListPage ref="page" title="岗位设置" api="/api/engine/role/list" 
+  :model="this" :beforeLoad="beforeLoad">
+    <div class="page-tools">
       <table cellpadding="0" cellspacing="0">
         <tr>  
             <td>
               <Button  @click="addRole" icon="plus">添加</Button>
             </td>
-            <td>
-              <Button  @click="batch_del" icon="ios-trash-outline" v-if="false">删除</Button>
-            </td> 
         </tr>
       </table>
     </div>
@@ -22,7 +14,7 @@
       <table cellpadding="0" cellspacing="0">
         <tr> 
           <td>
-            <Input v-model="queryForm.roleName"  placeholder="角色名称"/>
+            <Input v-model="queryForm.keyword"  placeholder="角色名称" @on-enter="query"/>
           </td> 
           <td>
             <Button @click="query"  type="primary" icon="ios-search">查询</Button>
@@ -36,17 +28,13 @@
     <RoleEdit ref="editRole" @on-save="query"></RoleEdit>
   </ListPage> 
 </template>
-<script>
-  import DataRowOperateBar from '@/components/commons/DataRowOperateBar';
-  import Loading from '@/components/loading';
+<script>    
   import RoleEdit from '@/components/frame/RoleEdit';
   import ListPage from '@/components/page/ListPage';
   import DataRowOperate from '@/components/commons/DataRowOperate';
 
   export default {
     components: {
-      DataRowOperateBar,
-      Loading,
       RoleEdit,
       ListPage,
       DataRowOperate,
@@ -56,6 +44,7 @@
       return {
         tabName:'1',
         columns: [
+          /*
           {
             type: 'selection',
             width: 50,
@@ -65,10 +54,10 @@
                 params.row._disabled = true
               }
             }
-          },
+          },*/
           {
             title:'操作',
-            width: 150,
+            width: 120,
             align: 'center',
             render:(h,params)=>{
               var row = params.row;
@@ -80,10 +69,6 @@
                   },
                   {
                     key:'delete',
-                  },
-                  {
-                    key:'set',
-                    text:'用户授权',
                   }]
                 },
                 on:{
@@ -94,17 +79,18 @@
                     if(key=="delete"){
                       this.rowCommand("删除",params);
                     }
-                    if(key=="set"){
-                      this.$router.push({path:'/roleuser?forward',query:{roleId:params.row.roleId,roleName:params.row.roleName}});
-                    }
-                    
                   }
                 }
               });
             }
           },  
           {
-            title: '角色名称',
+            title: '编码',
+            key: 'roleId',
+            width:100,
+          }, 
+          {
+            title: '名称',
             key: 'roleName',
             width:150,
           }, 
@@ -115,49 +101,23 @@
             minWidth:150
           },
           {
+            title: '创建人',
+            key: 'creatorName',
+            align: 'center',
+            width: 100,
+          }, 
+          {
             title: '创建时间',
             key: 'createTime',
             align: 'center',
             width: 160,
-          }, 
-          /*{
-            title: '操作',
-            width: 170,
-            align: 'center',
-            render: function (h, params) {
-              return h('div',[
-                h('a',{
-                  on:{
-                    'click':()=>{
-                      that.rowCommand('编辑',params)
-                    }
-                  }
-                },'编辑'),
-                h('span',{style:'padding:0 4px;'}),
-                h('a',{
-                  on:{
-                    'click':()=>{
-                      that.rowCommand('删除',params)
-                    }
-                  }
-                },'删除'),
-                h('span',{style:'padding:0 4px;'}),
-                h('a',{
-                  on:{
-                    'click':()=>{
-                      that.$router.push({path:'/roleuser?forward',query:{roleId:params.row.roleId,roleName:params.row.roleName}});
-                    }
-                  }
-                },'用户授权'),
-              ]); 
-            }
-          }*/
+          }
         ],
         list: [],
         total:0,
         queryParam: {},
         queryForm: {
-          roleName: '',
+          keyword: '',
           page: '',
           pageSize: ''
         },
@@ -182,7 +142,7 @@
       },
       reset: function () {
         // 清空条件
-        this.queryForm.roleName = '';
+        this.queryForm.keyword = '';
         this.query();
       },
       select: function (selection) {

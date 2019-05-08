@@ -9,7 +9,10 @@
             <Icon type="compose"></Icon>
             基本资料
           </div>
-          <FormItem label="角色名称" prop="roleName">
+          <FormItem label="编码" prop="roleName">
+            <Input v-model="formItem.roleId"/>
+          </FormItem>
+          <FormItem label="名称" prop="roleName">
             <Input v-model="formItem.roleName" placeholder="不超过50个字符" />
           </FormItem>
           <FormItem label="备注" prop="remark">

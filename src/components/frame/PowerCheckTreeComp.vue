@@ -1,36 +1,170 @@
 <template>
   <div class="typowercheck">
-    <Loading :title="msg" :loading="loading">
-      <CheckboxGroup v-model="checked">
+    <Loading :title="msg" :loading="loading">       
         <table class="typowercheck-table">
-          <tr v-for="(item,index) in items" v-if="item.show"> 
-            <td class="typowercheck-table-chkall">
-              <Icon @click.native="checkAll(item)" type="android-checkbox-outline" title="选中/取消 该结点及其下结点"></Icon>
-            </td>
+          <tr v-for="(item,index) in items" v-if="item.visible">
             <td :class="'typowercheck-table-lev typowercheck-table-lev'+item.level">
               <div class="typowercheck-table-fold">
                 <div v-if="item.children.length>0">
-                  <Icon type="plus-round" @click.native="fold(item,0)" title="展开" v-if="item.fold"></Icon>
-                  <Icon type="minus-round" @click.native="fold(item,1)" title="折叠" v-else></Icon> 
+                  <Icon type="plus-round" @click.native="item.doOpen" style="cursor: pointer;" title="展开" v-if="item.open==0"></Icon>
+                  <Icon type="minus-round" @click.native="item.doClose" style="cursor: pointer;" title="折叠" v-else></Icon> 
                 </div> 
+              </div>                
+              <div class="typowercheck-check" @click="item.check==1?item.doUnCheck() + userChange():item.doCheck() + userChange()">
+                <Icon type="android-checkbox-outline-blank" class="icon-uncheck" v-if="item.check==0"></Icon>
+                <Icon type="android-checkbox" v-if="item.check==1"></Icon>
+                <Icon type="android-radio-button-on" v-if="item.check==2"></Icon>                
               </div> 
-              <Checkbox :label="item.id">
-                <span>{{item.title}}</span>
-              </Checkbox>
+              <span @click="item.children.length>0 && (item.open==0?item.doOpen():item.doClose())" style="cursor:default">{{item.title}}</span>
             </td>
             <td class="typowercheck-table-points">
-              <Checkbox v-for="(sub,index) in item.points" :label="sub.id">
+              <div class="typowercheck-check" @click="sub.check==1?sub.doUnCheck() + userChange():sub.doCheck() + userChange()" v-for="(sub,index) in item.points" >
+                <Icon type="android-checkbox-outline-blank" class="icon-uncheck" v-if="sub.check==0"></Icon>
+                <Icon type="android-checkbox" v-if="sub.check==1" ></Icon>
+                <Icon type="android-radio-button-on" v-if="sub.check==2"></Icon>
                 <span>{{sub.title}}</span>
-              </Checkbox>
+              </div>
             </td>
           </tr>
         </table>
-      </CheckboxGroup>
     </Loading>
   </div>
 </template>
 <script>
   import Loading from '@/components/loading';
+
+  function powerNode(options){
+    Object.assign(this,{
+            id:'',
+            title:'',
+            parent:null,
+            level:0,
+            open:false,
+            check:0,
+            select:0,
+            visible:0,
+            children:[],
+            points:[]
+        },options);
+  } 
+
+  powerNode.prototype.eachChildren = function(call){
+    this.children.map(item=>{
+      call(item);
+      item.eachChildren(call);
+    });
+  } 
+
+  powerNode.prototype.eachChildrenPoint = function(call){
+    this.points.map(item=>{
+      call(item);
+    });
+    this.children.map(item=>{
+      call(item);
+      item.eachChildrenPoint(call);
+    });
+  }
+
+  // 遍历叶子结点
+  powerNode.prototype.eachLeafChildrenPoint = function(call){
+    this.eachChildrenPoint(item=>{
+      if(item.children.length == 0 && item.points.length == 0){
+        call(item);
+      }
+    })
+  }
+
+  powerNode.prototype.existChildrenPoint = function(call){
+    this.points.map(item=>{
+      if(call(item) == true){
+        return true;
+      }
+    });
+    this.children.map(item=>{
+      if(call(item) == true || item.eachChildrenPoint(call) == true){
+        return true;
+      } 
+    });
+    return false;
+  }
+
+  powerNode.prototype.eachParent = function(call){    
+    if(this.parent){
+      call(this.parent);
+      this.parent.eachParent(call);
+    }
+  }
+
+  powerNode.prototype.doOpen = function(){
+    this.open = 1;
+    this.visible = this.parent == null || this.parent.visible;
+    this.eachChildren(item=>{
+      item.visible = item.parent.visible && item.parent.open;
+    });
+  }
+
+  powerNode.prototype.doClose = function(){
+    this.open = 0;
+    this.visible = this.parent == null || this.parent.visible;
+    this.eachChildren(item=>{
+      item.visible = item.parent.visible && item.parent.open;
+    });
+  }
+
+  powerNode.prototype.doCheck = function(){
+    this.check = 1;
+    this.eachChildrenPoint(item=>{
+      item.check = 1;
+    });
+
+    this.eachParent(item=>{
+      item._compouteCheck();
+    });
+  }
+
+  powerNode.prototype.doUnCheck = function(){
+    this.check = 0;
+    this.eachChildrenPoint(item=>{
+      item.check = 0;
+    });
+
+    this.eachParent(item=>{
+      item._compouteCheck();
+    });
+  }
+
+
+  powerNode.prototype._compouteCheck = function(){ 
+    var check = {
+      all:0,
+      c_0:0,
+      c_1:0,
+      c_2:0,
+    }; 
+
+    this.points.map(item=>{
+      check.all ++;
+      check['c_' + item.check] ++;
+    })
+
+    this.children.map(item=>{
+      check.all ++;
+      check['c_' + item.check] ++;
+    })
+
+    if(check.all > 0){
+      if(check.all == check.c_0){
+        this.check = 0;
+      }else if(check.all == check.c_1){
+        this.check = 1;
+      }else{
+        this.check = 2;
+      }
+    }
+  }
+
+
+
 
   export default {
     components: {
@@ -41,30 +175,39 @@
         loading:0,
         msg:'',
         checked:[],
-        items:[],
-        treeNodes:[],
+        items:[], 
+        root:new powerNode({id:0,title:'root',visible:1,open:1}), 
       }
     },
     computed: {
-
+    },
+    watch:{
+      checked(val,old){
+        this.resetCheck();
+      }
     },
     methods: {
       load() {
         this.loading = 1;
-        this.$http.post("/api/power/list", {}).then((res) => {
+        this.$http.post("/api/engine/power.list", {}).then((res) => {
           this.loading = 0;
           if (res.data.code === 0) {
             var powers = res.data.data;
             powers = powers.sort((a,b)=>{return a.seq - b.seq;});
-            var chks = this.checked;
-            this.treeNodes = this.buildItems(powers,0,1);
-            this.treeNodes.map(node=>{
-              node.show = 1;
-            });
-            this.items = [];
-            this.buildRow(this.treeNodes,this.items);
-            this.checked.push(5002);
-            console.log(this);
+        
+            var root = new powerNode({id:0,title:'root',visible:1,open:1});
+            this.buildChildren(root,powers);
+
+            var items = [];
+            root.eachChildren(item=>{
+              items.push(item);
+            })
+            this.items = items; 
+
+            this.root = root;
+            root.doOpen();
+
+            this.resetCheck();
           } else {
             this.loading = 3;
             this.msg = res.data.message;
@@ -74,102 +217,49 @@
             this.msg = error
         });
       },
-      buildRow(nodes,rows){
-        nodes.map((node)=>{
-          rows.push(node);
-          this.buildRow(node.children,rows);
+      buildChildren(node,powers){
+        powers.map(item=>{
+          if(item.parentId == node.id){ 
+            if(item.powerType <= 2){
+              // 子菜单
+              var children = new powerNode({
+                id:item.powerId,
+                title:item.powerCaption,
+                parent:node,
+                level:node.level + 1
+              }); 
+              node.children.push(children);
+              this.buildChildren(children,powers);
+            }
+            else{
+              // 功能点
+              node.points.push(new powerNode({ 
+                  id:item.powerId,
+                  title:item.powerCaption,
+                  parent:node
+              }));
+            }            
+          }
+        })
+      },
+      resetCheck(){ 
+        var checked = this.checked;
+        this.root.eachChildrenPoint(item=>{
+          item.check = 0;
         });
-      },
-      buildItems(powers,parentId,level){
-        var arr = [];
-        if(level >= 10){
-          return arr;
-        }
-        powers.map((p)=>{
-          if(p.parentId == parentId){
-            if(p.powerType<3){
-              var item = {
-                id:p.powerId,
-                title:p.powerCaption,
-                type:p.powerType,
-                level:level,
-                fold:1, // 1. 折叠 0.展开
-                show:0,
-              };
-              item.points = this.buildPoints(powers,item.id);
-              item.children = this.buildItems(powers,item.id,level+1);
-              arr.push(item);
-            }
+        this.root.eachLeafChildrenPoint(item=>{
+          if(checked.indexOf(item.id)>=0){
+            item.doCheck();
           }
-        });
-        return arr;
+        })
       },
-      buildPoints(powers,parentId){
-        var arr = [];
-        powers.map((p)=>{
-          if(p.parentId == parentId){
-            if(p.powerType==3){
-              var item = {
-                id:p.powerId,
-                title:p.powerCaption,
-                type:p.powerType,
-              };
-              arr.push(item);
-            }
+      userChange(){
+        this.checked.splice(0,this.checked.length);
+        this.root.eachChildrenPoint(item=>{
+          if(item.check>0){
+            this.checked.push(item.id);
           }
-        });
-        return arr;
-      },
-      checkAll(item){
-        if(this.checked.indexOf(item.id) >=0){
-          // 清除
-          this.each([item],(p)=>{
-            if(this.checked.indexOf(p.id) >=0){
-              this.checked.splice(this.checked.indexOf(p.id),1);
-            }
-          });
-        }else{
-          // 选中
-          this.each([item],(p)=>{
-            if(this.checked.indexOf(p.id) == -1){
-              this.checked.push(p.id);
-            }
-          });
-        }
-      },
-      fold(item,fold){ 
-        item.fold = fold;
-        this.innerSetShow(item);
-      },
-      innerSetShow(item){
-        if(item.children){
-          item.children.map(ch=>{
-            if(!item.fold && item.show){
-              ch.show = 1;
-            }else{
-              ch.show = 0;
-            }
-            this.innerSetShow(ch);
-          });
-        } 
-      },
-      each(items,func){
-        for(var i =0;i<items.length;i++){
-          var item = items[i];
-          if(func(item) == false){
-            return false;
-          }
-          if(item.points){
-            if(this.each(item.points,func) == false){
-              return false;
-            }
-          }
-          if(item.children){
-            if(this.each(item.children,func) == false){
-              return false;
-            }
-          }
-        }
+        })
       }
     }
   }
@@ -205,9 +295,7 @@
   .typowercheck .ivu-checkbox-group-item{
     white-space:nowrap;
   }
-  .typowercheck-table-points{
-
-  }
+  
   .typowercheck-table-chkall{
     width: 1px;
   }
@@ -223,4 +311,29 @@
     display: inline-block;color: #999;
     width:24px;text-align: center;
   }
+
+  .typowercheck-check{
+    cursor: pointer;
+    display: inline-block;
+    line-height: 18px;
+  }
+
+  .typowercheck-check:hover span{
+    color:#333;
+  }
+
+  .typowercheck-check .ivu-icon{    
+    color: #eb5954;
+    font-size: 16px;
+  }
+
+  .typowercheck-check .icon-uncheck{
+    color:#ccc;
+  }
+
+  .typowercheck-table-points .typowercheck-check{
+    margin-right: 14px;
+  }
+
+   
 </style>
