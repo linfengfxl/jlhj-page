@@ -9,8 +9,8 @@
             <Icon type="compose"></Icon>
             基本资料
           </div>
-          <FormItem label="编码" prop="roleName">
-            <Input v-model="formItem.roleId"/>
+          <FormItem label="编码" prop="roleId">
+            <Input v-model="formItem.roleId" :disabled="isEdit == 1"/>
           </FormItem>
           <FormItem label="名称" prop="roleName">
             <Input v-model="formItem.roleName" placeholder="不超过50个字符" />
@@ -54,13 +54,17 @@
         isEdit: 0,
         //表单对象
         formItem: {
-          roleId: 0,
+          roleId: '',
           roleName: '',
           remark: '',
-          powerIds:'',
+          powerIds:[],
         },
         //验证
         ruleValidate: {
+          roleId: [
+            {required: true, whitespace: true, message: '编码不能为空', trigger: 'blur'},
+            {type: 'string', max: 50, message: '不能超过50个字', trigger: 'blur'}
+          ],
           roleName: [
             {required: true, whitespace: true, message: '名称不能为空', trigger: 'blur'},
             {type: 'string', max: 50, message: '不能超过50个字', trigger: 'blur'}
@@ -91,10 +95,10 @@
         let url = '';
         let msg = '';
         if (this.isEdit === 0) {
-          url = '/api/role/add';
+          url = '/api/engine/role/add';
           msg = '添加成功';
         } else {
-          url = '/api/role/edit';
+          url = '/api/engine/role/update';
           msg = '修改成功';
         }
 
@@ -104,7 +108,8 @@
             ids.push(p);
           }
         });
-        this.formItem.powerIds = ids.join(',');
+
+        this.formItem.powerIds = ids;
 
         this.loading = 1;
         this.$http.post(url, this.formItem).then((res) => {
@@ -121,27 +126,30 @@
           this.$Message.error(error.message)
         });
       },
-      open(roleId) { 
+      open(id) { 
         this.show = true;
         this.$refs['roleForm'].resetFields();
         this.$refs.powerCheckTree.checked=[];
         this.checked = [];
-        if (roleId !== 0) {
+        if (id > 0) {
           this.isEdit = 1;
-          this.getRole(roleId);
+          this.formItem.id = id;
+          this.getRole(id);
         } else {
+          this.roleId = '';
+          this.roleName = '';
           this.loading = 0;
           this.isEdit = 0;
           this.$refs.powerCheckTree.load();
         }
       },
-      getRole(roleId) {
-        this.$http.post('/api/role/detail?roleId=' + roleId, {}).then((res) => {
+      getRole(id) {
+        this.$http.post('/api/engine/role/get?id=' + id, {}).then((res) => {
           if (res.data.code === 0) {
             this.loading = 0;
             this.formItem = res.data.data;
-            var strIds = this.formItem.powerIds.split(",");
-            this.$refs.powerCheckTree.checked = strIds.map((str)=>{return str*1;});
+            var strIds = this.formItem.powerIds;
+            this.$refs.powerCheckTree.checked = strIds.map((str)=>{return str*1;});             
             //加载功能点
             this.$refs.powerCheckTree.load();
           } else {
@@ -160,7 +168,7 @@
         this.$refs.powerCheckTree.checked=[];
         this.checked = [];
         this.$refs['roleForm'].resetFields();
-        this.getRole(this.formItem.roleId);
+        this.getRole(this.formItem.id);
       }
     }
   }
