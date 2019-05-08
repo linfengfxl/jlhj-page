@@ -61,7 +61,7 @@ export default {
               idProperty:'deptId',
               titleProperty:'deptName',
               parentIdProperty:'parentId',
-              root:{title:'公司',data:{deptName:'公司',deptId:1,parentId:0}},
+              root:{title:'公司',data:{deptName:'公司',deptId:'',parentId:''},select:true},
               onLoad:function(){
 
                     if(!tree.options.isLoad){
@@ -131,9 +131,8 @@ export default {
   methods:{
     load(data){
       if( typeof(data) != 'undefined' && data.length > 0){
-          this.tree.options.data = data;
-          //this.tree.options._root.title = data[0].deptName;
-          this.tree.load();
+          this.tree.options.data = data;           
+          this.tree.load();          
       }
     },
     selDept(currentDept){

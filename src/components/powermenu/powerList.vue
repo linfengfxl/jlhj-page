@@ -82,7 +82,7 @@
            <td class="label">api</td>
            <td colspan="2">
               <Select v-model="formItem.apis" multiple style="min-width: 500PX;">
-                   <Option v-for="item in apiList" :value="item.url">{{ item.url }}</Option>
+                   <Option v-for="item in apiList" :value="item">{{ item }}</Option>
               </Select>
            </td>
          </tr>
@@ -125,12 +125,7 @@
          {argCode:1,argText:'是'},
          {argCode:0,argText:'否'},
         ],
-        apiList: [
-        {
-          value: '0',
-          url: '请选择'
-        }
-        ],
+        apiList: [],
         columns:[
           {
             title:'操作',
@@ -303,17 +298,13 @@
     },  
     apiquery() {
       this.reset();
-      var url = '/api/api/list';
+      var url = '/api/engine/power.getApis';
       this.loading = 1;
       this.$http.post(url, {}).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
           var dat=res.data.data;
-          this.apiList=[];
-          for(var i=0;i<dat.length;i++){
-            this.queryParam=dat[i];
-            this.apiList.push(this.queryParam);
-          }         
+          this.apiList=dat;
         } else {
           this.$Message.error(res.data.message)
         }

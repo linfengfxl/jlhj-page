@@ -201,7 +201,7 @@ export default {
     height: 100%;
     padding-top: 42px;
     /*background-color: #414141;*/
-    background-color:#DEE4ED !important;
+    background-color:#EFF2F6 !important;
     color:#3B5999;
   }
   .tyleftbar:after {
@@ -209,7 +209,7 @@ export default {
     display: block;
     width: 1px;
     height: 100%;
-    background: #C0C7D9;
+    background: #CED8E4;
     position: absolute;
     right: 0;
     top: 0;
@@ -220,7 +220,7 @@ export default {
     line-height: 42px;
     padding: 0 0 0 15px;
     font-size: 14px;
-    border-bottom: 1px solid #C0C7D9;
+    border-bottom: 1px solid #CED8E4;
     cursor: default;
     margin-top: -42px;
   }

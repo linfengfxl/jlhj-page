@@ -84,8 +84,8 @@
   }
 
   .tyleftbar-menu-item .row.lev1{
-    line-height: 42px;
-    height: 42px;
+    line-height: 36px;
+    height: 36px;
     font-size: 16px;
     padding: 0px 15px;
     padding-left: 42px;
@@ -95,14 +95,13 @@
   } 
 
   .tyleftbar-menu-item .row.lev1:hover{
-    background-color: #cad3e2;
+    background-color: #CFDDF2;
   } 
 
   .tyleftbar-menu-item-icon{
     position: absolute;
     display: inline-block;
     left:17px;
-    top:13px;
     width: 16px;
     height: 16px;
     font-size: 16px;
@@ -111,8 +110,8 @@
   }
 
   .tyleftbar-menu-item .row.lev2{
-    line-height: 42px;
-    height: 42px;
+    line-height: 36px;
+    height: 36px;
     font-size: 14px;
     padding: 0px 15px;
     padding-left: 34px;
@@ -122,11 +121,11 @@
   }
 
   .tyleftbar-menu-item .row.lev2:hover{
-    background-color: #cad3e2;
+    background-color: #CFDDF2;
   }
 
   .tyleftbar-menu-item .row.lev2.cur{
-    background-color: #BAC6D9;
+    background-color: #CFDDF2;
   }
 
   .tyleftbar-menu-item .row.lev3{

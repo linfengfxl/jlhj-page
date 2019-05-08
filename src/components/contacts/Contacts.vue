@@ -149,18 +149,7 @@ export default {
   }
 }
 
-</script>
-<style type="text/css">
-  /*部门树*/
-  .contacts-left .dept-tree-node .tv-node.select{
-    background-color: #e8f8fd;
-    color: #20bfee;
-  }
-  .contacts-left .dept-tree-node .tv-node:hover {
-    background-color: #e8f8fd;
-  }
-
-</style>
+</script> 
 
 <style type="text/css">
   .contacts-bar-alert { 

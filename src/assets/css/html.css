@@ -13,7 +13,7 @@ body {
 
 .ivu-table td, .ivu-table th {
   min-width: 0;
-  height: 42px;
+  height: 36px;
 }
 
 body .ivu-table-cell{
@@ -120,6 +120,15 @@ not supported by any browser */
 
 .wt-scroll.wt-scroll-dark::-webkit-scrollbar-thumb:hover {
     background-color: #495060
-}
+} 
+ 
+/*
+主色，深蓝 #2B579A
 
-/*<======= 525F67*/
+主导航 背景 #EFF2F6
+主导航 漂浮 #CAD3E2 #CFDDF2
+主导航 选中 #BAC6D9 
+
+表格 漂浮 #e8f8fd
+
+*/

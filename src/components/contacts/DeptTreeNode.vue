@@ -62,8 +62,8 @@ export default {
 <style>
   /*组件*/
   .dept-tree-node .tv-node{padding: 3px 0px;cursor: default;}
-  .dept-tree-node .tv-node:hover{background-color: #e8f8fd;color: #20bfee;border-right:2px solid #20bfee;}
-  .dept-tree-node .tv-node.select{background-color: #e8f8fd;color: #20bfee;border-right:2px solid #20bfee;}
+  .dept-tree-node .tv-node:hover{background-color: #e8f8fd;border-right:2px solid #20bfee;}
+  .dept-tree-node .tv-node.select{background-color: #e8f8fd;border-right:2px solid #20bfee;}
   
   .dept-tree-node .tv-node-row{width: 100%;line-height: 26px; padding: 0 15px;}
   .dept-tree-node .tv-node-row td{margin: 0px;padding: 0px;vertical-align: middle;}
@@ -75,7 +75,7 @@ export default {
   .dept-tree-node .tv-title{}
 
   .dept-tree-node .tv-arrow{cursor: pointer;background-color:transparent;width: 14px;display: inline-block;text-align: center;}
-  .dept-tree-node .tv-arrow:hover{color:#20bfee}
+  .dept-tree-node .tv-arrow:hover{}
   .dept-tree-node .tv-arrow.open .arrow-close,
   .dept-tree-node .tv-arrow.open .arrow-empty {display: none}        
   .dept-tree-node .tv-arrow.close .arrow-open,
@@ -84,7 +84,7 @@ export default {
   .dept-tree-node .tv-arrow.empty .arrow-close{display: none}
 
   .dept-tree-node .tv-checkbox{font-size: 14px;cursor: pointer;}
-  .dept-tree-node .tv-checkbox.tv-checkbox-check{color:#20bfee;font-weight: bold;}
+  .dept-tree-node .tv-checkbox.tv-checkbox-check{font-weight: bold;}
 
   .dept-tree-node .tv-hidden{display: none;}
   .dept-tree-node .tv-node:hover .tv-toolbar{display: inline-block;}
@@ -93,7 +93,7 @@ export default {
   /*扩展菜单*/
   .dept-tree-node .tv-node-row-ext{width: 20px;}
   .dept-tree-node .tv-node-row-ext .btns{visibility:hidden;cursor: pointer;font-size: 14px;} 
-  .dept-tree-node .tv-node-row-ext .btns:hover{color:#20bfee;}
+  .dept-tree-node .tv-node-row-ext .btns:hover{}
   .dept-tree-node .tv-node:hover .tv-node-row-ext .btns,
   .dept-tree-node .tv-node.select .tv-node-row-ext .btns{visibility:inherit;}
 </style>
