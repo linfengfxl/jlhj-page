@@ -128,8 +128,8 @@ export default {
 
               //加载用户配置
               this.$user.config.load({});
-              /*
-              this.$http.post('/api/arg/listAll').then((res)=>{
+             
+              this.$http.post('/api/engine/login/args').then((res)=>{
                 this.$args.argMap = res.data.data;
                 this.loaded = 1;
 
@@ -139,7 +139,7 @@ export default {
               }).catch((error) => {
                 this.message = error.toString();                
               });
-              */
+               
             }).catch((error) => {
               this.message = error.toString();              
             }); 
