@@ -32,5 +32,7 @@ components.push({ component: 'demo/SelPersonBatch', name: 'demo.selpersonbatch',
 components.push({ component: 'engine/api/ApiList',path: '/engine/api' })
 components.push({ component: 'engine/dbtable/DbList',path: '/engine/db' })
 
+components.push({ component: 'info/develop',path: '/develop' })
+
 
 export default components;
