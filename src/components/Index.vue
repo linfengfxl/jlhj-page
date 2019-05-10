@@ -48,22 +48,7 @@ export default {
       
     },
     loadMyWork:function(){ 
-      var status = this.formItem.status;
-      var page = this.formItem.page;
-      var pageSize = this.formItem.pageSize;
-      this.loading = 1;
-      //查询角色列表数据
-      this.$http.post('/api/wf/process/myProcess', {'status':status,'page':page,'pageSize':pageSize}).then((res) => {
-        this.loading = 0;
-        if (res.data.code === 0) {
-          this.myworks = res.data.data.rows;
-        } else {
-          this.$Message.error(res.data.message);
-        }
-      }).catch((error) => {
-        this.loading = 0;
-        this.$Message.error("请求失败，请重新发送")
-      });
+        
     }, 
     openMyWork(item){
       let routeData = this.$router.resolve({ path:'/workflow/process?inst=' + item.instId + '&task=' + item.taskId});

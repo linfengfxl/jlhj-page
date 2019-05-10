@@ -1,71 +1,49 @@
 <template>
-  <Modal v-model="show" :title="title" :closable="false" :mask-closable="false">
+  <Modal v-model="show" :title="title" :closable="false" class="edit-user">
     <div class="page">
-        <Loading :loading="loading" :mask="mask"> 
+        <Loading :loading="loading"> 
         <div class="page-form">
-        <Form :model="formItem" ref="empForm" :label-width="80" :rules="ruleValidate" class="form-item">
-          <div class="form-sub-title">
-            <Icon type="compose"></Icon>基本资料
-          </div>
-          <FormItem label="姓名" prop="trueName">
-            <Input v-model="formItem.trueName" placeholder="不超过30个字符"  :disabled="this.installed==0" :readonly="this.isEdit==2?'readonly':false"/>
+        <Form :model="formItem" ref="form" :label-width="80" :rules="ruleValidate" class="form-item">
+          <FormItem label="用户名" prop="loginName">
+            <Input v-model="formItem.loginName" placeholder="用户名唯一"  :disabled="isEdit==1"/>
           </FormItem>
-          <FormItem label="账号" prop="empId">
-            <Input v-model="formItem.empId" placeholder="成员唯一标识,添加成功后不可更改"  :disabled="isEdit==1" :readonly="this.isEdit==2?'readonly':false"/>
+          <FormItem label="密码"  prop="password" v-if="isEdit==0">
+            <Input v-model="formItem.password"  type="password"></Input>
+          </FormItem>
+          <FormItem label="姓名" prop="trueName">
+            <Input v-model="formItem.trueName"/>
           </FormItem>
           <FormItem label="手机号码" prop="mobile">
-            <Input v-model="formItem.mobile"  placeholder="手机号不能为空" :readonly="this.isEdit==2?'readonly':false"/>
-          </FormItem>
-          <FormItem label="性别">
-            <Radio-group v-model="formItem.sex">
-              <Radio label="1" :disabled="this.isEdit==2">男</Radio>
-              <Radio label="2" :disabled="this.isEdit==2">女</Radio>
-            </Radio-group>
+            <Input v-model="formItem.mobile"/>
           </FormItem>
           <FormItem label="电子邮箱">
-            <Input v-model="formItem.email" :readonly="this.isEdit==2?'readonly':false"/>
-          </FormItem>
-          <FormItem label="微信号">
-            <Input v-model="formItem.weixin" :readonly="this.isEdit==2?'readonly':false"/>
-          </FormItem>
+            <Input v-model="formItem.email"/>
+          </FormItem> 
           <FormItem label="部门" prop="deptName"> 
             <i-input v-model="formItem.deptName" placeholder="请选择部门" readonly> 
               <Button slot="append" @click="selectDept" icon="more"></Button>
-            </i-input>
-            
-          </FormItem>
-          <FormItem label="职位">
-            <Input v-model="formItem.duty"  :disabled="this.installed==0" :readonly="this.isEdit==2?'readonly':false"/>
-          </FormItem>
-           <FormItem label="状态">
-            <Radio-group v-model="formItem.dimission"  >
-              <Radio label="2" :disabled="this.isEdit==2">在职</Radio>
-              <Radio label="1" :disabled="this.isEdit==2">离职</Radio>
-            </Radio-group>
-             </FormItem>
-          <div class="form-sub-title">
-             <Icon type="compose"></Icon>详细资料
-          </div>
+            </i-input>            
+          </FormItem> 
 
-          <FormItem label="员工生日">
-            <Date-picker type="date" placeholder="选择日期"  v-model="formItem.birthSolar" :readonly="this.isEdit==2?'readonly':false"
-                         @on-change="getBirth"></Date-picker>
-          </FormItem>
-          <FormItem label="入职日期">
-            <Date-picker type="date" placeholder="选择日期" :readonly="this.isEdit==2?'readonly':false"
-              v-model="formItem.joinDate" format="yyyy-MM-dd"
-              @on-change="getJoinDate"></Date-picker>
-          </FormItem>     
-             <FormItem label="生日提醒">
-            <Radio-group v-model="formItem.birthReminder"  >
-              <Radio label="0" :disabled="this.isEdit==2">阳历</Radio>
-              <Radio label="1" :disabled="this.isEdit==2">阴历</Radio>
+          <FormItem label="岗位">
+            <CheckboxGroup  v-model="formItem.roleIds">
+              <div class="roles">
+                <Checkbox :label="item.roleId" v-for="item in roles"> 
+                  <span>&nbsp;{{item.roleName}}</span>
+                </Checkbox>
+              </div>              
+            </CheckboxGroup >
+          </FormItem> 
+
+          <FormItem label="状态">
+            <Radio-group v-model="formItem.status">
+              <Radio :label="1">正常</Radio>
+              <Radio :label="2">禁用</Radio>
             </Radio-group>
-          </FormItem>
+          </FormItem> 
           <FormItem>
             <div class="">
-              <Button  icon="checkmark"  type="primary" @click="save" v-if="this.isEdit!=2">保存</Button>
-              <Button type="ghost" @click="reset" style="margin-left: 8px" v-if="this.isEdit==1">重置</Button>
+              <Button  icon="checkmark"  type="primary" @click="save" v-if="this.isEdit!=2">保存</Button>               
               <Button  @click="close" style="margin-left: 8px">取消</Button>
             </div>
           </FormItem>
@@ -92,41 +70,26 @@ export default {
   data() {
     return {
       installed:1,
-      loading:1,
-      mask:2,
+      loading:0,       
       show:false,
       //是否编辑 0 添加 1 编辑 2 查看
       isEdit:0,
+      roles:[],
       //表单对象
-      formItem: {
-        trueName: '',
-        empId: '',
-        sex: 1,
-        mobile: '',
-        email:'',
-        weixin: '',
-        deptId: '',
-        deptName: '',
-        duty: '',
-        dimission:'2',
-        birthSolar: '',
-        joinDate: '',
-        birthReminder: '0'
-      },
+      formItem: this.initItem(),
       ruleValidate: {
         trueName: [
           {required:true,whitespace: true,message: '姓名不能为空', trigger: 'blur'},
           {type: 'string', max: 30, message: '不能超过30个字', trigger: 'blur' }
         ],
-        empId: [
-          {required:true,whitespace: true,type: 'string', message: '成员唯一标识,不可更改', trigger: 'blur'}
+        loginName: [
+          {required:true,whitespace: true,type: 'string', message: '用户名不能为空', trigger: 'blur'}
         ],
-        mobile: [
-          {required:true, message: '手机号不能为空', trigger: 'blur'},
+        password: [
+          {required:true,whitespace: true,type: 'string', message: '密码不能为空', trigger: 'blur'}
+        ],
+        mobile: [           
           {pattern: /^1[0-9]\d{9}$/, message: '手机号格式错误', trigger: 'blur' }
-        ],
-        deptName: [
-          {required:true,whitespace: true,message: '部门不能为空'}
         ]
       }
     }
@@ -134,109 +97,79 @@ export default {
   computed:{
     title(){
       if(this.isEdit===0){
-        return "添加员工";
+        return "添加用户";
       }else{
-        return "修改成员详情";
+        return "修改用户";
       }
     } 
   },
   methods:{
+    initItem(){
+      return {
+        id:0,
+        loginName: '',
+        password:'',
+
+        trueName: '',                 
+        mobile: '',
+        email:'',
+        weixin: '',
+
+        deptName: '',
+        deptNames:[],
+        deptIds:[], 
+
+        roleName: '',
+        roleNames:[],
+        roleIds:[],    
+
+        status:1,    
+      }
+    },
     save(){
-      this.$refs['empForm'].validate((valid) => {
-        if (valid) {
-            this.loading = 1;
-            this.mask = 1;
-            this.saveEmp();
-          } else {
-            return;
-          }
+      this.$refs['form'].validate((valid) => {
+        if (valid) {            
+          this.saveEmp();
+        }
+      });
+    },     
+    saveEmp(){
+      let url = '';
+      let msg = '';
+      if(this.isEdit == 0){
+         url='/api/engine/user/edit';
+         msg = '添加成功';
+      }else{
+         url = '/api/engine/user/edit';
+         msg = '修改成功';
+      }
+      this.loading = 1; 
+      this.$http.post(url, this.formItem).then((res) => {
+        this.loading = 0; 
+        if (res.data.code === 0) {
+          this.$Message.success(msg);
+          this.close();
+          this.$emit("on-save");
+        } else {
+          this.loading = 0;
+          this.$Message.error(res.data.message)
+        }
+      }).catch((error) => {          
+        this.loading = 0;
+        this.$Message.error(error.message)
       });
     },
-    getBirth(val){
-      this.formItem.birthSolar = val;
-    },
-    getJoinDate(val){
-      this.formItem.joinDate = val;
-    },
-    saveEmp(){
-        let url = '';
-        let msg = '';
-        if(this.isEdit == 0){
-           url='/api/contacts/emp/add';
-           msg = '添加成功';
-        }else{
-           url = '/api/contacts/emp/update';
-           msg = '修改成功';
-        } 
-        this.formItem.joinDate = page.formatDate(this.formItem.joinDate,'yyyy-MM-dd');
-        this.formItem.birthSolar = page.formatDate(this.formItem.birthSolar,'yyyy-MM-dd');
-        this.$http.post(url, this.formItem).then((res) => {
-          if (res.data.code === 0) {
-            this.$Message.success(msg);
-            this.close();
-            this.$emit("on-load");
-          } else {
-            this.loading = 0;
-            this.$Message.error(res.data.message)
-          }
-        }).catch((error) => {
-          this.loading = 0;
-          this.$Message.error(error.message)
-        });
-    },
     //添加或编辑弹窗
-    open(empId) { 
+    open(item) {
+      this.$refs['form'].resetFields();
+      this.formItem = Object.assign(this.initItem(),item);
       this.show = true;
-      this.loading = 1;
-      this.$refs['empForm'].resetFields();
-      this.clear();
-      if(empId != '' && empId != null){
-        this.isEdit = 1;
-        this.getEmp(empId);
+      if(this.formItem.id > 0){
+        this.isEdit = 1; 
       }else{
-        this.isEdit = 0;
-        this.loading = 0;
-        this.mask = 2;
+        this.isEdit = 0; 
       }
-    },
-    addOpen(deptId,deptName) { 
-      this.show = true;
-      this.loading = 1;
-      this.$refs['empForm'].resetFields();
-      this.clear();
-      this.isEdit = 0;
-      this.loading = 0;
-      this.mask = 2;
-      this.formItem.deptId = deptId;
-      this.formItem.deptName = deptName;
-    },
-    //查看弹窗
-    view(empId) {   
-      if(empId != '' && empId != null){
-        this.show = true;
-        this.loading = 1;
-        this.$refs['empForm'].resetFields();
-        this.clear();
-        this.isEdit = 2;
-        this.getEmp(empId);
-      }
-    },
-    getEmp(empId){
-        this.$http.post('/api/contacts/emp/get?empId=' + empId, {}).then((res) => {
-          if (res.data.code === 0) {
-            this.loading = 0;
-            this.formItem = res.data.data;
-            this.formItem.sex=this.formItem.sex+"";
-            this.formItem.birthReminder=this.formItem.birthReminder+"";
-            this.formItem.dimission=this.formItem.dimission+"";
-          } else {
-            this.loading = 0;
-            this.$Message.error(res.data.message)
-          }
-        }).catch((error) => {
-          this.loading = 0;
-          this.$Message.error(error.message)
-        });
+      this.loadRoles();
     },
     closeDept(){
       this.show = true;
@@ -244,42 +177,38 @@ export default {
     close(){
       this.show = false;
     },
-    reset(){
-       this.getEmp(this.formItem.empId);
-    },
-    clear(){
-      this.$refs.dept.setCheck([]);
-      this.formItem = {
-        trueName: '',
-        empId: '',
-        sex: 1,
-        mobile: '',
-        email:'',
-        weixin: '',
-        deptId: '1',
-        deptName: '',
-        duty: '',
-        dimission:'2',
-        birthSolar: '',
-        joinDate: null,
-        birthReminder: '0'
-      };
-    },
     selectDept(){
       if(this.isEdit != 2){
         this.show = false;
+        this.$refs.dept.selectIds = this.formItem.deptIds;
         this.$refs.dept.open();
-        let deptIds = (this.formItem.deptId.toString() || '').split(',');
-        this.$refs.dept.setCheck(deptIds);
       }
     },
     updateDept(depts){
       this.show = true;
-      //this.formItem.deptId = depts.map((item) => {return item.deptId}).join(',');
-      //this.formItem.deptName = depts.map((item) => {return item.deptName}).join(',');
-      this.formItem.deptId =depts.deptId;
-      this.formItem.deptName =depts.deptName;
+      this.formItem.deptIds = [];      
+      this.formItem.deptNames = [];
+      depts.map(item=>{
+        this.formItem.deptIds.push(item.deptId);
+        this.formItem.deptNames.push(item.deptName);        
+      })
+
+      this.formItem.deptName = this.formItem.deptNames.join(',');
+       
       this.$refs.dept.close();
+    },
+    loadRoles(){
+      if(this.roles.length == 0){
+        this.$http.post('api/engine/role/all', this.formItem).then((res) => {
+          this.loading = 0; 
+          if (res.data.code === 0) {
+            this.roles = res.data.data;
+          } 
+        }).catch((error) => {
+          this.loading = 0;
+          this.$Message.error(error.message)
+        });
+      }
     }
   }
 }
@@ -287,12 +216,19 @@ export default {
 </script>
 
 <style type="text/css">
-  .form-sub-title {
-      font-size:14px;
-      margin: 0px 0px 12px 18px;
-      color: #20bfee;
+  .edit-user .roles{
+    height: 280px;
+    overflow-y: auto;
+    border:1px solid #eee;
+    border-radius: 3px;
   }
-  .form-sub-title .ivu-icon{
-     margin-right: 5px;
+
+  .edit-user .roles .ivu-checkbox-group-item{
+    display: block;    
+    margin-top: 4px;
+    padding: 0 10px;
+  }
+  .edit-user .roles .ivu-checkbox-group-item:hover{
+    background-color: #e8f8fd
   }
 </style>

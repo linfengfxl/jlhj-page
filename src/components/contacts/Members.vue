@@ -1,5 +1,5 @@
 <template>
-  <ListPage ref="page" title="" api="/api/engine/emp/list" class="member"
+  <ListPage ref="page" title="" api="/api/engine/user/list" class="member"
   :model="this" :beforeLoad="beforeLoad" @on-load="totalCount=$refs.page.total">   
   <div class="page-searchbox" style="margin-top: 0px">
     <table cellpadding="0" cellspacing="0" width="100%">
@@ -20,7 +20,7 @@
     </table>
   </div> 
   <div>
-    <EditEmp ref="editEmp" @on-load="query"></EditEmp>
+    <EditEmp ref="editEmp" @on-save="query"></EditEmp>
   </div>
 </div>
 </ListPage>
@@ -71,7 +71,7 @@
         }, 
         {
           title: '岗位',
-          key: 'roleNames',
+          key: 'roleName',
           align: 'left',
           minWidth:100 
         }, 
@@ -84,6 +84,12 @@
         {
           title: '手机号',
           key: 'mobile',
+          align: 'center',
+          width:120
+        }, 
+        {
+          title: '邮箱',
+          key: 'email',
           align: 'center',
           width:120
         }, 
@@ -170,18 +176,19 @@
       }, 
       rowCommand(name,params){ 
         if(name == '编辑'){
-          this.updateEmp(params.row.empId);
+          if(params.row.id == 0){
+            this.$Message.error("admin 不能修改");
+            return;
+          }
+          this.updateEmp(params.row);
           return;
         } 
       },
-      updateEmp:function(empId){
-        this.$refs.editEmp.open(empId);
-      },
-      viewEmp:function(empId){
-        this.$refs.editEmp.view(empId);
-      },
+      updateEmp:function(row){
+        this.$refs.editEmp.open(row);
+      }, 
       addEmp:function(){
-        this.$refs.editEmp.addOpen(this.queryForm.deptId,this.queryForm.deptName);
+        this.$refs.editEmp.open({deptIds:[this.queryForm.deptId],deptName:this.queryForm.deptId});
       },
       deleteEmp(empId){
         this.$Modal.confirm({

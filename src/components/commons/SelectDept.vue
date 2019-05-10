@@ -5,7 +5,7 @@
     </div>
     <div slot="footer">
         <Button  type="text" @click="close" style="margin-left: 8px">取消</Button>
-        <Button  type="primary" @click="getCheck">确定</Button>
+        <Button  type="primary" @click="ok">确定</Button>
     </div>
   </Modal>
 </template>
@@ -29,31 +29,32 @@ export default {
       },
       tree:null,
       show:false,
-      loading: 1
+      loading: 1,
+      selectIds:[]
     };
   },
   mounted(){
     let that = this;
     let tree = new treeComponent({
-              idProperty:'deptId',
-              titleProperty:'deptName',
-              parentIdProperty:'parentId',
-              root:{title:'公司',data:{deptName:'公司',deptId:1,parentId:null}},
-              onLoad(){
-                    if(!tree.options.isLoad){
-                        tree.build();
-                        tree.openLevel(0);
-                    }else{
-                        tree.buildRestoreStatus();
-                    }
-                    tree.options.isLoad = true;
-              },
-              onSelect(e){
-                 that.selDept(e.sender.data);
-              }
-          });
-              this.tree= tree;
-              this.root= this.tree.options._root;
+        idProperty:'deptId',
+        titleProperty:'deptName',
+        parentIdProperty:'parentId',
+        root:{title:'公司',data:{deptName:'公司',deptId:'',parentId:null}},
+        onLoad(){
+          if(!tree.options.isLoad){
+              tree.build();
+              tree.openLevel(0);
+          }else{
+              tree.buildRestoreStatus();
+          }
+          tree.options.isLoad = true;          
+        },
+        onSelect(e){
+           that.selDept(e.sender.data);
+        }
+    });
+    this.tree= tree;
+    this.root= this.tree.options._root;
   },
   computed:{
   },
@@ -61,17 +62,15 @@ export default {
     open(){
       this.show = true;
       this.load();
-
     },
     load(){
         this.loading = 1;
-        this.$http.post('/api/contacts/dept/list', {}).then((res) => {
+        this.$http.post('/api/engine/dept/list', {}).then((res) => {
           if (res.data.code === 0) {
             this.loading = 0;
-            this.tree.options.data = res.data.data;
-            this.tree.options._root.title = res.data.data[0].deptName;
-            this.tree.options._root.data = res.data.data[0];
+            this.tree.options.data = res.data.data;             
             this.tree.load();
+            this.setCheck(this.selectIds);
           } else {
             this.loading = 0;
             this.$Message.error(res.data.message)
@@ -81,19 +80,14 @@ export default {
           this.$Message.error(error.toString())
         });
     },
-    getCheck(){
-        let depts = this.tree.getCheckData().map((item) => {
-          let dept = {deptId:item.deptId,deptName:item.deptName};
-          return dept;
-        });
-        this.$emit('on-check',depts);
+    ok(){      
+      let depts = this.tree.getCheckData().map((item) => {
+        return {deptId:item.deptId,deptName:item.deptName};
+      }); 
+      this.$emit('on-check',depts);
     },
-    setCheck(ids){
-        //ids 数组 [1,2,3]
-        let deptIds = ids.map((item) => {
-          return parseInt(item);
-        });
-        this.tree.setCheck(deptIds);
+    setCheck(ids){    
+      this.tree.setCheck(ids);
     },
     selDept(data){
       this.$emit('on-select',data);
