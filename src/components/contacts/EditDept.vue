@@ -5,16 +5,18 @@
         <div class="page-form">
           <Form ref="form" :model="formItem" :rules="ruleValidate" :label-width="80">
                 <FormItem label="部门编码" prop="deptId">
-                    <Input size="small" v-model="formItem.deptId"></Input>
+                    <Input  v-model="formItem.deptId"></Input>
                 </FormItem>
                 <FormItem label="部门名称" prop="deptName">
-                    <Input size="small" v-model="formItem.deptName"></Input>
+                    <Input  v-model="formItem.deptName"></Input>
                 </FormItem>
-                <FormItem label="上级部门" prop="parentId">
-                    <Input size="small" v-model="formItem.parentId"></Input>
+                <FormItem label="上级部门" prop="parentId">                                       
+                  <i-input v-model="formItem.parentDeptName" readonly>
+                    <Button slot="append" @click="selectDept" icon="more"></Button>
+                  </i-input>
                 </FormItem>
                 <FormItem label="排序" prop="seq">
-                    <Input size="small" v-model="formItem.seq"></Input>
+                    <Input  v-model="formItem.seq"></Input>
                 </FormItem>
                 <FormItem>
                      <Button  type="primary" @click="save">保存</Button>
@@ -24,16 +26,19 @@
         </div>
       </Loading>
     </div>
+    <SelectDept ref="dept" @on-check="updateDept" @on-close="closeDept"></SelectDept>
     <div slot="footer">
     </div>
    </Modal>
 </template>
 <script>
+import SelectDept from '@/components/commons/SelectDept';
 import Loading from '@/components/loading';
 
 export default {
   components: {
-     Loading
+     Loading,
+     SelectDept
   },
   data() {
     return {
@@ -67,6 +72,7 @@ export default {
         deptId:'',
         deptName:'',
         parentId:'',
+        parentDeptName:'' ,
         seq:0, 
       },init);
 
@@ -81,6 +87,7 @@ export default {
         deptId:'',
         deptName:'',
         parentId:'' ,
+        parentDeptName:'' ,
         seq:0 
       },init);
 
@@ -93,6 +100,25 @@ export default {
     },
     close(){
       this.show = false;
+    },
+    selectDept(){
+      if(this.isEdit != 2){
+        this.show = false;
+        this.$refs.dept.selectIds = this.formItem.deptIds;
+        this.$refs.dept.open();
+      }
+    },
+    updateDept(depts){
+      this.show = true;
+      if(depts.length>0){
+        this.formItem.parentDeptName = depts[0].deptName;
+        this.formItem.parentId = depts[0].deptId;
+      }
+       
+      this.$refs.dept.close();
+    },
+    closeDept(){
+      this.show = true;
     },
     save(){
        this.$refs['form'].validate((valid) => {
