@@ -30,7 +30,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
         '/corp': { 
-          target: 'http://localhost:8086', 
+          target: 'http://192.168.2.30:50286', 
           changeOrigin: false
         } 
     },

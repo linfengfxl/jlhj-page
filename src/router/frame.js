@@ -25,9 +25,7 @@ components.push({ component: 'demo/SmallComponent', name: 'demo.small', path: '/
 components.push({ component: 'demo/Layout', name: 'demo.layout', path: '/demo/layout' })
 components.push({ component: 'demo/SelContacts', name: 'demo.selcontacts', path: '/demo/selcontacts' })
 components.push({ component: 'demo/SelOther', name: 'demo.selother', path: '/demo/selother' })
-components.push({ component: 'demo/SelPersonBatch', name: 'demo.selpersonbatch', path: '/demo/selpersonbatch' })
-
-
+components.push({ component: 'demo/SelPersonBatch', name: 'demo.selpersonbatch', path: '/demo/selpersonbatch' }) 
 
 components.push({ component: 'engine/api/ApiList',path: '/engine/api' })
 components.push({ component: 'engine/dbtable/DbList',path: '/engine/db' })
