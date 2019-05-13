@@ -1,8 +1,8 @@
 <template>
   <ListPage
     ref="page"
-    title="供应商"
-    api="/api/engine/provider/list"
+    title="机械"
+    api="/api/engine/machine/list"
     :model="this"
     :beforeLoad="beforeLoad"
   >
@@ -34,7 +34,7 @@
   </ListPage>
 </template>
 <script>    
-import Edit from '@/components/provider/Edit';
+import Edit from '@/components/machine/Edit';
 import ListPage from '@/components/page/ListPage';
 import DataRowOperate from '@/components/commons/DataRowOperate';
 
@@ -91,29 +91,29 @@ export default {
         },
         {
           title: '编码',
-          key: 'providerCode',
+          key: 'machineCode',
           width: 100,
         },
         {
           title: '名称',
-          key: 'providerName',
+          key: 'machineName',
           width: 150,
         },
         {
-          title: '类别',
-          key: 'providerType',
+          title: '租赁类型',
+          key: 'leaseType',
           width: 150,
           render: (h, params) => {
             var row = params.row;
-            return h('label', this.$args.getArgText('provider_type', row.providerType));
+            return h('label', this.$args.getArgText('lease_type', row.leaseType));
           }
         },
-        // {
-        //   title: '备注',
-        //   key: 'remark',
-        //   align: 'left',
-        //   minWidth:150
-        // },
+        {
+          title: '备注',
+          key: 'remark',
+          align: 'left',
+          minWidth: 150
+        },
         {
           title: '创建人',
           key: 'creatorName',
@@ -145,7 +145,7 @@ export default {
   computed: {},
   methods: {
     goTab(index) {
-      var pages = ['/admin', '/provider'];
+      var pages = ['/admin', '/machine'];
       this.$router.push({ path: pages[index] });
     },
     beforeLoad() {
@@ -172,7 +172,7 @@ export default {
           title: '删除确认',
           content: '<p>删除后不能恢复，确定删除已选择的记录吗？</p>',
           onOk: () => {
-            this.$http.post('/api/engine/provider/delete?id=' + params.row.id, {}).then((res) => {
+            this.$http.post('/api/engine/machine/delete?id=' + params.row.id, {}).then((res) => {
               if (res.data.code === 0) {
                 this.$Message.success("删除成功");
                 $.extend(this.queryForm, this.queryParam);

@@ -14,12 +14,12 @@
               <Input v-model="formItem.providerCode" :disabled="isEdit == 1" class="width-1"/>
             </FormItem>
             <FormItem label="名称" prop="providerName">
-              <Input v-model="formItem.providerName" placeholder="不超过50个字符"/>
+              <Input v-model="formItem.providerName" placeholder="不超过64个字符"/>
             </FormItem>
             <FormItem label="类别" prop>
               <Select v-model="formItem.providerType" style="width:150px" placeholder="类型">
                 <Option
-                  v-for="item in providerTypeOption"
+                  v-for="item in $args.getArgGroup('provider_type')"
                   :value="item.argCode"
                   :key="item.argCode"
                 >{{ item.argText }}</Option>
@@ -29,39 +29,43 @@
               <SelArea v-model="formItem.area" class="width-2"></SelArea>
             </FormItem>
             <FormItem label="公司地址" prop>
-              <Input v-model="formItem.address" placeholder :maxlength="100"/>
+              <Input v-model="formItem.address" placeholder="不超过64个字符"/>
             </FormItem>
             <FormItem label="法人" prop>
-              <Input v-model="formItem.legalPerson" placeholder="不超过50个字符"/>
+              <Input v-model="formItem.legalPerson" placeholder="不超过12个字符"/>
             </FormItem>
             <FormItem label="注册资金" prop>
-              <Input v-model="formItem.regisFunds" placeholder="不超过50个字符"/>
+              <Input v-model="formItem.regisFunds"/>
             </FormItem>
             <FormItem label="联系人" prop>
-              <Input v-model="formItem.linkMan" placeholder class="width-1"/>
+              <Input v-model="formItem.linkMan" placeholder="不超过12个字符" class="width-1"/>
             </FormItem>
             <FormItem label="联系电话" prop>
-              <Input v-model="formItem.linkPhone" placeholder class="width-1"/>
+              <Input v-model="formItem.linkPhone" class="width-1"/>
             </FormItem>
             <FormItem label="税号" prop>
-              <Input v-model="formItem.taxNo" placeholder class="width-2"/>
+              <Input v-model="formItem.taxNo" class="width-2"/>
             </FormItem>
             <FormItem label="纳税人类型" prop>
               <Select v-model="formItem.taxpayerType" style="width:150px" placeholder="类型">
                 <Option
-                  v-for="item in taxpayerTypeOption"
+                  v-for="item in $args.getArgGroup('taxpayer_type')"
                   :value="item.argCode"
                   :key="item.argCode"
                 >{{ item.argText }}</Option>
               </Select>
             </FormItem>
             <FormItem label="税率" prop>
-              <Input v-model="formItem.taxRate" placeholder="不超过50个字符"/>
+              <InputNumber
+                v-model="formItem.taxRate"
+                :formatter="value => `${value}%`"
+                :parser="value => value.replace('%', '')"
+              ></InputNumber>
             </FormItem>
             <FormItem label="发票类型" prop>
               <Select v-model="formItem.invoiceType" style="width:150px" placeholder="类型">
                 <Option
-                  v-for="item in invoiceTypeOption"
+                  v-for="item in $args.getArgGroup('invoice_type')"
                   :value="item.argCode"
                   :key="item.argCode"
                 >{{ item.argText }}</Option>
@@ -77,13 +81,12 @@
               <Input v-model="formItem.bankCardNo" placeholder="不超过50个字符"/>
             </FormItem>
             <FormItem label="主营业务" prop>
-              <Input v-model="formItem.mainBusiness" placeholder="不超过50个字符"/>
+              <Input v-model="formItem.mainBusiness" placeholder="不超过256个字符"/>
             </FormItem>
             <FormItem label="发展日期" prop>
               <Date-picker
                 type="date"
                 placeholder="选择日期"
-                :readonly="this.isEdit==2?'readonly':false"
                 v-model="formItem.developTime"
                 format="yyyy-MM-dd"
               ></Date-picker>
@@ -95,18 +98,9 @@
               <Date-picker
                 type="date"
                 placeholder="选择日期"
-                :readonly="this.isEdit==2?'readonly':false"
                 v-model="formItem.disableTime"
                 format="yyyy-MM-dd"
               ></Date-picker>
-            </FormItem>
-            <FormItem label="备注" prop="remark">
-              <Input
-                v-model="formItem.remark"
-                type="textarea"
-                :autosize="{minRows: 2,maxRows: 5}"
-                placeholder="请输入..."
-              />
             </FormItem>
             <FormItem>
               <Button type="primary" icon="checkmark" @click="save">保存</Button>
@@ -131,17 +125,6 @@ export default {
   },
   data() {
     return {
-      providerTypeOption: [
-        { argCode: 1, argText: '1' },
-        { argCode: 2, argText: '2' },
-        { argCode: 3, argText: '3' }
-      ],
-      taxpayerTypeOption: [
-        { argCode: 1, argText: '一般纳税人' },
-        { argCode: 2, argText: '小规模纳税人' },
-        { argCode: 3, argText: '个人' }
-      ],
-      invoiceTypeOption: [],
       loading: 1,
       show: false,
       //是否编辑 0 添加 1 编辑
@@ -196,13 +179,13 @@ export default {
     save() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          this.save();
+          this.saveItem();
         } else {
           return;
         }
       });
     },
-    save() {
+    saveItem() {
       let url = '';
       let msg = '';
       if (this.isEdit === 0) {
@@ -213,7 +196,9 @@ export default {
         msg = '修改成功';
       }
       this.formItem.developTime = page.formatDate(this.formItem.developTime);//发展日期 
+      if (!this.formItem.developTime) { this.formItem.developTime = null }
       this.formItem.disableTime = page.formatDate(this.formItem.disableTime);//停用日期   
+      if (!this.formItem.disableTime) { this.formItem.disableTime = null }
       this.loading = 1;
       this.$http.post(url, this.formItem).then((res) => {
         this.loading = 0;
@@ -236,13 +221,16 @@ export default {
       if (id > 0) {
         this.isEdit = 1;
         this.formItem.id = id;
-        this.getRole(id);
+        this.get(id);
       } else {
         this.loading = 0;
         this.isEdit = 0;
+        for (var x in this.formItem) {
+          this.formItem[x] = ''
+        }
       }
     },
-    getRole(id) {
+    get(id) {
       this.$http.post('/api/engine/provider/get?id=' + id, {}).then((res) => {
         if (res.data.code === 0) {
           this.loading = 0;
@@ -264,7 +252,7 @@ export default {
     reset() {
       this.checked = [];
       this.$refs['form'].resetFields();
-      this.getRole(this.formItem.id);
+      this.get(this.formItem.id);
     }
   }
 }

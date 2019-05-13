@@ -6,8 +6,9 @@ components.push({ component: 'provider/Index', name: '', path: '/provider' })//�
 //客户
 components.push({ component: 'customer/Index', name: '', path: '/customer' })
 //材料
-components.push({ component: 'material/Index', name: '', path: '/material' })
-
+components.push({ component: 'material/Index', name: '', path: '/material' }) 
+//资源档案
+components.push({ component: 'machine/Index', name: '', path: '/machine' })
 // //2.销售合同 -->
 // //客户
 // components.push({ component: 'customer/Index', name: '', path: '/customer' })
