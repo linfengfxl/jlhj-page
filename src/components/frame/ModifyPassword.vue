@@ -8,14 +8,17 @@
       <Loading :loading="loading">
       <div class="page-form">
          <Form ref="form" :model="item" :rules="ruleValidate" :label-width="80">
+            <FormItem label="旧密码" prop="oldPassword">
+                <Input  v-model="item.oldPassword" type="password" placeholder="输入旧密码"></Input>
+            </FormItem>
             <FormItem label="新密码" prop="password">
                 <Input  v-model="item.password" type="password" placeholder="输入新密码"></Input>
             </FormItem>
-            <FormItem label="确认密码" prop="finalPassword">
+            <FormItem label="确认新密码" prop="finalPassword">
                 <Input  v-model="item.finalPassword" type="password" placeholder="输入确认密码"></Input>
             </FormItem>
             <FormItem>
-                <Button  type="primary" icon="checkmark" @click="save()">保存</Button>
+                <Button  type="primary" icon="checkmark" @click="save()">确定</Button>
                 <Button  type="default" @click="cancel()" style="margin-left: 20px">取消</Button>
             </FormItem>
         </Form>
@@ -40,12 +43,15 @@ export default {
       loading:1,
       show:false,
       title:"修改密码",
-      item:{
-        id :0,
+      item:{ 
+        oldPassword:'',
         finalPassword:'',
         password:''
       },
       ruleValidate: {
+          oldPassword: [
+              { required: true, message: '旧密码不能为空', trigger: 'blur' },               
+          ],
           password: [
               { required: true, message: '密码不能为空', trigger: 'blur' },
               {type: 'string', min:6,max: 16, message: '6~16个字符，区分大小写', trigger: 'blur' }
@@ -54,7 +60,6 @@ export default {
               { required: true, message: '确认密码不能为空', trigger: 'blur' },
               {type: 'string', min:6, max: 16, message: '6~16个字符，区分大小写', trigger: 'blur' }
           ]
-
       }
     }
   },
@@ -62,19 +67,17 @@ export default {
 
   },
   methods:{
-     open: function(id) {
+     open: function() {
       this.loading = 0;
       this.$refs['form'].resetFields();
-      this.show = true;
-      this.item.id = id;
+      this.show = true; 
     },
     save:function(){
       this.$refs['form'].validate((valid) => {
           if (valid) { 
             this.loading = 1;
             if(this.item.password != this.item.finalPassword){
-                this.$Message.info("密码不一致，重新输入");
-                this.$refs['form'].resetFields();
+                this.$Message.info("密码不一致，重新输入");                 
                 this.loading = 0;
                 return;
             }
@@ -85,9 +88,9 @@ export default {
       });
     },
     modifyPwd(item){
-      this.$http.post('/api/admin/modifyPwd', {
+      this.$http.post('/api/engine/login/chgpwd', {
+        oldPassword:item.oldPassword,
         password:item.finalPassword,
-        id:item.id
       }).then((res) => {
         if (res.data.code === 0) {
               this.show = false;
