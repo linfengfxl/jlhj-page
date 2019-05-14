@@ -3,7 +3,14 @@
      <tr>
        <td class="label">脚本 Groovy</td>
        <td>
-          <editor v-model="config.script" @init="editorInit" lang="groovy" theme="chrome" height="400"></editor>
+          <div :class="{'editor-container':true,'max':max}">
+            <div class="editor-container-bar">
+              <Button type="info" shape="circle" size="small" @click="clickMax" >
+              {{max?'还原':'最大化'}}
+              </Button>
+            </div>
+            <editor ref="editor" v-model="config.script" @init="editorInit" lang="groovy" theme="chrome" height="100%" ></editor>
+          </div>
        </td>
      </tr>
      <tr>
@@ -30,7 +37,8 @@
     data() { 
       this.fillConfig();
       return {
-        codeTemps:[]
+        max:false,
+        codeTemps:[],
       } 
     },
     watch:{
@@ -89,6 +97,12 @@
         });
 
       },
+      clickMax(){
+        this.max = !this.max;
+        this.$nextTick(function(){
+          this.$refs.editor.editor.resize()
+        })
+      }
     }
   }
 

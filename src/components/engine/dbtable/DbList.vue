@@ -2,7 +2,7 @@
   <div class="engine-apilist">
     <Tabs :animated="false" v-model="tabName" class="top" @on-click="goTab">
       <TabPane label="Api 列表" name="0" ></TabPane>
-      <TabPane label="页面配置" name="1" ></TabPane>
+      <TabPane label="页面配置" name="1" v-if="false"></TabPane>
       <TabPane label="数据库表" name="2" ></TabPane>
     </Tabs> 
     <DbListLeft ref="dbListLeft" class="left" @on-current-change="curApiChange"></DbListLeft> 

@@ -263,6 +263,7 @@
     overflow-y: auto; 
     padding:10px;
     padding-right: 20px;
+    position: relative;
   }
 
   .apiedit .header{
@@ -318,6 +319,29 @@
     height: 70px;
     padding: 8px;
     padding-bottom: 0px;
+  }
+
+  .apiedit .editor-container{
+    height: 400px;
+    background-color: white;
+    position: relative;
+  }
+
+  .apiedit .editor-container.max{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    left:0;
+    top:0;
+    overflow: hidden;
+  }
+
+  .apiedit .editor-container-bar{
+    position: absolute;
+    right: 20px;
+    top:5px;
+    z-index: 100;
   }
 </style>
 
