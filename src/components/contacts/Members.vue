@@ -8,7 +8,7 @@
           <span class="member-count">全部成员<span style="color:#999;">（共{{totalCount}}人）</span></span>
         </td>
         <td>
-          <Button  @click="addEmp">添加员工</Button> 
+          <Button  @click="addEmp" icon="plus">添加用户</Button> 
         </td>          
         <td width="1%">
           <Input v-model="queryForm.keyword" placeholder="搜索姓名/手机号" style="width:150px" @on-enter="query" />
@@ -47,8 +47,7 @@
     data() {
       var that = this;
       return {
-        loading:0, 
-        manager:[],// 部门主管(empIds)
+        loading:0,          
         totalCount:0,
         columns:[
         /*
@@ -103,7 +102,7 @@
           }), 
         {
             title:'操作',
-            width: 100,
+            width: 140,
             align: 'center',
             render:(h,params)=>{
               var row = params.row;
@@ -111,19 +110,20 @@
                 props:{
                   btns:[
                     {key:'edit'},
+                    {key:'reset',text:'重置密码'},
                     {key:'del',text:'删除'}
                   ]
                 },
                 on:{
-                  click:(key)=>{
-                    if(key=="view"){
-                      this.rowCommand("查看",params);
-                    }
+                  click:(key)=>{                    
                     if(key=="edit"){
-                      this.rowCommand("编辑",params);
+                      this.updateUser(row);
+                    }
+                    if(key=="reset"){
+                      this.resetUser(row);
                     }
                     if(key=="del"){
-                      this.rowCommand("删除",params);
+                      this.delUser(row);
                     }
                   }
                 }
@@ -135,12 +135,12 @@
         queryForm:{ 
           status:0,
           keyword:'',  
-          deptId: ''
+          deptId: '',
+          deptName:''
         }
       }
     },
     mounted:function(){
-      this.loadDept();
       this.query(); 
     },
     computed:{ 
@@ -173,30 +173,46 @@
           deptId: 1
         });
         this.query();
-      }, 
-      rowCommand(name,params){ 
-        if(name == '编辑'){
-          if(params.row.id == 0){
-            this.$Message.error("admin 不能修改");
-            return;
-          }
-          this.updateEmp(params.row);
+      },   
+      updateUser:function(row){
+        if(row.id == 0){
+          this.$Message.error("admin 不能修改");
           return;
-        } 
-      },
-      updateEmp:function(row){
+        }
         this.$refs.editEmp.open(row);
       }, 
-      addEmp:function(){
-        this.$refs.editEmp.open({deptIds:[this.queryForm.deptId],deptName:this.queryForm.deptId});
-      },
-      deleteEmp(empId){
+      resetUser:function(row){         
+         this.$Modal.confirm({
+          title: '确认',
+          content: '<p>重置后密码为 888888 </p>',
+          onOk: () => {
+            this.loading = 1;
+            this.$http.post('/api/engine/user/resetpwd', {id:row.id}).then((res) => {
+              this.loading = 0;
+              if (res.data.code === 0) {
+                this.$Message.success("操作成功");
+                this.$refs.page.load();
+              } else {
+                this.$Message.error(res.data.message)
+              }
+            }).catch((error) => {
+              this.loading = 0;
+              this.$Message.error(error.toString())
+            }); 
+          }
+        });
+      }, 
+      delUser:function(row){
+        if(row.id == 0){
+          this.$Message.error("admin 不能删除");
+          return;
+        }
         this.$Modal.confirm({
           title: '删除确认',
           content: '<p>删除后不能恢复，确定删除已选择的记录吗？</p>',
           onOk: () => {
             this.loading = 1;
-            this.$http.post('/api/contacts/emp/deleteEmp?empId=' + empId, {}).then((res) => {
+            this.$http.post('/api/engine/user/delete', {id:row.id}).then((res) => {
               this.loading = 0;
               if (res.data.code === 0) {
                 this.$Message.success("删除成功");
@@ -207,35 +223,13 @@
             }).catch((error) => {
               this.loading = 0;
               this.$Message.error(error.toString())
-            });
-            this.query();
+            }); 
           }
         });
       }, 
-      loadDept() {
-        this.$http.post('/api/engine/dept/list', {}).then((res) => {
-          if (res.data.code === 0 && res.data.data !=null) {
-            var manager = [];
-            res.data.data.map((item)=>{
-              if(item.manager){
-                manager.push(item.manager);
-              }
-            });
-            this.manager = manager;
-            this.$refs.page.load();
-          } else {
-            this.$Message.error(res.data.message)
-          }
-        }).catch((error) => { 
-          this.$Message.error(error.message)
-        });
-      },
-      sync(){
-        this.$router.push({name:'contacts.sync'});
-      },
-      openQy(){
-        window.open('https://work.weixin.qq.com/');
-      },
+      addEmp:function(){
+        this.$refs.editEmp.open({deptIds:[this.queryForm.deptId],deptName:this.queryForm.deptName});
+      }, 
       batch(){
         if(!this.$user.hasPower('txl.pl')){
           this.$Message.error('暂无权限！');

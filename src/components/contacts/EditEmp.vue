@@ -52,7 +52,7 @@
         </Loading>
       </div>
       <div slot="footer"></div>
-      <SelectDept ref="dept" @on-check="updateDept" @on-close="closeDept"></SelectDept>
+      <SelectDept ref="dept" :type="2" @on-ok="updateDept" @on-close="closeDept"></SelectDept>
   </Modal>
 </template>
 <script>
@@ -178,11 +178,9 @@ export default {
       this.show = false;
     },
     selectDept(){
-      if(this.isEdit != 2){
-        this.show = false;
-        this.$refs.dept.selectIds = this.formItem.deptIds;
-        this.$refs.dept.open();
-      }
+      this.show = false;
+      this.$refs.dept.selectIds = this.formItem.deptIds;
+      this.$refs.dept.open();
     },
     updateDept(depts){
       this.show = true;
@@ -193,7 +191,7 @@ export default {
         this.formItem.deptNames.push(item.deptName);        
       })
 
-      this.formItem.deptName = this.formItem.deptNames.join(',');
+      this.formItem.deptName = this.formItem.deptNames.join('，');
        
       this.$refs.dept.close();
     },

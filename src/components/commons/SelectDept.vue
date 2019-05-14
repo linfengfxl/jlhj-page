@@ -1,25 +1,34 @@
 <template>
   <Modal v-model="show" title="选择部门" :closable="false" :mask-closable="false">
     <div class="select-dept">
-       <DeptNodeCheck :model="root"></DeptNodeCheck>
+      <TvNode :model="root" v-if="type == 1"></TvNode>
+      <TvNodeCheck :model="root" v-else></TvNodeCheck>
     </div>
     <div slot="footer">
-        <Button  type="text" @click="close" style="margin-left: 8px">取消</Button>
-        <Button  type="primary" @click="ok">确定</Button>
+      <Button  type="text" @click="close" style="margin-left: 8px">取消</Button>
+      <Button  type="primary" @click="ok">确定</Button>
     </div>
   </Modal>
 </template>
 
 <script>
-import DeptNodeCheck from '@/components/commons/DeptNodeCheck'
+import TvNode from '@/components/tree/TvNode'
+import TvNodeCheck from '@/components/tree/TvNodeCheck'
 import treeComponent from '@/components/tree/treeComponent.js'
 import Loading from '@/components/loading';
 
 export default {
   name: 'SelectDept',
   components: {
-    DeptNodeCheck,
+    TvNode,
+    TvNodeCheck,    
     Loading
+  },
+  props: {
+    type: { // 1.单选   2.多选
+      type:Number,
+      default:1 
+    }
   },
   data() {
     return {
@@ -28,9 +37,10 @@ export default {
         children:[]
       },
       tree:null,
-      show:false,
+      show:false,      
       loading: 1,
-      selectIds:[]
+      selectIds:[],
+      hidenIds:[], // 不显示的结点
     };
   },
   mounted(){
@@ -47,10 +57,10 @@ export default {
           }else{
               tree.buildRestoreStatus();
           }
-          tree.options.isLoad = true;          
+          tree.options.isLoad = true;
         },
         onSelect(e){
-           that.selDept(e.sender.data);
+           
         }
     });
     this.tree= tree;
@@ -68,9 +78,23 @@ export default {
         this.$http.post('/api/engine/dept/list', {}).then((res) => {
           if (res.data.code === 0) {
             this.loading = 0;
-            this.tree.options.data = res.data.data;             
+            var depts = [];
+            res.data.data.map(item=>{
+              if(this.hidenIds.indexOf(item.deptId)<0){
+                depts.push(item);
+              }
+            })
+
+            this.tree.options.data = depts;
             this.tree.load();
-            this.setCheck(this.selectIds);
+             
+            if(this.selectIds && this.selectIds.length > 0){
+              this.tree.setCheck(this.selectIds);
+              this.tree.setSelect([this.selectIds[0]]);
+            }else{
+              this.tree.setCheck([]);
+              this.tree.setSelect([]);
+            }
           } else {
             this.loading = 0;
             this.$Message.error(res.data.message)
@@ -80,17 +104,21 @@ export default {
           this.$Message.error(error.toString())
         });
     },
-    ok(){      
-      let depts = this.tree.getCheckData().map((item) => {
-        return {deptId:item.deptId,deptName:item.deptName};
-      }); 
-      this.$emit('on-check',depts);
-    },
-    setCheck(ids){    
-      this.tree.setCheck(ids);
-    },
-    selDept(data){
-      this.$emit('on-select',data);
+    ok(){
+      var depts = [];
+
+      if(this.type == 1){
+        this.tree.getSelectData().map(item=>{
+          depts.push({deptId:item.deptId,deptName:item.deptName});
+        });
+      }else{
+        this.tree.getCheckData().map(item=>{
+          depts.push({deptId:item.deptId,deptName:item.deptName});
+        });
+      }
+       
+      this.$emit('on-ok',depts);
+      this.close();
     },
     close(){
       this.show = false;
@@ -101,6 +129,6 @@ export default {
 </script>
 
 <style>
-   .select-dept{padding: 10px;height: 100%;}
+   .select-dept{padding: 0px;height: 100%;}
 </style>
 

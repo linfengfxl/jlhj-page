@@ -11,7 +11,7 @@ components.push({ component: 'frame/AccountSet', name: 'frm.accset', path: '/acc
 components.push({ component: 'frame/Admin', name: 'frm.admin', path: '/admin' })
 components.push({ component: 'frame/Role', name: 'frm.role', path: '/role' })
 components.push({ component: 'frame/RoleUser', name: '', path: '/roleuser' })
-components.push({ component: 'frame/LoginInfoChg', name: 'frm.loginInfoChg', path: '/loginInfoChg' })
+components.push({ component: 'frame/LoginInfoChg', name: 'frm.loginInfoChg', path: '/myinfo' })
 
 components.push({ component: 'powermenu/Index', name:'' , path: '/powermenu' })
 

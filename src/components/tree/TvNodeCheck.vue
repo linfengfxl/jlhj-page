@@ -2,24 +2,26 @@
 <ul>
   <li>
       <div v-bind:class="{'tv-node':1,'select':model.select}" :style="style" @click="model.doEvent('select',$event)">
-
-          <table class="tv-node-row">
+          <table class="tv-node-row" cellpadding="0" cellspacing="0">
             <tr>
                 <td class="tv-node-row-arrow">
                     <span v-bind:class="{'tv-arrow':1,'open':model.open,'close':!model.open,'empty':model.children.length==0}" @click="model.doEvent('fold',$event)">
-                    <Icon type="arrow-right-b" class="arrow-close"></Icon>
-                    <Icon type="arrow-down-b" class="arrow-open"></Icon>
+                      <Icon type="arrow-right-b" class="arrow-close"></Icon>
+                      <Icon type="arrow-down-b" class="arrow-open"></Icon>
                     </span>
                 </td>
-                <td class="tv-node-row-check">
+                <td class="tv-node-row-check" @click="$event.cancelBubble=true">
+                  <Icon type="checkmark-round tv-checkbox tv-checkbox-uncheck" v-if="!model.check" @click="model.check=true"></Icon>
+                  <Icon type="checkmark-round tv-checkbox tv-checkbox-check" v-else @click="model.check=false"></Icon>
+                    <!--
                     <span @click="$event.cancelBubble=true">
-                        <span v-if="!model.check" @click="model.check=true" class="tv-checkbox">
-                            <Icon type="android-checkbox-outline-blank"></Icon>
+                        <span v-if="!model.check" class="tv-checkbox" @click="model.check=true" >
+                           <Icon type="checkmark-round tv-checkbox-uncheck"></Icon>
                         </span>
                         <span v-else class="tv-checkbox tv-checkbox-check" @click="model.check=false">
-                            <Icon type="android-checkbox"></Icon>
+                          <Icon type="android-checkbox"></Icon>
                         </span> 
-                    </span>
+                    </span>-->
                 </td>
                 <td>
                     {{model.title}} 
@@ -65,20 +67,20 @@ export default {
 }
 </script>
 
-<style>
+<style> 
   .tv ul {
     list-style: none;
   }
   
   .tv{padding: 10px;border:1px solid #dedede;}/*组件*/
-  .tv-node{padding: 2px 0px;cursor: default;}
-  .tv-node:hover{background-color: #eaf2ff}
-  .tv-node.select{background-color: #C4DDF9;}
+  .tv-node{height: 36px;line-height: 36px;cursor: default;padding: 0 10px;}
+  .tv-node:hover{background-color: #e8f8fd}
+  .tv-node.select{background-color: #e8f8fd;}
   
-  .tv-node-row{width: 100%;line-height: 16px;}
+  .tv-node-row{width: 100%;}
   .tv-node-row td{margin: 0px;padding: 0px;vertical-align: middle;}
-  .tv-node-row-arrow{width: 14px;}
-  .tv-node-row-check{width: 16px;text-align: center;}
+  .tv-node-row-arrow{width: 18px;}
+  .tv-node-row-check{width: 18px;text-align: center;}
 
   .tv-children{}
   .tv-children li{padding: 2px;}
@@ -86,15 +88,37 @@ export default {
 
   .tv-arrow{cursor: pointer;background-color:transparent;width: 14px;display: inline-block;text-align: center;}
   .tv-arrow:hover{color:#39f}
+
   .tv-arrow.open .arrow-close,
   .tv-arrow.open .arrow-empty {display: none}        
+
   .tv-arrow.close .arrow-open,
   .tv-arrow.close .arrow-empty {display: none}
+
   .tv-arrow.empty .arrow-open,
   .tv-arrow.empty .arrow-close{display: none}
 
-  .tv-checkbox{font-size: 14px;cursor: pointer;}
-  .tv-checkbox.tv-checkbox-check{color:#39f;font-weight: bold;}
+  .tv-node .arrow-close{
+    color:#999;
+  }
+
+  .tv-node .tv-checkbox{
+    display: block;    
+    height: 15px;
+    width: 15px;
+    background-color: white;
+    border: 1px solid #d7dde4;
+    border-radius: 2px;
+    font-size:12px;
+    cursor: pointer;
+    color:white;
+  }
+
+  .tv-node .tv-checkbox:hover{
+    border-color: #eb5954;
+  }
+
+  .tv-node .tv-checkbox-check{background-color: #eb5954;color:white;border-color: #eb5954}
 
   .tv-hidden{display: none;}
   .tv-node:hover .tv-toolbar{display: inline-block;}

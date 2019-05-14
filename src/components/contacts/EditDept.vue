@@ -4,36 +4,41 @@
         <Loading :loading="loading">
         <div class="page-form">
           <Form ref="form" :model="formItem" :rules="ruleValidate" :label-width="80">
-                <FormItem label="部门编码" prop="deptId">
-                    <Input size="small" v-model="formItem.deptId"></Input>
-                </FormItem>
-                <FormItem label="部门名称" prop="deptName">
-                    <Input size="small" v-model="formItem.deptName"></Input>
-                </FormItem>
-                <FormItem label="上级部门" prop="parentId">
-                    <Input size="small" v-model="formItem.parentId"></Input>
-                </FormItem>
-                <FormItem label="排序" prop="seq">
-                    <Input size="small" v-model="formItem.seq"></Input>
-                </FormItem>
-                <FormItem>
-                     <Button  type="primary" @click="save">保存</Button>
-                     <Button  type="ghost" @click="cancel" style="margin-left: 8px">取消</Button>
-                </FormItem>
+            <FormItem label="部门编码" prop="deptId">
+                <Input  v-model="formItem.deptId" :disabled="isEdit==1" ></Input>
+            </FormItem>
+            <FormItem label="部门名称" prop="deptName">
+                <Input  v-model="formItem.deptName"></Input>
+            </FormItem>
+            <FormItem label="上级部门" prop="parentId">                                       
+              <i-input v-model="formItem.parentDeptName" readonly>
+                <Button slot="append" @click="openSelectDept" icon="more"></Button>
+              </i-input>
+            </FormItem>
+            <FormItem label="排序" prop="seq">
+              <InputNumber :min="0" v-model="formItem.seq"></InputNumber >
+            </FormItem>
+            <FormItem>
+              <Button  type="primary" @click="save">保存</Button>
+              <Button  type="ghost" @click="cancel" style="margin-left: 8px">取消</Button>
+            </FormItem>
           </Form>
         </div>
       </Loading>
     </div>
+    <SelectDept ref="dept" @on-ok="selectDept" @on-close="closeDept"></SelectDept>
     <div slot="footer">
     </div>
    </Modal>
 </template>
 <script>
+import SelectDept from '@/components/commons/SelectDept';
 import Loading from '@/components/loading';
 
 export default {
   components: {
-     Loading
+     Loading,
+     SelectDept
   },
   data() {
     return {
@@ -67,6 +72,7 @@ export default {
         deptId:'',
         deptName:'',
         parentId:'',
+        parentDeptName:'' ,
         seq:0, 
       },init);
 
@@ -81,6 +87,7 @@ export default {
         deptId:'',
         deptName:'',
         parentId:'' ,
+        parentDeptName:'' ,
         seq:0 
       },init);
 
@@ -93,6 +100,33 @@ export default {
     },
     close(){
       this.show = false;
+    },
+    openSelectDept(){
+      this.show = false;
+      this.$refs.dept.selectIds = [this.formItem.parentId];
+      if(this.isEdit == 1){
+        this.$refs.dept.hidenIds = [this.formItem.deptId];
+      }else{
+        this.$refs.dept.hidenIds = [];
+      }
+      this.$refs.dept.open();
+    },
+    selectDept(depts){
+      this.show = true;
+      if(depts.length>0){
+        if(this.isEdit == 1){
+          if(depts[0].deptId == this.formItem.deptId){
+            this.$Message.error('上级部门不能为当前部门');
+            return;
+          }
+        }
+
+        this.formItem.parentDeptName = depts[0].deptName;
+        this.formItem.parentId = depts[0].deptId;
+      }
+    },
+    closeDept(){
+      this.show = true;
     },
     save(){
        this.$refs['form'].validate((valid) => {

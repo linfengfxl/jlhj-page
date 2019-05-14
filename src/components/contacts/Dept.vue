@@ -33,10 +33,7 @@ export default {
     EditDept
   },
   props: {
-    installed:{
-      type:Boolean,
-      default:true
-     }
+
   },
   data() {
     return {
@@ -50,9 +47,7 @@ export default {
         title:'公司',
         children:[]
       },
-      tree:null,
-      editDept:null,
-      data:[]
+      tree:null
     };
   },
   mounted(){
@@ -99,7 +94,7 @@ export default {
             e.handled=true;
           }
       },
-      onSelect:function(e){
+      onSelect:function(e){         
          that.selDept(e.sender.data);
       }
     });
@@ -134,7 +129,10 @@ export default {
       this.$http.post('/api/engine/dept/list').then((res) => {
         if (res.data.code === 0) {
           this.tree.options.data = res.data.data;
-          this.tree.load();    
+          this.tree.load();
+          if(this.currentDept){
+            this.$emit("on-select",this.currentDept);
+          }
         } else {
           this.$Message.error(res.data.message)
         }
@@ -145,21 +143,18 @@ export default {
     selDept(currentDept){
        this.contextmenu.show = false;
        this.currentDept = currentDept;
-       this.$emit("on-select",currentDept.deptId);
-    },
-    setSelect(){
-        this.tree.setSelect([]);
-    },
+       this.$emit("on-select",currentDept);
+    }, 
     add(){
        this.contextmenu.show = false; 
-       this.$refs.editDept.openAdd({parentId:this.currentDept.deptId});
+       this.$refs.editDept.openAdd({parentId:this.currentDept.deptId,parentDeptName:this.currentDept.deptName});
     },
     update(){
        this.contextmenu.show = false;
        this.$refs.editDept.openEdit(this.currentDept);
     },
     onSave(dept){ 
-        this.load();
+      this.load();
     },
     deleteDept(){
         this.contextmenu.show = false;
@@ -172,7 +167,7 @@ export default {
                   this.$Message.success("删除成功");
                   this.load();
                   this.tree.setSelect([this.currentDept.parentId]);
-                  this.$emit("on-select",this.currentDept.parentId);
+                  this.$emit("on-select",this.currentDept);
                 } else {
                   this.$Message.error(res.data.message)
                 }

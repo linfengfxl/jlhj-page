@@ -161,6 +161,17 @@ var treeComponent =
         })
         return arr;
     };
+    // 获取选中行
+    constructor.prototype.getSelectData = function(){
+        var arr = [];
+        var options = this.options;
+        options._root.foreach(function(node){
+            if(node.select){
+                arr.push(node.data);
+            }
+        })
+        return arr;
+    };
     // 设置选中行
     constructor.prototype.setCheck = function(arr){
         var options = this.options;

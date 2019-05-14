@@ -40,9 +40,10 @@ export default {
   computed:{ 
   },
   methods:{
-    selectDept(deptId){       
+    selectDept(dept){       
       this.$refs.members.queryForm.status = 0;
-      this.$refs.members.queryForm.deptId = deptId;       
+      this.$refs.members.queryForm.deptId = dept.deptId;       
+      this.$refs.members.queryForm.deptName = dept.deptName;       
       this.$refs.members.query();
     }
   }
