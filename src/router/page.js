@@ -6,9 +6,13 @@ components.push({ component: 'provider/Index', name: '', path: '/provider' })//�
 //客户
 components.push({ component: 'customer/Index', name: '', path: '/customer' })
 //材料
-components.push({ component: 'material/Index', name: '', path: '/material' }) 
+components.push({ component: 'material/Index', name: '', path: '/material' })
 //资源档案
 components.push({ component: 'machine/Index', name: '', path: '/machine' })
+//物质库存 
+//入库单
+components.push({ component: 'storage/instock/Index', name: '', path: '/storage/instock' })
+components.push({ component: 'storage/instock/InStockEdit', name: '', path: '/storage/instock/edit' })
 // //2.销售合同 -->
 // //客户
 // components.push({ component: 'customer/Index', name: '', path: '/customer' })
