@@ -108,12 +108,12 @@ export default {
             return h('label', this.$args.getArgText('provider_type', row.providerType));
           }
         },
-        // {
-        //   title: '备注',
-        //   key: 'remark',
-        //   align: 'left',
-        //   minWidth:150
-        // },
+        {
+          title: '地址',
+          key: 'address',
+          align: 'left',
+          minWidth: 150
+        },
         {
           title: '创建人',
           key: 'creatorName',

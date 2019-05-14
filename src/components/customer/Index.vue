@@ -66,7 +66,7 @@ export default {
       columns: [
         {
           title: '客户代码',
-          key: 'id',
+          key: 'customerCode',
           width: 120,
           render: (h, params) => {
             var row = params.row;
@@ -82,7 +82,7 @@ export default {
                   }
                 }
               }
-            }, row.id);
+            }, row.customerCode);
           }
         },
         page.table.customerNameColumn({
