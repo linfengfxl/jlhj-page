@@ -108,6 +108,12 @@ export default {
             return h('label', this.$args.getArgText('provider_type', row.providerType));
           }
         },
+         {
+          title: '联系人',
+          key: 'linkMan',
+          align: 'center',
+          width: 130,
+        },
         {
           title: '地址',
           key: 'address',

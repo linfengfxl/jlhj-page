@@ -13,7 +13,7 @@
           <td>
             <Input
               v-model="queryForm.keyword"
-              placeholder="物料编码/名称"
+              placeholder="材料编码/名称"
               style="width:150px"
               @on-enter="query"
             />
@@ -93,14 +93,14 @@ export default {
           }
         },
         {
-          title: '物料编码',
+          title: '材料编码',
           key: 'materCode',
           align: 'left',
           width: 120,
           fixed: 'left',
         },
         {
-          title: '物料名称',
+          title: '材料名称',
           key: 'materName',
           align: 'left',
           minWidth: 150,

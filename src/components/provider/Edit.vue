@@ -150,8 +150,7 @@ export default {
         mainBusiness: '',//主营业务',
         developTime: '',//发展日期',
         disableTime: '',//停用日期',
-        status: '',//状态（1 正常 2 禁用）
-        creator: 0
+        status: '',//状态（1 正常 2 禁用） 
       },
       //验证
       ruleValidate: {
@@ -228,17 +227,18 @@ export default {
         for (var x in this.formItem) {
           this.formItem[x] = ''
         }
+        this.formItem['taxRate'] = 0;
       }
     },
     get(id) {
+      this.loading = 1;
       this.$http.post('/api/engine/provider/get?id=' + id, {}).then((res) => {
+        this.loading = 0;
         if (res.data.code === 0) {
-          this.loading = 0;
           this.formItem = res.data.data;
           var strIds = this.formItem.powerIds;
           //加载功能点 
         } else {
-          this.loading = 0;
           this.$Message.error(res.data.message)
         }
       }).catch((error) => {

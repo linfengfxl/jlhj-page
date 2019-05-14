@@ -6,7 +6,7 @@
           <Form
             :model="formItem"
             ref="form"
-            :label-width="80"
+            :label-width="90"
             :rules="ruleValidate"
             class="form-item"
           >
@@ -16,17 +16,29 @@
             <FormItem label="名称" prop="machineName">
               <Input v-model="formItem.machineName" placeholder="不超过64个字符"/>
             </FormItem>
-            <FormItem label="机械型号" prop> 
-                <Input v-model="formItem.machineModel" placeholder="不超过64个字符"/>
+            <FormItem label="机械型号" prop>
+              <Input v-model="formItem.machineModel" placeholder="不超过64个字符"/>
             </FormItem>
 
-            <FormItem label="供应商名称" prop>
+            <!-- <FormItem label="供应商名称" prop>
               <Input v-model="formItem.provider" placeholder="不超过64个字符"/>
+            </FormItem>-->
+
+            <FormItem label="供应商" prop="provider">
+              <Input
+                v-model="formItem.providerName"
+                placeholder
+                class="width-1"
+                readonly="readonly"
+                icon="search"
+                @on-click="selProvider"
+              />
             </FormItem>
+
             <FormItem label="供应商联系人" prop>
-              <Input v-model="formItem.provider" placeholder="不超过12个字符"/>
+              <Input v-model="formItem.linkMan" readonly="readonly"/>
             </FormItem>
-            <FormItem label="租赁类型" prop>
+            <FormItem label="租赁类型" prop="leaseType">
               <Select v-model="formItem.leaseType" style="width:150px" placeholder="类型">
                 <Option
                   v-for="item in $args.getArgGroup('lease_type')"
@@ -46,6 +58,7 @@
           </Form>
         </div>
       </Loading>
+      <SelProvider ref="selProvider" :transfer="false"></SelProvider>
     </div>
     <div slot="footer"></div>
   </Modal>
@@ -53,11 +66,11 @@
 <script>
 import Loading from '@/components/loading';
 import SelArea from '@/components/selarea';
-import SelContacts from '@/components/selcontacts';
+import SelProvider from '@/components/provider/SelectProvider';
 import page from '@/assets/js/page';
 export default {
   components: {
-    Loading, SelArea, SelContacts
+    Loading, SelArea, SelProvider
   },
   data() {
     return {
@@ -69,10 +82,13 @@ export default {
       formItem: {
         machineCode: '',//机械代码
         machineName: '',//机械名称
-        machineModel: '',//机械型号
-        provider: '',//供应商编码
+        machineModel: '',//机械型号 
         leaseType: '',//租赁类型
-        remark:'',//备注
+        remark: '',//备注
+
+        provider: '',//供应商编码
+        providerName: '',//供应商 
+        linkMan: '',//供应商联系人
       },
       //验证
       ruleValidate: {
@@ -83,6 +99,9 @@ export default {
         machineName: [
           { required: true, whitespace: true, message: '名称不能为空', trigger: 'blur' },
           { type: 'string', max: 50, message: '不能超过50个字', trigger: 'blur' }
+        ],
+        leaseType: [
+          { required: true, whitespace: true, message: '租赁类型不能为空', trigger: 'change' },
         ],
       }
     }
@@ -115,7 +134,7 @@ export default {
       } else {
         url = '/api/engine/machine/update';
         msg = '修改成功';
-      } 
+      }
       this.loading = 1;
       this.$http.post(url, this.formItem).then((res) => {
         this.loading = 0;
@@ -151,9 +170,7 @@ export default {
       this.$http.post('/api/engine/machine/get?id=' + id, {}).then((res) => {
         if (res.data.code === 0) {
           this.loading = 0;
-          this.formItem = res.data.data;
-          var strIds = this.formItem.powerIds;
-          //加载功能点 
+          Object.assign(this.formItem, res.data.data);
         } else {
           this.loading = 0;
           this.$Message.error(res.data.message)
@@ -161,6 +178,18 @@ export default {
       }).catch((error) => {
         this.loading = 0;
         this.$Message.error(error.message)
+      });
+    },
+    selProvider() {
+      var sel = this.$refs.selProvider;
+      sel.show({
+        ok: (data) => {
+          if (data) {
+            this.formItem.provider = data.providerCode;
+            this.formItem.providerName = data.providerName;
+            this.formItem.linkMan = data.linkMan;
+          }
+        }
       });
     },
     close() {
