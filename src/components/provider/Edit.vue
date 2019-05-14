@@ -57,7 +57,7 @@
             </FormItem>
             <FormItem label="税率" prop>
               <InputNumber
-                v-model="formItem.taxRate"
+                v-model="formItem.taxRate1"
                 :formatter="value => `${value}%`"
                 :parser="value => value.replace('%', '')"
               ></InputNumber>
@@ -142,7 +142,8 @@ export default {
         linkPhone: '',//联系电话',
         taxNo: '',//税号',
         taxpayerType: '',//纳税人类型',
-        taxRate: '',//税率',
+        taxRate: 0,//税率',
+        taxRate1: 0,//税率',
         invoiceType: '',//发票类型',
         bank: '',//开户银行',
         bankAccount: '',//银行户名',
@@ -198,6 +199,7 @@ export default {
       if (!this.formItem.developTime) { this.formItem.developTime = null }
       this.formItem.disableTime = page.formatDate(this.formItem.disableTime);//停用日期   
       if (!this.formItem.disableTime) { this.formItem.disableTime = null }
+      this.formItem.taxRate = this.formItem.taxRate1 * 0.01;//税率
       this.loading = 1;
       this.$http.post(url, this.formItem).then((res) => {
         this.loading = 0;
@@ -228,6 +230,7 @@ export default {
           this.formItem[x] = ''
         }
         this.formItem['taxRate'] = 0;
+        this.formItem['taxRate1'] = 0;
       }
     },
     get(id) {
@@ -235,9 +238,8 @@ export default {
       this.$http.post('/api/engine/provider/get?id=' + id, {}).then((res) => {
         this.loading = 0;
         if (res.data.code === 0) {
-          this.formItem = res.data.data;
-          var strIds = this.formItem.powerIds;
-          //加载功能点 
+          Object.assign(this.formItem, res.data.data);
+          this.formItem.taxRate1 = this.formItem.taxRate * 100
         } else {
           this.$Message.error(res.data.message)
         }
