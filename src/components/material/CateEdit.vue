@@ -1,110 +1,137 @@
 <template>
-   <Modal v-model="show" :title="title" :closable="false" :mask-closable="false">
+  <Modal v-model="show" :title="title" :closable="false" :mask-closable="false">
     <div lass="page">
-        <Loading :loading="loading">
+      <Loading :loading="loading">
         <div class="page-form">
-          <Form ref="form" :model="item" :rules="ruleValidate" :label-width="80">
-                <FormItem label="上级编码"> 
-                    {{item.parentCode}}<span v-if="item.parentCode">.</span>
-                </FormItem>
-                <FormItem label="编码" prop="code1">
-                    <Input size="small" v-model="item.code1" placeholder="请输入编码名称" :disabled="isEdit==1"></Input>
-                </FormItem>
-                <FormItem label="名称" prop="title">
-                    <Input size="small" v-model="item.title" placeholder="请输入名称"></Input>
-                </FormItem>
-                <FormItem>
-                     <Button  type="primary" @click="save">保存</Button>
-                     <Button  type="ghost" @click="cancel" style="margin-left: 8px">取消</Button>
-                </FormItem>
+          <Form ref="form" :model="formItem" :rules="ruleValidate" :label-width="80">
+            <FormItem label="编码" prop="code">
+              <Input size="small" v-model="formItem.code"></Input>
+            </FormItem>
+            <FormItem label="名称" prop="title">
+              <Input size="small" v-model="formItem.title"></Input>
+            </FormItem>
+            <FormItem label="上级" prop="parentCode">
+              <Input size="small" v-model="formItem.parentCode"></Input>
+            </FormItem>
+            <FormItem label="种类">
+              <Radio-group v-model="formItem.resourceType">
+                <Radio :label="1">材料</Radio>
+                <Radio :label="2">机械</Radio>
+              </Radio-group>
+            </FormItem>
+            <FormItem label="排序" prop="seq">
+              <Input size="small" v-model="formItem.seq"></Input>
+            </FormItem>
+            <FormItem>
+              <Button type="primary" @click="save">保存</Button>
+              <Button type="ghost" @click="cancel" style="margin-left: 8px">取消</Button>
+            </FormItem>
           </Form>
         </div>
       </Loading>
     </div>
-    <div slot="footer">
-    </div>
-   </Modal>
+    <div slot="footer"></div>
+  </Modal>
 </template>
 <script>
 import Loading from '@/components/loading';
 
 export default {
   components: {
-     Loading
+    Loading
   },
   data() {
     return {
-      loading:0,
-      show:false,
-      item:{
-        title:'',
-        code:'',
-        code1:'',
-        parentCode:'', 
+      loading: 0,
+      show: false,
+      formItem: {
+        code: '',
+        title: '',
+        parentCode: '',
+        resourceType: 1,
+        seq: 0,
       },
-      title:'新建',
-      isEdit:0,
+      title: '新建',
+      isEdit: 0,
       ruleValidate: {
-        title: [
-          {required:true,whitespace: true,message: '名称不能为空', trigger: 'blur'},
-          {type: 'string', max: 30, message: '不能超过30个字', trigger: 'blur' }
+        code: [
+          { required: true, whitespace: true, message: '编码不能为空', trigger: 'blur' },
+          { type: 'string', max: 30, message: '不能超过30个字', trigger: 'blur' }
         ],
-        code1: [
-          {required:true,whitespace: true,message: '编码名称不能为空', trigger: 'blur'},
-          {type: 'string', max: 30, message: '不能超过30个字', trigger: 'blur' }
+        title: [
+          { required: true, whitespace: true, message: '名称不能为空', trigger: 'blur' },
+          { type: 'string', max: 30, message: '不能超过30个字', trigger: 'blur' }
         ]
       }
     }
   },
-  methods:{
-    open(isEdit,title,code,parentCode) { 
-      this.$refs['form'].resetFields();
-      this.show = true;
-      this.isEdit = isEdit; 
-      this.item.title = title; 
-      this.item.parentCode = parentCode; 
-      this.item.code = code;
-      this.item.code1 = code;
+  methods: {
+    openEdit(init) {
+      this.title = "修改"
+      this.formItem = Object.assign({
+        code: '',
+        title: '',
+        parentCode: '',
+        resourceType: 1,
+        seq: 0,
+      }, init);
+
       this.loading = 0;
-      if(isEdit == 1){
-        this.title = '编辑';
-        if(parentCode != null && parentCode != ''){ 
-          if(code.indexOf(parentCode + '.')==0){
-            this.item.code1 = code.substring(parentCode.length + 1);
-          }
-        }
-      }else{
-        this.title = '新建';
-      }
+      this.isEdit = 1;
+      this.show = true;
     },
-    cancel(){
+    openAdd(init) {
+      this.title = "新建"
+
+      this.formItem = Object.assign({
+        code: '',
+        title: '',
+        parentCode: '',
+        resourceType: 1,
+        seq: 0,
+      }, init);
+
+      this.loading = 0;
+      this.isEdit = 0;
+      this.show = true;
+    },
+    cancel() {
       this.show = false;
     },
-    save(){
-       this.$refs['form'].validate((valid) => {
+    close() {
+      this.show = false;
+    },
+    save() {
+      this.$refs['form'].validate((valid) => {
         if (valid) {
           this.loading = 1;
-          this.show = false;
-          if(this.isEdit){
-            this.$emit('on-submit-edit',this.item);
-          }else{ 
-            if(this.item.parentCode && this.item.parentCode.length>0){
-              this.item.code = this.item.parentCode + '.' +this.item.code1;
-            }else{
-              this.item.code = this.item.code1;
-            }
-            this.$emit('on-submit',this.item);
+          var url = '/api/engine/material/category/add';
+          var msg = '添加成功';
+          if (this.isEdit) {
+            url = '/api/engine/material/category/update'
+            msg = '修改成功';
           }
-       }else{
-          return;
-       }
-    });
+          this.loading = 1;
+          this.$http.post(url, this.formItem).then((res) => {
+            this.loading = 0;
+            if (res.data.code === 0) {
+              this.$Message.success(msg);
+              this.close();
+              this.$emit("on-save", this.formItem);
+            } else {
+              this.$Message.error(res.data.message)
+            }
+          }).catch((error) => {
+            this.loading = 0;
+            this.$Message.error(error.message)
+          });
+        }
+      });
+    }
   }
-}
 }
 
 </script>
 
 <style type="text/css">
-
 </style>
