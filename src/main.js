@@ -140,7 +140,7 @@ user.config.save = function(){
 
 /*args*/
 let args = {};
-args.argMap = null;
+args.argMap = {};
 args.getArgText = function(group,code){
   if(group == '' || group == null || code == '' || code == null || args.argMap == null){
     return '';

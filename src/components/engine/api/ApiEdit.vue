@@ -4,8 +4,14 @@
     <div class="apiedit-body">
       <div class="subtitle">基本信息</div>
       <table class="form" cellpadding="0" cellspacing="0">
+          <tr>
+           <td class="label">标识</td>
+           <td>
+              {{formItem.id}}
+           </td>
+         </tr>
          <tr>
-           <td class="label">Api</td>
+           <td class="label">名称</td>
            <td>
               <Input v-model="formItem.api" placeholder="" ></Input>
            </td>

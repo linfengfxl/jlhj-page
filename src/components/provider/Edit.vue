@@ -16,7 +16,7 @@
             <FormItem label="名称" prop="providerName">
               <Input v-model="formItem.providerName" placeholder="不超过64个字符"/>
             </FormItem>
-            <FormItem label="类别" prop>
+            <FormItem label="类别" prop> 
               <Select v-model="formItem.providerType" style="width:150px" placeholder="类型">
                 <Option
                   v-for="item in $args.getArgGroup('provider_type')"
