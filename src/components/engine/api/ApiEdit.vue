@@ -13,7 +13,8 @@
          <tr>
            <td class="label">名称</td>
            <td>
-              <Input v-model="formItem.api" placeholder="" ></Input>
+              <span v-if="edit" style="color:green" >{{formItem.api}}</span>
+              <Input v-else v-model="formItem.api" placeholder="" ></Input> 
            </td>
          </tr>
          <tr>
@@ -58,7 +59,7 @@
         </tr>
         <tr>
          <td v-if="edit">
-           <Button type="info" @click="save(1)"> 另存为 </Button>
+           <Button type="info" @click="saveAs()"> 另存为 </Button>
          </td>
         </tr>
         <tr>
@@ -145,7 +146,7 @@
       defaultFormItem(){
         return {
           id:0,
-          api:'module.action',
+          api:'',
           title:'api - 添加',
           description:'',
           handler:'com.lyarc.engine.core.ListQueryApiHandler',
@@ -183,15 +184,21 @@
 
         this.config = config;
       },
-      save(copy,callback){ 
+      save(copy,callback){
+
+        if(this.formItem.api == ''){
+          this.$Message.error('请录入接口名称');
+          return;
+        }
+        
         var form = {};
         Object.assign(form,this.formItem);
-        form.config = JSON.stringify(this.config);
+        form.config = JSON.stringify(this.config); 
 
         let url = '';
         let msg = '';
          
-        if (this.edit && !copy) {
+        if (this.edit) {
           url = '/api/engine/api.update';
           msg = '修改成功';
         } else {
@@ -216,6 +223,34 @@
           this.$Message.error(error.message)
         });
 
+      },
+      saveAs(callback){
+        var apiName = '';
+        this.$Modal.confirm({
+            render: (h) => {
+                return h('Input', {
+                    props: {
+                        value: apiName,
+                        autofocus: true,
+                        placeholder: '接口名称'
+                    },
+                    on: {
+                        input: (val) => {
+                          apiName = val;
+                        }
+                    }
+                })
+            },
+            onOk: () => {
+              this.formItem.id = 0;
+              this.formItem.api = apiName;
+              this.edit = 0;
+              this.save()
+            },
+            onCancel: () => {
+                
+            }
+        })
       },
       remove(){
         this.$Modal.confirm({
