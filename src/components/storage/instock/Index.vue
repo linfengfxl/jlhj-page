@@ -37,11 +37,6 @@
           <td>
             <Input v-model="queryForm.stockBillId" placeholder="入库单号" @keyup.enter.native="query"></Input>
           </td>
-          <td>操作原因</td>
-          <td>
-            <!-- <SelStockOperType v-model="queryForm.operId" style="width:100px">
-            </SelStockOperType>-->
-          </td>
           <td>创建日期</td>
           <td>
             <DatePicker
@@ -66,7 +61,7 @@
     <ListPageDetail
       ref="detail"
       slot="page-datatable-detail"
-      api="/api/stock/bill/get?stockBillId="
+      api="/api/engine/storage/instock/getDetailList?stockBillId="
       :columns="columns1"
     ></ListPageDetail>
   </ListPage>
@@ -74,8 +69,6 @@
 <script>
 import ListPage from '@/components/page/ListPage';
 import ListPageDetail from '@/components/page/ListPageDetail';
-//import SelStorage from '@/components/storage/input/SelStorage';
-//import SelStockOperType from '@/components/storage/input/SelStockOperType'; 
 import DataRowOperate from '@/components/commons/DataRowOperate';
 
 import page from '@/assets/js/page';
@@ -84,12 +77,10 @@ export default {
   components: {
     ListPage,
     ListPageDetail,
-    //SelStorage,
-    //  SelStockOperType,
     DataRowOperate
   },
   data() {
-    let that = this; 
+    let that = this;
     return {
       curRow: null,
       columns: [
@@ -139,41 +130,8 @@ export default {
         },
         page.table.initDateColumn({
           title: '单据日期',
-          key: 'billDate',
+          key: 'operateDate',
           align: 'left',
-        }),
-        {
-          title: '不合格品通知单',
-          key: '',
-          align: 'left',
-          width: 130,
-        },
-        {
-          title: '质检单号',
-          key: '',
-          align: 'left',
-          width: 130,
-        },
-        {
-          title: '采购申请单',
-          key: 'purchaseOrderId',
-          align: 'left',
-          width: 130,
-        },
-        {
-          title: '入库申请单',
-          key: 'inStockApplyId',
-          align: 'left',
-          width: 130
-        },
-        page.table.initMapColumn({
-          title: '过磅单',
-          key: 'isWeight',
-          width: 80,
-          data: {
-            '0': '--',
-            '1': '是',
-          }
         }),
         page.table.initArgColumn({
           title: '入往仓库',
@@ -182,38 +140,15 @@ export default {
           align: 'left',
           width: 150
         }),
-        page.table.initArgColumn({
-          title: '操作原因',
-          key: 'operId',
-          group: 'stockOperTypeList',
-          align: 'left',
-          width: 100
-        }),
-        page.table.initPersonColumn({
-          title: '申请人',
-          key: 'proposer',
-          align: 'left',
-        }),
-        page.table.initDepartmentColumn({
-          title: '申请部门',
-          key: 'department',
-          align: 'left',
-        }),
         {
-          title: '金额(元)',
+          title: '工程名称',
           key: 'amount',
           align: 'right',
           width: 100,
         },
-        {
-          title: '驳回原因',
-          key: 'auditRemark',
-          align: 'left',
-          width: 120,
-        },
-        page.table.initDateColumn({
-          title: '驳回日期',
-          key: 'auditTime',
+        page.table.initPersonColumn({
+          title: '申请人',
+          key: 'proposer',
           align: 'left',
         }),
         page.table.initMapColumn({
@@ -234,7 +169,6 @@ export default {
           title: '备注',
           key: 'remark',
           align: 'left',
-          width: 100,
         },
       ],
       columns1: [
@@ -249,7 +183,7 @@ export default {
          },*/
         {
           title: '物料代码',
-          key: 'materId',
+          key: 'materCode',
           fixed: 'left',
           align: 'left',
           width: 120,
@@ -262,121 +196,48 @@ export default {
           width: 120,
         },
         {
-          title: '规格',
+          title: '规格型号',
           key: 'spec',
           align: 'left',
           width: 120,
         },
-        {
-          title: '型号',
-          key: 'model',
-          align: 'left',
-          width: 120,
-        },
-        {
-          title: '批次号',
-          key: 'batch',
-          align: 'left',
-          width: 120,
-        },
-        page.table.initDateColumn({
-          title: '生产日期',
-          key: 'madeDate',
-          align: 'left',
-        }),
-        {
-          title: '货位',
-          key: 'placeName',
-          align: 'left',
-          width: 150
-        },
-        page.table.initDateColumn({
-          title: '到厂日期',
-          key: 'arrivalDate',
-          align: 'left',
-        }),
-        page.table.initDateColumn({
-          title: '有效日期',
-          key: 'validityDate',
-          align: 'left',
-        }),
-        page.table.initDateColumn({
-          title: '质保期',
-          key: 'qualityTime',
-          align: 'left',
-        }),
-        {
-          title: '数量/净重',
-          key: 'quantity',
-          align: 'left',
-          width: 150
-        },
         page.table.initArgColumn({
           title: '单位',
           key: 'unit',
-          width: 100,
+          align: 'center',
           group: 'unit',
-          align: 'left',
+          width: 100
         }),
         {
-          title: '件数',
-          key: 'packageCount',
+          title: '数量',
+          key: 'quantity',
           align: 'left',
-          width: 120
+          width: 120,
         },
         {
-          title: '车号',
-          key: 'vehicleNo',
+          title: '含税单价',
+          key: 'taxUnitPrice',
           align: 'left',
-          width: 120
-        },
-        {
-          title: '毛重',
-          key: 'roughWeight',
-          align: 'left',
-          width: 120
-        },
-        {
-          title: '扣杂',
-          key: 'takeOutWeight',
-          align: 'left',
-          width: 120
-        },
-        {
-          title: '皮重',
-          key: 'packageWeight',
-          align: 'left',
-          width: 120
+          width: 120,
         },
         {
           title: '单价(元)',
-          key: 'price',
+          key: 'unitPrice',
           align: 'left',
-          width: 120
+          width: 120,
         },
         {
           title: '金额(元)',
           key: 'amount',
           align: 'left',
-          width: 100,
-        },
-        {
-          title: '次计量单位',
-          key: 'subUnit',
-          align: 'left',
-          width: 100,
-        },
-        {
-          title: '次计量单位数量',
-          key: 'subQuantity',
+          width: 120,
+        }, {
+          title: '税额(元)',
+          key: 'tax',
           align: 'left',
           width: 120,
-        },
-        {
-          title: '备注',
-          key: 'remark',
-          align: 'left',
-          width: 100,
+        }, {
+          title: ' ',
         },
       ],
       queryForm: {
