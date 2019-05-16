@@ -89,7 +89,7 @@ export default {
     DataRowOperate
   },
   data() {
-    let that = this;
+    let that = this; 
     return {
       curRow: null,
       columns: [
