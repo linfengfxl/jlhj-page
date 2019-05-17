@@ -13,6 +13,9 @@ components.push({ component: 'machine/Index', name: '', path: '/machine' })
 //入库单
 components.push({ component: 'storage/instock/Index', name: '', path: '/storage/instock' })
 components.push({ component: 'storage/instock/InStockEdit', name: '', path: '/storage/instock/edit' })
+
+components.push({ component: 'project/Index', name: '', path: '/project' })
+
 // //2.销售合同 -->
 // //客户
 // components.push({ component: 'customer/Index', name: '', path: '/customer' })
