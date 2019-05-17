@@ -100,8 +100,11 @@
       clickMax(){
         this.max = !this.max;
         this.$nextTick(function(){
-          this.$refs.editor.editor.resize()
+          this.resize();
         })
+      },
+      resize(){
+        this.$refs.editor.editor.resize()        
       }
     }
   }

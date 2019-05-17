@@ -49,7 +49,7 @@
           <ListQueryConfig :config="config"></ListQueryConfig>
         </div>
         <div v-if="formItem.handler == 'com.lyarc.engine.core.ScriptApiHandler'">
-          <ScriptConfig :config="config"></ScriptConfig>
+          <ScriptConfig ref="scriptConfig" :config="config" ></ScriptConfig>
         </div>
         <template v-if="layout==1">
           <div class="subtitle">调试</div>
@@ -189,7 +189,14 @@
     watch:{
       apiObject(val){
         this.load(val);
-      } 
+      },
+      layout(val){
+        this.$nextTick(function(){
+          if(this.$refs.scriptConfig){
+            this.$refs.scriptConfig.resize();
+          }
+        }) 
+      }
     },
     mounted:function(){
       if(document.body.clientWidth>1280){
