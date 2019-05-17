@@ -45,7 +45,7 @@
               split-panels
               placeholder="创建日期"
               style="width: 180px"
-              :clearable="false"
+              :clearable="true"
               ::transfer="true"
             ></DatePicker>
           </td>
@@ -133,24 +133,24 @@ export default {
           key: 'operateDate',
           align: 'left',
         }),
-        page.table.initArgColumn({
-          title: '入往仓库',
-          key: 'storageId',
-          group: 'storageList',
-          align: 'left',
-          width: 150
-        }),
+        {
+          title: '仓库',
+          key: 'deptName',
+          align: 'right',
+          width: 100,
+        },
         {
           title: '工程名称',
           key: 'amount',
           align: 'right',
           width: 100,
         },
-        page.table.initPersonColumn({
+        {
           title: '申请人',
-          key: 'proposer',
-          align: 'left',
-        }),
+          key: 'creatorName',
+          align: 'right',
+          width: 100,
+        },
         page.table.initMapColumn({
           title: '状态',
           key: 'status',
@@ -280,7 +280,7 @@ export default {
         operId: '',
         operType: 1,
         stockBillId: '',
-        createTime: [page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())]
+        createTime: []//[page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())]
       });
       this.query();
     },

@@ -11,13 +11,13 @@
     <Loading :loading="loading">
       <div class="baseinfo">
         <div class="page-tools">
-          <table cellpadding="0" cellspacing="0">
+          <!-- <table cellpadding="0" cellspacing="0">
             <tr>
               <td>
                 <Button @click="goImport">导入入库申请单</Button>
               </td>
             </tr>
-          </table>
+          </table>-->
         </div>
         <Form ref="form" class="page-form" :model="formItem" :rules="formRules" :label-width="120">
           <table cellspacing="0" cellpadding="0">
@@ -39,11 +39,11 @@
                     :text="formItem.receiverName"
                     bindText="receiverName"
                     :model="formItem"
-                  ></SelPersonInput> -->
+                  ></SelPersonInput>-->
                 </FormItem>
               </td>
               <td>
-                <FormItem prop="operator" label="供应商">
+                <FormItem prop="providerCode" label="供应商">
                   <Input
                     v-model="formItem.providerName"
                     placeholder
@@ -145,10 +145,16 @@ export default {
         taxpayerType: '',//纳税人类型
         invoiceType: '',//发票类型
         taxRate: '',//税率 
-        operateDate: page.formatDate(new Date(),'yyyy-MM-dd'),
+        inboundType: 1,
+        operateDate: page.formatDate(new Date(), 'yyyy-MM-dd'),
       },
       formRules: {
-
+        deptId: [
+          { required: true, whitespace: true, message: '请选择仓库', trigger: 'change' }
+        ],
+        providerCode: [
+          { required: true, whitespace: true, message: '请选择供应商', trigger: 'change' }
+        ],
       },
       list: [],
       oriItem: {},
@@ -226,7 +232,6 @@ export default {
       this.list.push(this.$refs.editable.listNewRow());
     },
     save() {
-      debugger
       var form = {
         detailList: []
       };
@@ -264,9 +269,9 @@ export default {
 
       // 提交
       this.loading = 1;
-      var uri = '/api/stock/bill/add';
+      var uri = '/api/engine/storage/instock/add';
       if (this.pageFlag == 2) {
-        uri = '/api/stock/bill/update';
+        uri = '/api/engine/storage/instock/update';
       }
 
       this.$http.post(uri, form).then((res) => {
