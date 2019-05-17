@@ -1,53 +1,107 @@
 <template>
   <div class="apiedit">
-    <div class="header">Api {{edit?'编辑':'添加'}} - {{title}}</div>
-    <div class="apiedit-body">
-      <div class="subtitle">基本信息</div>
-      <table class="form" cellpadding="0" cellspacing="0">
-          <tr>
-           <td class="label">标识</td>
-           <td>
-              {{formItem.id}}
-           </td>
-         </tr>
-         <tr>
-           <td class="label">名称</td>
-           <td>
-              <span v-if="edit" style="color:green" >{{formItem.api}}</span>
-              <Input v-else v-model="formItem.api" placeholder="" ></Input> 
-           </td>
-         </tr>
-         <tr>
-           <td class="label">标题</td>
-           <td>
-              <Input v-model="formItem.title" placeholder="" ></Input>
-           </td>
-         </tr>
-         <tr>
-           <td class="label">描述</td>
-           <td>
-              <Input v-model="formItem.description" type="textarea" :rows="4" placeholder=""  ></Input>
-           </td>
-         </tr>
-         <tr>
-           <td class="label">Api 模板</td>
-           <td>
-              <Select v-model="formItem.handler" >
-                  <Option v-for="item in handler" :value="item.name" :key="item.name">{{ item.title }}</Option>
-              </Select>
-           </td>
-         </tr>
-      </table>
-      <div class="subtitle">配置信息</div>
-      <div v-if="formItem.handler == 'com.lyarc.engine.core.ListQueryApiHandler'">
-        <ListQueryConfig :config="config"></ListQueryConfig>
+    <div class="header">
+      <div style="display: inline-block;flex: 2">Api {{edit?'编辑':'添加'}} - {{title}}</div> 
+      <Button size="small" type="ghost" icon="android-open" @click="chgLayout" title="布局"></Button>
+    </div> 
+    <div :class="'apiedit-body'+ ' layout-' + layout">
+      <div class="apiedit-body-left">
+        <template v-if="layout!=3">
+          <div class="subtitle">基本信息</div>
+          <table class="form" cellpadding="0" cellspacing="0">
+              <tr>
+               <td class="label">标识</td>
+               <td>
+                  {{formItem.id}}
+               </td>
+             </tr>
+             <tr>
+               <td class="label">名称</td>
+               <td>
+                  <span v-if="edit" style="color:green" >{{formItem.api}}</span>
+                  <Input v-else v-model="formItem.api" placeholder="" ></Input> 
+               </td>
+             </tr>
+             <tr>
+               <td class="label">标题</td>
+               <td>
+                  <Input v-model="formItem.title" placeholder="" ></Input>
+               </td>
+             </tr>
+             <tr>
+               <td class="label">描述</td>
+               <td>
+                  <Input v-model="formItem.description" type="textarea" :rows="4" placeholder=""  ></Input>
+               </td>
+             </tr>
+             <tr>
+               <td class="label">Api 模板</td>
+               <td>
+                  <Select v-model="formItem.handler" >
+                      <Option v-for="item in handler" :value="item.name" :key="item.name">{{ item.title }}</Option>
+                  </Select>
+               </td>
+             </tr>
+          </table>
+        </template>
+        <div class="subtitle">配置信息</div>
+        <div v-if="formItem.handler == 'com.lyarc.engine.core.ListQueryApiHandler'">
+          <ListQueryConfig :config="config"></ListQueryConfig>
+        </div>
+        <div v-if="formItem.handler == 'com.lyarc.engine.core.ScriptApiHandler'">
+          <ScriptConfig :config="config"></ScriptConfig>
+        </div>
+        <template v-if="layout==1">
+          <div class="subtitle">调试</div>
+          <div v-if="edit">
+            <ApiTest ref="apiTest" :api="formItem.api" v-model="formItem.testParams"></ApiTest>
+          </div>  
+        </template>
+      
       </div>
-      <div v-if="formItem.handler == 'com.lyarc.engine.core.ScriptApiHandler'">
-        <ScriptConfig :config="config"></ScriptConfig>
-      </div>
-      <div class="subtitle" v-if="edit">调试</div>        
-      <div v-if="edit">
-        <ApiTest ref="apiTest" :api="formItem.api" v-model="formItem.testParams"></ApiTest>
+      <div class="apiedit-body-right" v-if="layout>1">
+        <template v-if="layout==3">
+        <div class="subtitle">基本信息</div>
+        <table class="form" cellpadding="0" cellspacing="0">
+            <tr>
+             <td class="label">标识</td>
+             <td>
+                {{formItem.id}}
+             </td>
+           </tr>
+           <tr>
+             <td class="label">名称</td>
+             <td>
+                <span v-if="edit" style="color:green" >{{formItem.api}}</span>
+                <Input v-else v-model="formItem.api" placeholder="" ></Input> 
+             </td>
+           </tr>
+           <tr>
+             <td class="label">标题</td>
+             <td>
+                <Input v-model="formItem.title" placeholder="" ></Input>
+             </td>
+           </tr>
+           <tr>
+             <td class="label">描述</td>
+             <td>
+                <Input v-model="formItem.description" type="textarea" :rows="4" placeholder=""  ></Input>
+             </td>
+           </tr>
+           <tr>
+             <td class="label">Api 模板</td>
+             <td>
+                <Select v-model="formItem.handler" >
+                    <Option v-for="item in handler" :value="item.name" :key="item.name">{{ item.title }}</Option>
+                </Select>
+             </td>
+           </tr>
+        </table>
+        </template>
+        <div class="subtitle">调试</div>
+        <div v-if="edit">
+          <ApiTest ref="apiTest" :api="formItem.api" v-model="formItem.testParams"></ApiTest>
+        </div>
       </div>
     </div>
     <div class="footer">
@@ -128,7 +182,8 @@
         handler:[
           {name:'com.lyarc.engine.core.ScriptApiHandler',title:'ScriptApiHandler - groovy 脚本'},
           {name:'com.lyarc.engine.core.ListQueryApiHandler',title:'ListQueryApiHandler - 分页查询'},
-        ]
+        ],
+        layout:1,// 1.默认 2.左(信息代码)右(调试) 3.左(代码)右(信息调试)
       } 
     },
     watch:{
@@ -137,7 +192,9 @@
       } 
     },
     mounted:function(){
-       
+      if(document.body.clientWidth>1280){
+        this.layout = 2;
+      }
     },
     computed:{ 
 
@@ -154,6 +211,13 @@
           status:'',
         };
       }, 
+      chgLayout(){
+        var layout = this.layout + 1;
+        if(layout > 3){
+          layout = 1
+        }
+        this.layout = layout;
+      },
       load(apiObject){
         if(apiObject){
           this.formItem = this.defaultFormItem();
@@ -190,7 +254,7 @@
           this.$Message.error('请录入接口名称');
           return;
         }
-        
+
         var form = {};
         Object.assign(form,this.formItem);
         form.config = JSON.stringify(this.config); 
@@ -300,11 +364,34 @@
 
   .apiedit-body{
     height: 100%;
+    width: 100%;    
+    position: relative;
+  }
+
+  .apiedit-body-left{
+    height: 100%;
     width: 100%;
     overflow-y: auto; 
     padding:10px;
     padding-right: 20px;
     position: relative;
+  }
+  .apiedit-body-right{
+    padding:10px;
+    width: 40%;
+    height: 100%;
+    overflow-y: auto; 
+    float: right;
+    border-left: 1px solid #eee;
+    padding-right: 20px;
+  }
+
+  .apiedit .layout-2 .apiedit-body-left,.apiedit .layout-3 .apiedit-body-left{ 
+    width: 60%;
+    float: left;
+  }
+  .apiedit .layout-3 .editor-container{
+    height: 700px;
   }
 
   .apiedit .header{
@@ -319,6 +406,10 @@
     padding-left: 10px;
     background-color: white;
     border-bottom: 1px solid #eeeeee;
+
+    padding-right: 90px;
+    display: flex;
+    align-items: center;
   }
   .apiedit .subtitle{
     padding: 4px;
@@ -346,6 +437,8 @@
     top: 37px;
     bottom: 0px;
     z-index: 10;
+
+    border-left: 1px solid #eee;
   }
 
   .apiedit .footer .ivu-btn
