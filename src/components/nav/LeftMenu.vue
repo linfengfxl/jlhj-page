@@ -244,8 +244,8 @@ export default {
   }
 
   .tyleftbar-fold-menu-item{
-    line-height: 42px;
-    height: 42px;
+    line-height: 36px;
+    height: 36px;
     overflow: hidden;
     font-size: 14px;
     text-align: center;     
