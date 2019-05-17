@@ -289,7 +289,7 @@
     overflow-x: hidden;
     overflow-y: auto;
     background-color: white;
-    z-index: 10;
+    z-index: 110;
     border-top: 1px solid #eeeeee;
   }
 
