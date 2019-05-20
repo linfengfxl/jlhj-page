@@ -21,7 +21,7 @@ Vue.use(iView)
 Vue.use(Vuebar)
 //Vue.use(Calendar)
 Vue.config.productionTip = false
-Vue.prototype.$http = axios
+//Vue.prototype.$http = axios
 
 window.Vue = Vue
 
