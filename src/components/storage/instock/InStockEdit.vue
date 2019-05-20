@@ -33,13 +33,15 @@
                 </FormItem>
               </td>
               <td>
-                <FormItem prop="department" label="工程名称">
-                  <!-- <SelPersonInput
-                    v-model="formItem.receiver"
-                    :text="formItem.receiverName"
-                    bindText="receiverName"
-                    :model="formItem"
-                  ></SelPersonInput>-->
+                <FormItem prop="projectCode" label="工程名称">
+                  <Input
+                    v-model="formItem.projectName"
+                    placeholder
+                    class="width-1"
+                    readonly="readonly"
+                    icon="search"
+                    @on-click="selProject"
+                  />
                 </FormItem>
               </td>
               <td>
@@ -60,7 +62,7 @@
                 <FormItem prop label="供应商联系人">{{formItem.linkMan}}</FormItem>
               </td>
               <td>
-                <FormItem prop="amount" label="税率">{{formItem.taxRate}}</FormItem>
+                <FormItem prop="amount" label="税率">{{formItem.taxRate}} %</FormItem>
               </td>
               <td>
                 <FormItem prop="remark" label="纳税人类型">{{formItem.taxpayerType}}</FormItem>
@@ -72,6 +74,33 @@
               </td>
               <td>
                 <FormItem prop label="日期">{{formItem.operateDate}}</FormItem>
+              </td>
+              <td>
+                <FormItem prop="operatorName" label="收料员">
+                  <Input
+                    v-model="formItem.operatorName"
+                    placeholder
+                    class="width-1"
+                    readonly="readonly"
+                    icon="search"
+                    @on-click="selMember"
+                  />
+                </FormItem>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <FormItem prop label="红蓝字">
+                  <Radio-group v-model="formItem.source">
+                    <Radio :label="1">“蓝字”表示入库</Radio>
+                    <Radio :label="2">“红字”表示退货</Radio>
+                  </Radio-group>
+                </FormItem>
+              </td>
+              <td colspan="2">
+                <FormItem prop=" " label="备注">
+                  <Input type="textarea" :rows="2" v-model="formItem.remark"/>
+                </FormItem>
               </td>
             </tr>
           </table>
@@ -99,6 +128,8 @@
     </Loading>
     <!-- <SelInStockApply ref="selInStockApply"></SelInStockApply> -->
     <SelProvider ref="selProvider"></SelProvider>
+    <SelProject ref="selProject"></SelProject>
+    <SelMember ref="selMember"></SelMember>
   </div>
 </template>
 <script>
@@ -109,10 +140,14 @@ import page from '@/assets/js/page';
 import floatObj from '@/assets/js/floatObj';
 import SelStorage from '@/components/storage/input/SelStorage';
 import SelProvider from '@/components/provider/SelectProvider';
+import SelProject from '@/components/project/SelectProject'
 //import SelStockOperType from '@/components/storage/input/SelStockOperType'; 
 
 import SelPersonInput from '@/components/selcontacts/SelPersonInput';
 //import SelInStockApply from '@/components/purchase/purchase-order-mgr/SelInStockApply'; 
+
+
+import SelMember from '@/components/contacts/SelectMember'
 import pagejs from '@/assets/js/page';
 
 export default {
@@ -125,6 +160,8 @@ export default {
     SelPersonInput,
     // SelInStockApply
     SelProvider,
+    SelProject,
+    SelMember,
   },
   data() {
     return {
@@ -135,9 +172,9 @@ export default {
         stockBillId: '',//入库单号
         type: 2,//类型:1.出库, 2.入库
         projectCode: '',//工程编号
+        projectName: '',//工程名称
         contractNo: '',//合同编号
-        deptId: '',//仓库或部门
-        deptId: '',
+        deptId: '',//仓库或部门 
         providerCode: '',//供应商编号
         providerName: '',//供应商名称
         linkMan: '',//供应商联系人
@@ -145,15 +182,24 @@ export default {
         taxpayerType: '',//纳税人类型
         invoiceType: '',//发票类型
         taxRate: '',//税率 
-        inboundType: 1,
+        inboundType: '',//红蓝字:1.“蓝字”表示入库，2.“红字”表示退货
         operateDate: page.formatDate(new Date(), 'yyyy-MM-dd'),
+        remark: '',
+        operator: '',//
+        operatorName: '',
       },
       formRules: {
         deptId: [
           { required: true, whitespace: true, message: '请选择仓库', trigger: 'change' }
         ],
+        projectCode: [
+          { required: true, whitespace: true, message: '请选择工程', trigger: 'change' }
+        ],
         providerCode: [
           { required: true, whitespace: true, message: '请选择供应商', trigger: 'change' }
+        ],
+        operatorName: [
+          { required: true, whitespace: true, message: '请选择收料员', trigger: 'change' }
         ],
       },
       list: [],
@@ -194,6 +240,8 @@ export default {
           if (res.data.data) {
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
             Object.assign(this.formItem, res.data.data);
+            this.formItem.taxpayerType = this.$args.getArgText('taxpayer_type', this.formItem.taxpayerType);//纳税人类型
+            this.formItem.invoiceType = this.$args.getArgText('invoice_type', this.formItem.invoiceType);//发票类型
             this.list = res.data.data.detailList;
             // this.formItem.departmentName = this.$args.getArgText('deptList', this.formItem.department);
             // this.formItem.proposerName = this.$args.getArgText('empList', this.formItem.proposer);
@@ -226,6 +274,9 @@ export default {
         linkPhone: '',//供应商联系电话
         taxpayerType: '',//纳税人类型
         taxRate: '',//税率  
+        remark: '',
+        operator: '',//
+        operatorName: '',
       });
       this.list = [];
       this.list.push(this.$refs.editable.listNewRow());
@@ -277,7 +328,7 @@ export default {
       this.$http.post(uri, form).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
-          this.$Message.info("操作成功！");
+          this.$Message.success("操作成功！");
           this.goBack();
         } else {
           this.$Message.error(res.data.message);
@@ -292,7 +343,6 @@ export default {
       sel.show({
         ok: (data) => {
           if (data) {
-            debugger
             this.formItem.providerName = data.providerName;
             this.formItem.providerCode = data.providerCode;
             this.formItem.linkMan = data.linkMan;//供应商联系人
@@ -300,6 +350,28 @@ export default {
             this.formItem.taxpayerType = this.$args.getArgText('taxpayer_type', data.taxpayerType);//纳税人类型
             this.formItem.invoiceType = this.$args.getArgText('invoice_type', data.invoiceType);//发票类型
             this.formItem.taxRate = data.taxRate;//税率 
+          }
+        }
+      });
+    },
+    selProject(row) {
+      var sel = this.$refs.selProject;//引用该控件，赋值给变量对象
+      sel.show({
+        ok: (data) => {
+          if (data) {
+            this.formItem.projectName = data.name;
+            this.formItem.projectCode = data.projectCode;
+          }
+        }
+      });
+    },
+    selMember(row) {
+      var sel = this.$refs.selMember;//引用该控件，赋值给变量对象
+      sel.show({
+        ok: (data) => {
+          if (data) {
+            this.formItem.operator = data.id;
+            this.formItem.operatorName = data.trueName;
           }
         }
       });

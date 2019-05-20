@@ -100,25 +100,16 @@ export default {
           width: 150,
         },
         {
-          title: '类别',
-          key: 'providerType',
-          width: 150,
-          render: (h, params) => {
-            var row = params.row;
-            return h('label', this.$args.getArgText('provider_type', row.providerType));
-          }
+          title: '委托单位',
+          key: 'customerCode',
+          align: 'left',
+          minWidth: 150
         },
         {
           title: '联系人',
           key: 'linkMan',
           align: 'center',
           width: 130,
-        },
-        {
-          title: '地址',
-          key: 'address',
-          align: 'left',
-          minWidth: 150
         },
         {
           title: '创建人',

@@ -16,44 +16,51 @@
             <FormItem label="名称" prop="name">
               <Input v-model="formItem.name" placeholder="不超过64个字符"/>
             </FormItem>
-            <FormItem label="名称" >
-              <Input v-model="formItem.name" placeholder="不超过64个字符"/>
-            </FormItem>
             <FormItem label="工程状态" prop>
-               <Radio-group v-model="formItem.investmentType">
+              <Radio-group v-model="formItem.status">
                 <Radio :label="1">进行中</Radio>
                 <Radio :label="2">结项</Radio>
-              </Radio-group> 
+              </Radio-group>
             </FormItem>
-            <FormItem label="委托单位" >
-              <Input v-model="formItem.name" placeholder="不超过64个字符"/>
+            <FormItem label="委托单位" prop="customerCode">
+              <Input
+                v-model="formItem.customerName"
+                placeholder
+                class="width-1"
+                readonly="readonly"
+                icon="search"
+                @on-click="selCustomer"
+              />
             </FormItem>
-            <FormItem label="客户信用等级" >
-              <Input v-model="formItem.name" placeholder="不超过64个字符"/>
+            <FormItem label="客户信用等级">
+              <Input v-model="formItem.customerBank" readonly="readonly"/>
             </FormItem>
-            <FormItem label="联系人" >
-              <Input v-model="formItem.name" placeholder="不超过64个字符"/>
+            <FormItem label="联系人">
+              <Input v-model="formItem.linkMan" readonly="readonly"/>
             </FormItem>
-            <FormItem label="职称(职务)" >
-              <Input v-model="formItem.name" placeholder="不超过64个字符"/>
+            <FormItem label="职称(职务)">
+              <Input v-model="formItem.position" placeholder="不超过64个字符"/>
             </FormItem>
-            <FormItem label="联系电话" >
-              <Input v-model="formItem.name" placeholder="不超过64个字符"/>
+            <FormItem label="联系电话">
+              <Input v-model="formItem.linkPhone" placeholder="不超过64个字符"/>
             </FormItem>
-            <FormItem label="邮箱" >
-              <Input v-model="formItem.name" placeholder="不超过64个字符"/>
+            <FormItem label="邮箱">
+              <Input v-model="formItem.email" placeholder="不超过64个字符"/>
             </FormItem>
-            <FormItem label="项目来源" >
-              <Input v-model="formItem.name" placeholder="不超过64个字符"/>
+            <FormItem label="项目来源">
+              <Radio-group v-model="formItem.source">
+                <Radio :label="1">委托</Radio>
+                <Radio :label="2">头表</Radio>
+              </Radio-group>
             </FormItem>
-            <FormItem label="投资额" >
-              <Input v-model="formItem.name" placeholder="不超过64个字符"/>
+            <FormItem label="投资额">
+              <Input v-model="formItem.investment" placeholder/>
             </FormItem>
-            <FormItem label="投资性质" >
-              <Input v-model="formItem.name" placeholder="不超过64个字符"/>
+            <FormItem label="投资性质">
+              <Input v-model="formItem.investmentType" placeholder="不超过64个字符"/>
             </FormItem>
             <FormItem label="工程总规模" prop>
-              <Input v-model="formItem.regisFunds"/>
+              <Input v-model="formItem.totalSize"/>
             </FormItem>
             <FormItem label="计量单位" prop>
               <Select v-model="formItem.unit" style="width:150px" placeholder="类型">
@@ -73,6 +80,7 @@
           </Form>
         </div>
       </Loading>
+      <SelectCustomer ref="selCustomer" :transfer="false"></SelectCustomer>
     </div>
     <div slot="footer"></div>
   </Modal>
@@ -80,11 +88,11 @@
 <script>
 import Loading from '@/components/loading';
 import SelArea from '@/components/selarea';
-import SelContacts from '@/components/selcontacts';
+import SelectCustomer from '@/components/customer/SelectCustomer';
 import page from '@/assets/js/page';
 export default {
   components: {
-    Loading, SelArea, SelContacts
+    Loading, SelArea, SelectCustomer
   },
   data() {
     return {
@@ -94,27 +102,22 @@ export default {
       isEdit: 0,
       //表单对象
       formItem: {
-        projectCode: '',//供应商编号
-        name: '',//单位名称
-        providerType: '',//供应商类别
-        area: '',//所在地区
-        address: '',//公司地址',
-        legalPerson: '',//法人',
-        regisFunds: '',//注册资金',
-        linkMan: '',//联系人',
-        linkPhone: '',//联系电话',
-        taxNo: '',//税号',
-        taxpayerType: '',//纳税人类型',
-        taxRate: 0,//税率',
-        taxRate1: 0,//税率',
-        invoiceType: '',//发票类型',
-        bank: '',//开户银行',
-        bankAccount: '',//银行户名',
-        bankCardNo: '',//开户账号',
-        mainBusiness: '',//主营业务',
-        developTime: '',//发展日期',
-        disableTime: '',//停用日期',
-        status: '',//状态（1 正常 2 禁用） 
+        projectCode: '',// 工程编号
+        name: '',// 工程名称
+        customerCode: '',// 委托单位
+        customerName: '',// 委托单位
+        customerBank: '',// 客户信用等级
+        linkMan: '',// 联系人
+        linkPhone: '',// 电话
+        position: '',// 职务
+        email: '',// 邮箱
+        source: '',//RCHAR 项目来源:1.委托, 2.投标
+        department: '',// 部门
+        status: '1',// 工程状态:1.进行中, 2.结项
+        investment: 0,// 投资额
+        investmentType: '',// 投资性质
+        totalSize: 0,// 工程总规模
+        unit: '',// 计量单位 
       },
       //验证
       ruleValidate: {
@@ -148,6 +151,20 @@ export default {
         }
       });
     },
+    selCustomer() {
+      var sel = this.$refs.selCustomer;
+      sel.show({
+        ok: (data) => {
+          if (data) {
+            console.log(data)
+            this.formItem.customerCode = data.customerCode;
+            this.formItem.customerName = data.customerName;
+            this.formItem.customerBank = data.bank;
+            this.formItem.linkMan = data.linkMan;
+          }
+        }
+      });
+    },
     saveItem() {
       let url = '';
       let msg = '';
@@ -158,11 +175,6 @@ export default {
         url = '/api/engine/project/update';
         msg = '修改成功';
       }
-      this.formItem.developTime = page.formatDate(this.formItem.developTime);//发展日期 
-      if (!this.formItem.developTime) { this.formItem.developTime = null }
-      this.formItem.disableTime = page.formatDate(this.formItem.disableTime);//停用日期   
-      if (!this.formItem.disableTime) { this.formItem.disableTime = null }
-      this.formItem.taxRate = this.formItem.taxRate1 * 0.01;//税率
       this.loading = 1;
       this.$http.post(url, this.formItem).then((res) => {
         this.loading = 0;
@@ -192,8 +204,10 @@ export default {
         for (var x in this.formItem) {
           this.formItem[x] = ''
         }
-        this.formItem['taxRate'] = 0;
-        this.formItem['taxRate1'] = 0;
+        this.formItem.status = 1;// 工程状态:1.进行中, 2.结项
+        this.formItem.source = 1;
+        this.formItem.investment = 0;// 投资额
+        this.formItem.totalSize = 0;// 工程总规模
       }
     },
     get(id) {
@@ -202,7 +216,7 @@ export default {
         this.loading = 0;
         if (res.data.code === 0) {
           Object.assign(this.formItem, res.data.data);
-          this.formItem.taxRate1 = this.formItem.taxRate * 100
+          console.log(res.data.data)
         } else {
           this.$Message.error(res.data.message)
         }

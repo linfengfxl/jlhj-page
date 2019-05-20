@@ -99,7 +99,7 @@
            {
             title: '联系电话',
             key: 'linkPhone',
-            width: 80,
+            width: 120,
             align: 'center',
           },
           {

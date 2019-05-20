@@ -1,11 +1,12 @@
 <template>
   <Modal
     v-model="display"
-    title="选择客户"
+    title="选择工程"
     :closable="false"
     :mask-closable="false"
     width="800"
-    class="selcustomer"
+    class-name="ivu-modal-mask select_project"
+    class="selproject"
     :transfer="transfer"
   >
     <div class="page">
@@ -15,18 +16,9 @@
             <td>
               <Input
                 v-model="queryForm.keyword"
-                placeholder="客户代码、名称查询"
+                placeholder="编码、名称查询"
                 @keyup.enter.native="query"
               ></Input>
-            </td>
-            <td>
-              <Select v-model="queryForm.industry" style="width:150px" placeholder="所属行业" clearable>
-                <Option
-                  v-for="item in $args.getArgGroup('customer_industry')"
-                  :value="item.argCode"
-                  :key="item.argCode"
-                >{{ item.argText }}</Option>
-              </Select>
             </td>
             <td>
               <Button @click="query" type="primary" icon="ios-search">查询</Button>
@@ -93,9 +85,6 @@ export default {
             var props = {
               value: row._checked,
             };
-            if (row.status == "2") {
-              props.disabled = true;
-            }
             return h('Checkbox', {
               props: props,
               on: {
@@ -107,18 +96,18 @@ export default {
           }
         },
         {
-          title: '客户代码',
-          key: 'customerCode',
+          title: '编码',
+          key: 'projectCode',
           width: 120,
         },
         {
           title: '名称',
-          key: 'customerName',
+          key: 'name',
           align: 'left'
         },
         {
-          title: '地址',
-          key: 'address',
+          title: '委托单位',
+          key: 'customerCode',
           align: 'left',
         },
         {
@@ -126,20 +115,6 @@ export default {
           key: 'linkMan',
           width: 80,
           align: 'center',
-        },
-        {
-          title: '状态',
-          key: 'status',
-          align: 'center',
-          width: 60,
-          render: (h, params) => {
-            var status = params.row.status;
-            var setButton = "正常";
-            if (status == 2) {
-              setButton = "禁用";
-            }
-            return h('span', { class: 'status-' + status }, setButton);
-          }
         }
       ],
       display: false,
@@ -148,16 +123,10 @@ export default {
       queryParam: {},
       queryForm: {
         keyword: '',
-        industry: '',
-        status: 1
       },
-      industry: [],
       selected: [],
       loading: 0,
-      options: {
-        ok: (data) => { },
-        cancel: () => { }
-      }
+      options: {}
     }
   },
   mounted: function () {
@@ -170,7 +139,7 @@ export default {
       this.loading = 1;
       this.queryParam.page = pagebar.currentPage;
       this.queryParam.pageSize = pagebar.currentPageSize;
-      this.$http.post("/api/engine/customer/list", this.queryParam).then((res) => {
+      this.$http.post("/api/engine/project/list", this.queryParam).then((res) => {
         this.loading = 0;
         if (res.data.code === 0) {
           this.loading = 0;
@@ -208,13 +177,12 @@ export default {
     innerCheckRow(index) {
       for (var i = 0; i < this.list.length; i++) {
         var item = this.list[i];
-        item._checked = index == i && item.status != 2;
+        item._checked = index == i;
       }
     },
     reset: function () {
       Object.assign(this.queryForm, {
         keyword: '',
-        industry: '',
       });
 
       var pagebar = this.$refs.pagebar;
@@ -236,10 +204,6 @@ export default {
       this.display = true;
       this.reset();
     },
-    // 需要遗弃，请调用 show
-    open() {
-      this.display = true;
-    },
     close() {
       this.display = false;
     },
@@ -251,22 +215,11 @@ export default {
         }
       });
       if (select == null) {
-        this.$Message.error('请选择客户');
+        this.$Message.error('请选择供应商');
         return;
       }
       this.display = false;
       this.options.ok(select);
-
-      // 以下代码需要遗弃
-      this.selected = [];
-      this.list.map((item) => {
-        if (item._checked) {
-          this.selected.push(item);
-        }
-      });
-      this.display = false;
-
-      this.$emit('on-ok', this.selected);
     },
     onCancel() {
       this.display = false;
@@ -277,22 +230,25 @@ export default {
 </script>
 
 <style type="text/css">
-.selcustomer .page {
+.selproject .page {
   padding: 0px;
 }
-.selcustomer .page-searchbox {
+.selproject .page-searchbox {
   margin-top: 0px;
 }
-.selcustomer .status-2 {
+.selproject .status-2 {
   color: #ff6600;
 }
-.selcustomer .footer {
-  text-align: center;
+.selproject .footer {
+  text-align: right;
   padding-left: 10px;
 }
-.selcustomer .row-checked td {
+.selproject .row-checked td {
   background-color: #e8f8fd;
   /*color:#20bfee;*/
   font-weight: bold;
+}
+.select_project {
+  z-index: 10000;
 }
 </style>

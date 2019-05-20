@@ -106,27 +106,42 @@ export default {
             });
           }
         },
-        {
-          title: '客户代码',
-          key: 'customerCode',
-          width: 120,
-        },
-        {
-          title: '名称',
-          key: 'customerName',
-          align: 'left'
-        },
-        {
-          title: '地址',
-          key: 'address',
-          align: 'left',
-        },
-        {
-          title: '联系人',
-          key: 'linkMan',
-          width: 80,
+         {
+          title: '用户名',
+          key: 'loginName',
           align: 'center',
-        },
+          width:120
+        }, 
+        {
+          title: '姓名',
+          key: 'trueName',
+          align: 'center',
+          width:120
+        }, 
+        {
+          title: '岗位',
+          key: 'roleName',
+          align: 'left',
+          minWidth:100 
+        }, 
+        {
+          title: '部门',
+          key: 'deptName',
+          align: 'left',
+          minWidth:100 
+        }, 
+        {
+          title: '手机号',
+          key: 'mobile',
+          align: 'center',
+          width:120
+        }, 
+        {
+          title: '邮箱',
+          key: 'email',
+          align: 'center',
+          width:120
+        },  
         {
           title: '状态',
           key: 'status',
@@ -170,7 +185,7 @@ export default {
       this.loading = 1;
       this.queryParam.page = pagebar.currentPage;
       this.queryParam.pageSize = pagebar.currentPageSize;
-      this.$http.post("/api/engine/customer/list", this.queryParam).then((res) => {
+      this.$http.post("/api/engine/user/list", this.queryParam).then((res) => {
         this.loading = 0;
         if (res.data.code === 0) {
           this.loading = 0;

@@ -141,7 +141,7 @@ export default {
         },
         {
           title: '工程名称',
-          key: 'amount',
+          key: 'projectName',
           align: 'right',
           width: 100,
         },
@@ -241,7 +241,6 @@ export default {
         },
       ],
       queryForm: {
-        storageId: this.$user.config.data.storageId,
         stockBillId: '',
         status: 0,
         operId: '',
@@ -294,10 +293,6 @@ export default {
         this.curRowId = null;
         this.$refs.detail.clear();
       }
-    },
-    switStorage() {
-      this.$user.config.data.storageId = this.queryForm.storageId;
-      this.reset();
     },
     add() {
       this.$router.push({ path: '/storage/instock/edit?forward' })
