@@ -349,7 +349,7 @@ export default {
         onOk: () => {
           if (row) {
             this.loading = 1;
-            this.$http.post('/api/stock/bill/delete', {
+            this.$http.post('/api/engine/storage/instock/delete', {
               stockBillId: row.stockBillId,
             }).then((res) => {
               this.loading = 0;
