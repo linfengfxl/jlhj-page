@@ -99,7 +99,7 @@
             <!--  规格型号 -->
           </td>
           <td>
-            {{item.unit}}
+            {{$args.getArgText('unit',item.unit)}}
             <!--  单位 -->
           </td>
           <td class="col-quantity">
