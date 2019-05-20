@@ -18,10 +18,8 @@ import Vuebar from 'vuebar'
  
 
 Vue.use(iView)
-Vue.use(Vuebar)
-//Vue.use(Calendar)
+Vue.use(Vuebar) 
 Vue.config.productionTip = false
-Vue.prototype.$http = axios
 
 window.Vue = Vue
 
@@ -60,6 +58,7 @@ Vue.prototype.$args = require('./vext/args.js').default;
 /*权限控制*/
 Vue.directive('power', {
   bind: function (el, binding, vnode) {
+    var user = require('./vext/user.js').default;
     if(!user.hasPower(binding.value)){
       el.title = '暂无权限';
       el.style.opacity = 0.3
