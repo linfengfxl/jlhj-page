@@ -19,7 +19,7 @@ import Vuebar from 'vuebar'
 
 Vue.use(iView)
 Vue.use(Vuebar) 
-Vue.config.productionTip = false
+Vue.config.productionTip = false 
 
 window.Vue = Vue
 

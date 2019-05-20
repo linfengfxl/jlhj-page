@@ -92,7 +92,7 @@
               ></Date-picker>
             </FormItem>
             <FormItem label="是否停用" prop>
-              <i-switch v-model="formItem.status" :true-value="1" :false-value="0"></i-switch>
+              <i-switch v-model="formItem.status" :true-value="2" :false-value="1"></i-switch>
             </FormItem>
             <FormItem label="停用日期" prop>
               <Date-picker
