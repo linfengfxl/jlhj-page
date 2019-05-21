@@ -91,9 +91,9 @@
             <tr>
               <td>
                 <FormItem prop label="红蓝字">
-                  <Radio-group v-model="formItem.source">
-                    <Radio :label="1">“蓝字”表示入库</Radio>
-                    <Radio :label="2">“红字”表示退货</Radio>
+                  <Radio-group v-model="formItem.inboundType">
+                    <Radio :label="1">蓝字</Radio>
+                    <Radio :label="2">红字</Radio>
                   </Radio-group>
                 </FormItem>
               </td>
@@ -182,7 +182,7 @@ export default {
         taxpayerType: '',//纳税人类型
         invoiceType: '',//发票类型
         taxRate: '',//税率 
-        inboundType: '',//红蓝字:1.“蓝字”表示入库，2.“红字”表示退货
+        inboundType: 1,//红蓝字:1.“蓝字”表示入库，2.“红字”表示退货
         operateDate: page.formatDate(new Date(), 'yyyy-MM-dd'),
         remark: '',
         operator: '',//
@@ -243,11 +243,6 @@ export default {
             this.formItem.taxpayerType = this.$args.getArgText('taxpayer_type', this.formItem.taxpayerType);//纳税人类型
             this.formItem.invoiceType = this.$args.getArgText('invoice_type', this.formItem.invoiceType);//发票类型
             this.list = res.data.data.detailList;
-            // this.formItem.departmentName = this.$args.getArgText('deptList', this.formItem.department);
-            // this.formItem.proposerName = this.$args.getArgText('empList', this.formItem.proposer);
-            // this.formItem.receiverName = this.$args.getArgText('empList', this.formItem.receiver);
-            // this.formItem.operatorName = this.$args.getArgText('empList', this.formItem.operator);
-
           } else {
             this.$Message.error('订单不存在！');
             this.goBack();
@@ -274,6 +269,7 @@ export default {
         linkPhone: '',//供应商联系电话
         taxpayerType: '',//纳税人类型
         taxRate: '',//税率  
+        inboundType: 1,
         remark: '',
         operator: '',//
         operatorName: '',

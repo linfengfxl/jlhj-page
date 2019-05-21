@@ -1,11 +1,11 @@
 <template>
   <Modal
     v-model="display"
-    title="选择客户"
+    title="选择用户"
     :closable="false"
     :mask-closable="false"
     width="800"
-    class="selcustomer"
+    class="selmember"
     :transfer="transfer"
   >
     <div class="page">
@@ -292,20 +292,20 @@ export default {
 </script>
 
 <style type="text/css">
-.selcustomer .page {
+.selmember .page {
   padding: 0px;
 }
-.selcustomer .page-searchbox {
+.selmember .page-searchbox {
   margin-top: 0px;
 }
-.selcustomer .status-2 {
+.selmember .status-2 {
   color: #ff6600;
 }
-.selcustomer .footer {
+.selmember .footer {
   text-align: center;
   padding-left: 10px;
 }
-.selcustomer .row-checked td {
+.selmember .row-checked td {
   background-color: #e8f8fd;
   /*color:#20bfee;*/
   font-weight: bold;
