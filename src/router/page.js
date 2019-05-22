@@ -19,6 +19,15 @@ components.push({ component: 'project/Index', name: '', path: '/project' })
 components.push({ component: 'machine-order/Index', name: '', path: '/machine-order' })
 components.push({ component: 'machine-order/Edit', name: '', path: '/machine-order/edit' })
 
+
+// workflow
+components.push({ component: 'workflow/define/Index', name: '', path: '/workflow/define' })
+components.push({ component: 'workflow/mywork/Index', name: '', path: '/workflow/mywork' })
+
+// financial
+components.push({ component: 'financial/expense/Index', name: '', path: '/financial/expense' })
+components.push({ component: 'financial/expense/ExpenseEdit', name: '', path: '/financial/expense/edit' })
+
 // //2.销售合同 -->
 // //客户
 // components.push({ component: 'customer/Index', name: '', path: '/customer' })

@@ -15,6 +15,10 @@
       columns:{
         type:Array,
         default:()=>{return [];}
+      },
+      listBind:{
+        type:String,
+        default:'detailList'
       }
     },
     data() { 
@@ -34,7 +38,7 @@
         this.$http.post(this.api + objId).then((res) => {
           this.loading = 0;
           if (res.data.code === 0) {
-            this.list = res.data.data.detailList;
+            this.list = this.listBind ? res.data.data[this.listBind] :res.data.data;
           } else { 
             this.list = [];
             this.$Message.error(res.data.message);
