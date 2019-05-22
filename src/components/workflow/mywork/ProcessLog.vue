@@ -4,7 +4,7 @@
     title="日志"
     :mask-closable="false"
     :closable="false"
-    :width = "680">
+    :width = "800">
     <div :class="page">
       <div class="page-ping">
         <Spin fix size="large" ></Spin>
@@ -35,36 +35,49 @@ export default {
       columns:[
           {
             title: '序号',
-            width: 80,
-            type:'index'
+            width: 60,
+            type:'index',
+            align: 'center',
+          },
+          {
+            title: '结点',
+            key: 'curNodeName',
+            align: 'left',
+            width: 120
           },
           {
             title: '操作人',
-            key: 'operEmpName',
+            key: 'approverName',
             align: 'center',
             width: 80
           },
           {
             title: '操作类型',
-            key: 'operTypeName',
-            width: 120,
+            key: 'status',
+            width: 100,
             align: 'center',
-          },
-          {
-            title: '操作描述',
-            key: 'operRemark',
-            align: 'center'
-          },
+            render:(h,params)=>{
+              var row = params.row; 
+              if(row.status == 2){
+                return h('label',{
+                },'完成');
+              }
+              if(row.status == 3){
+                return h('label',{
+                },'终止');
+              }
+            }
+          }, 
           {
             title: '处理意见',
             key: 'comment',
-            align: 'center'
+            align: 'left'
           },
           {
             title: '操作时间',
             key: 'createTime',
             align: 'center',
-            width: 130
+            width: 140
           }
       ]
 
@@ -89,7 +102,7 @@ export default {
       this.show = true;
     },
     load:function(id){
-      this.$http.post('/api/wf/process/processLog',{procInstId:id}).then((res) => {
+      this.$http.post('/api/engine/workflow/instance/logs?id='+id).then((res) => {
           if (res.data.code === 0) {
               this.list = res.data.data;
               console.log(this.list);

@@ -83,7 +83,7 @@
           },
           {
             title: '接收时间',
-            key: 'taskStartTime',
+            key: 'updateTime',
             align: 'center',
             width: 180
           },
@@ -102,7 +102,7 @@
                   },
                   on: {
                     click: () => {
-                      this.logs(params.row.instId);
+                      this.logs(params.row.id);
                     }
                   }
                 }, '日志')
@@ -151,7 +151,7 @@
           },
           {
             title: '处理时间',
-            key: 'taskStartTime',
+            key: 'operTime',
             align: 'center',
             width: 180
           },
@@ -167,17 +167,22 @@
           },
           {
             title: '流程状态',
-            key: 'instIsEnd',
+            key: 'status',
             align: 'center',
             width: 120,
             render:(h,params)=>{
               var row = params.row;
-              if(row.instIsEnd == 1){
+              if(row.status == 1){
                 return h('label',{
-                },'已结束');
-              }else{
+                },'审批中');
+              }
+              if(row.status == 2){
                 return h('label',{
-                },'处理中');
+                },'完成');
+              }
+              if(row.status == 3){
+                return h('label',{
+                },'终止');
               }
             }
           },
@@ -186,35 +191,21 @@
             width:100,
             align:'center',
             render: (h, params) => {
-              let status = params.row.status;
-              if("已结束" == status){
-                return h('div', [
-                  h('Button', {
-                    props: {
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '5px'
-                    },
-                    on: {
-                      click: () => {
-                        this.logs(params.row.instId);
-                      }
-                    }
-                  }, '日志')
-                ]);
-              }else{
-                return h(DataRowOperateBar, {
+              return h('div', [
+                h('Button', {
                   props: {
-                    commands: '日志,撤回'
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px'
                   },
                   on: {
-                    'on-command': (name) => {
-                      that.rowCommand(name, params)
+                    click: () => {
+                      this.logs(params.row.id);
                     }
                   }
-                });
-              }
+                }, '日志')
+              ]);
             }
           }
         ], 
@@ -287,35 +278,21 @@
             width:100,
             align:'center',
             render: (h, params) => {
-              let status = params.row.status;
-              if("已结束" == status){
-                return h('div', [
-                  h('Button', {
-                    props: {
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '5px'
-                    },
-                    on: {
-                      click: () => {
-                        this.logs(params.row.instId);
-                      }
-                    }
-                  }, '日志')
-                ]);
-              }else{
-                return h(DataRowOperateBar, {
+              return h('div', [
+                h('Button', {
                   props: {
-                    commands: '日志,撤销'
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px'
                   },
                   on: {
-                    'on-command': (name) => {
-                      that.rowCommand(name, params)
+                    click: () => {
+                      this.logs(params.row.id);
                     }
                   }
-                });
-              }
+                }, '日志')
+              ]);
             }
           }
         ],
@@ -348,7 +325,7 @@
             case 'handled': type = 2;break;
             case 'sended': type = 3;break;
           } 
-          this.queryForm.status = type;
+          this.queryForm.type = type;
           this.columns = this['columns'+type];
           this.query();
       },
@@ -364,8 +341,8 @@
         let routeData = this.$router.resolve({ path:'/workflow/process/view?inst=' + instId});
         window.open(routeData.href, '_blank');
       },
-      logs(instanceId){
-        this.$refs.log.open(instanceId);
+      logs(id){
+        this.$refs.log.open(id);
         return;
       },
       reload(){
@@ -412,7 +389,7 @@
         });
       }
       if (name === '日志') {
-        this.logs(params.row.instId)
+        this.logs(params.row.id)
         return;
       }
     }
