@@ -1,17 +1,17 @@
 <template>
-<!-- 选择工程 -->
+<!-- 选择收料员 -->
   <div class="page-form-select">
-    <Input v-model="text" readonly="readonly" :placeholder="placeholder" icon="search" @on-click="selProject"></Input>
-    <SelProject ref="selProject"></SelProject>
+    <Input v-model="text" readonly="readonly" :placeholder="placeholder" icon="search" @on-click="selMember"></Input>
+    <selMember ref="selMember"></selMember>
   </div>
 </template>
 
 <script>  
-import SelProject from '@/components/project/SelectProject'
+import selMember from '@/components/contacts/SelectMember'
 
 export default { 
   components: { 
-    SelProject
+    selMember
   },
   props:{
     value:{
@@ -29,7 +29,7 @@ export default {
     // 控件显示文本对应 model 属性
     textProp:{
       type:String,
-      default:"projectName"
+      default:"operatorName"
     },
     placeholder:{
       type:String,
@@ -42,8 +42,8 @@ export default {
   },
   data() {
     return {
-      projectId:'',
-      projectName:''
+      id:'',
+      trueName:''
     };
   },
   mounted(){
@@ -54,24 +54,24 @@ export default {
   },
   watch:{
     value(val,old){
-      this.projectId = val;      
+      this.id = val;      
     },
     text(val,old){
-      this.projectName = val;
+      this.trueName = val;
     },
     model(val,old){
 
     }
   },
   methods:{ 
-    selProject(row) {
-      var sel = this.$refs.selProject;//引用该控件，赋值给变量对象
+    selMember(row) {
+      var sel = this.$refs.selMember;//引用该控件，赋值给变量对象
       sel.show({
         ok: (data) => {
           if (data) {
-            this.$emit('input',data.projectCode);
+            this.$emit('input',data.id);
             if(this.model){ 
-              this.model[this.textProp] = data.name;
+              this.model[this.textProp] = data.trueName;
             }
           }
         }
