@@ -88,17 +88,15 @@ export default {
           align: 'center',
           fixed: 'left',
           render: (h, params) => {
-            var row = params.row;
+            var row = params.row;             
             return h(DataRowOperate, {
               props: {
                 btns: [{
-                  key: 'edit',
-                  power: 'ckgl.rk.edit',
-                  disabled: row.status != 0
+                  key: 'edit',                   
+                  disabled: row.status != 3
                 }, {
-                  key: 'delete',
-                  power: 'ckgl.rk.del',
-                  disabled: row.status != 0
+                  key: 'delete',                   
+                  disabled: row.status != 3
                 }]
               },
               on: {
@@ -298,20 +296,12 @@ export default {
       }
     },
     add() {
-      this.$router.push({ path: '/financial/expense/edit?forward' })
+      this.$router.push({ path: '/financial/expense/edit?forward'})
     },
     edit(row) {
-      if (row) {
-        if (row.isWeight) {
-          this.$router.push({
-            path: '/storage/weightinstock/edit?forward&id=' + row.stockBillId
-          })
-        } else {
-          this.$router.push({
-            path: '/storage/instock/edit?forward&id=' + row.stockBillId
-          })
-        }
-      }
+      this.$router.push({
+        path: '/financial/expense/edit?forward&id=' + row.billId
+      })
     },
     sendAudit() {
       var selection = this.$refs.page.getSelection();

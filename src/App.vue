@@ -60,13 +60,13 @@ export default {
     isLogin(newValue, oldValue) {
       if (newValue) {
         this.$router.push({ 'name': 'Index' })
-      } else {
-        TyCommon.clearToken()
+      } else {         
         this.$router.push({ 'name': 'Login' })
       }
     }
   },
-  mounted() {
+  mounted() { 
+    Vue.$app = this;
     this.load();
   },
   computed:{
@@ -131,10 +131,11 @@ export default {
              
               this.$http.post('/api/engine/login/args').then((res)=>{
                 this.$args.argMap = res.data.data;
-                this.loaded = 1;
-
+                this.loaded = 1;                
                 //加载用户配置
                 this.$user.config.load({});
+
+                Vue.prototype.$routerArgs.next();
 
               }).catch((error) => {
                 this.message = error.toString();                
@@ -176,6 +177,11 @@ export default {
         }
       });
       return arr;
+    },
+    beforeEach(to,from,next){ 
+      if(this.loaded){
+        next();
+      }
     }
   }
 }

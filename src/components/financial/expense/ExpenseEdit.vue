@@ -34,7 +34,7 @@
                 </FormItem>
               </td>
               <td>
-                <FormItem prop="billDate" label="报销日期">
+                <FormItem prop="billDate" label="报销日期" :required="true">
                    <DatePicker type="date" placeholder="" v-model="formItem.billDate" format="yyyy-MM-dd" ></DatePicker>
                 </FormItem>
               </td>
@@ -59,7 +59,9 @@
             <tr>
                <td>
                 <FormItem prop="payWay" label="付款方式">
-                  <Input v-model="formItem.payWay"/>
+                  <Select v-model="formItem.payWay">
+                    <Option v-for="item in $args.getArgGroup('pay_way')" :value="item.argCode" :key="item.argCode">{{ item.argText }}</Option>
+                  </Select>
                 </FormItem>
               </td>
               <td>
@@ -80,13 +82,13 @@
             </tr>
              <tr> 
               <td>
-                <FormItem prop="operator" label="经办人">
+                <FormItem prop="operatorName" label="经办人">
                   <Input v-model="formItem.operatorName"/>
                 </FormItem>
               </td>
               <td>
                 <FormItem prop="deptId" label="经办人部门">
-                  <Input v-model="formItem.deptName"/>
+                  <SelectDept v-model="formItem.deptId" :model="formItem" :text="formItem.deptName" />
                 </FormItem>
               </td>  
             </tr> 
@@ -99,8 +101,8 @@
             </tr>
             <tr>
               <td colspan="3">
-                <FormItem prop="descirbe" label="报销说明">
-                  <Input type="textarea" v-model="formItem.descirbe" :rows="3" />
+                <FormItem prop="describe" label="报销说明">
+                  <Input type="textarea" v-model="formItem.describe" :rows="3" />
                 </FormItem>
               </td>
             </tr>
@@ -124,9 +126,6 @@
         </tr>
       </table>
     </Loading>
-    <!-- <SelInStockApply ref="selInStockApply"></SelInStockApply> -->
-    <SelProvider ref="selProvider"></SelProvider>     
-    <SelMember ref="selMember"></SelMember>
   </div>
 </template>
 <script>
@@ -134,32 +133,21 @@ import Loading from '@/components/loading';
 import LayoutHor from '@/components/layout/LayoutHor';
 import Editable from './DetailEditable';
 import page from '@/assets/js/page';
-import floatObj from '@/assets/js/floatObj';
-import SelStorage from '@/components/storage/input/SelStorage';
-import SelProvider from '@/components/provider/SelectProvider'; 
-//import SelStockOperType from '@/components/storage/input/SelStockOperType'; 
-
-import SelPersonInput from '@/components/selcontacts/SelPersonInput';
-//import SelInStockApply from '@/components/purchase/purchase-order-mgr/SelInStockApply'; 
-
-
-import SelMember from '@/components/contacts/SelectMember'
+import floatObj from '@/assets/js/floatObj'; 
 import pagejs from '@/assets/js/page';
 import UploadBox from '@/components/upload/Index';
 
 import SelectProject from '@/components/page/form/SelectProject';
+import SelectDept from '@/components/page/form/SelectDept';
 
 export default {
   components: {
     Loading,
     LayoutHor,
-    Editable,
-    SelStorage, 
-    SelPersonInput, 
-    SelProvider,     
-    SelMember,
+    Editable,     
     UploadBox,
-    SelectProject
+    SelectProject,
+    SelectDept
   },
   data() {
     return {
@@ -194,9 +182,6 @@ export default {
         projectId: [
           { required: true, whitespace: true, message: '该项为非空', trigger: 'change' }
         ],
-        billDate:[
-          { required: true, whitespace: true, message: '该项为非空', trigger: 'change' }
-        ],
         bankOpen:[
           { required: true, whitespace: true, message: '该项为非空', trigger: 'change' }
         ],
@@ -212,7 +197,7 @@ export default {
         legal: [
           { required: true, whitespace: true, message: '该项为非空', trigger: 'change' }
         ], 
-        operator: [
+        operatorName: [
           { required: true, whitespace: true, message: '该项为非空', trigger: 'change' }
         ], 
         deptId: [
@@ -233,8 +218,8 @@ export default {
     }
   },
   mounted: function () {
-    this.stockBillId = this.$route.query.id;
-    if (this.stockBillId) {
+    this.billId = this.$route.query.id;
+    if (this.billId) {
       this.pageFlag = 2;
       this.load();
     } else {
@@ -256,22 +241,15 @@ export default {
     load() {
       this.loading = 1;
 
-      this.$http.post("/api/engine/storage/instock/get?stockBillId=" + this.stockBillId, {}).then((res) => {
+      this.$http.post("/api/engine/financial/expense/get?billId=" + this.billId, {}).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
           if (res.data.data) {
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
-            Object.assign(this.formItem, res.data.data);
-            this.formItem.taxpayerType = this.$args.getArgText('taxpayer_type', this.formItem.taxpayerType);//纳税人类型
-            this.formItem.invoiceType = this.$args.getArgText('invoice_type', this.formItem.invoiceType);//发票类型
+            Object.assign(this.formItem, res.data.data);             
             this.list = res.data.data.detailList;
-            // this.formItem.departmentName = this.$args.getArgText('deptList', this.formItem.department);
-            // this.formItem.proposerName = this.$args.getArgText('empList', this.formItem.proposer);
-            // this.formItem.receiverName = this.$args.getArgText('empList', this.formItem.receiver);
-            // this.formItem.operatorName = this.$args.getArgText('empList', this.formItem.operator);
-
           } else {
-            this.$Message.error('订单不存在！');
+            this.$Message.error('单据不存在！');
             this.goBack();
           }
         } else {
@@ -314,7 +292,7 @@ export default {
       };
 
       Object.assign(form, this.formItem);
-      form.signDate = page.formatDate(form.signDate);
+      form.billDate = page.formatDate(form.billDate);
 
       var pass = true;
       this.$refs.form.validate((valid) => {
@@ -331,13 +309,9 @@ export default {
       for (var i = 0; i < this.list.length; i++) {
         var item = this.list[i];
         var msg = '明细第 ' + (i + 1) + ' 行，';
-        if (item.materCode != '') {
-          if (item.quantity == 0) {
-            this.$Message.error(msg + '请录入数量');
-            return;
-          }
-          if (item.taxUnitPrice == '') {
-            this.$Message.error(msg + '请录入含税单价');
+        if (item.amount > 0) {
+          if (item.feeType == '' || item.feeType == null) {
+            this.$Message.error(msg + '请选择费用类型');
             return;
           }
           form.detailList.push(item);
@@ -346,9 +320,9 @@ export default {
 
       // 提交
       this.loading = 1;
-      var uri = '/api/engine/storage/instock/add';
+      var uri = '/api/engine/financial/expense/add';
       if (this.pageFlag == 2) {
-        uri = '/api/engine/storage/instock/update';
+        uri = '/api/engine/financial/expense/update';
       }
 
       this.$http.post(uri, form).then((res) => {
@@ -363,34 +337,7 @@ export default {
         this.loading = 0;
         this.$Message.error("请求失败，请重新操作")
       });
-    },
-    selProvider(row) {
-      var sel = this.$refs.selProvider;//引用该控件，赋值给变量对象
-      sel.show({
-        ok: (data) => {
-          if (data) {
-            this.formItem.providerName = data.providerName;
-            this.formItem.providerCode = data.providerCode;
-            this.formItem.linkMan = data.linkMan;//供应商联系人
-            this.formItem.linkPhone = data.linkPhone;//供应商联系电话
-            this.formItem.taxpayerType = this.$args.getArgText('taxpayer_type', data.taxpayerType);//纳税人类型
-            this.formItem.invoiceType = this.$args.getArgText('invoice_type', data.invoiceType);//发票类型
-            this.formItem.taxRate = data.taxRate;//税率 
-          }
-        }
-      });
-    },     
-    selMember(row) {
-      var sel = this.$refs.selMember;//引用该控件，赋值给变量对象
-      sel.show({
-        ok: (data) => {
-          if (data) {
-            this.formItem.operator = data.id;
-            this.formItem.operatorName = data.trueName;
-          }
-        }
-      });
-    },
+    },  
     onAmountChange(val) {
       this.formItem.amount = val;
     },
@@ -404,32 +351,6 @@ export default {
     goBack() {
       this.$router.go(-1);
     },
-    goImport() {
-      if (!this.formItem.deptId) {
-        this.$Message.error("该项为非空仓库");
-        return;
-      }
-      var sel = this.$refs.selInStockApply;
-      sel.show({
-        deptId: this.formItem.deptId,
-        ok: (select) => {
-          if (select) {
-            this.formItem.inStockApplyId = select.inStockApplyId;
-            this.formItem.purchaseOrderId = select.purchaseOrderId;
-            this.formItem.proposerName = this.$args.getArgText('empList', select.proposer);
-            this.formItem.proposer = select.proposer;
-            this.formItem.departmentName = this.$args.getArgText('deptList', select.department);
-            this.formItem.department = select.department;
-            this.list = [];
-            select.detailList.map((row) => {
-              var newRow = this.$refs.editable.listNewRow();
-              row.subQuantity = floatObj.multiply(row.quantity, row.unitRate);
-              this.list.push(Object.assign(newRow, row));
-            });
-          }
-        }
-      });
-    }
   }
 }
 

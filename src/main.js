@@ -27,27 +27,10 @@ window.onmessage = function(event) {
   if (event.data === "reload") {
     location.reload();
   }
-};
+}; 
 
 // 事件总线
 let bus = new Vue({});
-// 路由监听
-router.beforeEach(function (to, from, next){ 
-  if(from && from.matched.length && from.matched[0].instances && from.matched[0].instances.default){
-    var vm = from.matched[0].instances.default;
-    if(vm.beforeEach){
-      vm.beforeEach({to, from, next});
-      return;
-    }
-  } 
-  next(); 
-});
-// 路由监听
-router.afterEach(function (to, from){  
-  bus.$emit('on-router-after-each', {to,from});
-  var obj = require('./vext/router.js').default;
-  obj.afterEach(to,from);
-});
 
 // 扩展 Vue 对象
 Vue.prototype.$bus = bus;
@@ -70,6 +53,31 @@ Vue.directive('power', {
   }
 });
 
+// 路由监听
+router.beforeEach(function (to, from, next){
+  Vue.prototype.$routerArgs = {to,from,next};
+  // 已加载
+  if(Vue.$app){
+    Vue.$app.beforeEach(to,from,next);
+  } 
+});
+// 路由监听
+router.beforeEach(function (to, from, next){
+  if(from && from.matched.length && from.matched[0].instances && from.matched[0].instances.default){
+    var vm = from.matched[0].instances.default;
+    if(vm.beforeEach){
+      vm.beforeEach({to, from, next});
+      return;
+    }
+  }
+  next();
+});
+// 路由监听
+router.afterEach(function (to, from){  
+  bus.$emit('on-router-after-each', {to,from});
+  var obj = require('./vext/router.js').default;
+  obj.afterEach(to,from);
+});
 
 /* eslint-disable no-new */
 var app = new Vue({
@@ -79,6 +87,4 @@ var app = new Vue({
   components: {
     App
   }
-})
-
-window.$app = app;
+}) 
