@@ -49,8 +49,8 @@
             </FormItem>
             <FormItem label="项目来源">
               <Radio-group v-model="formItem.source">
-                <Radio :label="1">委托</Radio>
-                <Radio :label="2">头表</Radio>
+                <Radio label="委托">委托</Radio>
+                <Radio label="投标">投标</Radio>
               </Radio-group>
             </FormItem>
             <FormItem label="投资额">
@@ -111,9 +111,9 @@ export default {
         linkPhone: '',// 电话
         position: '',// 职务
         email: '',// 邮箱
-        source: '',//RCHAR 项目来源:1.委托, 2.投标
+        source: '委托',//RCHAR 项目来源: 委托、投标
         department: '',// 部门
-        status: '1',// 工程状态:1.进行中, 2.结项
+        status: 1,// 工程状态:1.进行中, 2.结项
         investment: 0,// 投资额
         investmentType: '',// 投资性质
         totalSize: 0,// 工程总规模
@@ -205,7 +205,7 @@ export default {
           this.formItem[x] = ''
         }
         this.formItem.status = 1;// 工程状态:1.进行中, 2.结项
-        this.formItem.source = 1;
+        this.formItem.source = "委托";
         this.formItem.investment = 0;// 投资额
         this.formItem.totalSize = 0;// 工程总规模
       }
