@@ -54,12 +54,12 @@
                 <FormItem prop="amount" label="税率">{{formItem.taxRate}} %</FormItem>
               </td>
               <td>
-                <FormItem prop="remark" label="纳税人类型">{{formItem.taxpayerType}}</FormItem>
+                <FormItem prop="remark" label="纳税人类型">{{$args.getArgText('taxpayer_type', formItem.taxpayerType)}}</FormItem>
               </td>
             </tr>
             <tr>
               <td>
-                <FormItem prop label="发票类型">{{formItem.invoiceType}}</FormItem>
+                <FormItem prop label="发票类型">{{$args.getArgText('invoice_type', formItem.invoiceType)}}</FormItem>
               </td>
               <td>
                 <FormItem prop label="日期">{{formItem.operateDate}}</FormItem>
@@ -216,24 +216,21 @@ export default {
             this.formItem.providerCode = data.providerCode;
             this.formItem.linkMan = data.linkMan;//供应商联系人
             this.formItem.linkPhone = data.linkPhone;//供应商联系电话
-            this.formItem.taxpayerType = this.$args.getArgText('taxpayer_type', data.taxpayerType);//纳税人类型
-            this.formItem.invoiceType = this.$args.getArgText('invoice_type', data.invoiceType);//发票类型
+            this.formItem.taxpayerType =  data.taxpayerType;//纳税人类型
+            this.formItem.invoiceType =  data.invoiceType;//发票类型
             this.formItem.taxRate = data.taxRate;//税率 
           }
         }
       });
     },
     load() {
-      this.loading = 1;
-
+      this.loading = 1; 
       this.$http.post("/api/engine/storage/instock/get?stockBillId=" + this.stockBillId, {}).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
           if (res.data.data) {
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
             Object.assign(this.formItem, res.data.data);
-            this.formItem.taxpayerType = this.$args.getArgText('taxpayer_type', this.formItem.taxpayerType);//纳税人类型
-            this.formItem.invoiceType = this.$args.getArgText('invoice_type', this.formItem.invoiceType);//发票类型
             this.list = res.data.data.detailList;
           } else {
             this.$Message.error('订单不存在！');

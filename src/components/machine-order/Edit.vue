@@ -169,7 +169,7 @@ export default {
       },
       formRules: {
         deptId: [
-          { required: true, whitespace: true, message: '请选择仓库', trigger: 'change' }
+          { required: true, whitespace: true, message: '请选择部门', trigger: 'change' }
         ],
         projectCode: [
           { required: true, whitespace: true, message: '请选择工程', trigger: 'change' }
