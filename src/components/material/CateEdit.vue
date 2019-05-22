@@ -15,8 +15,8 @@
             </FormItem>
             <FormItem label="种类">
               <Radio-group v-model="formItem.resourceType">
-                <Radio :label="1">材料</Radio>
-                <Radio :label="2">机械</Radio>
+                <Radio label="材料">材料</Radio>
+                <Radio label="机械">机械</Radio>
               </Radio-group>
             </FormItem>
             <FormItem label="排序" prop="seq">
@@ -48,7 +48,7 @@ export default {
         code: '',
         title: '',
         parentCode: '',
-        resourceType: 1,
+        resourceType: '材料',
         seq: 0,
       },
       title: '新建',
@@ -72,7 +72,7 @@ export default {
         code: '',
         title: '',
         parentCode: '',
-        resourceType: 1,
+        resourceType: '',
         seq: 0,
       }, init);
 
@@ -82,12 +82,11 @@ export default {
     },
     openAdd(init) {
       this.title = "新建"
-
       this.formItem = Object.assign({
         code: '',
         title: '',
         parentCode: '',
-        resourceType: 1,
+        resourceType: '材料',
         seq: 0,
       }, init);
 
