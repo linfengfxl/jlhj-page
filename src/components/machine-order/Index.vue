@@ -19,7 +19,7 @@
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td>
-            <Input v-model="queryForm.keyword" placeholder="名称" @on-enter="query"/>
+            <Input v-model="queryForm.keyword" placeholder="供应商、工程" @on-enter="query"/>
           </td>
           <td>
             <Button @click="query" type="primary" icon="ios-search">查询</Button>
@@ -35,7 +35,7 @@
 <script>     
 import ListPage from '@/components/page/ListPage';
 import DataRowOperate from '@/components/commons/DataRowOperate';
-
+import page from '@/assets/js/page';
 export default {
   components: {
     ListPage,
@@ -89,31 +89,30 @@ export default {
         {
           title: '单号',
           key: 'machineOrderId',
-          width: 100,
-        },{
+          width: 120,
+        }, {
           title: '部门',
           key: 'deptName',
-          width: 150,
+          width: 120,
         },
         {
           title: '工程名称',
           key: 'projectName',
-          width: 150,
+          width: 120,
         }, {
           title: '供应商',
           key: 'providerName',
-          width: 150,
+          width: 120,
         },
         {
           title: '机械名称',
           key: 'machineName',
-          width: 150,
+          width: 120,
         },
-        {
+        page.table.initDateColumn({
           title: '作业时间',
           key: 'jobDate',
-          width: 150,
-        }, 
+        }),
         {
           title: '备注',
           key: 'remark',
@@ -181,7 +180,7 @@ export default {
           title: '删除确认',
           content: '<p>删除后不能恢复，确定删除已选择的记录吗？</p>',
           onOk: () => {
-            this.$http.post('/api/engine/machine/order/delete?id=' + params.row.machineOrderId, {}).then((res) => {
+            this.$http.post('/api/engine/machine/order/delete', { 'machineOrderId': params.row.machineOrderId }).then((res) => {
               if (res.data.code === 0) {
                 this.$Message.success("删除成功");
                 $.extend(this.queryForm, this.queryParam);

@@ -10,15 +10,7 @@
     </div>
     <Loading :loading="loading">
       <div class="baseinfo">
-        <div class="page-tools">
-          <!-- <table cellpadding="0" cellspacing="0">
-            <tr>
-              <td>
-                <Button @click="goImport">导入入库申请单</Button>
-              </td>
-            </tr>
-          </table>-->
-        </div>
+        <div class="page-tools"></div>
         <Form ref="form" class="page-form" :model="formItem" :rules="formRules" :label-width="120">
           <table cellspacing="0" cellpadding="0">
             <colgroup>
@@ -34,13 +26,10 @@
               </td>
               <td>
                 <FormItem prop="projectCode" label="工程名称">
-                  <Input
-                    v-model="formItem.projectName"
-                    placeholder
-                    class="width-1"
-                    readonly="readonly"
-                    icon="search"
-                    @on-click="selProject"
+                  <SelectProject
+                    v-model="formItem.projectCode"
+                    :model="formItem"
+                    :text="formItem.projectName"
                   />
                 </FormItem>
               </td>
@@ -65,25 +54,22 @@
                 <FormItem prop="amount" label="税率">{{formItem.taxRate}} %</FormItem>
               </td>
               <td>
-                <FormItem prop="remark" label="纳税人类型">{{formItem.taxpayerType}}</FormItem>
+                <FormItem prop="remark" label="纳税人类型">{{$args.getArgText('taxpayer_type', formItem.taxpayerType)}}</FormItem>
               </td>
             </tr>
             <tr>
               <td>
-                <FormItem prop label="发票类型">{{formItem.invoiceType}}</FormItem>
+                <FormItem prop label="发票类型">{{$args.getArgText('invoice_type', formItem.invoiceType)}}</FormItem>
               </td>
               <td>
                 <FormItem prop label="日期">{{formItem.operateDate}}</FormItem>
               </td>
               <td>
                 <FormItem prop="operatorName" label="收料员">
-                  <Input
-                    v-model="formItem.operatorName"
-                    placeholder
-                    class="width-1"
-                    readonly="readonly"
-                    icon="search"
-                    @on-click="selMember"
+                  <SelectMember
+                    v-model="formItem.operator"
+                    :model="formItem"
+                    :text="formItem.operatorName"
                   />
                 </FormItem>
               </td>
@@ -126,10 +112,7 @@
         </tr>
       </table>
     </Loading>
-    <!-- <SelInStockApply ref="selInStockApply"></SelInStockApply> -->
     <SelProvider ref="selProvider"></SelProvider>
-    <SelProject ref="selProject"></SelProject>
-    <SelMember ref="selMember"></SelMember>
   </div>
 </template>
 <script>
@@ -138,16 +121,11 @@ import LayoutHor from '@/components/layout/LayoutHor';
 import Editable from './DetailEditable';
 import page from '@/assets/js/page';
 import floatObj from '@/assets/js/floatObj';
-import SelStorage from '@/components/storage/input/SelStorage';
 import SelProvider from '@/components/provider/SelectProvider';
-import SelProject from '@/components/project/SelectProject'
-//import SelStockOperType from '@/components/storage/input/SelStockOperType'; 
-
+import SelStorage from '@/components/storage/input/SelStorage';
+import SelectProject from '@/components/page/form/SelectProject';
+import SelectMember from '@/components/page/form/SelectMember';
 import SelPersonInput from '@/components/selcontacts/SelPersonInput';
-//import SelInStockApply from '@/components/purchase/purchase-order-mgr/SelInStockApply'; 
-
-
-import SelMember from '@/components/contacts/SelectMember'
 import pagejs from '@/assets/js/page';
 
 export default {
@@ -155,13 +133,11 @@ export default {
     Loading,
     LayoutHor,
     Editable,
-    SelStorage,
-    //SelStockOperType, 
-    SelPersonInput,
-    // SelInStockApply
     SelProvider,
-    SelProject,
-    SelMember,
+    SelStorage,
+    SelPersonInput,
+    SelectProject,
+    SelectMember
   },
   data() {
     return {
@@ -231,17 +207,30 @@ export default {
     }
   },
   methods: {
+    selProvider(row) {
+      var sel = this.$refs.selProvider;//引用该控件，赋值给变量对象
+      sel.show({
+        ok: (data) => {
+          if (data) {
+            this.formItem.providerName = data.providerName;
+            this.formItem.providerCode = data.providerCode;
+            this.formItem.linkMan = data.linkMan;//供应商联系人
+            this.formItem.linkPhone = data.linkPhone;//供应商联系电话
+            this.formItem.taxpayerType =  data.taxpayerType;//纳税人类型
+            this.formItem.invoiceType =  data.invoiceType;//发票类型
+            this.formItem.taxRate = data.taxRate;//税率 
+          }
+        }
+      });
+    },
     load() {
-      this.loading = 1;
-
+      this.loading = 1; 
       this.$http.post("/api/engine/storage/instock/get?stockBillId=" + this.stockBillId, {}).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
           if (res.data.data) {
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
             Object.assign(this.formItem, res.data.data);
-            this.formItem.taxpayerType = this.$args.getArgText('taxpayer_type', this.formItem.taxpayerType);//纳税人类型
-            this.formItem.invoiceType = this.$args.getArgText('invoice_type', this.formItem.invoiceType);//发票类型
             this.list = res.data.data.detailList;
           } else {
             this.$Message.error('订单不存在！');
@@ -334,44 +323,6 @@ export default {
         this.$Message.error("请求失败，请重新操作")
       });
     },
-    selProvider(row) {
-      var sel = this.$refs.selProvider;//引用该控件，赋值给变量对象
-      sel.show({
-        ok: (data) => {
-          if (data) {
-            this.formItem.providerName = data.providerName;
-            this.formItem.providerCode = data.providerCode;
-            this.formItem.linkMan = data.linkMan;//供应商联系人
-            this.formItem.linkPhone = data.linkPhone;//供应商联系电话
-            this.formItem.taxpayerType = this.$args.getArgText('taxpayer_type', data.taxpayerType);//纳税人类型
-            this.formItem.invoiceType = this.$args.getArgText('invoice_type', data.invoiceType);//发票类型
-            this.formItem.taxRate = data.taxRate;//税率 
-          }
-        }
-      });
-    },
-    selProject(row) {
-      var sel = this.$refs.selProject;//引用该控件，赋值给变量对象
-      sel.show({
-        ok: (data) => {
-          if (data) {
-            this.formItem.projectName = data.name;
-            this.formItem.projectCode = data.projectCode;
-          }
-        }
-      });
-    },
-    selMember(row) {
-      var sel = this.$refs.selMember;//引用该控件，赋值给变量对象
-      sel.show({
-        ok: (data) => {
-          if (data) {
-            this.formItem.operator = data.id;
-            this.formItem.operatorName = data.trueName;
-          }
-        }
-      });
-    },
     onAmountChange(val) {
       this.formItem.amount = val;
     },
@@ -385,32 +336,6 @@ export default {
     goBack() {
       this.$router.push('/storage/instock');
     },
-    goImport() {
-      if (!this.formItem.deptId) {
-        this.$Message.error("请选择仓库");
-        return;
-      }
-      var sel = this.$refs.selInStockApply;
-      sel.show({
-        deptId: this.formItem.deptId,
-        ok: (select) => {
-          if (select) {
-            this.formItem.inStockApplyId = select.inStockApplyId;
-            this.formItem.purchaseOrderId = select.purchaseOrderId;
-            this.formItem.proposerName = this.$args.getArgText('empList', select.proposer);
-            this.formItem.proposer = select.proposer;
-            this.formItem.departmentName = this.$args.getArgText('deptList', select.department);
-            this.formItem.department = select.department;
-            this.list = [];
-            select.detailList.map((row) => {
-              var newRow = this.$refs.editable.listNewRow();
-              row.subQuantity = floatObj.multiply(row.quantity, row.unitRate);
-              this.list.push(Object.assign(newRow, row));
-            });
-          }
-        }
-      });
-    }
   }
 }
 

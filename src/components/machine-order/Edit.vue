@@ -36,13 +36,10 @@
               </td>
               <td>
                 <FormItem prop="projectCode" label="工程名称">
-                  <Input
-                    v-model="formItem.projectName"
-                    placeholder
-                    class="width-1"
-                    readonly="readonly"
-                    icon="search"
-                    @on-click="selProject"
+                  <SelectProject
+                    v-model="formItem.projectCode"
+                    :model="formItem"
+                    :text="formItem.projectName"
                   />
                 </FormItem>
               </td>
@@ -78,13 +75,11 @@
               <td></td>
               <td>
                 <FormItem prop="machineName" label="机械名称">
-                  <Input
-                    v-model="formItem.machineName"
-                    placeholder
-                    class="width-1"
-                    readonly="readonly"
-                    icon="search"
-                    @on-click="selMachine"
+          
+                  <SelectMachine
+                    v-model="formItem.machineCode"
+                    :model="formItem"
+                    :text="formItem.machineName"
                   />
                 </FormItem>
               </td>
@@ -118,11 +113,8 @@
           <td></td>
         </tr>
       </table>
-    </Loading>
-    <!-- <SelInStockApply ref="selInStockApply"></SelInStockApply> -->
-    <SelProvider ref="selProvider"></SelProvider>
-    <SelProject ref="selProject"></SelProject>
-    <selMachine ref="selMachine"></selMachine>
+    </Loading> 
+    <SelProvider ref="selProvider"></SelProvider> 
   </div>
 </template>
 <script>
@@ -131,30 +123,23 @@ import LayoutHor from '@/components/layout/LayoutHor';
 import Editable from './DetailEditable';
 import page from '@/assets/js/page';
 import floatObj from '@/assets/js/floatObj';
+import pagejs from '@/assets/js/page';
+
 import SelStorage from '@/components/storage/input/SelStorage';
 import SelProvider from '@/components/provider/SelectProvider';
-import SelProject from '@/components/project/SelectProject'
-//import SelStockOperType from '@/components/storage/input/SelStockOperType'; 
+import SelectProject from '@/components/page/form/SelectProject';
+import SelectMachine from '@/components/page/form/SelectMachine'; 
 
-import SelPersonInput from '@/components/selcontacts/SelPersonInput';
-//import SelInStockApply from '@/components/purchase/purchase-order-mgr/SelInStockApply'; 
-
-
-import SelMachine from '@/components/machine/Selectmachine'
-import pagejs from '@/assets/js/page';
 
 export default {
   components: {
     Loading,
     LayoutHor,
     Editable,
-    SelStorage,
-    //SelStockOperType, 
-    SelPersonInput,
-    // SelInStockApply
-    SelProvider,
-    SelProject,
-    SelMachine,
+    SelStorage, 
+    SelProvider, 
+    SelectProject,
+    SelectMachine
   },
   data() {
     return {
@@ -184,7 +169,7 @@ export default {
       },
       formRules: {
         deptId: [
-          { required: true, whitespace: true, message: '请选择仓库', trigger: 'change' }
+          { required: true, whitespace: true, message: '请选择部门', trigger: 'change' }
         ],
         projectCode: [
           { required: true, whitespace: true, message: '请选择工程', trigger: 'change' }
@@ -340,29 +325,7 @@ export default {
           }
         }
       });
-    },
-    selProject(row) {
-      var sel = this.$refs.selProject;//引用该控件，赋值给变量对象
-      sel.show({
-        ok: (data) => {
-          if (data) {
-            this.formItem.projectName = data.name;
-            this.formItem.projectCode = data.projectCode;
-          }
-        }
-      });
-    },
-    selMachine(row) {
-      var sel = this.$refs.selMachine;//引用该控件，赋值给变量对象
-      sel.show({
-        ok: (data) => {
-          if (data) {
-            this.formItem.machineCode = data.machineCode;
-            this.formItem.machineName = data.machineName;
-          }
-        }
-      });
-    },
+    }, 
     onAmountChange(val) {
       this.formItem.amount = val;
     },
