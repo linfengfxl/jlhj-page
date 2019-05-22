@@ -29,15 +29,8 @@
                 </FormItem>
               </td>
               <td>
-                <FormItem prop="projectId" label="工程名称">
-                  <Input
-                    v-model="formItem.projectName"
-                    placeholder
-                    class="width-1"
-                    readonly="readonly"
-                    icon="search"
-                    @on-click="selProject"
-                  />
+                <FormItem prop="projectId" label="工程名称"> 
+                  <SelectProject v-model="formItem.projectId" :model="formItem" :text="formItem.projectName" />
                 </FormItem>
               </td>
               <td>
@@ -132,8 +125,7 @@
       </table>
     </Loading>
     <!-- <SelInStockApply ref="selInStockApply"></SelInStockApply> -->
-    <SelProvider ref="selProvider"></SelProvider>
-    <SelProject ref="selProject"></SelProject>
+    <SelProvider ref="selProvider"></SelProvider>     
     <SelMember ref="selMember"></SelMember>
   </div>
 </template>
@@ -144,8 +136,7 @@ import Editable from './DetailEditable';
 import page from '@/assets/js/page';
 import floatObj from '@/assets/js/floatObj';
 import SelStorage from '@/components/storage/input/SelStorage';
-import SelProvider from '@/components/provider/SelectProvider';
-import SelProject from '@/components/project/SelectProject'
+import SelProvider from '@/components/provider/SelectProvider'; 
 //import SelStockOperType from '@/components/storage/input/SelStockOperType'; 
 
 import SelPersonInput from '@/components/selcontacts/SelPersonInput';
@@ -156,6 +147,8 @@ import SelMember from '@/components/contacts/SelectMember'
 import pagejs from '@/assets/js/page';
 import UploadBox from '@/components/upload/Index';
 
+import SelectProject from '@/components/page/form/SelectProject';
+
 export default {
   components: {
     Loading,
@@ -163,10 +156,10 @@ export default {
     Editable,
     SelStorage, 
     SelPersonInput, 
-    SelProvider,
-    SelProject,
+    SelProvider,     
     SelMember,
-    UploadBox
+    UploadBox,
+    SelectProject
   },
   data() {
     return {
@@ -295,7 +288,7 @@ export default {
         catalog:'',
         projectId:'',
         projectName:'',
-        billDate:'',
+        billDate:null,
         amount:'',
         bankAccName:'',
         bankOpen:'',
@@ -386,18 +379,7 @@ export default {
           }
         }
       });
-    },
-    selProject(row) {
-      var sel = this.$refs.selProject;//引用该控件，赋值给变量对象
-      sel.show({
-        ok: (data) => {
-          if (data) {
-            this.formItem.projectName = data.name;
-            this.formItem.projectCode = data.projectCode;
-          }
-        }
-      });
-    },
+    },     
     selMember(row) {
       var sel = this.$refs.selMember;//引用该控件，赋值给变量对象
       sel.show({
