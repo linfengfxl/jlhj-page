@@ -58,7 +58,7 @@
                   },
                 on:{
                   click:()=>{
-                    this.handle(params.row.instId,params.row.taskId);
+                    this.handle(params.row.id,params.row.logId);
                   }
                 }
               },text);
@@ -126,7 +126,7 @@
                   },
                 on:{
                   click:()=>{
-                    this.view(params.row.instId);
+                    this.view(params.row.id);
                   }
                 }
               },text);
@@ -333,13 +333,11 @@
           let routeData = this.$router.resolve({ name: 'workflow.initproc' });
           window.open(routeData.href, '_blank');
       },
-      handle(instId,taskId){
-        let routeData = this.$router.resolve({ path:'/workflow/process?inst=' + instId + '&task=' + taskId});
-        window.open(routeData.href, '_blank');
+      handle(instId){
+        this.$router.push({path:'/workflow/process?forward&inst=' + instId});
       }, 
       view(instId){
-        let routeData = this.$router.resolve({ path:'/workflow/process/view?inst=' + instId});
-        window.open(routeData.href, '_blank');
+        this.$router.push({path:'/workflow/process?forward&inst=' + instId});
       },
       logs(id){
         this.$refs.log.open(id);

@@ -23,6 +23,7 @@ components.push({ component: 'machine-order/Edit', name: '', path: '/machine-ord
 // workflow
 components.push({ component: 'workflow/define/Index', name: '', path: '/workflow/define' })
 components.push({ component: 'workflow/mywork/Index', name: '', path: '/workflow/mywork' })
+components.push({ component: 'workflow/process/Index', name: '', path: '/workflow/process' })
 
 // financial
 components.push({ component: 'financial/expense/Index', name: '', path: '/financial/expense' })

@@ -1,13 +1,6 @@
 <template>
-  <div class="page expense-edit">
-    <div class="page-bar">
-      <LayoutHor>
-        <div slot="left">
-          <Button size="small" @click="goBack" icon="chevron-left" type="warning">返回</Button>
-        </div>
-        <div class="page-bar-title">{{pageTitle}}</div>
-      </LayoutHor>
-    </div>
+  <StartProcess ref="startProcess" defineId="1" :title="pageTitle" @on-submit="save">
+    <div class="page expense-edit">     
     <Loading :loading="loading">
       <div class="baseinfo"> 
         <div class="subheader">
@@ -95,7 +88,7 @@
             <tr>
               <td colspan="3">
                 <FormItem prop="files" label="附件">
-                  <UploadBox v-model="formItem.files" :readonly="false"></UploadBox>
+                  <UploadBox v-model="formItem.files" :readonly="false" v-if="false"></UploadBox>
                 </FormItem>
               </td>
             </tr>
@@ -117,16 +110,10 @@
           :editable="true"           
           @on-amount-change="onAmountChange"           
         ></Editable>
-      </div>
-      <table class="savebar" cellpadding="0" cellspacing="0">
-        <tr>
-          <td class="save" @click="save" v-if="pageFlag<=2">保存</td>
-          <td class="reset" @click="reset">重置</td>
-          <td></td>
-        </tr>
-      </table>
+      </div>       
     </Loading>
   </div>
+</StartProcess>  
 </template>
 <script>
 import Loading from '@/components/loading';
@@ -140,6 +127,8 @@ import UploadBox from '@/components/upload/Index';
 import SelectProject from '@/components/page/form/SelectProject';
 import SelectDept from '@/components/page/form/SelectDept';
 
+import StartProcess from '@/components/workflow/process/Start';
+
 export default {
   components: {
     Loading,
@@ -147,7 +136,8 @@ export default {
     Editable,     
     UploadBox,
     SelectProject,
-    SelectDept
+    SelectDept,
+    StartProcess
   },
   data() {
     return {
@@ -230,10 +220,10 @@ export default {
   computed: {
     pageTitle() {
       if (this.pageFlag == 1) {
-        return '报销单 - 创建';
+        return '报销单';
       }
       if (this.pageFlag == 2) {
-        return '报销单 - 编辑';
+        return '报销单';
       }
     }
   },
@@ -286,7 +276,7 @@ export default {
       this.list.push(this.$refs.editable.listNewRow());
       this.list.push(this.$refs.editable.listNewRow());
     },
-    save() {
+    save(proc) {
       var form = {
         detailList: []
       };
@@ -317,6 +307,8 @@ export default {
           form.detailList.push(item);
         }
       }
+
+      form.proc = proc.formItem;
 
       // 提交
       this.loading = 1;

@@ -52,7 +52,7 @@ export default {
       }else{
         this.appRightInnerScroll = false;
       } 
-      var rightMaxPath = ['/workflow/initproc','/workflow/process'];
+      var rightMaxPath = [];//['/workflow/initproc','/workflow/process'];
       this.appRightMax = rightMaxPath.indexOf(path) >= 0;
     });
   },
