@@ -34,7 +34,7 @@
           <tr>
             <td style=""></td>
             <td>
-               <Button type="primary" size="large" @click="submit">提 交</Button>
+               <Button type="success" size="large" @click="submit" class="btn-submit">提 交</Button>
             </td>
           </tr>
         </table>
@@ -225,4 +225,7 @@
     width:70px;text-align: right;
     padding-right: 10px;  
   } 
+  .wfprocess-footer .btn-submit{
+    height: 40px;width: 140px;    
+  }
 </style>

@@ -143,8 +143,8 @@ export default {
           width: 100,
         },
         {
-          title: '银行名称',
-          key: 'bank',
+          title: '银行户名',
+          key: 'bankAccName',
           align: 'left',
           width: 150,
         },
@@ -188,8 +188,8 @@ export default {
           title: '附件',
           key: 'files',
           align: 'center',
-          width: 150,
-          render1:(h,params)=>{
+          width: 200,
+          render:(h,params)=>{
             var row = params.row;
             return h(UploadBox,{
               props:{
@@ -296,11 +296,11 @@ export default {
       }
     },
     add() {
-      this.$router.push({ path: '/financial/expense/edit?forward'})
+      this.$router.push({ path: '/financial/expense/start?forward'})
     },
     edit(row) {
       this.$router.push({
-        path: '/financial/expense/edit?forward&id=' + row.billId
+        path: '/financial/expense/start?forward&id=' + row.billId
       })
     },
     sendAudit() {

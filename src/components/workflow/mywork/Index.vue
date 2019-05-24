@@ -58,7 +58,7 @@
                   },
                 on:{
                   click:()=>{
-                    this.handle(params.row.id,params.row.logId);
+                    this.handle(params.row);
                   }
                 }
               },text);
@@ -126,7 +126,7 @@
                   },
                 on:{
                   click:()=>{
-                    this.view(params.row.id);
+                    this.view(params.row);
                   }
                 }
               },text);
@@ -333,11 +333,11 @@
           let routeData = this.$router.resolve({ name: 'workflow.initproc' });
           window.open(routeData.href, '_blank');
       },
-      handle(instId){
-        this.$router.push({path:'/workflow/process?forward&inst=' + instId});
+      handle(row){
+        this.$router.push({path:'/workflow/process/redirect?forward&do=handle&inst=' + row.id +'&define='+row.defineId});
       }, 
-      view(instId){
-        this.$router.push({path:'/workflow/process?forward&inst=' + instId});
+      view(row){
+        this.$router.push({path:'/workflow/process/redirect?forward&do=view&inst=' + row.id +'&define='+row.defineId});
       },
       logs(id){
         this.$refs.log.open(id);
