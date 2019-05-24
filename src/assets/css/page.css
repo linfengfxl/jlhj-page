@@ -103,6 +103,12 @@
 }
 .page-form .ivu-form-item{
   margin-bottom: 14px;
+} 
+.page-form.page-form-view.ivu-form .ivu-form-item-label{
+  color:#999;
+}
+.page-form.page-form-view.ivu-form .ivu-form-item-content{
+  color:#444
 }
 
 

@@ -134,7 +134,7 @@
   .attachfile{
     cursor: default;
     position: relative; 
-    min-height: 100px;
+    /*min-height: 100px;*/
     height: 100%;
     font-size: 14px;
   }

@@ -6,7 +6,7 @@
         <div class="subheader">
           单据表头
         </div>
-        <Form ref="form" class="page-form" :model="formItem" :rules="formRules" :label-width="120">
+        <Form ref="form" class="page-form page-form-view" :model="formItem" :rules="formRules" :label-width="120">
           <table cellspacing="0" cellpadding="0">
             <colgroup>
               <col width="33%">
@@ -79,7 +79,7 @@
             <tr>
               <td colspan="3">
                 <FormItem prop="files" label="附件">                  
-                  <UploadBox v-model="formItem.files" :readonly="false"></UploadBox>
+                  <UploadBox v-model="formItem.files" :readonly="true"></UploadBox>
                 </FormItem>
               </td>
             </tr>
