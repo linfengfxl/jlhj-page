@@ -77,7 +77,7 @@
               </td>  
             </tr> 
             <tr>
-              <td colspan="3">
+              <td colspan="2">
                 <FormItem prop="files" label="附件">                  
                   <UploadBox v-model="formItem.files" :readonly="true"></UploadBox>
                 </FormItem>
@@ -299,9 +299,6 @@ export default {
 
 <style type="text/css">
 .expense-edit.page {
-  width: 900px;
-  /* margin: 0 auto; */
-  padding: 10px 20px;
   position: relative;
 }
 .expense-edit .subheader {

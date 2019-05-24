@@ -350,9 +350,6 @@ export default {
 
 <style type="text/css">
 .expense-edit.page {
-  width: 900px;
-  /* margin: 0 auto; */
-  padding: 10px 20px;
   position: relative;
 }
 .expense-edit .subheader {

@@ -1,8 +1,10 @@
 <template>
   <div class="wfprocess">
-    <div class="wfprocess-header">
-      <Button size="small" @click="goBack" icon="chevron-left" type="warning" style="float: left;margin-top: 10px;">返回</Button>
+    <div class="wfprocess-header">       
       发起审批 - {{title}}
+      <div class="header-left">
+        <Button size="small" @click="goBack" icon="chevron-left" type="warning">返回</Button>
+      </div>      
     </div>    
     <div class="wfprocess-container">
       <div class="wfprocess-bill">
@@ -170,12 +172,18 @@
   .wfprocess-header{
     height: 42px;
     padding-left: 10px;
+    padding-right: 10px;
     line-height: 42px;
     border-bottom: 1px solid #eee;
     font-size: 14px;
     margin-top: -42px;
     background-color: #F9FAFB;
     text-align: center;
+    position: relative;
+  }
+  .wfprocess-header .header-left{
+    top:0px;
+    position: absolute; 
   }
   .wfprocess-container{    
     height: 100%;
