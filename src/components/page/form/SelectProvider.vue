@@ -73,6 +73,7 @@ export default {
             if(this.model){ 
               this.model[this.textProp] = data.providerName;
             }
+            this.$emit('on-select',data);
           }
         }
       });

@@ -18,7 +18,9 @@ components.push({ component: 'project/Index', name: '', path: '/project' })
 //机械作业单
 components.push({ component: 'machine-order/Index', name: '', path: '/machine-order' })
 components.push({ component: 'machine-order/Edit', name: '', path: '/machine-order/edit' })
-
+//机械租赁结算单
+components.push({ component: 'machine-order/bill/Index', name: '', path: '/machine-order/bill' })
+components.push({ component: 'machine-order/bill/Edit', name: '', path: '/machine-order/bill/edit' })
 
 // workflow
 components.push({ component: 'workflow/define/Index', name: '', path: '/workflow/define' })
