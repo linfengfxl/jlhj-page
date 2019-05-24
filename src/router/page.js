@@ -24,10 +24,13 @@ components.push({ component: 'machine-order/Edit', name: '', path: '/machine-ord
 components.push({ component: 'workflow/define/Index', name: '', path: '/workflow/define' })
 components.push({ component: 'workflow/mywork/Index', name: '', path: '/workflow/mywork' })
 components.push({ component: 'workflow/process/Index', name: '', path: '/workflow/process' })
+components.push({ component: 'workflow/process/Redirect', name: '', path: '/workflow/process/redirect' })
 
 // financial
 components.push({ component: 'financial/expense/Index', name: '', path: '/financial/expense' })
-components.push({ component: 'financial/expense/ExpenseEdit', name: '', path: '/financial/expense/edit' })
+components.push({ component: 'financial/expense/ExpenseStart', name: '', path: '/financial/expense/start' })
+components.push({ component: 'financial/expense/ExpenseHandle', name: '', path: '/financial/expense/handle' })
+
 
 // //2.销售合同 -->
 // //客户

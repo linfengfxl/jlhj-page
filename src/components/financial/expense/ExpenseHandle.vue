@@ -1,5 +1,5 @@
 <template>
-  <StartProcess ref="startProcess" defineId="1" :title="pageTitle" @on-submit="save">
+  <HandleProcess ref="handleProcess" :instId="instId" :title="title" @on-load="instLoaded" @on-submit="save">
     <div class="page expense-edit">     
     <Loading :loading="loading">
       <div class="baseinfo"> 
@@ -16,86 +16,77 @@
             <tr>
               <td>
                 <FormItem prop="catalog" label="报销分类"> 
-                  <Select v-model="formItem.catalog">
-                    <Option v-for="item in catalog" :value="item.code" :key="item.code">{{ item.text }}</Option>
-                  </Select>
+                  {{formItem.catalog}}
                 </FormItem>
               </td>
               <td>
                 <FormItem prop="projectId" label="工程名称"> 
-                  <SelectProject v-model="formItem.projectId" :model="formItem" :text="formItem.projectName" />
+                  {{formItem.projectName}}
                 </FormItem>
               </td>
               <td>
-                <FormItem prop="billDate" label="报销日期" :required="true">
-                   <DatePicker type="date" placeholder="" v-model="formItem.billDate" format="yyyy-MM-dd" ></DatePicker>
+                <FormItem prop="billDate" label="报销日期">
+                  {{formItem.billDate}}
                 </FormItem>
               </td>
             </tr>
             <tr> 
               <td>
                 <FormItem prop="bankOpen" label="开户银行">
-                  <Input v-model="formItem.bankOpen"/>
+                  {{formItem.bankOpen}}
                 </FormItem>
               </td>
               <td>
                 <FormItem prop="bankAccName" label="银行户名">
-                  <Input v-model="formItem.bankAccName"/>
+                  {{formItem.bankAccName}}
                 </FormItem>
               </td>
               <td>
                 <FormItem prop="bankAccount" label="银行账号">
-                  <Input v-model="formItem.bankAccount"/>
+                  {{formItem.bankAccount}} 
                 </FormItem>
               </td>              
             </tr> 
             <tr>
                <td>
                 <FormItem prop="payWay" label="付款方式">
-                  <Select v-model="formItem.payWay">
-                    <Option v-for="item in $args.getArgGroup('pay_way')" :value="item.argCode" :key="item.argCode">{{ item.argText }}</Option>
-                  </Select>
+                  {{formItem.payWay}}
                 </FormItem>
               </td>
               <td>
                 <FormItem prop="legal" label="法律主体">
-                  <Input v-model="formItem.legal"/>
+                  {{formItem.legal}}
                 </FormItem>
               </td>
               <td>
                  <FormItem prop="amount" label="报销金额">
-                  <Input
-                    v-model="formItem.amount"
-                    placeholder
-                    class="width-1"
-                    readonly="readonly"
-                  />
+                  {{formItem.amount}}
                 </FormItem>
               </td>
             </tr>
              <tr> 
               <td>
                 <FormItem prop="operatorName" label="经办人">
-                  <Input v-model="formItem.operatorName"/>
+                  {{formItem.operatorName}} 
                 </FormItem>
               </td>
               <td>
                 <FormItem prop="deptId" label="经办人部门">
-                  <SelectDept v-model="formItem.deptId" :model="formItem" :text="formItem.deptName" />
+                  {{formItem.deptName}}
                 </FormItem>
               </td>  
             </tr> 
             <tr>
               <td colspan="3">
-                <FormItem prop="files" label="附件">
-                  <UploadBox v-model="formItem.files" :readonly="false" v-if="false"></UploadBox>
+                <FormItem prop="files" label="附件">                  
+                  <UploadBox v-model="formItem.files" :readonly="false"></UploadBox>
                 </FormItem>
               </td>
             </tr>
             <tr>
               <td colspan="3">
                 <FormItem prop="describe" label="报销说明">
-                  <Input type="textarea" v-model="formItem.describe" :rows="3" />
+                  {{formItem.describe}}
                 </FormItem>
               </td>
             </tr>
@@ -107,13 +98,13 @@
         <Editable
           ref="editable"
           :list="list"
-          :editable="true"           
+          :editable="false"
           @on-amount-change="onAmountChange"           
         ></Editable>
       </div>       
     </Loading>
   </div>
-</StartProcess>  
+</HandleProcess>  
 </template>
 <script>
 import Loading from '@/components/loading';
@@ -127,7 +118,7 @@ import UploadBox from '@/components/upload/Index';
 import SelectProject from '@/components/page/form/SelectProject';
 import SelectDept from '@/components/page/form/SelectDept';
 
-import StartProcess from '@/components/workflow/process/Start';
+import HandleProcess from '@/components/workflow/process/Handle';
 
 export default {
   components: {
@@ -137,13 +128,14 @@ export default {
     UploadBox,
     SelectProject,
     SelectDept,
-    StartProcess
+    HandleProcess
   },
   data() {
     return {
+      title:'报销单',
       loading: 0,
-      stockBillId: '',
-      pageFlag: 1,//1.新建 2.编辑 3.修订
+      instId:0,
+      stockBillId: '',       
       formItem: {
         billId:'',
         catalog:'',
@@ -166,33 +158,7 @@ export default {
         instId:0
       },
       formRules: {
-        catalog:[
-          { required: true, whitespace: true, message: '该项为非空', trigger: 'change' }
-        ],
-        projectId: [
-          { required: true, whitespace: true, message: '该项为非空', trigger: 'change' }
-        ],
-        bankOpen:[
-          { required: true, whitespace: true, message: '该项为非空', trigger: 'change' }
-        ],
-        bankAccName:[
-          { required: true, whitespace: true, message: '该项为非空', trigger: 'change' }
-        ],
-        bankAccount:[
-          { required: true, whitespace: true, message: '该项为非空', trigger: 'change' }
-        ],
-        payWay: [
-          { required: true, whitespace: true, message: '该项为非空', trigger: 'change' }
-        ], 
-        legal: [
-          { required: true, whitespace: true, message: '该项为非空', trigger: 'change' }
-        ], 
-        operatorName: [
-          { required: true, whitespace: true, message: '该项为非空', trigger: 'change' }
-        ], 
-        deptId: [
-          { required: true, whitespace: true, message: '该项为非空', trigger: 'change' }
-        ]
+         
       },
       list: [],
       oriItem: {},
@@ -207,34 +173,24 @@ export default {
       ]
     }
   },
-  mounted: function () {
-    this.billId = this.$route.query.id;
-    if (this.billId) {
-      this.pageFlag = 2;
-      this.load();
-    } else {
-      this.pageFlag = 1;
-      this.initNew();
-    }
+  mounted: function () { 
+    this.instId = this.$route.query.inst;    
   },
-  computed: {
-    pageTitle() {
-      if (this.pageFlag == 1) {
-        return '报销单';
-      }
-      if (this.pageFlag == 2) {
-        return '报销单';
-      }
-    }
+  computed: {     
   },
   methods: {
+    instLoaded(proc){ 
+      this.billId = proc.instance.businessKey;
+      this.title = "报销单_" + this.billId;
+      this.load();
+    },
     load() {
       this.loading = 1;
 
       this.$http.post("/api/engine/financial/expense/get?billId=" + this.billId, {}).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
-          if (res.data.data) {
+          if (res.data.data) {            
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
             Object.assign(this.formItem, res.data.data);             
             this.list = res.data.data.detailList;
@@ -312,10 +268,7 @@ export default {
 
       // 提交
       this.loading = 1;
-      var uri = '/api/engine/financial/expense/add';
-      if (this.pageFlag == 2) {
-        uri = '/api/engine/financial/expense/update';
-      }
+      var uri = '/api/engine/financial/expense/submit';
 
       this.$http.post(uri, form).then((res) => {
         this.loading = 0;
@@ -334,11 +287,7 @@ export default {
       this.formItem.amount = val;
     },
     reset() {
-      if (this.pageFlag == 1) {
-        this.initNew();
-      } else {
-        Object.assign(this.formItem, this.oriItem);
-      }
+      Object.assign(this.formItem, this.oriItem);
     },
     goBack() {
       this.$router.go(-1);
@@ -376,34 +325,7 @@ export default {
 .expense-edit .baseinfo table td {
   height: 40px;
   padding-right: 4px;
-}
-
-.expense-edit .savebar {
-  margin-top: 10px;
-  height: 40px;
-  width: 100%;
-  border-collapse: collapse;
-}
-.expense-edit .savebar td {
-  border: 1px solid #fefefe;
-  font-size: 14px;
-}
-.expense-edit .savebar .save {
-  width: 120px;
-  border: 1px solid #20bfee;
-  background-color: #20bfee;
-  color: white;
-  text-align: center;
-  cursor: pointer;
-}
-.expense-edit .savebar .reset {
-  width: 60px;
-  border: 1px solid #a1e7f8;
-  background-color: #a1e7f8;
-  color: white;
-  text-align: center;
-  cursor: pointer;
-}
+} 
 
 .selectinput {
   cursor: pointer;

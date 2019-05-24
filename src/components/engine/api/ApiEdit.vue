@@ -18,8 +18,11 @@
              <tr>
                <td class="label">名称</td>
                <td>
-                  <span v-if="edit" style="color:green" >{{formItem.api}}</span>
-                  <Input v-else v-model="formItem.api" placeholder="" ></Input> 
+                  <div v-if="edit">
+                    <span style="color:green" >{{formItem.api}}</span>
+                    <Button type="text" size="small" @click="reName" >修改</Button>
+                  </div>
+                  <Input v-else v-model="formItem.api" placeholder="" ></Input>
                </td>
              </tr>
              <tr>
@@ -296,7 +299,7 @@
 
       },
       saveAs(callback){
-        var apiName = '';
+        var apiName = this.formItem.api;
         this.$Modal.confirm({
             render: (h) => {
                 return h('Input', {
@@ -316,6 +319,32 @@
               this.formItem.id = 0;
               this.formItem.api = apiName;
               this.edit = 0;
+              this.save()
+            },
+            onCancel: () => {
+                
+            }
+        })
+      },
+      reName(){
+        var apiName = this.formItem.api;
+        this.$Modal.confirm({
+            render: (h) => {
+                return h('Input', {
+                    props: {
+                        value: apiName,
+                        autofocus: true,
+                        placeholder: '接口名称'
+                    },
+                    on: {
+                        input: (val) => {
+                          apiName = val;
+                        }
+                    }
+                })
+            },
+            onOk: () => {               
+              this.formItem.api = apiName;
               this.save()
             },
             onCancel: () => {

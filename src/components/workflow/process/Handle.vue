@@ -42,7 +42,8 @@
           <tr>
             <td style=""></td>
             <td>
-               <Button type="primary" size="large" @click="submit">提 交</Button>
+               <Button type="success" size="large" @click="submit" class="btn-submit">提 交</Button>
+               <Button type="default" size="large" @click="terminate" class="btn-terminate" >驳回终止</Button>
             </td>
           </tr>
         </table>
@@ -56,9 +57,18 @@
   export default {
     components: { 
     },
+    props:{
+      title: {
+        type: String,
+        default: '标题'
+      },
+      instId:{
+        type:[Number,String],
+        default:0
+      }
+    },
     data() {       
       return {
-        instId:0,
         loading:0, 
         nextNodes:[],
         users:[],
@@ -66,6 +76,7 @@
           instId:0,
           nextCur:0,
           nextUser:'',
+          status:2,
           comment:''
         },
         instance:{
@@ -76,23 +87,30 @@
       }
     },
     mounted: function () {
-      this.load();
     },
     computed: {},
-    methods: {
-      load(){
-        if(this.$route.query.inst){
-          this.instId = this.$route.query.inst;
-          this.loadProcess();
-        }else{
-          this.$Message.error('缺少参数 task！');
-          this.$router.go(-1);
-          return;
-        }
-      },
-      loadProcess:function(){
+    watch:{
+      instId(newVal,oldVal){
+        this.load(newVal);
+      }
+    },
+    methods: { 
+      load(id){
+        this.users = [];
+        this.formItem = {
+          nextCur:0,
+          nextUser:'',
+          comment:'',
+          status:2,
+        };
+        this.instance = {
+          title:'流程实例',
+          cur:0,
+          nodeList:[]
+        } 
+
         this.loading = 1;
-        this.$http.get('/api/engine/workflow/instance/get?id='+this.instId).then((res) => {
+        this.$http.get('/api/engine/workflow/instance/get?id='+id).then((res) => {
           this.loading = 0;
           if (res.data.code === 0) {
             var data = res.data.data;
@@ -114,6 +132,8 @@
 
               this.formItem.nextCur = this.instance.cur + 1;
               this.selNextNode();
+
+              this.$emit('on-load',this,this.instance);
 
             }else{
               this.$Message.info("流程实例不存在！");
@@ -162,20 +182,15 @@
           this.$Message.error('请选择下一节点审批人');
           return;
         }
-         
-        // 提交保存
-        this.loading = 1;
-        this.$http.post('/api/engine/workflow/instance/submit',this.formItem).then((res) => {
-          this.loading = 0;
-          if (res.data.code == 0) {
-             this.$Message.info('提交成功');
-             this.$router.go(-1);
-          } else {
-            this.$Message.error(res.data.message);
-          }
-        }).catch((error) => {
-          this.$Message.error(error.toString())
-        })
+        this.formItem.status = 2; // 完成
+        this.$emit('on-submit',this,this.formItem);
+      },
+      terminate(){
+        this.formItem.status = 3; // 终止
+        this.$emit('on-submit',this,this.formItem); 
+      },
+      goBack(){
+        this.$router.go(-1);
       }      
     }
   }
@@ -246,4 +261,12 @@
     width:70px;text-align: right;
     padding-right: 10px;  
   } 
+
+  .wfprocess-footer .btn-submit{
+    height: 40px;width: 140px;    
+  }
+
+  .wfprocess-footer .btn-terminate{
+    height: 40px;margin-left: 80px;
+  }
 </style>

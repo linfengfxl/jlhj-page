@@ -233,4 +233,17 @@
     -khtml-user-select: none; /*早期浏览器*/
     user-select: none;
   }
+
+  .ivu-table-cell .attachfile{
+    min-height: auto;
+    font-size: 12px;
+  }
+  .ivu-table-cell .attachfile-body{
+    background-color: transparent;
+    border: 0px;
+  }
+  .ivu-table-cell .attachfile-file:hover .attachfile-file-name{
+    color: #20bfee;
+    background-color: transparent;
+  }
 </style>
