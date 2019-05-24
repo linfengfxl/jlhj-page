@@ -27,11 +27,11 @@
             <!--  作业单号 -->
           </td>
           <td>
-            {{item.machineOrderId}}
+            {{item.machineCode}}
             <!--  机械代码 -->
           </td>
-            <td>
-            {{item.materName}}
+          <td>
+            {{item.machineName}}
             <!--  机械名称 -->
           </td>
           <td>
@@ -39,33 +39,33 @@
             <!--  机械型号 -->
           </td>
           <td>
-            {{$args.getArgText('unit',item.unit)}}
+            {{item.jobDate}}
             <!--  作业日期 -->
           </td>
           <td>
-            {{item.spec}}
+            {{item.leaseType}}
             <!--  租赁方式 -->
           </td>
           <td>
-            {{item.spec}}
+            {{item.useTime}}
             <!--  作业用时 -->
-          </td> 
+          </td>
           <td class="col-quantity">
             <!--  作业台班 -->
-            {{item.spec}}
+            {{item.taiban}}
           </td>
           <td class="col-price">
             <!--  含税单价(元) -->
             <InputNumber
               :max="999999"
               :min="0"
-              v-model="item.taxUnitPrice"
+              v-model="item.taibanPrice"
               @on-change="computedAmount(item)"
             ></InputNumber>
           </td>
           <td class="col-amount">
             <!--  结算金额  -->
-            {{item.unitPrice}}
+            {{item.amount}}
           </td>
           <td class="col-amount">
             <!--  税额 -->
@@ -73,7 +73,7 @@
           </td>
           <td class="col-amount">
             <!--  价税合计 -->
-            {{item.tax}}
+            {{item.totalPriceTax}}
           </td>
         </tr>
       </tbody>
@@ -132,18 +132,18 @@ export default {
     listNewRow() {
       var def = {
         id: 0,
-        type: 2,//入库
-        machineOrderId: '',//材料编号
-        materName: '',//材料名称
-        spec: '',//规格型号
-        unit: '',//单位
-        quantity: 0,//数量
-        unitPrice: 0,//单价
-        taxUnitPrice: 0,//含税单价
-        tax: 0,//税额
-        amount: 0,//金额
-        constructionSite: '',//施工部位
-        productName: ''//产成品名称
+        machineOrderId: '',//作业单号 
+        machineCode: '',//机械代码 
+        machineName: '',//机械名称 
+        spec: '',//机械型号  
+        jobDate: '',//作业日期 
+        leaseType: '', //租赁方式 
+        useTime: '',//作业用时 
+        taiban: '',//作业台班 
+        taibanPrice: '',//含税单价(元) 
+        amount: '',//结算金额
+        tax: '',//税额
+        totalPriceTax: '',//价税合计
       };
       return def;
     },
@@ -167,9 +167,9 @@ export default {
       item.needDate = args[0];
     },
     computedAmount(item) {
-      item.amount = floatObj.multiply(item.taxUnitPrice, item.quantity);//数量*含税单价
-      item.unitPrice = floatObj.multiply(item.quantity, item.taxUnitPrice);//含税单价*(1-税率)
-      item.tax = floatObj.multiply(item.quantity, item.taxUnitPrice);//数量*含税单价*税率
+      item.amount = floatObj.multiply(item.taibanPrice, 1);//結算金額= 含税单价*作业台班*(1-税率)
+      item.tax=0;//税额
+      item.totalPriceTax=0;//
       this.$emit('on-amount-change', this.sumAmount());
     },
     sumAmount() {
@@ -182,16 +182,12 @@ export default {
     selMater(row) {
       var selmaterial = this.$refs.selmaterial;
       selmaterial.show({
-        ok: (data) => {
-          debugger;
+        ok: (data) => { 
           if (_.findIndex(this.list, { 'machineOrderId': data.machineOrderId }) >= 0) {
             this.$Message.error('作业单已存在!');
             return;
           }
-          row.machineOrderId = data.machineOrderId;
-          row.materName = data.materName;
-          row.spec = data.spec;
-          row.unit = data.unit;
+          Object.assign(row, data);
           this.computedAmount(row);
         }
       });

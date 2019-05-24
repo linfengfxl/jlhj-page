@@ -29,7 +29,7 @@
                   <Date-picker
                     type="date"
                     placeholder="选择日期"
-                    v-model="formItem.jobDate"
+                    v-model="formItem.billDate"
                     format="yyyy-MM-dd"
                   ></Date-picker>
                 </FormItem>
@@ -62,14 +62,24 @@
               </td>
               <td>
                 <FormItem prop label="结算开始日期">
-                  <Input v-model="formItem.startDate"/>
+                  <Date-picker
+                    type="date"
+                    placeholder="选择日期"
+                    v-model="formItem.startDate"
+                    format="yyyy-MM-dd"
+                  ></Date-picker>
                 </FormItem>
               </td>
             </tr>
             <tr>
               <td>
                 <FormItem prop label="结算结束日期">
-                  <Input v-model="formItem.endDate"/>
+                  <Date-picker
+                    type="date"
+                    placeholder="选择日期"
+                    v-model="formItem.endDate"
+                    format="yyyy-MM-dd"
+                  ></Date-picker>
                 </FormItem>
               </td>
               <td>
@@ -79,17 +89,17 @@
               </td>
               <td>
                 <FormItem prop label="罚款">
-                  <Input v-model="formItem.endDate"/>
+                  <Input v-model="formItem.penalty"/>
                 </FormItem>
               </td>
             </tr>
             <tr>
               <td>
                 <FormItem prop label="价税合计">
-                  <Input v-model="formItem.endDate"/>
+                  <Input v-model="formItem.totalPriceTax"/>
                 </FormItem>
-              </td>
-              <td colspan="2">
+              </td> 
+              <td>
                 <FormItem prop=" " label="备注">
                   <Input type="textarea" :rows="2" v-model="formItem.remark"/>
                 </FormItem>
@@ -148,26 +158,26 @@ export default {
   data() {
     return {
       loading: 0,
-      machineOrderId: '',
+      machineBillCode: '',
       pageFlag: 1,//1.新建 2.编辑 3.修订
       formItem: {
-        machineOrderId: '',//单据编号
+        machineBillCode: '',//单据编号
         deptId: '',//所属部门
         projectCode: '',//工程代码
-        projectName: '',//工程名 
-        machineModel: '',//机械型号
+        projectName: '',//工程名   
+        billDate:'',//结算日期
+
         providerCode: '',//供应商名称
         linkMan: '',//供应商联系人
-        jobDate: '',//作业日期
-        operator: '',//司机/操作手姓名
-        operatorTel: '',//司机/操作手电话
-        leaseType: '',//租赁方式
-        taibanPrice: '',//台班单价
-        remark: '',//备注
+        taxpayerType: '',//纳税人类型
+        taxRate: '',   //税率
+        invoiceType: '',//发票类型 
+
         startDate: '',//结算开始日期
-        endDate: '',//结算结束日期
-        taibanPrice: null,//
-        source: 1,
+        endDate: '',//结算结束日期 
+        penalty: '',//罚款
+        totalPriceTax: '',//价税合计
+        remark: '',//备注 
       },
       formRules: {
         deptId: [
@@ -187,8 +197,8 @@ export default {
     }
   },
   mounted: function () {
-    this.machineOrderId = this.$route.query.id;
-    if (this.machineOrderId) {
+    this.machineBillCode = this.$route.query.id;
+    if (this.machineBillCode) {
       this.pageFlag = 2;
       this.load();
     } else {
@@ -209,7 +219,7 @@ export default {
   methods: {
     load() {
       this.loading = 1;
-      this.$http.post("/api/engine/machine/order/get", { "machineOrderId": this.machineOrderId }).then((res) => {
+      this.$http.post("/api/engine/machine/bill/get", { "machineBillCode": this.machineBillCode }).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
           if (res.data.data) {
@@ -230,22 +240,22 @@ export default {
     },
     initNew() {
       Object.assign(this.formItem, {
-        machineOrderId: '',//入库单号
-        type: 2,//类型:1.出库, 2.入库
-        projectCode: '',//工程编号
-        contractNo: '',//合同编号
-        deptId: '',//仓库或部门
-        deptId: '',
-        providerCode: '',//供应商编号
-        providerName: '',//供应商名称
+        machineBillCode: '',//单据编号
+        deptId: '',//所属部门
+        projectCode: '',//工程代码
+        projectName: '',//工程名  
+
+        providerCode: '',//供应商名称
         linkMan: '',//供应商联系人
-        linkPhone: '',//供应商联系电话
         taxpayerType: '',//纳税人类型
-        taxRate: '',//税率  
-        inboundType: 1,
-        remark: '',
-        operator: '',//
-        operatorName: '',
+        taxRate: '',   //税率
+        invoiceType: '',//发票类型 
+
+        startDate: '',//结算开始日期
+        endDate: '',//结算结束日期 
+        penalty: '',//罚款
+        totalPriceTax: '',//价税合计
+        remark: '',//备注 
       });
       this.list = [];
       this.list.push(this.$refs.editable.listNewRow());
@@ -257,18 +267,18 @@ export default {
       };
 
       Object.assign(form, this.formItem);
-      form.jobDate = page.formatDate(form.jobDate);
-
+      form.billDate = page.formatDate(form.billDate);
+      form.startDate = page.formatDate(form.startDate);
+      form.endDate = page.formatDate(form.endDate); 
+      
       var pass = true;
       this.$refs.form.validate((valid) => {
         pass = valid;
-      })
-
+      }) 
       if (!pass) {
         this.$Message.error('验证未通过！');
         return;
-      }
-
+      } 
       form.detailList = [];
       // 明细
       for (var i = 0; i < this.list.length; i++) {
@@ -285,16 +295,15 @@ export default {
         //   }
         //   form.detailList.push(item);
         // }
-        item['startTime'] = page.formatDate(item['startTime']);
-        item['endTime'] = page.formatDate(item['endTime']);
+        
         form.detailList.push(item);
       }
       console.log(form);
       // 提交
       this.loading = 1;
-      var uri = '/api/engine/machine/order/add';
+      var uri = '/api/engine/machine/bill/add';
       if (this.pageFlag == 2) {
-        uri = '/api/engine/machine/order/update';
+        uri = '/api/engine/machine/bill/update';
       }
 
       this.$http.post(uri, form).then((res) => {

@@ -2,7 +2,7 @@
   <ListPage
     ref="page"
     title="机械租赁结算单"
-    api="/api/engine/machine/order/list"
+    api="/api/engine/machine/bill/list"
     :model="this"
     :beforeLoad="beforeLoad"
   >
@@ -88,8 +88,8 @@ export default {
         },
         {
           title: '单号',
-          key: 'machineOrderId',
-          width: 120,
+          key: 'machineBillCode',
+          width: 130,
         }, {
           title: '部门',
           key: 'deptName',
@@ -103,15 +103,10 @@ export default {
           title: '供应商',
           key: 'providerName',
           width: 120,
-        },
-        {
-          title: '机械名称',
-          key: 'machineName',
-          width: 120,
-        },
+        }, 
         page.table.initDateColumn({
-          title: '作业时间',
-          key: 'jobDate',
+          title: '结算时间',
+          key: 'billDate',
         }),
         {
           title: '备注',
@@ -171,7 +166,7 @@ export default {
       if (name === '编辑') {
         if (params.row) {
           this.$router.push({
-            path: '/machine-order/edit?id=' + params.row.machineOrderId
+            path: '/machine-order/bill/edit?id=' + params.row.machineBillCode
           })
         }
       }
@@ -180,7 +175,7 @@ export default {
           title: '删除确认',
           content: '<p>删除后不能恢复，确定删除已选择的记录吗？</p>',
           onOk: () => {
-            this.$http.post('/api/engine/machine/order/delete', { 'machineOrderId': params.row.machineOrderId }).then((res) => {
+            this.$http.post('/api/engine/machine/bill/delete', { 'machineBillCode': params.row.machineBillCode }).then((res) => {
               if (res.data.code === 0) {
                 this.$Message.success("删除成功");
                 $.extend(this.queryForm, this.queryParam);
