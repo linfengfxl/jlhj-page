@@ -46,14 +46,12 @@
             </tr>
             <tr>
               <td>
-                <FormItem prop="providerCode" label="供应商">
-                  <Input
-                    v-model="formItem.providerName"
-                    placeholder
-                    class="width-1"
-                    readonly="readonly"
-                    icon="search"
-                    @on-click="selProvider"
+                <FormItem prop="providerCode" label="供应商"> 
+                  <SelectProvider
+                    v-model="formItem.providerCode"
+                    :model="formItem"
+                    :text="formItem.providerName"
+                    @on-select="selProvider"
                   />
                 </FormItem>
               </td>
@@ -75,7 +73,6 @@
               <td></td>
               <td>
                 <FormItem prop="machineName" label="机械名称">
-          
                   <SelectMachine
                     v-model="formItem.machineCode"
                     :model="formItem"
@@ -113,8 +110,7 @@
           <td></td>
         </tr>
       </table>
-    </Loading> 
-    <SelProvider ref="selProvider"></SelProvider> 
+    </Loading>
   </div>
 </template>
 <script>
@@ -126,9 +122,11 @@ import floatObj from '@/assets/js/floatObj';
 import pagejs from '@/assets/js/page';
 
 import SelStorage from '@/components/storage/input/SelStorage';
-import SelProvider from '@/components/provider/SelectProvider';
+
 import SelectProject from '@/components/page/form/SelectProject';
-import SelectMachine from '@/components/page/form/SelectMachine'; 
+import SelectMachine from '@/components/page/form/SelectMachine';
+import SelectProvider from '@/components/page/form/SelectProvider';
+
 
 
 export default {
@@ -136,10 +134,10 @@ export default {
     Loading,
     LayoutHor,
     Editable,
-    SelStorage, 
-    SelProvider, 
+    SelStorage,
     SelectProject,
-    SelectMachine
+    SelectMachine,
+    SelectProvider,
   },
   data() {
     return {
@@ -310,22 +308,17 @@ export default {
         this.$Message.error("请求失败，请重新操作")
       });
     },
-    selProvider(row) {
-      var sel = this.$refs.selProvider;//引用该控件，赋值给变量对象
-      sel.show({
-        ok: (data) => {
-          if (data) {
-            this.formItem.providerName = data.providerName;
-            this.formItem.providerCode = data.providerCode;
-            this.formItem.linkMan = data.linkMan;//供应商联系人
-            this.formItem.linkPhone = data.linkPhone;//供应商联系电话
-            this.formItem.taxpayerType = this.$args.getArgText('taxpayer_type', data.taxpayerType);//纳税人类型
-            this.formItem.invoiceType = this.$args.getArgText('invoice_type', data.invoiceType);//发票类型
-            this.formItem.taxRate = data.taxRate;//税率 
-          }
-        }
-      });
-    }, 
+    selProvider(data) {
+      if (data) {
+        this.formItem.providerName = data.providerName;
+        this.formItem.providerCode = data.providerCode;
+        this.formItem.linkMan = data.linkMan;//供应商联系人
+        this.formItem.linkPhone = data.linkPhone;//供应商联系电话
+        this.formItem.taxpayerType = this.$args.getArgText('taxpayer_type', data.taxpayerType);//纳税人类型
+        this.formItem.invoiceType = this.$args.getArgText('invoice_type', data.invoiceType);//发票类型
+        this.formItem.taxRate = data.taxRate;//税率 
+      }
+    },
     onAmountChange(val) {
       this.formItem.amount = val;
     },
@@ -337,7 +330,7 @@ export default {
       }
     },
     goBack() {
-      this.$router.push('/machine-order');
+      this.$router.go(-1);
     },
   }
 }

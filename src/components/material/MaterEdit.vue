@@ -11,7 +11,7 @@
             class="form-item"
           >
             <FormItem label="编码" prop="materCode">
-              <Input v-model="formItem.materCode" placeholder="用户名唯一" :disabled="isEdit==1"/>
+              <Input v-model="formItem.materCode" placeholder="编码唯一" :disabled="isEdit==1"/>
             </FormItem>
             <FormItem label="名称" prop="materName">
               <Input v-model="formItem.materName"/>
@@ -100,13 +100,13 @@ export default {
         this.$Message.error("请选择资源类别")
         return;
       }
-      this.$refs['form'].validate((valid) => {
+      this.$refs['form'].validate((valid) => { 
         if (valid) {
-          this.save();
+          this.save2();
         }
       });
     },
-    save() {
+    save2() {
       let url = '';
       let msg = '';
       if (this.isEdit == 0) {
