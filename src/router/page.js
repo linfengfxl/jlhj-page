@@ -31,6 +31,9 @@ components.push({ component: 'workflow/process/Index', name: '', path: '/workflo
 components.push({ component: 'financial/expense/Index', name: '', path: '/financial/expense' })
 components.push({ component: 'financial/expense/ExpenseEdit', name: '', path: '/financial/expense/edit' })
 
+// 运输小票
+components.push({ component: 'transport/order/Index', name: '', path: '/transport/order' })
+
 // //2.销售合同 -->
 // //客户
 // components.push({ component: 'customer/Index', name: '', path: '/customer' })

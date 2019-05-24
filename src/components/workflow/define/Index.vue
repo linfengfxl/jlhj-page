@@ -25,13 +25,13 @@
             <Button @click="reset">重置</Button>
           </td>
           <td>
-            <Button @click="add" icon="plus">添加</Button>
+            <Button @click="add" icon="plus">添加</Button> 
           </td>
         </tr>
       </table>
     </div>
     <div>
-      <MaterEdit ref="materEdit" @on-save="load"></MaterEdit>       
+      <DefineEdit ref="editDefine" @on-save="load"></DefineEdit>       
     </div>
   </ListPage>
 </template>
@@ -39,7 +39,7 @@
 import ListPage from '@/components/page/ListPage';
 import DataRowOperateBar from '@/components/commons/DataRowOperateBar';
 import Loading from '@/components/loading';
-import MaterEdit from '@/components/material/MaterEdit';
+import DefineEdit from '@/components/workflow/define/DefineEdit';
 //import SelectCategory from '@/components/material-category/SelectMaterialCategory';
 import DataRowOperate from '@/components/commons/DataRowOperate';
 import page from '@/assets/js/page';
@@ -48,7 +48,7 @@ export default {
   components: {
     DataRowOperateBar,
     Loading,
-    MaterEdit,
+    DefineEdit,
     // SelectCategory,
     ListPage,
     DataRowOperate
@@ -75,6 +75,7 @@ export default {
                 }]
               },
               on: {
+                // 点击判断编辑或删除
                 click: (key) => {
                   if (key == "edit") {
                     this.rowCommand("编辑", params);
@@ -142,6 +143,7 @@ export default {
         return;
       }
       if (name == '编辑') {
+        // 编辑row
         this.update(params.row);
         return;
       }
@@ -170,13 +172,14 @@ export default {
       });
     },
     add: function () {
-      this.$refs.materEdit.open({ materCode: '', resourceType: this.queryForm.resourceType, code: this.queryForm.resourceType });
+      this.$refs.editDefine.open({ materCode: '', resourceType: this.queryForm.resourceType, code: this.queryForm.resourceType });
     },
     update: function (row) {
-      this.$refs.materEdit.open(row);
+      // 打开DefineEdit组件
+      this.$refs.editDefine.open(row);
     },
     save(item) {
-      var url = '/api/material/update';
+      var url = '/api/engine/workflow/define/update';
       this.loading = 1;
       this.$http.post(url, item).then((res) => {
         this.loading = 0;
