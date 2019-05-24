@@ -5,7 +5,7 @@
       <TabPane label="待处理" name="handling" ></TabPane>
       <TabPane label="已处理" name="handled" ></TabPane>
       <TabPane label="已发送" name="sended" ></TabPane>
-      <Button type="ghost" @click="startPro" size="small" slot="extra" class="mywork-start-extra">发起流程</Button>
+      <Button type="primary" @click="startPro" size="small" slot="extra" class="mywork-start-extra">发起流程</Button>
     </Tabs>
     <div class="page-searchbox" style="margin-top: 0px">
       <table cellpadding="0" cellspacing="0">
@@ -330,8 +330,7 @@
           this.query();
       },
       startPro(){
-          let routeData = this.$router.resolve({ name: 'workflow.initproc' });
-          window.open(routeData.href, '_blank');
+        this.$router.push({path:'/workflow/start'}); 
       },
       handle(row){
         this.$router.push({path:'/workflow/process/redirect?forward&do=handle&inst=' + row.id +'&define='+row.defineId});
