@@ -298,7 +298,7 @@ export default {
       this.loading = 1;
       var uri = '/api/engine/storage/instock/start';
       if (this.pageFlag == 2) {
-        uri = '/api/engine/storage/instock/update';
+        uri = '/api/engine/storage/instock/restart'; 
       }
 
       this.$http.post(uri, form).then((res) => {
