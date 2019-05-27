@@ -14,12 +14,45 @@
           </td>
         </tr>
       </table>
-    </div> 
+    </div>
     <div class="page-searchbox">
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td>
-            <Input v-model="queryForm.keyword" placeholder="名称" @on-enter="query"/>
+            <SelectProject
+              v-model="queryForm.projectCode"
+              :model="queryForm"
+              :text="queryForm.projectName"              
+              placeholder="工程名称"
+            />
+          </td>
+              
+          <td>
+            <SelectProvider
+              v-model="queryForm.providerCode"
+              :model="queryForm"
+              :text="queryForm.providerName"
+              @on-select="selProvider"
+              placeholder="供应商名称"
+            />
+          </td>
+          <td>
+            <Input
+              v-model="queryForm.transportOrderId"
+              placeholder="单据编号"
+              @keyup.enter.native="query"
+            ></Input>
+          </td>
+           <td>
+            <DatePicker
+              type="daterange"
+              v-model="queryForm.createTime"
+              split-panels
+              placeholder="创建日期"
+              style="width: 180px"
+              :clearable="true"
+              ::transfer="true"
+            ></DatePicker>
           </td>
           <td>
             <Button @click="query" type="primary" icon="ios-search">查询</Button>
@@ -33,21 +66,26 @@
     <Edit ref="edit" @on-save="query"></Edit>
   </ListPage>
 </template>
-<script>    
-import Edit from '@/components/transport/order/Edit';
-import ListPage from '@/components/page/ListPage';
-import DataRowOperate from '@/components/commons/DataRowOperate';
+<script>
+import Edit from "@/components/transport/order/Edit";
+import ListPage from "@/components/page/ListPage";
+import DataRowOperate from "@/components/commons/DataRowOperate";
+import SelectProject from "@/components/page/form/SelectProject"; // 工程
+import SelectProvider from "@/components/page/form/SelectProvider"; //供应商
+import page from '@/assets/js/page';
 
 export default {
   components: {
     Edit,
     ListPage,
     DataRowOperate,
+    SelectProject,
+    SelectProvider
   },
   data() {
     let that = this;
     return {
-      tabName: '1',
+      tabName: "1",
       columns: [
         /*
         {
@@ -61,23 +99,24 @@ export default {
           }
         },*/
         {
-          title: '操作',
+          title: "操作",
           width: 120,
-          align: 'center',
+          align: "center",
           render: (h, params) => {
             var row = params.row;
             return h(DataRowOperate, {
               props: {
-                btns: [{
-                  key: 'edit',
-
-                },
-                {
-                  key: 'delete',
-                }]
+                btns: [
+                  {
+                    key: "edit"
+                  },
+                  {
+                    key: "delete"
+                  }
+                ]
               },
               on: {
-                click: (key) => {
+                click: key => {
                   if (key == "edit") {
                     this.rowCommand("编辑", params);
                   }
@@ -90,157 +129,158 @@ export default {
           }
         },
         {
-          title: '单据编号',
-          key: 'transportOrderId',
+          title: "单据编号",
+          key: "transportOrderId",
           width: 120,
-          align: 'left'
+          align: "left"
         },
         {
-          title: '运输日期',
-          key: 'transportDate',
-          width:120,
-          align: 'left'
-        },
-        {
-          title: '所属部门',
-          key: 'deptId',
-          width: 100,
-          align: 'center'
-        },
-         {
-          title: '工程名称',
-          key: 'projectName',
+          title: "运输日期",
+          key: "transportDate",
           width: 120,
-          align: 'left',
-        },
-        { 
-          title: '供应商名称',
-          key: 'providerCode',
-          width: 100,
-          align: 'left',
+          align: "left"
         },
         {
-          title: '供应商联系人',
-          key: 'linkMan',
+          title: "所属部门",
+          key: "deptName",
           width: 100,
-          align: 'center',
+          align: "center"
         },
         {
-          title: '税率',
-          key: 'taxRate',
+          title: "工程名称",
+          key: "projectName",
+          width: 120,
+          align: "left"
+        },
+        {
+          title: "供应商名称",
+          key: "providerName",
+          width: 100,
+          align: "left"
+        },
+        {
+          title: "供应商联系人",
+          key: "linkMan",
+          width: 100,
+          align: "center"
+        },
+        {
+          title: "税率",
+          key: "taxRate",
           width: 60,
-          align: 'center',
+          align: "center"
         },
-         {
-          title: '运输设备名称',
-          key: 'transportType',
+        {
+          title: "运输设备名称",
+          key: "transportType",
           width: 100,
-          align: 'left',
+          align: "left"
         },
         {
-          title: '运输时间',
-          key: 'transportDate',
+          title: "运输时间",
+          key: "transportDate",
           width: 120,
-          align: 'left',
+          align: "left"
         },
         {
-          title: '车牌号',
-          key: 'vehicleNum',
+          title: "车牌号",
+          key: "vehicleNum",
           width: 80,
-          align: 'left',
+          align: "left"
         },
         {
-          title: '数量',
-          key: 'num',
+          title: "数量",
+          key: "num",
           width: 60,
-          align: 'center',
-        },
-         {
-          title: '单位',
-          key: 'unit',
-          width: 60,
-          align: 'center',
+          align: "center"
         },
         {
-          title: '里程数',
-          key: 'milage',
+          title: "单位",
+          key: "unit",
           width: 60,
-          align: 'center',
+          align: "center"
         },
         {
-          title: '含税单价',
-          key: 'taxUnitPrice',
+          title: "里程数",
+          key: "milage",
+          width: 60,
+          align: "center"
+        },
+        {
+          title: "含税单价",
+          key: "taxUnitPrice",
           width: 80,
-          align: 'center',
+          align: "center"
         },
         {
-          title: '扣款金额',
-          key: 'deductAmount',
+          title: "扣款金额",
+          key: "deductAmount",
           width: 80,
-          align: 'center',
-        },
-         {
-          title: '金额',
-          key: 'amount',
-          width: 60,
-          align: 'center',
+          align: "center"
         },
         {
-          title: '税额',
-          key: 'tax',
+          title: "金额",
+          key: "amount",
           width: 60,
-          align: 'center',
+          align: "center"
         },
         {
-          title: '价税合计',
-          key: 'totalPriceTax',
+          title: "税额",
+          key: "tax",
+          width: 60,
+          align: "center"
+        },
+        {
+          title: "价税合计",
+          key: "totalPriceTax",
           width: 80,
-          align: 'center',
+          align: "center"
         },
         {
-          title: '运输起点',
-          key: 'transportStart',
+          title: "运输起点",
+          key: "transportStart",
           width: 100,
-          align: 'left',
-        },
-         {
-          title: '运输终点',
-          key: 'transportEnd',
-          width: 100,
-          align: 'left',
+          align: "left"
         },
         {
-          title: '抵达时间',
-          key: 'arrivalTime',
+          title: "运输终点",
+          key: "transportEnd",
+          width: 100,
+          align: "left"
+        },
+        {
+          title: "抵达时间",
+          key: "arrivalTime",
           width: 120,
-          align: 'left',
+          align: "left"
         },
         {
-          title: '运输类别',
-          key: 'transportType',
+          title: "运输类别",
+          key: "transportType",
           width: 100,
-          align: 'center',
+          align: "center"
         },
         {
-          title: '运输内容',
-          key: 'transportContent',
+          title: "运输内容",
+          key: "transportContent",
           width: 120,
-          align: 'left',
+          align: "left"
         }
       ],
       list: [],
       total: 0,
-      queryParam: {},
+      queryParam: {}, // creatTime生成的格式放入
       queryForm: {
-        keyword: '',
-        page: '',
-        pageSize: ''
+        projectCode: "",  // 工程名称ID
+        transportOrderId: "", // 单据编号ID
+        providerCode: "", // 供应商ID
+        createTime:[], // 时间格式转换成简单格式
       },
-      selection: [],
+      // selection: [],
       loading: 0
-    }
+    };
   },
-  mounted: function () {
+  mounted: function() {
     this.query();
   },
   computed: {},
@@ -249,57 +289,82 @@ export default {
     //   var pages = ['/admin', '/provider'];
     //   this.$router.push({ path: pages[index] });
     // },
-    beforeLoad() {
-
-    },
     query() {
       this.$refs.page.query();
     },
-    reset: function () {
+    beforeLoad() { 
+      var queryParam = this.$refs.page.queryParam;
+      // 开始时间传入
+      queryParam.createTimeStart = '';
+      // 结束时间传入
+      queryParam.createTimeEnd = '';
+      // 删除复杂化的时间格式
+      delete queryParam.createTime;
+      if (this.queryForm.createTime.length > 0) {
+        // 将复杂的时间格式转化为年月日简单格式
+        queryParam.createTimeStart = page.formatDate(this.queryForm.createTime[0]);
+      }
+      if (this.queryForm.createTime.length > 1) {
+        queryParam.createTimeEnd = page.formatDate(this.queryForm.createTime[1]);
+      }
+    },
+    reset() {
       // 清空条件
-      this.queryForm.keyword = '';
+      Object.assign(this.queryForm, {
+        projectCode: "", // 工程名称ID
+        projectName: "", // 工程名称name
+        providerCode: "", // 供应商ID
+        providerName: "", // 工程名称Name
+        transportOrderId: "",// 单据编号ID
+        createTime:[], // 时间
+      });
       this.query();
     },
-    select: function (selection) {
-      this.selection = selection;
-    },
-    rowCommand: function (name, params) {
-      if (name === '编辑') {
+    // select: function (selection) {
+    //   this.selection = selection;
+    // },
+    rowCommand: function(name, params) {
+      if (name === "编辑") {
         this.updateRole(params.row.transportOrderId);
         return;
       }
-      if (name === '删除') {
+      if (name === "删除") {
         this.$Modal.confirm({
-          title: '删除确认',
-          content: '<p>删除后不能恢复，确定删除已选择的记录吗？</p>',
+          title: "删除确认",
+          content: "<p>删除后不能恢复，确定删除已选择的记录吗？</p>",
           onOk: () => {
-            this.$http.post('/api/engine/transport/order/delete?id=' + params.row.id, {}).then((res) => {
-              if (res.data.code === 0) {
-                this.$Message.success("删除成功");
-                $.extend(this.queryForm, this.queryParam);
-                this.query();
-              } else {
-                this.$Message.error(res.data.message)
-              }
-            }).catch((error) => {
-              this.$Message.error(error.toString())
-            });
+            this.$http
+              .post(
+                "/api/engine/transport/order/delete", {'transportOrderId': params.row.transportOrderId }
+              )
+              .then(res => {
+                if (res.data.code === 0) {
+                  this.$Message.success("删除成功");
+                  $.extend(this.queryForm, this.queryParam);
+                  this.query();
+                } else {
+                  this.$Message.error(res.data.message);
+                }
+              })
+              .catch(error => {
+                this.$Message.error(error.toString());
+              });
           }
         });
       }
     },
-    goBack: function () {
+    selProvider() {},
+    goBack: function() {
       this.$router.go(-1);
     },
-    add: function () {
+    add: function() {
       this.$refs.edit.open(0);
     },
-    updateRole: function (roleId) {
+    updateRole: function(roleId) {
       this.$refs.edit.open(roleId);
-    },
+    }
   }
-}
-
+};
 </script>
 
 <style type="text/css">

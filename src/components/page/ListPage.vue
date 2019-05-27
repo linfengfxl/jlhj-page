@@ -149,7 +149,7 @@
             this.$emit('on-load');
           } else {
             this.loading = 0;
-            this.list = null;
+            this.list = [];
             this.total = 0;
             this.$Message.error(res.data.message);
           }
