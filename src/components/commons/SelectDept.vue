@@ -1,5 +1,5 @@
 <template>
-  <Modal v-model="show" title="选择部门" :closable="false" :mask-closable="false">
+  <Modal v-model="show" title="选择部门" :closable="false" :mask-closable="false" :transfer="transfer">
     <div class="select-dept">
       <TvNode :model="root" v-if="type == 1"></TvNode>
       <TvNodeCheck :model="root" v-else></TvNodeCheck>
@@ -28,7 +28,11 @@ export default {
     type: { // 1.单选   2.多选
       type:Number,
       default:1 
-    }
+    },
+     transfer: {
+      type: Boolean,
+      default: true
+    },
   },
   data() {
     return {

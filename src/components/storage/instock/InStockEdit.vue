@@ -14,7 +14,7 @@
             <tr>
               <td>
                 <FormItem prop="deptId" label="入往仓库">
-                  <SelStorage v-model="formItem.deptId"></SelStorage>
+                  <SelStorage v-model="formItem.deptId" :model="formItem"></SelStorage>
                 </FormItem>
               </td>
               <td>
@@ -203,13 +203,7 @@ export default {
       }
     }
   },
-  methods: {
-    selStorage(data) {
-      if (data) {
-        debugger;
-        this.formItem.deptName = data.deptName; 
-      }
-    },
+  methods: { 
     selProvider(data) {
       if (data) {
         this.formItem.providerName = data.providerName;
@@ -264,11 +258,10 @@ export default {
       this.list.push(this.$refs.editable.listNewRow());
       this.list.push(this.$refs.editable.listNewRow());
     },
-    save(proc) {
+    save(proc) { 
       var form = {
         detailList: []
-      };
-
+      }; 
       Object.assign(form, this.formItem);
       form.signDate = page.formatDate(form.signDate);
 
@@ -305,7 +298,7 @@ export default {
       this.loading = 1;
       var uri = '/api/engine/storage/instock/start';
       if (this.pageFlag == 2) {
-        uri = '/api/engine/storage/instock/update';
+        uri = '/api/engine/storage/instock/restart'; 
       }
 
       this.$http.post(uri, form).then((res) => {
