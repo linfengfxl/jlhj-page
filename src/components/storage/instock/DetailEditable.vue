@@ -3,56 +3,68 @@
     <table cellspacing="0" cellpadding="0" v-if="!editable">
       <thead>
         <th class="col-xh">序号</th>
-        <th>物料编码</th>
-        <th>物料名称</th>
-        <th>规格</th>
-        <th>型号</th>
-        <th>采购类别</th>
+        <th>材料编码</th>
+        <th>材料名称</th>
+        <th>规格型号</th>
         <th>单位</th>
-        <th>
-          <span>单价(元)</span>
-        </th>
-        <th>
+        <th class="col-quantity">
           <span>数量</span>
         </th>
-        <th>
+        <th class="col-price">
+          <span>含税单价(元)</span>
+        </th>
+        <th class="col-price">
+          <span>单价(元)</span>
+        </th>
+        <th class="col-amount">
           <span>金额(元)</span>
         </th>
-        <th>次计量单位</th>
-        <th>
-          <span>次计量单位数量</span>
-        </th>
-        <th>
-          <span>用途</span>
-        </th>
-        <th>供应商</th>
-        <th>供方或产地</th>
-        <th>
-          <span>需求日期</span>
-        </th>
-        <th>
-          <span>备注</span>
+        <th class="col-amount">
+          <span>税额(元)</span>
         </th>
       </thead>
       <tbody>
-        <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
-          <td :class="{'col-xh':true,'cur':index==curIndex}">{{index+1}}</td>
-          <td>{{item.materCode}}</td>
-          <td>{{item.materName}}</td>
-          <td>{{item.spec}}</td>
-          <td>{{item.model}}</td>
-          <td>{{$args.getArgText('material_subtype',item.subType)}}</td>
-          <td>{{$args.getArgText('unit',item.unit)}}</td>
-          <td>{{item.price}}</td>
-          <td>{{item.quantity}}</td>
-          <td>{{item.amount}}</td>
-          <td>{{item.subUnit}}</td>
-          <td>{{item.subQuantity}}</td>
-          <td>{{item.use}}</td>
-          <td>{{item.providerName}}</td>
-          <td>{{item.origin}}</td>
-          <td>{{item.needDate}}</td>
-          <td>{{item.remark}}</td>
+      <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
+          <td :class="{'col-xh':true,'cur':index==curIndex}">
+            {{index+1}}
+            <!--  序号 -->
+          </td>
+          <td>
+            {{item.materCode}}
+            <!--  材料编码 -->
+          </td>
+          <td>
+            {{item.materName}}
+            <!--  材料名称 -->
+          </td>
+          <td>
+            {{item.spec}}
+            <!--  规格型号 -->
+          </td>
+          <td>
+            {{$args.getArgText('unit',item.unit)}}
+            <!--  单位 -->
+          </td>
+          <td class="col-quantity">
+            <!--  数量 -->
+           {{item.quantity}}
+          </td>
+          <td class="col-price">
+            <!--  含税单价(元) -->
+            {{item.taxUnitPrice}}
+          </td>
+          <td class="col-amount">
+            <!--  单价(元) -->
+            {{item.unitPrice}}
+          </td>
+          <td class="col-amount">
+            <!--  金额(元) -->
+            {{item.amount}}
+          </td>
+          <td class="col-amount">
+            <!--  税额(元) -->
+            {{item.tax}}
+          </td>
         </tr>
       </tbody>
     </table>
