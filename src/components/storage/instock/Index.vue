@@ -16,9 +16,7 @@
             <!-- <SelStorage v-model="queryForm.storageId" @on-change="switStorage" style="width:150px;"></SelStorage> -->
           </td>
           <td>
-            <RadioGroup v-model="queryForm.status" type="button" @on-change="query">
-              <Radio :label="null">所有</Radio>
-              <Radio :label="0">待提交</Radio>
+            <RadioGroup v-model="queryForm.status" type="button" @on-change="query">  
               <Radio :label="1">审核中</Radio>
               <Radio :label="2">通过</Radio>
               <Radio :label="3">驳回</Radio>
@@ -242,7 +240,7 @@ export default {
       ],
       queryForm: {
         stockBillId: '',
-        status: 0,
+        status: 2,
         operId: '',
         operType: 1,
         createTime: null,
@@ -275,7 +273,7 @@ export default {
     },
     reset() {
       Object.assign(this.queryForm, {
-        status: 0,
+        status: 2,
         operId: '',
         operType: 1,
         stockBillId: '',

@@ -19,6 +19,19 @@ export default {
       type: String,
       default: ''
     },
+    model: {
+      type: Object,
+      default: null
+    },
+    text: {
+      type: String,
+      default: ''
+    },
+    // 控件显示文本对应 model 属性
+    textProp: {
+      type: String,
+      default: "deptName"
+    },
     auth: {
       type: Number,
       default: 1
@@ -31,7 +44,7 @@ export default {
   data() {
     return {
       storage: [],
-      deptId: this.value
+      deptId: this.value,
     };
   },
   mounted() {
@@ -48,7 +61,7 @@ export default {
       if (val != old) {
         this.$emit('on-change');
       }
-    }
+    },
   },
   methods: {
     load() {
@@ -65,22 +78,17 @@ export default {
     },
     switStorage() {
       this.$emit('input', this.deptId);
-      /*this.reset();*/
-    }/*,*/
-    /*    reset(){
-              Object.assign(this.data,{
-              materId:'',
-              materName:'',
-              spec:'',
-              model:'',
-              quantity:'',
-              texture:'',
-              unit:'',
-              price:'',
-              amount:'',
-              remark:'',
-            });
-        }*/
+      var row = null;
+      this.storage.map(item => {
+        if (item.deptId == this.deptId) {
+          row = item;
+        }
+      });
+      if (row && this.model){
+        this.model[this.textProp]=row.deptName;
+      }
+      this.$emit('on-select', row);
+    }
   }
 }
 </script>

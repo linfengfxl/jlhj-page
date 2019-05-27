@@ -26,9 +26,12 @@
 
         var url = '';
         if(action == 'handle'){
-          if(defineId == 1){
+          if(defineId == 1){//报销单
             url = '/financial/expense/handle?forward&inst='+instId
-          }          
+          }        
+           if(defineId == 2){//入库单
+            url = '/storage/instock/handle?forward&inst='+instId
+          }    
         }  
         if(url){
           this.$router.replace({
