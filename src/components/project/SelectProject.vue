@@ -27,7 +27,7 @@
               <Button @click="reset">重置</Button>
             </td>
           </tr>
-        </table>
+        </table> 
       </div>
       <Loading :loading="loading">
         <div class="page-datatable">

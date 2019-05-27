@@ -6,14 +6,14 @@
           <Form
             :model="formItem"
             ref="form"
-            :label-width="80"
+            :label-width="100"
             :rules="ruleValidate"
             class="form-item"
           >
             <FormItem label="单据编码" prop="transportOrderId">
-              <Input v-model="formItem.transportOrderId" :disabled="isEdit == 1" class="width-1"/>
+              <Input v-model="formItem.transportOrderId" :disabled="true" class="width-1"/>
             </FormItem>
-            <FormItem label="运输日期" prop>
+            <FormItem label="运输日期" prop="transportDate">
               <Date-picker
                 type="date"
                 placeholder="选择日期"
@@ -21,24 +21,35 @@
                 format="yyyy-MM-dd"
               ></Date-picker>
             </FormItem>
-            <FormItem label="所属部门" prop>
-              <Select v-model="formItem.deptId" style="width:150px" placeholder="类型">
-                <Option
-                  v-for="item in $args.getArgGroup('provider_type')"
-                  :value="item.argCode"
-                  :key="item.argCode"
-                >{{ item.argText }}</Option>
-              </Select>
+            <FormItem prop="deptId" label="所属部门">
+              <SelectDept
+                v-model="formItem.deptId"
+                :model="formItem"
+                :text="formItem.deptName"
+                :transfer="false"
+              />
             </FormItem>
-            <FormItem label="工程名称" prop="projectCode">
-              <Input v-model="formItem.projectCode" placeholder="不超过64个字符"/>
+            <FormItem prop="projectCode" label="工程名称">
+              <SelectProject
+                v-model="formItem.projectCode"
+                :model="formItem"
+                :text="formItem.projectName"
+              />
             </FormItem>
-            <FormItem label="供应商名称" prop="providerCode">
-              <Input v-model="formItem.providerCode" placeholder="不超过64个字符"/>
+
+            <FormItem prop="providerCode" label="供应商名称">
+              <SelectProvider
+                v-model="formItem.providerCode"
+                :model="formItem"
+                :text="formItem.providerName"
+                @on-select="selProvider"
+              />
             </FormItem>
-            <FormItem label="供应商联系人" prop="providerCode">
-              <Input v-model="formItem.providerCode" placeholder="不超过64个字符"/>
+
+            <FormItem label="供应商联系人" prop="linkMan">
+              <Input v-model="formItem.linkMan" placeholder="请填写供应商联系人"/>
             </FormItem>
+
             <FormItem label="税率" prop>
               <InputNumber
                 v-model="formItem.taxRate1"
@@ -46,9 +57,10 @@
                 :parser="value => value.replace('%', '')"
               ></InputNumber>
             </FormItem>
-            <FormItem label="运输设备名称" prop>
-              <Input v-model="formItem.transportType" placeholder="不超过64个字符"/>
+            <FormItem label="运输设备名称" prop="transportType">
+              <Input v-model="formItem.transportType" placeholder="名称不能为空"/>
             </FormItem>
+
             <FormItem label="运输时间" prop>
               <Date-picker
                 type="date"
@@ -57,13 +69,11 @@
                 format="yyyy-MM-dd"
               ></Date-picker>
             </FormItem>
-            <FormItem label="车牌号" prop>
-              <Input v-model="formItem.vehicleNum" placeholder="不超过12个字符"/>
+            <FormItem label="车牌号" prop="vehicleNum">
+              <Input v-model="formItem.vehicleNum" placeholder="车牌号不能为空"/>
             </FormItem>
             <FormItem label="数量" prop>
-              <InputNumber
-                v-model="formItem.num"
-              ></InputNumber>
+              <InputNumber v-model="formItem.num" :min="1"></InputNumber>
             </FormItem>
             <FormItem label="单位" prop>
               <Select v-model="formItem.unit" style="width:150px" placeholder="类型">
@@ -75,37 +85,37 @@
               </Select>
             </FormItem>
             <FormItem label="里程数" prop>
-              <Input v-model="formItem.milage" class="width-2"/>
+              <Input-number v-model="formItem.milage" :min="1"></Input-number>
             </FormItem>
             <FormItem label="含税单价" prop>
-              <Input v-model="formItem.taxUnitPrice"/>
+              <Input-number v-model="formItem.taxUnitPrice" :min="1"></Input-number>
             </FormItem>
             <FormItem label="扣款金额" prop>
-              <Input v-model="formItem.deductAmount" placeholder="不超过12个字符" class="width-1"/>
+              <Input-number v-model="formItem.deductAmount" :min="1"></Input-number>
             </FormItem>
             <FormItem label="金额" prop>
-              <Input v-model="formItem.amount" class="width-1"/>
+              <Input-number v-model="formItem.amount" :min="1"></Input-number>
             </FormItem>
             <FormItem label="税额" prop>
-              <Input v-model="formItem.tax" class="width-2"/>
+              <Input-number v-model="formItem.tax" :min="1"></Input-number>
             </FormItem>
             <FormItem label="价税合计" prop>
-              <Input v-model="formItem.totalPriceTax" class="width-2"/>
+              <Input-number v-model="formItem.totalPriceTax" :min="1"></Input-number>
             </FormItem>
-            <FormItem label="运输起点" prop>
-              <Input v-model="formItem.transportStart" class="width-2"/>
+            <FormItem label="运输起点" prop="transportStart">
+              <Input v-model="formItem.transportStart" placeholder="请填写运输起点"/>
             </FormItem>
-            <FormItem label="运输终点" prop>
-              <Input v-model="formItem.transportEnd" class="width-2"/>
+            <FormItem label="运输终点" prop="transportEnd">
+              <Input v-model="formItem.transportEnd" placeholder="请填写运输终点"/>
             </FormItem>
-            <FormItem label="抵达时间" prop>
+            <Form-item label="抵达时间" prop>
               <Date-picker
                 type="date"
                 placeholder="选择日期"
                 v-model="formItem.arrivalTime"
                 format="yyyy-MM-dd"
               ></Date-picker>
-            </FormItem>
+            </Form-item>
             <FormItem label="运输类别" prop>
               <Select v-model="formItem.transportType" style="width:150px" placeholder="类型">
                 <Option
@@ -115,12 +125,11 @@
                 >{{ item.argText }}</Option>
               </Select>
             </FormItem>
-            <FormItem label="运输内容" prop>
-              <Input v-model="formItem.transportContent" class="width-2"/>
+            <FormItem label="运输内容" prop="transportContent">
+              <Input type="textarea" :autonsize="{minRows: 2, maxRows: 5}" placeholder="请输入..." v-model="formItem.transportContent" class="width-2"/>
             </FormItem>
             <FormItem>
               <Button type="primary" icon="checkmark" @click="save">保存</Button>
-              <Button type="ghost" @click="reset" style="margin-left: 8px" v-if="this.isEdit==1">重置</Button>
               <Button type="ghost" @click="close" style="margin-left: 8px">取消</Button>
             </FormItem>
           </Form>
@@ -132,12 +141,18 @@
 </template>
 <script>
 import Loading from "@/components/loading";
+import SelectProject from "@/components/page/form/SelectProject"; // 工程
+import SelectProvider from "@/components/page/form/SelectProvider"; //供应商
+import SelectDept from "@/components/page/form/SelectDept"; // 所属部门
 import SelContacts from "@/components/selcontacts";
 import page from "@/assets/js/page";
 export default {
   components: {
     Loading,
-    SelContacts
+    SelectProject,
+    SelContacts,
+    SelectProvider,
+    SelectDept
   },
   data() {
     return {
@@ -146,58 +161,93 @@ export default {
       //是否编辑 0 添加 1 编辑
       isEdit: 0,
       //表单对象
-      formItem: {
-        transportOrderId: "", //单据编号
-        transportDate: "", //运输日期
-        deptId: "", //所属部门
-        projectCode: "", //工程名称
-        providerCode: "", //供应商联系人',
-        taxRate: 0, //税率',
-        taxRate1: 0, //税率',
-        transportType: "", //运输设备名称',
-        vehicleNum: "", //车牌号',
-        num: 0, //数量',
-        unit: "", //单位',
-        milage: "", //里程数',
-        taxUnitPrice: "", //含税单价',
-        deductAmount: "", //扣款金额',
-        amount: "", //金额',
-        tax: "", //税额',
-        totalPriceTax: "", //价税合计',
-        transportStart: "", //运输起点',
-        transportEnd: "", //运输终点',
-        arrivalTime: "", //抵达时间',
-        transportType: "", //运输类别
-        transportContent: "" //运输内容
-      },
+      formItem: this.getInitFormItem(),
       //验证
       ruleValidate: {
-        transportOrderId: [
+        transportDate: [
           {
             required: true,
             whitespace: true,
-            message: "编码不能为空",
-            trigger: "blur"
-          },
+            type: "date",
+            message: "请选择日期",
+            trigger: "change"
+          }
+        ],
+        deptId: [
           {
-            type: "string",
-            max: 50,
-            message: "不能超过50个字",
+            required: true,
+            whitespace: true,
+            message: "请选择部门",
+            trigger: "change"
+          }
+        ],
+        projectCode: [
+          {
+            required: true,
+            whitespace: true,
+            message: "请选择工程",
+            trigger: "change"
+          }
+        ],
+        providerCode: [
+          {
+            required: true,
+            whitespace: true,
+            message: "请选择供应商",
+            trigger: "change"
+          }
+        ],
+        // linkMan: [
+        //   {
+        //     required: true,
+        //     whitespace: true,
+        //     message: "请填写供应商联系人",
+        //     trigger: "blur"
+        //   }
+        // ],
+        transportType: [
+          {
+            required: true,
+            whitespace: true,
+            message: "请填写运输设备名称",
             trigger: "blur"
           }
         ],
-        providerName: [
+        vehicleNum: [
           {
             required: true,
             whitespace: true,
-            message: "名称不能为空",
+            message: "请填写车牌号",
             trigger: "blur"
+          }
+        ],
+        transportStart: [
+          {
+            required: true,
+            whitespace: true,
+            message: "请填写运输起点",
+            trigger: "blur"
+          }
+        ],
+        transportEnd: [
+          {
+            required: true,
+            whitespace: true,
+            message: "请填写运输终点",
+            trigger: "blur"
+          }
+        ],
+        transportContent: [
+          {
+            required: true,
+            message: "请输入运输内容",
+            trigger: 'blur'
           },
           {
-            type: "string",
-            max: 50,
-            message: "不能超过50个字",
-            trigger: "blur"
+            type: 'string',
+            min: 1,
+            message: '最少不少于1字',
+            trigger: 'blur'
           }
         ]
       }
@@ -234,16 +284,10 @@ export default {
       }
       this.formItem.transportDate = page.formatDate(
         this.formItem.transportDate
-      ); //发展日期
-       this.formItem.arrivalTime = page.formatDate(
-        this.formItem.arrivalTime
-      ); //抵达时间
+      ); //运输日期
+      this.formItem.arrivalTime = page.formatDate(this.formItem.arrivalTime); //抵达时间
       if (!this.formItem.transportDate) {
         this.formItem.transportDate = null;
-      }
-      this.formItem.disableTime = page.formatDate(this.formItem.disableTime); //停用日期
-      if (!this.formItem.disableTime) {
-        this.formItem.disableTime = null;
       }
       this.formItem.taxRate = this.formItem.taxRate1 * 0.01; //税率
       this.loading = 1;
@@ -264,6 +308,38 @@ export default {
           this.$Message.error(error.message);
         });
     },
+    getInitFormItem(){
+      var obj = {
+          time: "",
+          transportOrderId: "", //单据编号
+          transportDate: "", //运输日期
+          deptId: "", //所属部门
+          deptName: "", // 所属部门
+          projectCode: "", //工程代码
+          projectName: "", //工程名称
+          providerCode: "", //供应商名称,
+          providerName: "", // 供应商名称
+          linkMan: "", //供应商联系人',
+          taxRate: 0, //税率',
+          taxRate1: 0, //税率',
+          transportType: "", //运输设备名称',
+          vehicleNum: "", //车牌号',
+          num: 0, //数量',
+          unit: "", //单位',
+          milage: 0, //里程数',
+          taxUnitPrice: 0, //含税单价',
+          deductAmount: 0, //扣款金额',
+          amount: 0, //金额',
+          tax: 0, //税额',
+          totalPriceTax: 0, //价税合计',
+          transportStart: "", //运输起点',
+          transportEnd: "", //运输终点',
+          arrivalTime: "", //抵达时间',
+          transportType: "", //运输类别
+          transportContent: "" //运输内容
+        };
+      return obj;
+    },
     open(id) {
       this.show = true;
       this.$refs["form"].resetFields();
@@ -275,11 +351,7 @@ export default {
       } else {
         this.loading = 0;
         this.isEdit = 0;
-        for (var x in this.formItem) {
-          this.formItem[x] = "";
-        }
-        this.formItem["taxRate"] = 0;
-        this.formItem["taxRate1"] = 0;
+        this.formItem = this.getInitFormItem();
       }
     },
     get(id) {
@@ -300,13 +372,13 @@ export default {
           this.$Message.error(error.message);
         });
     },
+    selProvider(data) {
+      if (data) {
+        this.formItem.linkMan = data.linkMan; //供应商联系人
+      }
+    },
     close() {
       this.show = false;
-    },
-    reset() {
-      this.checked = [];
-      this.$refs["form"].resetFields();
-      this.get(this.formItem.id);
     }
   }
 };
