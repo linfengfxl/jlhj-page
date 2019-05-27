@@ -67,7 +67,7 @@ export default {
               props: {
                 btns: [{
                   key: 'edit',
-
+                  disabled: row.status != 3
                 },
                 {
                   key: 'delete',
@@ -103,10 +103,21 @@ export default {
           title: '供应商',
           key: 'providerName',
           width: 120,
-        }, 
+        },
         page.table.initDateColumn({
           title: '结算时间',
           key: 'billDate',
+        }),
+        page.table.initMapColumn({
+          title: '状态',
+          key: 'status',
+          data: {
+            '0': '待提交',
+            '1': '审核中',
+            '2': '通过',
+            '3': '驳回',
+            '4': '作废',
+          }
         }),
         {
           title: '备注',
@@ -166,7 +177,7 @@ export default {
       if (name === '编辑') {
         if (params.row) {
           this.$router.push({
-            path: '/machine-order/bill/edit?id=' + params.row.machineBillCode
+            path: '/machine/bill/edit?id=' + params.row.machineBillCode
           })
         }
       }
@@ -195,7 +206,7 @@ export default {
     },
     add: function () {
       //this.$refs.edit.open(0);
-      this.$router.push({ path: '/machine-order/bill/edit' })
+      this.$router.push({ path: '/machine/bill/edit' })
     },
   }
 }

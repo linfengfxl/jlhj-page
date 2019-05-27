@@ -1,6 +1,80 @@
 <template>
   <Editable @add="add" @remove="remove" :editable="editable">
-    <table cellspacing="0" cellpadding="0">
+    <table cellspacing="0" cellpadding="0"  v-if="!editable">
+      <thead>
+        <th class="col-xh">序号</th>
+        <th>作业单号</th>
+        <th>机械代码</th>
+        <th>机械名称</th>
+        <th>机械型号</th>
+        <th>作业日期</th>
+        <th>租赁方式</th>
+        <th>作业用时</th>
+        <th>作业台班</th>
+        <th>含税单价</th>
+        <th>结算金额</th>
+        <th>税额</th>
+        <th>价税合计</th>
+      </thead>
+      <tbody>
+        <tr v-for="(item,index) in list" :key="'mater_'+index">
+          <td>
+            {{index+1}}
+            <!--  序号 -->
+          </td>
+          <td>
+            {{item.machineOrderId}}
+            <!--  作业单号 -->
+          </td>
+          <td>
+            {{item.machineCode}}
+            <!--  机械代码 -->
+          </td>
+          <td>
+            {{item.machineName}}
+            <!--  机械名称 -->
+          </td>
+          <td>
+            {{item.machineModel}}
+            <!--  机械型号 -->
+          </td>
+          <td>
+            {{item.jobDate}}
+            <!--  作业日期 -->
+          </td>
+          <td> 
+            {{$args.getArgText('lease_type', item.leaseType)}}
+            <!--  租赁方式 -->
+          </td>
+          <td>
+            {{item.useTime}}
+            <!--  作业用时 -->
+          </td>
+          <td class="col-quantity">
+            <!--  作业台班 -->
+            {{item.taiban}}
+          </td>
+          <td class="col-price">
+            <!--  含税单价(元) -->
+           {{item.taibanPrice}} 
+          </td>
+          <td class="col-amount">
+            <!--  结算金额  -->
+            {{item.amount}}
+          </td>
+          <td class="col-amount">
+            <!--  税额 -->
+            {{item.tax}}
+          </td>
+          <td class="col-amount">
+            <!--  价税合计 -->
+            {{item.totalPriceTax}}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table cellspacing="0" cellpadding="0" v-else>
       <thead>
         <th class="col-xh">序号</th>
         <th>作业单号</th>
@@ -35,7 +109,7 @@
             <!--  机械名称 -->
           </td>
           <td>
-            {{item.spec}}
+            {{item.machineModel}}
             <!--  机械型号 -->
           </td>
           <td>
@@ -43,7 +117,7 @@
             <!--  作业日期 -->
           </td>
           <td>
-            {{item.leaseType}}
+            {{$args.getArgText('lease_type', item.leaseType)}}
             <!--  租赁方式 -->
           </td>
           <td>
@@ -85,7 +159,7 @@
 <script>
 import Editable from '@/components/editable-table';
 import floatObj from '@/assets/js/floatObj';
-import SelectMachineOrder from '@/components/machine-order/SelectMachineOrder'
+import SelectMachineOrder from '@/components/machine/order/SelectMachineOrder'
 export default {
   components: {
     SelectMachineOrder,
@@ -135,7 +209,7 @@ export default {
         machineOrderId: '',//作业单号 
         machineCode: '',//机械代码 
         machineName: '',//机械名称 
-        spec: '',//机械型号  
+        machineModel: '',//机械型号  
         jobDate: '',//作业日期 
         leaseType: '', //租赁方式 
         useTime: '',//作业用时 
@@ -187,6 +261,7 @@ export default {
             this.$Message.error('作业单已存在!');
             return;
           }
+          console.log(data);
           Object.assign(row, data);
           this.computedAmount(row);
         }

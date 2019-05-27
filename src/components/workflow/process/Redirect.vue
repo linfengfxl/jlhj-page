@@ -29,9 +29,12 @@
           if(defineId == 1){//报销单
             url = '/financial/expense/handle?forward&inst='+instId
           }        
-           if(defineId == 2){//入库单
+          if(defineId == 2){//入库单
             url = '/storage/instock/handle?forward&inst='+instId
-          }    
+          }
+           if(defineId == 5){//机械租赁结算单
+            url = '/machine/bill/handle?forward&inst='+instId
+          }      
         }  
         if(url){
           this.$router.replace({

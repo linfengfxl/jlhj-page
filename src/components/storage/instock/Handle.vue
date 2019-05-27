@@ -61,10 +61,10 @@
               <td>
                 <FormItem prop label="红蓝字">
                   <template v-if="formItem.inboundType==1">
-                    蓝字
+                    <span style="color:blue;">蓝字</span>
                   </template>
-                  <template v-if="formItem.inboundType==2">
-                    红字
+                  <template v-if="formItem.inboundType==2"> 
+                     <span style="color:red;">红字</span>
                   </template> 
                 </FormItem>
               </td>
