@@ -13,8 +13,7 @@
             <FormItem label="流程名称" prop="title">{{formItem.title}}</FormItem>
             <FormItem label="标题格式" prop="instTitle">{{formItem.instTitle}}</FormItem>
             <FormItem label="审批层级" prop="nodes">
-              <Table border :columns="columns" :data="data6"></Table>
-              <!-- {{formItem.nodes}} -->
+              
             </FormItem>
             <FormItem>
               <div class>
@@ -43,101 +42,7 @@ export default {
     page
   },
   data() {
-    return {
-      columns: [
-        {
-          type: 'index',
-          title: "序号",
-          key: "selNum",
-          width: 100,
-          align: "center"
-        },
-        {
-          title: "岗位",
-          key: "jobs",
-          align: "center",
-          render: (h, params) => {
-              return h('Select', {
-                  props: {
-                      value: this.data6[params.index].volumeType,
-                  },
-                  on: {
-                      'on-change':(event) => {
-                          this.data6[params.index].volumeType = event
-                      }
-                  }
-              },
-              [
-                  h('Option', {
-                      props: {
-                          value: '1'
-                      }
-                  }, 'option1'),
-                   h('Option', {
-                      props: {
-                          value: '2'
-                      }
-                  }, 'option2')
-              ]
-              )
-          }
-        },
-        {
-          title: "操作",
-          key: "action",
-          width: 120,
-          align: "center",
-          render: (h, params) => {
-            return h("div", [
-              h(
-                "Button",
-                {
-                  props: {
-                    type: "text",
-                    size: "small"
-                  },
-                  style: {
-                      color: '#20c1ee'
-                  },
-                  on: {
-                    click: () => {
-                      this.addShow(params.index);
-                    }
-                  }
-                },
-                "添加"
-              ),
-               h(
-                "Button",
-                {
-                  props: {
-                    type: "text",
-                    size: "small"
-                  },
-                  style: {
-                      color: '#20c1ee'
-                  },
-                  on: {
-                    click: () => {
-                      this.removeP(params.index);
-                    }
-                  }
-                },
-                "删除"
-              ),
-            ]);
-          }
-        }
-      ],
-      data6: [
-        {
-        },
-        {
-        },
-        {
-        }
-      ],
-      installed: 1,
+    return {  
       loading: 0,
       show: false,
       //是否编辑 0 添加 1 编辑 2 查看
@@ -158,16 +63,7 @@ export default {
             message: "不能超过30个字",
             trigger: "blur"
           }
-        ],
-        nodes: [
-          {
-            required: true,
-            whitespace: true,
-            type: "string",
-            message: "层级不能为空",
-            trigger: "blur"
-          }
-        ]
+        ],         
       }
     };
   },

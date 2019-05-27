@@ -35,6 +35,7 @@ components.push({ component: 'workflow/mywork/Start', name: '', path: '/workflow
 components.push({ component: 'financial/expense/Index', name: '', path: '/financial/expense' })
 components.push({ component: 'financial/expense/ExpenseStart', name: '', path: '/financial/expense/start' })
 components.push({ component: 'financial/expense/ExpenseHandle', name: '', path: '/financial/expense/handle' })
+components.push({ component: 'financial/expense/ExpenseView', name: '', path: '/financial/expense/view' })
 
 
 // 运输小票

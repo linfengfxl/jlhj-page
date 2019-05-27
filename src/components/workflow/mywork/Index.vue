@@ -158,7 +158,7 @@
           {
             title: '当前处理人',
             key: 'curUserName',
-            align: 'center',
+            align: 'left',
             width: 120,
             render:(h,params)=>{
               var row = params.row;
@@ -182,7 +182,11 @@
               }
               if(row.status == 3){
                 return h('label',{
-                },'终止');
+                },'驳回');
+              }
+              if(row.status == 3){
+                return h('label',{
+                },'作废');
               }
             }
           },
@@ -225,7 +229,7 @@
                   },
                 on:{
                   click:()=>{
-                    this.view(params.row.instId);
+                    this.view(params.row);
                   }
                 }
               },text);
@@ -245,7 +249,7 @@
           {
             title: '当前处理人',
             key: 'curUserName',
-            align: 'center',
+            align: 'left',
             width: 120,
             render:(h,params)=>{
               var row = params.row;
@@ -269,7 +273,11 @@
               }
               if(row.status == 3){
                 return h('label',{
-                },'终止');
+                },'驳回');
+              }
+              if(row.status == 3){
+                return h('label',{
+                },'作废');
               }
             }
           },
