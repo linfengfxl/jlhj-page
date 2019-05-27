@@ -92,36 +92,36 @@ export default {
         {
           title: '单据编号',
           key: 'transportOrderId',
-          width: 80,
-          align: 'center'
+          width: 120,
+          align: 'left'
         },
         {
           title: '运输日期',
           key: 'transportDate',
-          width:80,
+          width:120,
           align: 'left'
         },
         {
           title: '所属部门',
           key: 'deptId',
-          width: 80,
+          width: 100,
           align: 'center'
         },
          {
           title: '工程名称',
-          key: 'projectCode',
-          width: 80,
+          key: 'projectName',
+          width: 120,
           align: 'left',
         },
-        {
+        { 
           title: '供应商名称',
           key: 'providerCode',
-          width: 80,
+          width: 100,
           align: 'left',
         },
         {
           title: '供应商联系人',
-          key: 'providerCode',
+          key: 'linkMan',
           width: 100,
           align: 'center',
         },
@@ -140,7 +140,7 @@ export default {
         {
           title: '运输时间',
           key: 'transportDate',
-          width: 80,
+          width: 120,
           align: 'left',
         },
         {
@@ -200,31 +200,31 @@ export default {
         {
           title: '运输起点',
           key: 'transportStart',
-          width: 80,
+          width: 100,
           align: 'left',
         },
          {
           title: '运输终点',
           key: 'transportEnd',
-          width: 80,
+          width: 100,
           align: 'left',
         },
         {
           title: '抵达时间',
           key: 'arrivalTime',
-          width: 80,
+          width: 120,
           align: 'left',
         },
         {
           title: '运输类别',
           key: 'transportType',
-          width: 80,
+          width: 100,
           align: 'center',
         },
         {
           title: '运输内容',
           key: 'transportContent',
-          width: 80,
+          width: 120,
           align: 'left',
         }
       ],

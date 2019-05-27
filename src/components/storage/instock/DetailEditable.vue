@@ -59,7 +59,7 @@
       </tbody>
     </table>
 
-    <table cellspacing="0" cellpadding="0" v-else>
+    <table cellspacing="0" cellpadding="0" v-else> 
       <thead>
         <th class="col-xh">序号</th>
         <th>材料编码</th>

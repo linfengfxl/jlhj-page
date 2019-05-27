@@ -300,7 +300,7 @@ export default {
         this.curRow = null;
         this.curRowId = null;
         this.$refs.detail.clear();
-      }
+      } 
     },
     add() {
       this.$router.push({ path: '/storage/instock/edit?forward' })
