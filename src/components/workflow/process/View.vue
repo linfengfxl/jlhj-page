@@ -1,7 +1,7 @@
 <template>
   <div class="wfprocess">
     <div class="wfprocess-header">      
-      审批处理 - {{title}}
+      审批详情 - {{title}}
       <div class="header-left">
         <Button size="small" @click="goBack" icon="chevron-left" type="warning">返回</Button>
       </div>      
@@ -25,37 +25,28 @@
               </div>
             </td>            
           </tr>
-          <tr v-if="formItem.status == 5">
-            <td class="label">转 审</td>
+          <tr v-if="instance.status == 1">
+            <td class="label">当前审批</td>
             <td>
-              <SelMember ref="selMember" v-model="formItem.nextUser" :model="formItem" :text="formItem.nextUserName" textProp="nextUserName" 
-              style="display:inline-block;width:100px;"></SelMember>
-              <Button type="info" @click="trans" class="btn-trans" >返 回</Button>
+              <span>{{instance.curUserName}} - ({{instance.curNodeName}})</span>               
             </td>
           </tr>
-          <tr v-else>
-            <td class="label">下一结点</td>
+          <tr v-if="instance.status == 2">
+            <td class="label">状态</td>
             <td>
-              <Select v-model="formItem.nextCur" style="width: auto;min-width: 140px;" @on-change="selNextNode">
-                <Option v-for="item in nextNodes" :value="item.index" :key="item.index">{{ item.text }}</Option>
-              </Select>
-              &nbsp;
-              <Select v-model="formItem.nextUser" style="width: auto;min-width: 100px;">
-                <Option v-for="item in users" :value="item.userId" :key="item.userId">{{ item.trueName }}</Option>
-              </Select>
-              <Button type="info" @click="trans" class="btn-trans" >转 审</Button>
+               <Tag checkable color="green">完成</Tag>      
             </td>
-          </tr>          
-          <tr>
-            <td class="label">评  论</td>
-            <td><Input v-model="formItem.comment" type="textarea" :rows="2" placeholder="" style="width:90%"></Input></td>
           </tr>
-          <tr>
-            <td style=""></td>
+          <tr v-if="instance.status == 3">
+            <td class="label">状态</td>
             <td>
-               <Button type="success" size="large" @click="submit" class="btn-submit">提 交</Button>
-               <Button type="default" size="large" @click="terminate" class="btn-terminate" >驳回到发起人</Button>
-               <Button type="default" size="large" @click="invalid" class="btn-invalid" >作废</Button>
+               <Tag checkable color="red">驳回终止</Tag>    
+            </td>
+          </tr>
+          <tr v-if="instance.status == 4">
+            <td class="label">状态</td>
+            <td>
+               <Tag checkable color="red">作废</Tag>    
             </td>
           </tr>
         </table>
@@ -65,10 +56,9 @@
   </div>
 </template>
 <script>
-  import SelMember from '@/components/page/form/SelectMember'
+
   export default {
     components: { 
-      SelMember
     },
     props:{
       title: {
@@ -82,14 +72,12 @@
     },
     data() {       
       return {
-        loading:0, 
-        nextNodes:[],
+        loading:0,          
         users:[],
         formItem:{
           instId:0,
           nextCur:0,
           nextUser:'',
-          nextUserName:'',
           status:2,
           comment:''
         },
@@ -114,14 +102,17 @@
         this.formItem = {
           nextCur:0,
           nextUser:'',
-          nextUserName:'',
           comment:'',
           status:2,
         };
         this.instance = {
           title:'流程实例',
           cur:0,
-          nodeList:[]
+          nodeList:[],
+          curNode:'',
+          curNodeName:'',
+          curUser:'',
+          curUserName:'',
         } 
 
         this.loading = 1;
@@ -132,24 +123,7 @@
             if(data){
               Object.assign(this.instance,data);              
               this.formItem.instId = data.id;
-
-              this.nextNodes = [];
-              var nodeList = this.instance.nodeList;
-              for(var i = 0;i<= this.instance.cur + 1;i++){
-                if(i < nodeList.length){
-                  var node = nodeList[i];
-                  this.nextNodes.push({index:i,key:node.key,text:node.text});
-                }
-              }
-              if(this.instance.cur + 1 >= nodeList.length){
-                this.nextNodes.push({index:nodeList.length,key:'--',text:'结束'});
-              }
-
-              this.formItem.nextCur = this.instance.cur + 1;
-              this.selNextNode();
-
               this.$emit('on-load',this,this.instance);
-
             }else{
               this.$Message.info("流程实例不存在！");
             }
@@ -160,72 +134,10 @@
           this.loading = 0;
           this.$Message.error(error.toString())
         })
-      },
-      selNextNode(){
-        var cur = this.formItem.nextCur;
-        if(cur >= 0){ 
-          var node = this.nextNodes[cur*1];
-          if(node.key == '--'){
-            this.formItem.nextUser = '0';
-            this.formItem.nextUserName = '结束';
-            this.users = [{userId:'0',trueName:'结束'}];
-          }else{
-            this.loadUsers(node.key);  
-          } 
-        } 
-      },
-      loadUsers(roleId){
-        this.formItem.nextUser = ''; 
-        this.users = [];
-        this.$http.get('/api/engine/workflow/loadUsers?roleId='+roleId).then((res) => {
-          this.loading = 0;
-          if (res.data.code === 0) {
-            var data = res.data.data;
-            this.users = data;
-            if(data.length > 0){
-              this.formItem.nextUser = data[0].userId;
-            }
-          } else {
-            this.$Message.error(res.data.message);
-          }
-        }).catch((error) => {
-          this.$Message.error(error.toString())
-        })
-      },
-      submit(){
-        if(this.formItem.nextUser == null || this.formItem.nextUser == ''){
-          this.$Message.error('请选择审批人');
-          return;
-        }
-        if(this.formItem.status != 5){
-          this.formItem.status = 2; // 完成
-        }
-        this.$emit('on-submit',this,this.formItem);
-      },
-      terminate(){
-        this.formItem.status = 3; // 终止
-        this.$emit('on-submit',this,this.formItem); 
-      },
-      invalid(){
-        this.formItem.status = 4; // 作废
-        this.$emit('on-submit',this,this.formItem); 
-      },
-      trans(){         
-        if(this.formItem.status !=5){
-          this.formItem.status = 5;
-          this.formItem.nextCur = this.instance.cur;
-          this.formItem.nextUser = '';
-          this.formItem.nextUserName = '';
-        }else{
-          this.formItem.status = 2;
-
-          this.formItem.nextCur = this.instance.cur + 1;
-          this.selNextNode();
-        }
-      },
+      }, 
       goBack(){
         this.$router.go(-1);
-      }
+      }      
     }
   }
 
@@ -310,7 +222,4 @@
   .wfprocess-footer .btn-terminate{
     height: 40px;margin-left: 80px;
   }
-  .wfprocess-footer .btn-invalid{
-    height: 40px;margin-left: 10px;
-  }  
 </style>

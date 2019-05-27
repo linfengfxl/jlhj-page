@@ -64,7 +64,19 @@ export default {
               }
               if(row.status == 3){
                 return h('label',{
-                },'终止');
+                },'驳回');
+              }
+              if(row.status == 4){
+                return h('label',{
+                },'作废');
+              }
+              if(row.status == 5){
+                return h('label',{
+                },'转审');
+              }
+              if(row.status == 9){
+                return h('label',{
+                },'评论');
               }
             }
           }, 

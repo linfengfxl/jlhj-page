@@ -17,6 +17,7 @@
               <Radio :label="2">通过</Radio>
               <Radio :label="1">审批中</Radio>
               <Radio :label="3">驳回</Radio>
+              <Radio :label="4">作废</Radio>
             </RadioGroup>
           </td>
           <td class="page-tools">
@@ -84,7 +85,7 @@ export default {
       columns: [ 
         {
           title: '操作',
-          width: 90,
+          width: 80,
           align: 'center',
           fixed: 'left',
           render: (h, params) => {
@@ -93,9 +94,6 @@ export default {
               props: {
                 btns: [{
                   key: 'edit',                   
-                  disabled: row.status != 3
-                }, {
-                  key: 'delete',                   
                   disabled: row.status != 3
                 }]
               },
@@ -118,6 +116,21 @@ export default {
           width: 140,
           align: 'center',
           fixed: 'left',
+          render:(h,params)=>{
+            var row = params.row;
+            var text = row.billId;
+            text = text;
+            return h('a',{
+              props:{
+
+              },
+              on:{
+                click:()=>{
+                  this.$router.push({path:'/financial/expense/view?forward&inst='+row.instId});
+                }
+              }
+            },text);
+          }
         },
         page.table.initDateColumn({
           title: '单据日期',
