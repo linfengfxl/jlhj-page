@@ -28,6 +28,7 @@ components.push({ component: 'workflow/define/Index', name: '', path: '/workflow
 components.push({ component: 'workflow/mywork/Index', name: '', path: '/workflow/mywork' })
 components.push({ component: 'workflow/process/Index', name: '', path: '/workflow/process' })
 components.push({ component: 'workflow/process/Redirect', name: '', path: '/workflow/process/redirect' })
+components.push({ component: 'workflow/mywork/Start', name: '', path: '/workflow/start' })
 
 // financial
 components.push({ component: 'financial/expense/Index', name: '', path: '/financial/expense' })
