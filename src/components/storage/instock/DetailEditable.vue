@@ -25,45 +25,35 @@
       </thead>
       <tbody>
       <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
-          <td :class="{'col-xh':true,'cur':index==curIndex}">
-            {{index+1}}
-            <!--  序号 -->
+          <td>
+            {{index+1}} 
           </td>
           <td>
-            {{item.materCode}}
-            <!--  材料编码 -->
+            {{item.materCode}}<!--  材料编码 --> 
           </td>
           <td>
-            {{item.materName}}
-            <!--  材料名称 -->
+            {{item.materName}} <!--  材料名称 --> 
           </td>
           <td>
-            {{item.spec}}
-            <!--  规格型号 -->
+            {{item.spec}}<!--  规格型号 --> 
           </td>
           <td>
-            {{$args.getArgText('unit',item.unit)}}
-            <!--  单位 -->
+            {{$args.getArgText('unit',item.unit)}}  <!--  单位 --> 
           </td>
-          <td class="col-quantity">
-            <!--  数量 -->
-           {{item.quantity}}
+          <td class="col-quantity"> 
+           {{item.quantity}}<!--  数量 -->
           </td>
-          <td class="col-price">
-            <!--  含税单价(元) -->
-            {{item.taxUnitPrice}}
+          <td class="col-price"> 
+            {{item.taxUnitPrice}} <!--  含税单价(元) -->
           </td>
-          <td class="col-amount">
-            <!--  单价(元) -->
-            {{item.unitPrice}}
+          <td class="col-amount"> 
+            {{item.unitPrice}}   <!--  单价(元) -->
           </td>
-          <td class="col-amount">
-            <!--  金额(元) -->
-            {{item.amount}}
+          <td class="col-amount"> 
+            {{item.amount}} <!--  金额(元) -->
           </td>
-          <td class="col-amount">
-            <!--  税额(元) -->
-            {{item.tax}}
+          <td class="col-amount"> 
+            {{item.tax}} <!--  税额(元) -->
           </td>
         </tr>
       </tbody>
