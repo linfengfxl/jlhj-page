@@ -32,10 +32,21 @@ components.push({ component: 'workflow/process/Redirect', name: '', path: '/work
 components.push({ component: 'workflow/mywork/Start', name: '', path: '/workflow/start' })
 
 // financial
+//报销单
 components.push({ component: 'financial/expense/Index', name: '', path: '/financial/expense' })
 components.push({ component: 'financial/expense/ExpenseStart', name: '', path: '/financial/expense/start' })
 components.push({ component: 'financial/expense/ExpenseHandle', name: '', path: '/financial/expense/handle' })
 components.push({ component: 'financial/expense/ExpenseView', name: '', path: '/financial/expense/view' })
+
+
+//付款计划
+components.push({ component: 'financial/payPlan/Index', name: '', path: '/financial/payplan' })
+components.push({ component: 'financial/payPlan/PayPlanStart', name: '', path: '/financial/payplan/start' })
+components.push({ component: 'financial/payPlan/PayPlanHandle', name: '', path: '/financial/payplan/handle' })
+components.push({ component: 'financial/payPlan/PayPlanView', name: '', path: '/financial/payplan/view' })
+ 
+
+ 
 
 
 // 运输小票

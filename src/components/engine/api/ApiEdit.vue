@@ -513,5 +513,21 @@
     top:5px;
     z-index: 100;
   }
+
+  .apiedit .editor-response{
+    height: 200px;
+  }
+
+  .apiedit .editor-body{
+    height: 100px;
+  } 
+
+  .apiedit .layout-2 .editor-response{
+    height: 400px;
+  }
+
+  .apiedit .layout-2 .editor-body{
+    height: 200px;
+  }
 </style>
 

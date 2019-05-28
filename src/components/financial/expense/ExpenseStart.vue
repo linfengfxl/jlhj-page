@@ -27,7 +27,7 @@
                 </FormItem>
               </td>
               <td>
-                <FormItem prop="billDate" label="报销日期" :required="true">
+                <FormItem prop="billDate" label="报销日期">
                    <DatePicker type="date" placeholder="" v-model="formItem.billDate" format="yyyy-MM-dd" ></DatePicker>
                 </FormItem>
               </td>
@@ -161,7 +161,7 @@ export default {
         payWay:'',
         legal:'',
         files:'',
-        describe:'',
+        describe:'',        
         status:0,
         instId:0
       },
@@ -192,7 +192,10 @@ export default {
         ], 
         deptId: [
           { required: true, whitespace: true, message: '该项为非空', trigger: 'change' }
-        ]
+        ],
+        billDate:[
+          { required: true,  message: '该项为非空', trigger: 'change', pattern: /.+/ }
+        ],
       },
       list: [],
       oriItem: {},
@@ -256,7 +259,7 @@ export default {
         catalog:'',
         projectId:'',
         projectName:'',
-        billDate:null,
+        billDate:page.formatDate(new Date()),
         amount:'',
         bankAccName:'',
         bankOpen:'',

@@ -14,7 +14,7 @@
       <tbody>
         <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
           <td :class="{'col-xh':true,'cur':index==curIndex}">{{index+1}}</td>
-          <td>{{item.feeType}}</td> 
+          <td>{{item.feeTypeName}}</td> 
           <td>{{item.amount}}</td>
           <td>{{item.describe}}</td>
         </tr>
@@ -41,7 +41,7 @@
           </td> 
           <td>
             <Select v-model="item.feeType">
-              <Option v-for="item in feeType" :value="item.code" :key="item.code">{{ item.text }}</Option>
+              <Option v-for="item in $args.getArgGroup('fee_type')" :value="item.argCode" :key="item.argCode">{{ item.argText }}</Option>
             </Select>
           </td>
           <td> 
@@ -90,11 +90,7 @@ export default {
   },
   data() {
     return {
-      curIndex: 0,
-      feeType:[
-        {code:'001',text:'费用类型 - 1'},
-        {code:'002',text:'费用类型 - 2'},
-      ]
+      curIndex: 0,       
     }
   },
   mounted: function () {

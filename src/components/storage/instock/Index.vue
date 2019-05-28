@@ -257,7 +257,7 @@ export default {
     }
   },
   mounted: function () {
-    this.reset();
+   this.query();
   },
   methods: {
     query() {

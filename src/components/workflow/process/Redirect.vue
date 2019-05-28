@@ -30,6 +30,9 @@ export default {
         if (defineId == 2) {//入库单
           url = '/storage/instock/handle?forward&inst=' + instId
         }
+        if (defineId == 4) {//付款计划
+          url = '/financial/payplan/handle?forward&inst=' + instId
+        }
         if (defineId == 5) {//机械租赁结算单
           url = '/machine/bill/handle?forward&inst=' + instId
         }
@@ -38,6 +41,9 @@ export default {
       if (action == 'view') {
         if (defineId == 1) {//报销单
           url = '/financial/expense/view?forward&inst=' + instId
+        }
+        if (defineId == 4) {//付款计划
+          url = '/financial/payplan/view?forward&inst=' + instId
         }
       }
       
