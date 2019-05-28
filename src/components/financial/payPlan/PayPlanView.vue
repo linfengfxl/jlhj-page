@@ -1,5 +1,5 @@
 <template>
-  <HandleProcess ref="handleProcess" :instId="instId" :title="title" @on-load="instLoaded" @on-submit="save">
+  <ViewProcess ref="ViewProcess" :instId="instId" :title="title" @on-load="instLoaded" @on-submit="save">
     <div class="page expense-edit">     
     <Loading :loading="loading">
       <div class="baseinfo"> 
@@ -105,10 +105,10 @@
             </tr>
           </table>
         </Form>
-      </div>
+      </div>  
     </Loading>
   </div>
-</HandleProcess>  
+</ViewProcess>  
 </template>
 <script>
 import Loading from '@/components/loading';
@@ -121,7 +121,7 @@ import UploadBox from '@/components/upload/Index';
 import SelectProject from '@/components/page/form/SelectProject';
 import SelectDept from '@/components/page/form/SelectDept';
 
-import HandleProcess from '@/components/workflow/process/Handle';
+import ViewProcess from '@/components/workflow/process/View';
 
 export default {
   components: {
@@ -130,13 +130,14 @@ export default {
     UploadBox,
     SelectProject,
     SelectDept,
-    HandleProcess
+    ViewProcess
   },
   data() {
     return {
-      title:'付款计划',
+      title:'报销单',
       loading: 0,
-      instId:0,     
+      instId:0,
+      stockBillId: '',       
       formItem: {
         payPlanId:'',
         payPlanName:'',
@@ -155,7 +156,7 @@ export default {
         applyDeptName:'',
         deptId:'',
         deptName:'',
-        applicant:'',
+        applicant:0,
         applicantName:'',
         planYear:'',
         planMonth:'',
@@ -167,7 +168,9 @@ export default {
       formRules: {
          
       },
+      list: [],
       oriItem: {},
+      storage: [],
     }
   },
   mounted: function () { 
@@ -184,7 +187,7 @@ export default {
     load() {
       this.loading = 1;
 
-       this.$http.post("/api/engine/financial/payPlan/get", {payPlanId:this.payPlanId}).then((res) => {
+      this.$http.post("/api/engine/financial/payPlan/get", {payPlanId:this.payPlanId}).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
           if (res.data.data) {
@@ -224,7 +227,7 @@ export default {
         applyDeptName:'',
         deptId:'',
         deptName:'',
-        applicant:'',
+        applicant:0,
         applicantName:'',
         planYear:'',
         planMonth:'',

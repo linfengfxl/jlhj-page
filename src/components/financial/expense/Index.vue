@@ -17,6 +17,7 @@
               <Radio :label="2">通过</Radio>
               <Radio :label="1">审批中</Radio>
               <Radio :label="3">驳回</Radio>
+              <Radio :label="4">作废</Radio>
             </RadioGroup>
           </td>
           <td class="page-tools">
@@ -30,20 +31,34 @@
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td>
-            <Input v-model="queryForm.stockBillId" placeholder="报销单号" @keyup.enter.native="query"></Input>
+            <Input v-model="queryForm.billId" placeholder="报销单号" @keyup.enter.native="query"></Input>
           </td>
-          <td>创建日期</td>
+          <td>
+            <Select v-model="queryForm.catalog" style="width:100px;" placeholder="报销分类">
+              <Option v-for="item in catalog" :value="item.code" :key="item.code">{{ item.text }}</Option>
+            </Select>
+          </td>
+          <td>
+            <SelectProject v-model="queryForm.projectId" :model="queryForm" :text="queryForm.projectName" textProp="projectName" />
+          </td>
+          <td><Input v-model="queryForm.operatorName" placeholder="经办人"/></td>
+          <td>
+            <Select v-model="queryForm.catalog" style="width:100px;" placeholder="法律主体">
+              <Option v-for="item in $args.getArgGroup('legal')" :value="item.argCode" :key="item.argCode">{{ item.argCode }}</Option>
+            </Select>
+          </td>
+          <td>报销日期</td>
           <td>
             <DatePicker
               type="daterange"
-              v-model="queryForm.createTime"
+              v-model="queryForm.billDate"
               split-panels
-              placeholder="创建日期"
+              placeholder="报销日期"
               style="width: 180px"
               :clearable="true"
               ::transfer="true"
             ></DatePicker>
-          </td>
+          </td>          
           <td>
             <Button @click="query" type="primary" icon="ios-search">查询</Button>
           </td>
@@ -67,6 +82,7 @@ import ListPage from '@/components/page/ListPage';
 import ListPageDetail from '@/components/page/ListPageDetail';
 import DataRowOperate from '@/components/commons/DataRowOperate';
 import UploadBox from '@/components/upload/Index';
+import SelectProject from '@/components/page/form/SelectProject';
 
 import page from '@/assets/js/page';
 
@@ -75,7 +91,8 @@ export default {
     ListPage, 
     DataRowOperate,
     ListPageDetail,
-    UploadBox
+    UploadBox,
+    SelectProject
   },
   data() {
     let that = this;
@@ -84,7 +101,7 @@ export default {
       columns: [ 
         {
           title: '操作',
-          width: 90,
+          width: 80,
           align: 'center',
           fixed: 'left',
           render: (h, params) => {
@@ -93,9 +110,6 @@ export default {
               props: {
                 btns: [{
                   key: 'edit',                   
-                  disabled: row.status != 3
-                }, {
-                  key: 'delete',                   
                   disabled: row.status != 3
                 }]
               },
@@ -118,6 +132,21 @@ export default {
           width: 140,
           align: 'center',
           fixed: 'left',
+          render:(h,params)=>{
+            var row = params.row;
+            var text = row.billId;
+            text = text;
+            return h('a',{
+              props:{
+
+              },
+              on:{
+                click:()=>{
+                  this.$router.push({path:'/financial/expense/view?forward&inst='+row.instId});
+                }
+              }
+            },text);
+          }
         },
         page.table.initDateColumn({
           title: '单据日期',
@@ -247,9 +276,21 @@ export default {
         },
       ],
       queryForm: { 
-        status: 2, 
-        createTime: null,
+        billId:'',
+        projectId:'',
+        projectName:'',
+        catalog:'',
+        status: 2,  
+        billDate: [page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())]
       },
+      catalog:[
+        {code:'生产类',text:'生产类'},
+        {code:'行政类',text:'行政类'},
+        {code:'财务类',text:'财务类'},
+        {code:'伙食类',text:'伙食类'},
+        {code:'业务招待费',text:'业务招待费'},
+        {code:'其他类',text:'其他类'}
+      ],
       loading: 0
     }
   },
@@ -266,21 +307,24 @@ export default {
     },
     beforeLoad() {
       var queryParam = this.$refs.page.queryParam;
-      queryParam.createTimeStart = '';
-      queryParam.createTimeEnd = '';
-      delete queryParam.createTime;
-      if (this.queryForm.createTime.length > 0) {
-        queryParam.createTimeStart = page.formatDate(this.queryForm.createTime[0]);
+      queryParam.billDateStart = '';
+      queryParam.billDateEnd = '';
+      delete queryParam.billDate;
+      if (this.queryForm.billDate.length > 0) {
+        queryParam.billDateStart = page.formatDate(this.queryForm.billDate[0]);
       }
-      if (this.queryForm.createTime.length > 1) {
-        queryParam.createTimeEnd = page.formatDate(this.queryForm.createTime[1]);
+      if (this.queryForm.billDate.length > 1) {
+        queryParam.billDateEnd = page.formatDate(this.queryForm.billDate[1]);
       }
     },
     reset() {
       Object.assign(this.queryForm, {
-        status: 2, 
-        createTime: null,
-        createTime: []//[page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())]
+        billId:'',
+        projectId:'',
+        projectName:'',
+        catalog:'',
+        status: 2,  
+        billDate: [page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())]
       });
       this.query();
     },

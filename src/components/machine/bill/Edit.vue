@@ -1,13 +1,6 @@
 <template>
-  <div class="page instock-edit">
-    <div class="page-bar">
-      <LayoutHor>
-        <div slot="left">
-          <Button size="small" @click="goBack" icon="chevron-left" type="warning">返回</Button>
-        </div>
-        <div class="page-bar-title">{{pageTitle}}</div>
-      </LayoutHor>
-    </div>
+ <StartProcess ref="startProcess" defineId="5" :title="pageTitle" @on-submit="save">
+  <div class="page instock-edit"> 
     <Loading :loading="loading">
       <div class="baseinfo">
         <div class="page-tools"></div>
@@ -21,15 +14,15 @@
             <tr>
               <td>
                 <FormItem prop="deptId" label="部门">
-                  <SelStorage v-model="formItem.deptId"></SelStorage>
+                  <SelStorage v-model="formItem.deptId" :model="formItem"></SelStorage>
                 </FormItem>
               </td>
               <td>
-                <FormItem prop label="作业日期">
+                <FormItem prop="billDate" label="作业日期">
                   <Date-picker
                     type="date"
                     placeholder="选择日期"
-                    v-model="formItem.jobDate"
+                    v-model="formItem.billDate"
                     format="yyyy-MM-dd"
                   ></Date-picker>
                 </FormItem>
@@ -46,12 +39,14 @@
             </tr>
             <tr>
               <td>
-                <FormItem prop="providerCode" label="供应商"> 
-                  <SelectProvider
-                    v-model="formItem.providerCode"
-                    :model="formItem"
-                    :text="formItem.providerName"
-                    @on-select="selProvider"
+                <FormItem prop="providerCode" label="供应商">
+                  <Input
+                    v-model="formItem.providerName"
+                    placeholder
+                    class="width-1"
+                    readonly="readonly"
+                    icon="search"
+                    @on-click="selProvider"
                   />
                 </FormItem>
               </td>
@@ -59,30 +54,45 @@
                 <FormItem prop label="供应商联系人">{{formItem.linkMan}}</FormItem>
               </td>
               <td>
-                <FormItem prop label="加班时长">
-                  <Input v-model="formItem.overtime"/>
+                <FormItem prop label="结算开始日期">
+                  <Date-picker
+                    type="date"
+                    placeholder="选择日期"
+                    v-model="formItem.startDate"
+                    format="yyyy-MM-dd"
+                  ></Date-picker>
                 </FormItem>
               </td>
             </tr>
             <tr>
               <td>
-                <FormItem prop label="加油数量">
-                  <Input v-model="formItem.addFuel"/>
+                <FormItem prop label="结算结束日期">
+                  <Date-picker
+                    type="date"
+                    placeholder="选择日期"
+                    v-model="formItem.endDate"
+                    format="yyyy-MM-dd"
+                  ></Date-picker>
                 </FormItem>
               </td>
-              <td></td>
               <td>
-                <FormItem prop="machineName" label="机械名称">
-                  <SelectMachine
-                    v-model="formItem.machineCode"
-                    :model="formItem"
-                    :text="formItem.machineName"
-                  />
+                <FormItem prop label="金额合计">
+                  <Input v-model="formItem.totalAmount"/>
+                </FormItem>
+              </td>
+              <td>
+                <FormItem prop label="罚款">
+                  <Input v-model="formItem.penalty"/>
                 </FormItem>
               </td>
             </tr>
             <tr>
-              <td colspan="3">
+              <td>
+                <FormItem prop label="价税合计">
+                  <Input v-model="formItem.totalPriceTax"/>
+                </FormItem>
+              </td> 
+              <td>
                 <FormItem prop=" " label="备注">
                   <Input type="textarea" :rows="2" v-model="formItem.remark"/>
                 </FormItem>
@@ -103,15 +113,17 @@
           :style="{display: formItem.deptId?'':'none'}"
         ></Editable>
       </div>
-      <table class="savebar" cellpadding="0" cellspacing="0">
+      <!-- <table class="savebar" cellpadding="0" cellspacing="0">
         <tr>
           <td class="save" @click="save" v-if="pageFlag<=2">保存</td>
           <td class="reset" @click="reset">重置</td>
           <td></td>
         </tr>
-      </table>
+      </table> -->
     </Loading>
+    <SelProvider ref="selProvider"></SelProvider>
   </div>
+ </StartProcess>
 </template>
 <script>
 import Loading from '@/components/loading';
@@ -122,52 +134,53 @@ import floatObj from '@/assets/js/floatObj';
 import pagejs from '@/assets/js/page';
 
 import SelStorage from '@/components/storage/input/SelStorage';
-
+import SelProvider from '@/components/provider/SelectProvider';
 import SelectProject from '@/components/page/form/SelectProject';
 import SelectMachine from '@/components/page/form/SelectMachine';
-import SelectProvider from '@/components/page/form/SelectProvider';
 
-
-
+import StartProcess from '@/components/workflow/process/Start';
 export default {
   components: {
     Loading,
     LayoutHor,
     Editable,
     SelStorage,
+    SelProvider,
     SelectProject,
     SelectMachine,
-    SelectProvider,
+    StartProcess,
   },
   data() {
     return {
       loading: 0,
-      machineOrderId: '',
+      machineBillCode: '',
       pageFlag: 1,//1.新建 2.编辑 3.修订
       formItem: {
-        machineOrderId: '',//单据编号
+        machineBillCode: '',//单据编号
         deptId: '',//所属部门
         projectCode: '',//工程代码
-        projectName: '',//工程名
-        machineCode: '',//机械代码
-        machineName: '',//机械名称
-        machineModel: '',//机械型号
+        projectName: '',//工程名   
+        billDate:'',//结算日期
+
         providerCode: '',//供应商名称
         linkMan: '',//供应商联系人
-        jobDate: '',//作业日期
-        operator: '',//司机/操作手姓名
-        operatorTel: '',//司机/操作手电话
-        leaseType: '',//租赁方式
-        taibanPrice: '',//台班单价
-        remark: '',//备注
-        overtime: '',//加班时长
-        addFuel: '',//加油数量
-        taibanPrice: null,//
-        source: 1,
+        taxpayerType: '',//纳税人类型
+        taxRate: '',   //税率
+        invoiceType: '',//发票类型 
+
+        startDate: '',//结算开始日期
+        endDate: '',//结算结束日期 
+        totalAmount:'',//金额合计
+        penalty: '',//罚款
+        totalPriceTax: '',//价税合计
+        remark: '',//备注 
       },
       formRules: {
         deptId: [
           { required: true, whitespace: true, message: '请选择部门', trigger: 'change' }
+        ],
+        billDate:[
+          { required: true,  message: '请选择作业日期', trigger: 'change', pattern: /.+/ }
         ],
         projectCode: [
           { required: true, whitespace: true, message: '请选择工程', trigger: 'change' }
@@ -175,9 +188,7 @@ export default {
         providerCode: [
           { required: true, whitespace: true, message: '请选择供应商', trigger: 'change' }
         ],
-        machineName: [
-          { required: true, whitespace: true, message: '请选择机械名称', trigger: 'change' }
-        ],
+
       },
       list: [],
       oriItem: {},
@@ -185,8 +196,8 @@ export default {
     }
   },
   mounted: function () {
-    this.machineOrderId = this.$route.query.id;
-    if (this.machineOrderId) {
+    this.machineBillCode = this.$route.query.id;
+    if (this.machineBillCode) {
       this.pageFlag = 2;
       this.load();
     } else {
@@ -197,17 +208,17 @@ export default {
   computed: {
     pageTitle() {
       if (this.pageFlag == 1) {
-        return '机械作业单 - 创建';
+        return '机械租赁结算单 - 创建';
       }
       if (this.pageFlag == 2) {
-        return '机械作业单 - 编辑';
+        return '机械租赁结算单 - 编辑';
       }
     }
   },
   methods: {
     load() {
       this.loading = 1;
-      this.$http.post("/api/engine/machine/order/get", { "machineOrderId": this.machineOrderId }).then((res) => {
+      this.$http.post("/api/engine/machine/bill/get", { "machineBillCode": this.machineBillCode }).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
           if (res.data.data) {
@@ -228,45 +239,47 @@ export default {
     },
     initNew() {
       Object.assign(this.formItem, {
-        machineOrderId: '',//入库单号
-        type: 2,//类型:1.出库, 2.入库
-        projectCode: '',//工程编号
-        contractNo: '',//合同编号
-        deptId: '',//仓库或部门
-        deptId: '',
-        providerCode: '',//供应商编号
-        providerName: '',//供应商名称
+        machineBillCode: '',//单据编号
+        deptId: '',//所属部门
+        deptName: '',//所属部门
+        projectCode: '',//工程代码
+        projectName: '',//工程名  
+
+        providerCode: '',//供应商名称
         linkMan: '',//供应商联系人
-        linkPhone: '',//供应商联系电话
         taxpayerType: '',//纳税人类型
-        taxRate: '',//税率  
-        inboundType: 1,
-        remark: '',
-        operator: '',//
-        operatorName: '',
+        taxRate: '',   //税率
+        invoiceType: '',//发票类型 
+
+        startDate: '',//结算开始日期
+        endDate: '',//结算结束日期 
+        totalAmount:'',//金额合计
+        penalty: '',//罚款
+        totalPriceTax: '',//价税合计
+        remark: '',//备注 
       });
       this.list = [];
       this.list.push(this.$refs.editable.listNewRow());
       this.list.push(this.$refs.editable.listNewRow());
     },
-    save() {
+    save(proc) {
       var form = {
         detailList: []
       };
 
       Object.assign(form, this.formItem);
-      form.jobDate = page.formatDate(form.jobDate);
-
+      form.billDate = page.formatDate(form.billDate);
+      form.startDate = page.formatDate(form.startDate);
+      form.endDate = page.formatDate(form.endDate); 
+      
       var pass = true;
       this.$refs.form.validate((valid) => {
         pass = valid;
-      })
-
+      }) 
       if (!pass) {
         this.$Message.error('验证未通过！');
         return;
-      }
-
+      } 
       form.detailList = [];
       // 明细
       for (var i = 0; i < this.list.length; i++) {
@@ -283,16 +296,16 @@ export default {
         //   }
         //   form.detailList.push(item);
         // }
-        item['startTime'] = page.formatDate(item['startTime']);
-        item['endTime'] = page.formatDate(item['endTime']);
+        
         form.detailList.push(item);
       }
-      console.log(form);
+      
+      form.proc = proc.formItem;
       // 提交
       this.loading = 1;
-      var uri = '/api/engine/machine/order/add';
+      var uri = '/api/engine/machine/bill/start';
       if (this.pageFlag == 2) {
-        uri = '/api/engine/machine/order/update';
+        uri = '/api/engine/machine/bill/restart';
       }
 
       this.$http.post(uri, form).then((res) => {
@@ -308,16 +321,21 @@ export default {
         this.$Message.error("请求失败，请重新操作")
       });
     },
-    selProvider(data) {
-      if (data) {
-        this.formItem.providerName = data.providerName;
-        this.formItem.providerCode = data.providerCode;
-        this.formItem.linkMan = data.linkMan;//供应商联系人
-        this.formItem.linkPhone = data.linkPhone;//供应商联系电话
-        this.formItem.taxpayerType = this.$args.getArgText('taxpayer_type', data.taxpayerType);//纳税人类型
-        this.formItem.invoiceType = this.$args.getArgText('invoice_type', data.invoiceType);//发票类型
-        this.formItem.taxRate = data.taxRate;//税率 
-      }
+    selProvider(row) {
+      var sel = this.$refs.selProvider;//引用该控件，赋值给变量对象
+      sel.show({
+        ok: (data) => {
+          if (data) {
+            this.formItem.providerName = data.providerName;
+            this.formItem.providerCode = data.providerCode;
+            this.formItem.linkMan = data.linkMan;//供应商联系人
+            this.formItem.linkPhone = data.linkPhone;//供应商联系电话
+            this.formItem.taxpayerType = this.$args.getArgText('taxpayer_type', data.taxpayerType);//纳税人类型
+            this.formItem.invoiceType = this.$args.getArgText('invoice_type', data.invoiceType);//发票类型
+            this.formItem.taxRate = data.taxRate;//税率 
+          }
+        }
+      });
     },
     onAmountChange(val) {
       this.formItem.amount = val;
@@ -339,7 +357,7 @@ export default {
 
 <style type="text/css">
 .instock-edit.page {
-  width: 900px;
+  width: 1000px;
   /* margin: 0 auto; */
   padding: 10px 20px;
   position: relative;

@@ -14,8 +14,8 @@
      </tr>
      <tr>
        <td class="label">Body</td>
-       <td>
-          <editor v-model="testParams" @init="editorInit" lang="json" theme="chrome" height="100"></editor>
+       <td class="editor-body">
+          <editor v-model="testParams" @init="editorInit" lang="json" theme="chrome" height="100%"></editor>
        </td>
      </tr>
      <tr>
@@ -26,8 +26,8 @@
      </tr>
      <tr>
        <td class="label">结果</td>
-       <td>
-         <editor v-model="response" @init="editorInit" :lang="responseType" theme="chrome" height="200"></editor>
+       <td class="editor-response">
+         <editor v-model="response" @init="editorInit" :lang="responseType" theme="chrome" height="100%"></editor>
        </td>
      </tr>
   </table> 

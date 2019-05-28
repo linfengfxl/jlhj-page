@@ -152,7 +152,6 @@
 <script>
 import Loading from '@/components/loading';
 import LayoutHor from '@/components/layout/LayoutHor';
-import Editable from './DetailEditable';
 import page from '@/assets/js/page';
 import floatObj from '@/assets/js/floatObj'; 
 import pagejs from '@/assets/js/page';
@@ -167,8 +166,7 @@ import StartProcess from '@/components/workflow/process/Start';
 export default {
   components: {
     Loading,
-    LayoutHor,
-    Editable,     
+    LayoutHor,    
     UploadBox,
     SelectProject,
     SelectDept,
@@ -198,11 +196,11 @@ export default {
         applyDeptName:'',
         deptId:'',
         deptName:'',
-        applicant:'',
+        applicant:0,
         applicantName:'',
         planYear:'',
         planMonth:'',
-        operator:'',
+        operator:0,
         operatorName:'',
         status:0,
         instId:0
@@ -283,9 +281,9 @@ export default {
         applyDeptId:'',
         deptId:'',
         deptName:'',
-        applicant:'',
+        applicant:0,
         applicantName:'',
-        operator:'',
+        operator:0,
         operatorName:'',
         planYear:'',
         planMonth:'',

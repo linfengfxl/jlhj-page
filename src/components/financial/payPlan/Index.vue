@@ -88,9 +88,6 @@ export default {
                 btns: [{
                   key: 'edit',                   
                   disabled: row.status != 3
-                }, {
-                  key: 'delete',                   
-                  disabled: row.status != 3
                 }]
               },
               on: {
@@ -98,9 +95,7 @@ export default {
                   if (key == "edit") {
                     this.edit(row);
                   }
-                  if (key == "delete") {
-                    this.del(row);
-                  }
+                  
                 }
               }
             });
@@ -112,13 +107,25 @@ export default {
           width: 140,
           align: 'center',
           fixed: 'left',
+          render:(h,params)=>{
+            var row = params.row;
+            return h('a',{
+              props:{
+
+              },
+              on:{
+                click:()=>{
+                  this.$router.push({path:'/financial/payplan/view?forward&inst='+row.instId});
+                }
+              }
+            },row.payPlanId);
+          }
         },
         {
           title: '付款计划名称',
           key: 'payPlanName',
           align: 'center',
           width: 100,
-          fixed: 'left',
         },
         {
           title: '供应商',
@@ -276,11 +283,11 @@ export default {
       }
     },
     add() {
-      this.$router.push({ path: '/financial/payPlan/start?forward'})
+      this.$router.push({ path: '/financial/payplan/start?forward'})
     },
     edit(row) {
       this.$router.push({
-        path: '/financial/payPlan/start?forward&id=' + row.payPlanId
+        path: '/financial/payplan/start?forward&id=' + row.payPlanId
       })
     },
     sendAudit() {

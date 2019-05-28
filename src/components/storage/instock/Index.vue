@@ -17,9 +17,10 @@
           </td>
           <td>
             <RadioGroup v-model="queryForm.status" type="button" @on-change="query">  
-              <Radio :label="1">审核中</Radio>
               <Radio :label="2">通过</Radio>
+              <Radio :label="1">审核中</Radio>
               <Radio :label="3">驳回</Radio>
+              <Radio :label="4">作废</Radio>
             </RadioGroup>
           </td>
           <td class="page-tools">
@@ -35,7 +36,15 @@
           <td>
             <Input v-model="queryForm.stockBillId" placeholder="入库单号" @keyup.enter.native="query"></Input>
           </td>
-          <td>创建日期</td>
+           <td>
+            <Input v-model="queryForm.projectName" placeholder="工程名" @keyup.enter.native="query"></Input>
+          </td>
+           <td>
+            <Input v-model="queryForm.deptName" placeholder="项目（或仓库）" @keyup.enter.native="query"></Input>
+          </td>
+           <td>
+            <Input v-model="queryForm.materName" placeholder="材料" @keyup.enter.native="query"></Input>
+          </td>   
           <td>
             <DatePicker
               type="daterange"
@@ -99,13 +108,9 @@ export default {
               props: {
                 btns: [{
                   key: 'edit',
-                  power: 'ckgl.rk.edit',
-                  disabled: row.status != 0
-                }, {
-                  key: 'delete',
-                  power: 'ckgl.rk.del',
-                  disabled: row.status != 0
-                }]
+                  //power: 'ckgl.rk.edit',
+                  disabled: row.status != 3
+                } ]
               },
               on: {
                 click: (key) => {
@@ -157,6 +162,7 @@ export default {
             '1': '审核中',
             '2': '通过',
             '3': '驳回',
+            '4': '作废',
           }
         }),
         page.table.initDateColumn({
@@ -241,7 +247,9 @@ export default {
       queryForm: {
         stockBillId: '',
         status: 2,
-        operId: '',
+        projectName: '',
+        deptName:'',
+        materName:'',
         operType: 1,
         createTime: null,
       },
@@ -249,7 +257,7 @@ export default {
     }
   },
   mounted: function () {
-    this.reset();
+   this.query();
   },
   methods: {
     query() {
@@ -274,7 +282,9 @@ export default {
     reset() {
       Object.assign(this.queryForm, {
         status: 2,
-        operId: '',
+        projectName: '',
+        deptName:'',
+        materName:'',
         operType: 1,
         stockBillId: '',
         createTime: []//[page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())]

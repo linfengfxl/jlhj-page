@@ -1,13 +1,6 @@
 <template>
-  <div class="page instock-edit">
-    <div class="page-bar">
-      <LayoutHor>
-        <div slot="left">
-          <Button size="small" @click="goBack" icon="chevron-left" type="warning">返回</Button>
-        </div>
-        <div class="page-bar-title">{{pageTitle}}</div>
-      </LayoutHor>
-    </div>
+ <HandleProcess ref="handleProcess" :instId="instId" :title="title" @on-load="instLoaded" @on-submit="save">
+  <div class="page instock-edit"> 
     <Loading :loading="loading">
       <div class="baseinfo">
         <div class="page-tools"></div>
@@ -20,41 +13,25 @@
             </colgroup>
             <tr>
               <td>
-                <FormItem prop="deptId" label="部门">
-                  <SelStorage v-model="formItem.deptId"></SelStorage>
+                <FormItem  label="部门">
+                  {{formItem.deptName}}
                 </FormItem>
               </td>
               <td>
-                <FormItem prop label="作业日期">
-                  <Date-picker
-                    type="date"
-                    placeholder="选择日期"
-                    v-model="formItem.billDate"
-                    format="yyyy-MM-dd"
-                  ></Date-picker>
+                <FormItem label="作业日期">
+                {{formItem.billDate}}
                 </FormItem>
               </td>
               <td>
                 <FormItem prop="projectCode" label="工程名称">
-                  <SelectProject
-                    v-model="formItem.projectCode"
-                    :model="formItem"
-                    :text="formItem.projectName"
-                  />
+                 {{formItem.projectCode}}
                 </FormItem>
               </td>
             </tr>
             <tr>
               <td>
                 <FormItem prop="providerCode" label="供应商">
-                  <Input
-                    v-model="formItem.providerName"
-                    placeholder
-                    class="width-1"
-                    readonly="readonly"
-                    icon="search"
-                    @on-click="selProvider"
-                  />
+                  {{formItem.providerName}}
                 </FormItem>
               </td>
               <td>
@@ -62,46 +39,36 @@
               </td>
               <td>
                 <FormItem prop label="结算开始日期">
-                  <Date-picker
-                    type="date"
-                    placeholder="选择日期"
-                    v-model="formItem.startDate"
-                    format="yyyy-MM-dd"
-                  ></Date-picker>
+                   {{formItem.startDate}}
                 </FormItem>
               </td>
             </tr>
             <tr>
               <td>
                 <FormItem prop label="结算结束日期">
-                  <Date-picker
-                    type="date"
-                    placeholder="选择日期"
-                    v-model="formItem.endDate"
-                    format="yyyy-MM-dd"
-                  ></Date-picker>
+                {{formItem.endDate}}
                 </FormItem>
               </td>
               <td>
                 <FormItem prop label="金额合计">
-                  <Input v-model="formItem.endDate"/>
+                  {{formItem.totalAmount}}
                 </FormItem>
               </td>
               <td>
                 <FormItem prop label="罚款">
-                  <Input v-model="formItem.penalty"/>
+                 {{formItem.penalty}}
                 </FormItem>
               </td>
             </tr>
             <tr>
               <td>
                 <FormItem prop label="价税合计">
-                  <Input v-model="formItem.totalPriceTax"/>
+                  {{formItem.totalPriceTax}}
                 </FormItem>
               </td> 
               <td>
                 <FormItem prop=" " label="备注">
-                  <Input type="textarea" :rows="2" v-model="formItem.remark"/>
+                 {{formItem.remark}}
                 </FormItem>
               </td>
             </tr>
@@ -114,22 +81,23 @@
         <Editable
           ref="editable"
           :list="list"
-          :editable="true"
+          :editable="false"
           :deptId="formItem.deptId"
           @on-amount-change="onAmountChange"
           :style="{display: formItem.deptId?'':'none'}"
         ></Editable>
       </div>
-      <table class="savebar" cellpadding="0" cellspacing="0">
+      <!-- <table class="savebar" cellpadding="0" cellspacing="0">
         <tr>
           <td class="save" @click="save" v-if="pageFlag<=2">保存</td>
           <td class="reset" @click="reset">重置</td>
           <td></td>
         </tr>
-      </table>
+      </table> -->
     </Loading>
     <SelProvider ref="selProvider"></SelProvider>
   </div>
+ </HandleProcess>
 </template>
 <script>
 import Loading from '@/components/loading';
@@ -144,7 +112,7 @@ import SelProvider from '@/components/provider/SelectProvider';
 import SelectProject from '@/components/page/form/SelectProject';
 import SelectMachine from '@/components/page/form/SelectMachine';
 
-
+import HandleProcess from '@/components/workflow/process/Handle';
 export default {
   components: {
     Loading,
@@ -153,11 +121,13 @@ export default {
     SelStorage,
     SelProvider,
     SelectProject,
-    SelectMachine
+    SelectMachine,
+    HandleProcess,
   },
   data() {
     return {
       loading: 0,
+      instId:0, 
       machineBillCode: '',
       pageFlag: 1,//1.新建 2.编辑 3.修订
       formItem: {
@@ -175,6 +145,7 @@ export default {
 
         startDate: '',//结算开始日期
         endDate: '',//结算结束日期 
+        totalAmount:'',//金额合计
         penalty: '',//罚款
         totalPriceTax: '',//价税合计
         remark: '',//备注 
@@ -197,26 +168,16 @@ export default {
     }
   },
   mounted: function () {
-    this.machineBillCode = this.$route.query.id;
-    if (this.machineBillCode) {
-      this.pageFlag = 2;
-      this.load();
-    } else {
-      this.pageFlag = 1;
-      this.initNew();
-    }
+    this.instId = this.$route.query.inst;  
   },
-  computed: {
-    pageTitle() {
-      if (this.pageFlag == 1) {
-        return '机械作业单 - 创建';
-      }
-      if (this.pageFlag == 2) {
-        return '机械作业单 - 编辑';
-      }
-    }
+  computed: { 
   },
   methods: {
+    instLoaded(proc){  
+      this.machineBillCode = proc.instance.businessKey;
+      this.title = "机械租赁结算单_" + this.machineBillCode;
+      this.load();
+    },
     load() {
       this.loading = 1;
       this.$http.post("/api/engine/machine/bill/get", { "machineBillCode": this.machineBillCode }).then((res) => {
@@ -253,6 +214,7 @@ export default {
 
         startDate: '',//结算开始日期
         endDate: '',//结算结束日期 
+        totalAmount:'',//金额合计
         penalty: '',//罚款
         totalPriceTax: '',//价税合计
         remark: '',//备注 
@@ -261,7 +223,7 @@ export default {
       this.list.push(this.$refs.editable.listNewRow());
       this.list.push(this.$refs.editable.listNewRow());
     },
-    save() {
+    save(proc) {
       var form = {
         detailList: []
       };
@@ -290,7 +252,7 @@ export default {
         //     return;
         //   }
         //   if (item.taxUnitPrice == '') {
-        //     this.$Message.error(msg + '请录入含税单价');
+      //     this.$Message.error(msg + '请录入含税单价');
         //     return;
         //   }
         //   form.detailList.push(item);
@@ -298,13 +260,11 @@ export default {
         
         form.detailList.push(item);
       }
-      console.log(form);
+      
+      form.proc = proc.formItem;
       // 提交
       this.loading = 1;
-      var uri = '/api/engine/machine/bill/add';
-      if (this.pageFlag == 2) {
-        uri = '/api/engine/machine/bill/update';
-      }
+      var uri = '/api/engine/machine/bill/submit'; 
 
       this.$http.post(uri, form).then((res) => {
         this.loading = 0;

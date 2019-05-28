@@ -1,6 +1,13 @@
 <template>
- <StartProcess ref="startProcess" defineId="2" :title="pageTitle" @on-submit="save">
-  <div class="page instock-edit"> 
+  <div class="page instock-edit">
+    <div class="page-bar">
+      <LayoutHor>
+        <div slot="left">
+          <Button size="small" @click="goBack" icon="chevron-left" type="warning">返回</Button>
+        </div>
+        <div class="page-bar-title">{{pageTitle}}</div>
+      </LayoutHor>
+    </div>
     <Loading :loading="loading">
       <div class="baseinfo">
         <div class="page-tools"></div>
@@ -13,8 +20,18 @@
             </colgroup>
             <tr>
               <td>
-                <FormItem prop="deptId" label="入往仓库">
-                  <SelStorage v-model="formItem.deptId" :model="formItem"></SelStorage>
+                <FormItem prop="deptId" label="部门">
+                  <SelStorage v-model="formItem.deptId"></SelStorage>
+                </FormItem>
+              </td>
+              <td>
+                <FormItem prop label="作业日期">
+                  <Date-picker
+                    type="date"
+                    placeholder="选择日期"
+                    v-model="formItem.jobDate"
+                    format="yyyy-MM-dd"
+                  ></Date-picker>
                 </FormItem>
               </td>
               <td>
@@ -26,8 +43,10 @@
                   />
                 </FormItem>
               </td>
+            </tr>
+            <tr>
               <td>
-                <FormItem prop="providerCode" label="供应商">
+                <FormItem prop="providerCode" label="供应商"> 
                   <SelectProvider
                     v-model="formItem.providerCode"
                     :model="formItem"
@@ -36,51 +55,37 @@
                   />
                 </FormItem>
               </td>
-            </tr>
-            <tr>
               <td>
                 <FormItem prop label="供应商联系人">{{formItem.linkMan}}</FormItem>
               </td>
-              <td>
-                <FormItem prop="amount" label="税率">{{formItem.taxRate}} %</FormItem>
-              </td>
-              <td>
-                <FormItem
-                  prop="remark"
-                  label="纳税人类型"
-                >{{$args.getArgText('taxpayer_type', formItem.taxpayerType)}}</FormItem>
+                 <td>
+                   <FormItem prop label="加班时长">
+                  <Input v-model="formItem.overtime"/>
+                </FormItem> 
               </td>
             </tr>
-            <tr>
+            <tr> 
               <td>
-                <FormItem
-                  prop
-                  label="发票类型"
-                >{{$args.getArgText('invoice_type', formItem.invoiceType)}}</FormItem>
-              </td>
-              <td>
-                <FormItem prop label="日期">{{formItem.operateDate}}</FormItem>
-              </td>
-              <td>
-                <FormItem prop="operatorName" label="收料员">
-                  <SelectMember
-                    v-model="formItem.operator"
+                <FormItem prop="machineName" label="机械名称">
+                  <SelectMachine
+                    v-model="formItem.machineCode"
                     :model="formItem"
-                    :text="formItem.operatorName"
+                    :text="formItem.machineName"
+                    @on-select="selMachine"
                   />
                 </FormItem>
               </td>
+              <td>
+               <FormItem prop label="租赁方式">{{$args.getArgText('lease_type', formItem.leaseType)}}</FormItem>
+              </td> 
+              <td>
+                <FormItem prop label="加油数量">
+                  <Input v-model="formItem.addFuel"/>
+                </FormItem> 
+              </td>
             </tr>
             <tr>
-              <td>
-                <FormItem prop label="红蓝字">
-                  <Radio-group v-model="formItem.inboundType">
-                    <Radio :label="1" style="color:blue;">蓝字</Radio>
-                    <Radio :label="2" style="color:red;">红字</Radio>
-                  </Radio-group>
-                </FormItem>
-              </td>
-              <td colspan="2">
+              <td colspan="3">
                 <FormItem prop=" " label="备注">
                   <Input type="textarea" :rows="2" v-model="formItem.remark"/>
                 </FormItem>
@@ -91,7 +96,7 @@
       </div>
       <div>
         <div class="subheader">单据明细</div>
-        <Alert v-if="!formItem.deptId">请选择仓库</Alert>
+        <Alert v-if="!formItem.deptId">请选择部门</Alert>
         <Editable
           ref="editable"
           :list="list"
@@ -101,16 +106,15 @@
           :style="{display: formItem.deptId?'':'none'}"
         ></Editable>
       </div>
-      <!-- <table class="savebar" cellpadding="0" cellspacing="0">
+      <table class="savebar" cellpadding="0" cellspacing="0">
         <tr>
           <td class="save" @click="save" v-if="pageFlag<=2">保存</td>
           <td class="reset" @click="reset">重置</td>
           <td></td>
         </tr>
-      </table> -->
+      </table>
     </Loading>
   </div>
- </StartProcess>
 </template>
 <script>
 import Loading from '@/components/loading';
@@ -118,12 +122,16 @@ import LayoutHor from '@/components/layout/LayoutHor';
 import Editable from './DetailEditable';
 import page from '@/assets/js/page';
 import floatObj from '@/assets/js/floatObj';
-import SelStorage from '@/components/storage/input/SelStorage';//仓库部门
-import SelectProject from '@/components/page/form/SelectProject';//工程名称
-import SelectMember from '@/components/page/form/SelectMember';//收料员
-import SelectProvider from '@/components/page/form/SelectProvider';//供应商
 import pagejs from '@/assets/js/page';
-import StartProcess from '@/components/workflow/process/Start';
+
+import SelStorage from '@/components/storage/input/SelStorage';
+
+import SelectProject from '@/components/page/form/SelectProject';
+import SelectMachine from '@/components/page/form/SelectMachine';
+import SelectProvider from '@/components/page/form/SelectProvider';
+
+
+
 export default {
   components: {
     Loading,
@@ -131,39 +139,38 @@ export default {
     Editable,
     SelStorage,
     SelectProject,
-    SelectMember,
+    SelectMachine,
     SelectProvider,
-    StartProcess,
   },
   data() {
     return {
       loading: 0,
-      stockBillId: '',
+      machineOrderId: '',
       pageFlag: 1,//1.新建 2.编辑 3.修订
       formItem: {
-        stockBillId: '',//入库单号
-        type: 2,//类型:1.出库, 2.入库
-        projectCode: '',//工程编号
-        projectName: '',//工程名称
-        contractNo: '',//合同编号
-        deptId: '',//仓库或部门 
-        deptName:'',//
-        providerCode: '',//供应商编号
-        providerName: '',//供应商名称
+        machineOrderId: '',//单据编号
+        deptId: '',//所属部门
+        projectCode: '',//工程代码
+        projectName: '',//工程名
+        machineCode: '',//机械代码
+        machineName: '',//机械名称
+        machineModel: '',//机械型号
+        providerCode: '',//供应商名称
         linkMan: '',//供应商联系人
-        linkPhone: '',//供应商联系电话
-        taxpayerType: '',//纳税人类型
-        invoiceType: '',//发票类型
-        taxRate: '',//税率 
-        inboundType: 1,//红蓝字:1.“蓝字”表示入库，2.“红字”表示退货
-        operateDate: page.formatDate(new Date(), 'yyyy-MM-dd'),
-        remark: '',
-        operator: '',//
-        operatorName: '',
+        jobDate: '',//作业日期
+        operator: '',//司机/操作手姓名
+        operatorTel: '',//司机/操作手电话
+        leaseType: '',//租赁方式
+        taibanPrice: '',//台班单价
+        remark: '',//备注
+        overtime: '',//加班时长
+        addFuel: '',//加油数量
+        taibanPrice: null,//
+        source: 1,
       },
       formRules: {
         deptId: [
-          { required: true, whitespace: true, message: '请选择仓库', trigger: 'change' }
+          { required: true, whitespace: true, message: '请选择部门', trigger: 'change' }
         ],
         projectCode: [
           { required: true, whitespace: true, message: '请选择工程', trigger: 'change' }
@@ -171,8 +178,8 @@ export default {
         providerCode: [
           { required: true, whitespace: true, message: '请选择供应商', trigger: 'change' }
         ],
-        operatorName: [
-          { required: true, whitespace: true, message: '请选择收料员', trigger: 'change' }
+        machineName: [
+          { required: true, whitespace: true, message: '请选择机械名称', trigger: 'change' }
         ],
       },
       list: [],
@@ -181,8 +188,8 @@ export default {
     }
   },
   mounted: function () {
-    this.stockBillId = this.$route.query.id;
-    if (this.stockBillId) {
+    this.machineOrderId = this.$route.query.id;
+    if (this.machineOrderId) {
       this.pageFlag = 2;
       this.load();
     } else {
@@ -193,31 +200,17 @@ export default {
   computed: {
     pageTitle() {
       if (this.pageFlag == 1) {
-        return '入库单 - 创建';
+        return '机械作业单 - 创建';
       }
       if (this.pageFlag == 2) {
-        return '入库单 - 编辑';
-      }
-      if (this.pageFlag == 3) {
-        return '入库单 - 修订';
+        return '机械作业单 - 编辑';
       }
     }
   },
-  methods: { 
-    selProvider(data) {
-      if (data) {
-        this.formItem.providerName = data.providerName;
-        this.formItem.providerCode = data.providerCode;
-        this.formItem.linkMan = data.linkMan;//供应商联系人
-        this.formItem.linkPhone = data.linkPhone;//供应商联系电话
-        this.formItem.taxpayerType = data.taxpayerType;//纳税人类型
-        this.formItem.invoiceType = data.invoiceType;//发票类型
-        this.formItem.taxRate = data.taxRate;//税率 
-      }
-    },
+  methods: {
     load() {
       this.loading = 1;
-      this.$http.post("/api/engine/storage/instock/get?stockBillId=" + this.stockBillId, {}).then((res) => {
+      this.$http.post("/api/engine/machine/order/get", { "machineOrderId": this.machineOrderId }).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
           if (res.data.data) {
@@ -238,11 +231,12 @@ export default {
     },
     initNew() {
       Object.assign(this.formItem, {
-        stockBillId: '',//入库单号
+        machineOrderId: '',//入库单号
         type: 2,//类型:1.出库, 2.入库
         projectCode: '',//工程编号
         contractNo: '',//合同编号
-        deptId: '',//仓库或部门 
+        deptId: '',//仓库或部门
+        deptId: '',
         providerCode: '',//供应商编号
         providerName: '',//供应商名称
         linkMan: '',//供应商联系人
@@ -258,12 +252,13 @@ export default {
       this.list.push(this.$refs.editable.listNewRow());
       this.list.push(this.$refs.editable.listNewRow());
     },
-    save(proc) { 
+    save() {
       var form = {
         detailList: []
-      }; 
+      };
+
       Object.assign(form, this.formItem);
-      form.signDate = page.formatDate(form.signDate);
+      form.jobDate = page.formatDate(form.jobDate);
 
       var pass = true;
       this.$refs.form.validate((valid) => {
@@ -280,25 +275,27 @@ export default {
       for (var i = 0; i < this.list.length; i++) {
         var item = this.list[i];
         var msg = '明细第 ' + (i + 1) + ' 行，';
-        if (item.materCode != '') {
-          if (item.quantity == 0) {
-            this.$Message.error(msg + '请录入数量');
-            return;
-          }
-          if (item.taxUnitPrice == '') {
-            this.$Message.error(msg + '请录入含税单价');
-            return;
-          }
-          form.detailList.push(item);
-        }
+        // if (item.materCode != '') {
+        //   if (item.quantity == 0) {
+        //     this.$Message.error(msg + '请录入数量');
+        //     return;
+        //   }
+        //   if (item.taxUnitPrice == '') {
+        //     this.$Message.error(msg + '请录入含税单价');
+        //     return;
+        //   }
+        //   form.detailList.push(item);
+        // }
+        item['startTime'] = page.formatDate(item['startTime']);
+        item['endTime'] = page.formatDate(item['endTime']);
+        form.detailList.push(item);
       }
-      
-      form.proc = proc.formItem;
+      console.log(form);
       // 提交
       this.loading = 1;
-      var uri = '/api/engine/storage/instock/start';
+      var uri = '/api/engine/machine/order/add';
       if (this.pageFlag == 2) {
-        uri = '/api/engine/storage/instock/restart'; 
+        uri = '/api/engine/machine/order/update';
       }
 
       this.$http.post(uri, form).then((res) => {
@@ -313,6 +310,22 @@ export default {
         this.loading = 0;
         this.$Message.error("请求失败，请重新操作")
       });
+    },
+    selProvider(data) {
+      if (data) {
+        this.formItem.providerName = data.providerName;
+        this.formItem.providerCode = data.providerCode;
+        this.formItem.linkMan = data.linkMan;//供应商联系人
+        this.formItem.linkPhone = data.linkPhone;//供应商联系电话
+        this.formItem.taxpayerType = this.$args.getArgText('taxpayer_type', data.taxpayerType);//纳税人类型
+        this.formItem.invoiceType = this.$args.getArgText('invoice_type', data.invoiceType);//发票类型
+        this.formItem.taxRate = data.taxRate;//税率 
+      }
+    },
+    selMachine(data) {
+      if (data) { 
+        this.formItem.leaseType = data.leaseType; 
+      }
     },
     onAmountChange(val) {
       this.formItem.amount = val;

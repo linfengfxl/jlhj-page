@@ -15,18 +15,9 @@
             <td>
               <Input
                 v-model="queryForm.keyword"
-                placeholder="客户代码、名称查询"
+                placeholder="姓名/手机号"
                 @keyup.enter.native="query"
               ></Input>
-            </td>
-            <td>
-              <Select v-model="queryForm.industry" style="width:150px" placeholder="所属行业" clearable>
-                <Option
-                  v-for="item in $args.getArgGroup('customer_industry')"
-                  :value="item.argCode"
-                  :key="item.argCode"
-                >{{ item.argText }}</Option>
-              </Select>
             </td>
             <td>
               <Button @click="query" type="primary" icon="ios-search">查询</Button>
