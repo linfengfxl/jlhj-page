@@ -39,7 +39,7 @@
             </Select>
           </td>
           <td>
-            <SelectProject v-model="queryForm.projectId" :model="queryForm" :text="queryForm.projectName" />
+            <SelectProject v-model="queryForm.projectId" :model="queryForm" :text="queryForm.projectName" textProp="projectName" />
           </td>
           <td><Input v-model="queryForm.operatorName" placeholder="经办人"/></td>
           <td>
@@ -51,7 +51,7 @@
           <td>
             <DatePicker
               type="daterange"
-              v-model="queryForm.createTime"
+              v-model="queryForm.billDate"
               split-panels
               placeholder="报销日期"
               style="width: 180px"
@@ -276,8 +276,12 @@ export default {
         },
       ],
       queryForm: { 
-        status: 2, 
-        createTime: null,
+        billId:'',
+        projectId:'',
+        projectName:'',
+        catalog:'',
+        status: 2,  
+        billDate: [page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())]
       },
       catalog:[
         {code:'生产类',text:'生产类'},
@@ -303,14 +307,14 @@ export default {
     },
     beforeLoad() {
       var queryParam = this.$refs.page.queryParam;
-      queryParam.createTimeStart = '';
-      queryParam.createTimeEnd = '';
-      delete queryParam.createTime;
-      if (this.queryForm.createTime.length > 0) {
-        queryParam.createTimeStart = page.formatDate(this.queryForm.createTime[0]);
+      queryParam.billDateStart = '';
+      queryParam.billDateEnd = '';
+      delete queryParam.billDate;
+      if (this.queryForm.billDate.length > 0) {
+        queryParam.billDateStart = page.formatDate(this.queryForm.billDate[0]);
       }
-      if (this.queryForm.createTime.length > 1) {
-        queryParam.createTimeEnd = page.formatDate(this.queryForm.createTime[1]);
+      if (this.queryForm.billDate.length > 1) {
+        queryParam.billDateEnd = page.formatDate(this.queryForm.billDate[1]);
       }
     },
     reset() {
@@ -319,9 +323,8 @@ export default {
         projectId:'',
         projectName:'',
         catalog:'',
-        status: 2, 
-        createTime: null,
-        createTime: []//[page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())]
+        status: 2,  
+        billDate: [page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())]
       });
       this.query();
     },
