@@ -44,8 +44,7 @@
           </td>
            <td>
             <Input v-model="queryForm.materName" placeholder="材料" @keyup.enter.native="query"></Input>
-          </td>  
-          <td>创建日期</td>
+          </td>   
           <td>
             <DatePicker
               type="daterange"
@@ -163,6 +162,7 @@ export default {
             '1': '审核中',
             '2': '通过',
             '3': '驳回',
+            '4': '作废',
           }
         }),
         page.table.initDateColumn({
