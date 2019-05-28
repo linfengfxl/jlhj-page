@@ -259,7 +259,7 @@ export default {
       columns1: [ 
         {
           title: '费用科目',
-          key: 'feeType',           
+          key: 'feeTypeName',           
           align: 'left',
           width: 150,
         },
