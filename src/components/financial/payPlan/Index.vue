@@ -131,7 +131,7 @@ export default {
           title: '供应商',
           key: 'providerName',
           align: 'left',
-          width: 150,
+          minWidth: 180,
         },
         {
           title: '供应商联系人',

@@ -209,6 +209,12 @@ export default {
         payPlanName:[
           { required: true, whitespace: true, message: '该项为非空', trigger: 'change' }
         ],
+        providerCode:[
+          { required: true, whitespace: true, message: '该项为非空', trigger: 'change' }
+        ],
+        payableType:[
+          { required: true, whitespace: true, message: '该项为非空', trigger: 'change' }
+        ]
       },
       payPlanId:'',
       oriItem: {},
@@ -290,6 +296,8 @@ export default {
         status:0,
         instId:0
       });
+      this.formItem.operator=this.$user.userId;
+      this.formItem.operatorName=this.$user.trueName;
     },
     save(proc) {
       var form = {};
