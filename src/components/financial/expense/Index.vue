@@ -31,20 +31,34 @@
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td>
-            <Input v-model="queryForm.stockBillId" placeholder="报销单号" @keyup.enter.native="query"></Input>
+            <Input v-model="queryForm.billId" placeholder="报销单号" @keyup.enter.native="query"></Input>
           </td>
-          <td>创建日期</td>
+          <td>
+            <Select v-model="queryForm.catalog" style="width:100px;" placeholder="报销分类">
+              <Option v-for="item in catalog" :value="item.code" :key="item.code">{{ item.text }}</Option>
+            </Select>
+          </td>
+          <td>
+            <SelectProject v-model="queryForm.projectId" :model="queryForm" :text="queryForm.projectName" />
+          </td>
+          <td><Input v-model="queryForm.operatorName" placeholder="经办人"/></td>
+          <td>
+            <Select v-model="queryForm.catalog" style="width:100px;" placeholder="法律主体">
+              <Option v-for="item in $args.getArgGroup('legal')" :value="item.argCode" :key="item.argCode">{{ item.argCode }}</Option>
+            </Select>
+          </td>
+          <td>报销日期</td>
           <td>
             <DatePicker
               type="daterange"
               v-model="queryForm.createTime"
               split-panels
-              placeholder="创建日期"
+              placeholder="报销日期"
               style="width: 180px"
               :clearable="true"
               ::transfer="true"
             ></DatePicker>
-          </td>
+          </td>          
           <td>
             <Button @click="query" type="primary" icon="ios-search">查询</Button>
           </td>
@@ -68,6 +82,7 @@ import ListPage from '@/components/page/ListPage';
 import ListPageDetail from '@/components/page/ListPageDetail';
 import DataRowOperate from '@/components/commons/DataRowOperate';
 import UploadBox from '@/components/upload/Index';
+import SelectProject from '@/components/page/form/SelectProject';
 
 import page from '@/assets/js/page';
 
@@ -76,7 +91,8 @@ export default {
     ListPage, 
     DataRowOperate,
     ListPageDetail,
-    UploadBox
+    UploadBox,
+    SelectProject
   },
   data() {
     let that = this;
@@ -263,6 +279,14 @@ export default {
         status: 2, 
         createTime: null,
       },
+      catalog:[
+        {code:'生产类',text:'生产类'},
+        {code:'行政类',text:'行政类'},
+        {code:'财务类',text:'财务类'},
+        {code:'伙食类',text:'伙食类'},
+        {code:'业务招待费',text:'业务招待费'},
+        {code:'其他类',text:'其他类'}
+      ],
       loading: 0
     }
   },
@@ -291,6 +315,10 @@ export default {
     },
     reset() {
       Object.assign(this.queryForm, {
+        billId:'',
+        projectId:'',
+        projectName:'',
+        catalog:'',
         status: 2, 
         createTime: null,
         createTime: []//[page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())]
