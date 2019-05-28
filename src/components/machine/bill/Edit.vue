@@ -1,129 +1,136 @@
 <template>
- <StartProcess ref="startProcess" defineId="5" :title="pageTitle" @on-submit="save">
-  <div class="page instock-edit"> 
-    <Loading :loading="loading">
-      <div class="baseinfo">
-        <div class="page-tools"></div>
-        <Form ref="form" class="page-form" :model="formItem" :rules="formRules" :label-width="120">
-          <table cellspacing="0" cellpadding="0">
-            <colgroup>
-              <col width="33%">
-              <col width="auto">
-              <col width="33%">
-            </colgroup>
-            <tr>
-              <td>
-                <FormItem prop="deptId" label="部门">
-                  <SelStorage v-model="formItem.deptId" :model="formItem"></SelStorage>
-                </FormItem>
-              </td>
-              <td>
-                <FormItem prop="billDate" label="作业日期">
-                  <Date-picker
-                    type="date"
-                    placeholder="选择日期"
-                    v-model="formItem.billDate"
-                    format="yyyy-MM-dd"
-                  ></Date-picker>
-                </FormItem>
-              </td>
-              <td>
-                <FormItem prop="projectCode" label="工程名称">
-                  <SelectProject
-                    v-model="formItem.projectCode"
-                    :model="formItem"
-                    :text="formItem.projectName"
-                  />
-                </FormItem>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <FormItem prop="providerCode" label="供应商">
-                  <Input
-                    v-model="formItem.providerName"
-                    placeholder
-                    class="width-1"
-                    readonly="readonly"
-                    icon="search"
-                    @on-click="selProvider"
-                  />
-                </FormItem>
-              </td>
-              <td>
-                <FormItem prop label="供应商联系人">{{formItem.linkMan}}</FormItem>
-              </td>
-              <td>
-                <FormItem prop label="结算开始日期">
-                  <Date-picker
-                    type="date"
-                    placeholder="选择日期"
-                    v-model="formItem.startDate"
-                    format="yyyy-MM-dd"
-                  ></Date-picker>
-                </FormItem>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <FormItem prop label="结算结束日期">
-                  <Date-picker
-                    type="date"
-                    placeholder="选择日期"
-                    v-model="formItem.endDate"
-                    format="yyyy-MM-dd"
-                  ></Date-picker>
-                </FormItem>
-              </td>
-              <td>
-                <FormItem prop label="金额合计">
-                  <Input v-model="formItem.totalAmount"/>
-                </FormItem>
-              </td>
-              <td>
-                <FormItem prop label="罚款">
-                  <Input v-model="formItem.penalty"/>
-                </FormItem>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <FormItem prop label="价税合计">
-                  <Input v-model="formItem.totalPriceTax"/>
-                </FormItem>
-              </td> 
-              <td>
-                <FormItem prop=" " label="备注">
-                  <Input type="textarea" :rows="2" v-model="formItem.remark"/>
-                </FormItem>
-              </td>
-            </tr>
-          </table>
-        </Form>
-      </div>
-      <div>
-        <div class="subheader">单据明细</div>
-        <Alert v-if="!formItem.deptId">请选择部门</Alert>
-        <Editable
-          ref="editable"
-          :list="list"
-          :editable="true"
-          :deptId="formItem.deptId"
-          @on-amount-change="onAmountChange"
-          :style="{display: formItem.deptId?'':'none'}"
-        ></Editable>
-      </div>
-      <!-- <table class="savebar" cellpadding="0" cellspacing="0">
+  <StartProcess ref="startProcess" defineId="5" :title="pageTitle" @on-submit="save">
+    <div class="page instock-edit">
+      <Loading :loading="loading">
+        <div class="baseinfo">
+          <div class="page-tools"></div>
+          <Form
+            ref="form"
+            class="page-form"
+            :model="formItem"
+            :rules="formRules"
+            :label-width="120"
+          >
+            <table cellspacing="0" cellpadding="0">
+              <colgroup>
+                <col width="33%">
+                <col width="auto">
+                <col width="33%">
+              </colgroup>
+              <tr>
+                <td>
+                  <FormItem prop="deptId" label="部门">
+                    <SelStorage v-model="formItem.deptId" :model="formItem"></SelStorage>
+                  </FormItem>
+                </td>
+                <td>
+                  <FormItem prop="billDate" label="作业日期">
+                    <Date-picker
+                      type="date"
+                      placeholder="选择日期"
+                      v-model="formItem.billDate"
+                      format="yyyy-MM-dd"
+                    ></Date-picker>
+                  </FormItem>
+                </td>
+                <td>
+                  <FormItem prop="projectCode" label="工程名称">
+                    <SelectProject
+                      v-model="formItem.projectCode"
+                      :model="formItem"
+                      :text="formItem.projectName"
+                    />
+                  </FormItem>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <FormItem prop="providerCode" label="供应商">
+                    <Input
+                      v-model="formItem.providerName"
+                      placeholder
+                      class="width-1"
+                      readonly="readonly"
+                      icon="search"
+                      @on-click="selProvider"
+                    />
+                  </FormItem>
+                </td>
+                <td>
+                  <FormItem prop label="供应商联系人">{{formItem.linkMan}}</FormItem>
+                </td>
+                <td>
+                  <FormItem prop="startDate" label="结算开始日期">
+                    <Date-picker
+                      type="date"
+                      placeholder="选择日期"
+                      v-model="formItem.startDate"
+                      format="yyyy-MM-dd"
+                    ></Date-picker>
+                  </FormItem>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <FormItem prop="endDate" label="结算结束日期">
+                    <Date-picker
+                      type="date"
+                      placeholder="选择日期"
+                      v-model="formItem.endDate"
+                      format="yyyy-MM-dd"
+                    ></Date-picker>
+                  </FormItem>
+                </td>
+                <td>
+                  <FormItem prop="totalAmount" label="金额合计">
+                    <InputNumber :max="999999999" :min="0" v-model="formItem.totalAmount"></InputNumber>
+                  </FormItem>
+                </td>
+                <td>
+                  <FormItem prop="penalty" label="罚款">
+                    <InputNumber :max="999999999" :min="0" v-model="formItem.penalty"></InputNumber>
+                  </FormItem>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <FormItem prop="totalPriceTax" label="价税合计">
+                    <InputNumber :max="999999999" :min="0" v-model="formItem.totalPriceTax"></InputNumber>
+                  </FormItem>
+                </td>
+                <td>
+                  <FormItem label="备注">
+                    <Input type="textarea" :rows="2" v-model="formItem.remark"/>
+                  </FormItem>
+                </td>
+              </tr>
+            </table>
+          </Form>
+        </div>
+        <div>
+          <div class="subheader">单据明细</div>
+          <Alert v-if="!formItem.deptId">请选择部门</Alert>
+          <Editable
+            ref="editable"
+            :list="list"
+            :editable="true"
+            :deptId="formItem.deptId"
+            :model="formItem"
+            @on-amount-change="onAmountChange"
+            :style="{display: formItem.deptId?'':'none'}"
+          ></Editable>
+        </div>
+        <!-- <table class="savebar" cellpadding="0" cellspacing="0">
         <tr>
           <td class="save" @click="save" v-if="pageFlag<=2">保存</td>
           <td class="reset" @click="reset">重置</td>
           <td></td>
         </tr>
-      </table> -->
-    </Loading>
-    <SelProvider ref="selProvider"></SelProvider>
-  </div>
- </StartProcess>
+        </table>-->
+      </Loading>
+      <SelProvider ref="selProvider"></SelProvider>
+    </div>
+  </StartProcess>
 </template>
 <script>
 import Loading from '@/components/loading';
@@ -160,7 +167,7 @@ export default {
         deptId: '',//所属部门
         projectCode: '',//工程代码
         projectName: '',//工程名   
-        billDate:'',//结算日期
+        billDate: '',//结算日期
 
         providerCode: '',//供应商名称
         linkMan: '',//供应商联系人
@@ -170,7 +177,7 @@ export default {
 
         startDate: '',//结算开始日期
         endDate: '',//结算结束日期 
-        totalAmount:'',//金额合计
+        totalAmount: '',//金额合计
         penalty: '',//罚款
         totalPriceTax: '',//价税合计
         remark: '',//备注 
@@ -179,8 +186,8 @@ export default {
         deptId: [
           { required: true, whitespace: true, message: '请选择部门', trigger: 'change' }
         ],
-        billDate:[
-          { required: true,  message: '请选择作业日期', trigger: 'change', pattern: /.+/ }
+        billDate: [
+          { required: true, message: '请选择作业日期', trigger: 'change', pattern: /.+/ }
         ],
         projectCode: [
           { required: true, whitespace: true, message: '请选择工程', trigger: 'change' }
@@ -188,7 +195,21 @@ export default {
         providerCode: [
           { required: true, whitespace: true, message: '请选择供应商', trigger: 'change' }
         ],
-
+        startDate: [
+          { required: true, message: '请选择结算开始日期', trigger: 'change', pattern: /.+/ }
+        ],
+        endDate: [
+          { required: true, message: '请选择结算结束日期', trigger: 'change', pattern: /.+/ }
+        ],
+        totalAmount: [
+          { required: true, type: 'number', message: '请填写金额合计', trigger: 'change' }
+        ],
+        penalty: [
+          { required: true, type: 'number', message: '请填写罚款', trigger: 'change' }
+        ],
+        totalPriceTax: [
+          { required: true, type: 'number', message: '请填写价格合计', trigger: 'change' }
+        ],
       },
       list: [],
       oriItem: {},
@@ -253,14 +274,14 @@ export default {
 
         startDate: '',//结算开始日期
         endDate: '',//结算结束日期 
-        totalAmount:'',//金额合计
+        totalAmount: '',//金额合计
         penalty: '',//罚款
         totalPriceTax: '',//价税合计
         remark: '',//备注 
       });
       this.list = [];
-      this.list.push(this.$refs.editable.listNewRow());
-      this.list.push(this.$refs.editable.listNewRow());
+      // this.list.push(this.$refs.editable.listNewRow());
+      // this.list.push(this.$refs.editable.listNewRow());
     },
     save(proc) {
       var form = {
@@ -270,21 +291,26 @@ export default {
       Object.assign(form, this.formItem);
       form.billDate = page.formatDate(form.billDate);
       form.startDate = page.formatDate(form.startDate);
-      form.endDate = page.formatDate(form.endDate); 
-      
+      form.endDate = page.formatDate(form.endDate);
+
       var pass = true;
       this.$refs.form.validate((valid) => {
         pass = valid;
-      }) 
+      })
       if (!pass) {
         this.$Message.error('验证未通过！');
         return;
-      } 
+      }
       form.detailList = [];
       // 明细
       for (var i = 0; i < this.list.length; i++) {
         var item = this.list[i];
         var msg = '明细第 ' + (i + 1) + ' 行，';
+        debugger;
+        if (item.projectCode != form.projectCode || item.providerCode != form.providerCode || item.jobDate != form.billDate) {
+          this.$Message.error(msg + '作业单选择有误');
+          return;
+        }
         // if (item.materCode != '') {
         //   if (item.quantity == 0) {
         //     this.$Message.error(msg + '请录入数量');
@@ -296,10 +322,10 @@ export default {
         //   }
         //   form.detailList.push(item);
         // }
-        
+
         form.detailList.push(item);
       }
-      
+
       form.proc = proc.formItem;
       // 提交
       this.loading = 1;

@@ -25,7 +25,7 @@
                 </FormItem>
               </td>
               <td>
-                <FormItem prop label="作业日期">
+                <FormItem prop="jobDate" label="作业日期">
                   <Date-picker
                     type="date"
                     placeholder="选择日期"
@@ -46,7 +46,7 @@
             </tr>
             <tr>
               <td>
-                <FormItem prop="providerCode" label="供应商"> 
+                <FormItem prop="providerCode" label="供应商">
                   <SelectProvider
                     v-model="formItem.providerCode"
                     :model="formItem"
@@ -58,13 +58,13 @@
               <td>
                 <FormItem prop label="供应商联系人">{{formItem.linkMan}}</FormItem>
               </td>
-                 <td>
-                   <FormItem prop label="加班时长">
+              <td>
+                <FormItem prop label="加班时长">
                   <Input v-model="formItem.overtime"/>
-                </FormItem> 
+                </FormItem>
               </td>
             </tr>
-            <tr> 
+            <tr>
               <td>
                 <FormItem prop="machineName" label="机械名称">
                   <SelectMachine
@@ -76,12 +76,12 @@
                 </FormItem>
               </td>
               <td>
-               <FormItem prop label="租赁方式">{{$args.getArgText('lease_type', formItem.leaseType)}}</FormItem>
-              </td> 
+                <FormItem prop label="租赁方式">{{$args.getArgText('lease_type', formItem.leaseType)}}</FormItem>
+              </td>
               <td>
                 <FormItem prop label="加油数量">
                   <Input v-model="formItem.addFuel"/>
-                </FormItem> 
+                </FormItem>
               </td>
             </tr>
             <tr>
@@ -181,6 +181,9 @@ export default {
         machineName: [
           { required: true, whitespace: true, message: '请选择机械名称', trigger: 'change' }
         ],
+        jobDate: [
+          { required: true, message: '请选择作业日期', trigger: 'change', pattern: /.+/ }
+        ],
       },
       list: [],
       oriItem: {},
@@ -275,7 +278,15 @@ export default {
       for (var i = 0; i < this.list.length; i++) {
         var item = this.list[i];
         var msg = '明细第 ' + (i + 1) + ' 行，';
-        // if (item.materCode != '') {
+        if (item.startTime == '') {
+          this.$Message.error(msg + '请选择开始时间');
+          return;
+        }
+         if (item.endTime == '') {
+          this.$Message.error(msg + '请选择结束时间');
+          return;
+        }
+        // if (item.startTime != '') {
         //   if (item.quantity == 0) {
         //     this.$Message.error(msg + '请录入数量');
         //     return;
@@ -323,8 +334,8 @@ export default {
       }
     },
     selMachine(data) {
-      if (data) { 
-        this.formItem.leaseType = data.leaseType; 
+      if (data) {
+        this.formItem.leaseType = data.leaseType;
       }
     },
     onAmountChange(val) {
