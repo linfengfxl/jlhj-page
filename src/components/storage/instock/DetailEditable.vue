@@ -1,5 +1,5 @@
 <template>
-  <Editable @add="add" @remove="remove" :editable="editable">
+  <Editable @add="add" @remove="remove" :editable="editable" :model="model">
     <table cellspacing="0" cellpadding="0" v-if="!editable">
       <thead>
         <th class="col-xh">序号</th>
@@ -24,42 +24,49 @@
         </th>
       </thead>
       <tbody>
-      <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
+        <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
+          <td>{{index+1}}</td>
           <td>
-            {{index+1}} 
-          </td>
-          <td>
-            {{item.materCode}}<!--  材料编码 --> 
-          </td>
-          <td>
-            {{item.materName}} <!--  材料名称 --> 
+            {{item.materCode}}
+            <!--  材料编码 -->
           </td>
           <td>
-            {{item.spec}}<!--  规格型号 --> 
+            {{item.materName}}
+            <!--  材料名称 -->
           </td>
           <td>
-            {{$args.getArgText('unit',item.unit)}}  <!--  单位 --> 
+            {{item.spec}}
+            <!--  规格型号 -->
           </td>
-          <td class="col-quantity"> 
-           {{item.quantity}}<!--  数量 -->
+          <td>
+            {{$args.getArgText('unit',item.unit)}}
+            <!--  单位 -->
           </td>
-          <td class="col-price"> 
-            {{item.taxUnitPrice}} <!--  含税单价(元) -->
+          <td class="col-quantity">
+            {{item.quantity}}
+            <!--  数量 -->
           </td>
-          <td class="col-amount"> 
-            {{item.unitPrice}}   <!--  单价(元) -->
+          <td class="col-price">
+            {{item.taxUnitPrice}}
+            <!--  含税单价(元) -->
           </td>
-          <td class="col-amount"> 
-            {{item.amount}} <!--  金额(元) -->
+          <td class="col-amount">
+            {{item.unitPrice}}
+            <!--  单价(元) -->
           </td>
-          <td class="col-amount"> 
-            {{item.tax}} <!--  税额(元) -->
+          <td class="col-amount">
+            {{item.amount}}
+            <!--  金额(元) -->
+          </td>
+          <td class="col-amount">
+            {{item.tax}}
+            <!--  税额(元) -->
           </td>
         </tr>
       </tbody>
     </table>
 
-    <table cellspacing="0" cellpadding="0" v-else> 
+    <table cellspacing="0" cellpadding="0" v-else>
       <thead>
         <th class="col-xh">序号</th>
         <th>材料编码</th>
@@ -161,6 +168,10 @@ export default {
       type: String,
       default: ''
     },
+    model: {
+      type: Object,
+      default: null
+    },
     editable: {
       type: Boolean,
       default: false
@@ -226,9 +237,9 @@ export default {
       item.needDate = args[0];
     },
     computedAmount(item) {
-      item.amount = floatObj.multiply(item.taxUnitPrice, item.quantity);//数量*含税单价
-      item.unitPrice = floatObj.multiply(item.quantity, item.taxUnitPrice);//含税单价*(1-税率)
-      item.tax = floatObj.multiply(item.quantity, item.taxUnitPrice);//数量*含税单价*税率
+      item.amount = floatObj.multiply(item.taxUnitPrice, item.quantity);//数量*含税单价  
+      item.unitPrice = floatObj.multiply(item.quantity, floatObj.subtract(1, this.model.taxRate));//含税单价*(1-税率)
+      item.tax = floatObj.multiply(item.amount, this.model.taxRate);//数量*含税单价*税率
       this.$emit('on-amount-change', this.sumAmount());
     },
     sumAmount() {

@@ -1,6 +1,6 @@
 <template>
-  <Editable @add="add" @remove="remove" :editable="editable">
-    <table cellspacing="0" cellpadding="0"  v-if="!editable">
+  <Editable @add="add" @remove="remove" :editable="editable" :model="model">
+    <table cellspacing="0" cellpadding="0" v-if="!editable">
       <thead>
         <th class="col-xh">序号</th>
         <th>作业单号</th>
@@ -42,7 +42,7 @@
             {{item.jobDate}}
             <!--  作业日期 -->
           </td>
-          <td> 
+          <td>
             {{$args.getArgText('lease_type', item.leaseType)}}
             <!--  租赁方式 -->
           </td>
@@ -56,7 +56,7 @@
           </td>
           <td class="col-price">
             <!--  含税单价(元) -->
-           {{item.taibanPrice}} 
+            {{item.taibanPrice}}
           </td>
           <td class="col-amount">
             <!--  结算金额  -->
@@ -96,7 +96,7 @@
             {{index+1}}
             <!--  序号 -->
           </td>
-          <td class="col-select" @click="editable && !isImport &&  selMater(item)">
+          <td class="col-select" @click="editable &&  selMater(item)">
             <span>{{item.machineOrderId}}</span>
             <!--  作业单号 -->
           </td>
@@ -153,7 +153,7 @@
       </tbody>
     </table>
     <!-- 选择作业单 -->
-    <SelectMachineOrder ref="selmaterial" :transfer="true"></SelectMachineOrder>
+    <SelectMachineOrder ref="selmaterial" :transfer="true" :model="model"></SelectMachineOrder>
   </Editable>
 </template>
 <script>
@@ -172,18 +172,14 @@ export default {
         var arr = [];
       }
     },
-    storageId: {
-      type: String,
-      default: ''
+    model: {
+      type: Object,
+      default: null
     },
     editable: {
       type: Boolean,
       default: false
     },
-    isImport: {  // 是否为导入的数据，导入的数据不能添加行，部分字段不能编辑
-      type: Boolean,
-      default: false
-    }
   },
   data() {
     return {
@@ -222,9 +218,7 @@ export default {
       return def;
     },
     add() {
-      if (!this.isImport) {
-        this.list.push(this.listNewRow());
-      }
+      this.selMater();
     },
     remove() {
       if (this.list.length > this.curIndex) {
@@ -242,8 +236,8 @@ export default {
     },
     computedAmount(item) {
       item.amount = floatObj.multiply(item.taibanPrice, 1);//結算金額= 含税单价*作业台班*(1-税率)
-      item.tax=0;//税额
-      item.totalPriceTax=0;//
+      item.tax = 0;//税额
+      item.totalPriceTax = 0;//
       this.$emit('on-amount-change', this.sumAmount());
     },
     sumAmount() {
@@ -254,18 +248,32 @@ export default {
       return totals;
     },
     selMater(row) {
+      if (this.model == null || this.model.billDate == null || this.model.billDate == '') {//
+        this.$Message.error('请选择作业日期!');
+        return;
+      }
+      if (this.model == null || this.model.projectCode == null || this.model.projectCode == '') {//
+        this.$Message.error('请选择工程!');
+        return;
+      }
+      if (this.model == null || this.model.providerCode == null || this.model.providerCode == '') {//
+        this.$Message.error('请选择供应商!');
+        return;
+      }
       var selmaterial = this.$refs.selmaterial;
       selmaterial.show({
-        ok: (data) => { 
-          if (_.findIndex(this.list, { 'machineOrderId': data.machineOrderId }) >= 0) {
-            this.$Message.error('作业单已存在!');
-            return;
-          }
-          console.log(data);
-          Object.assign(row, data);
-          this.computedAmount(row);
+        ok: (data) => {
+          data.map((item) => {
+            if (_.findIndex(this.list, { 'machineOrderId': item.machineOrderId }) == -1) {
+              var row = this.listNewRow();
+              Object.assign(row, item);
+              this.computedAmount(row);
+              this.list.push(row);
+            }
+          });
         }
       });
+
     },
   }
 }
