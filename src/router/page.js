@@ -17,11 +17,12 @@ components.push({ component: 'storage/instock/Handle', name: '', path: '/storage
 
 components.push({ component: 'project/Index', name: '', path: '/project' })
 //机械作业单
-components.push({ component: 'machine-order/Index', name: '', path: '/machine-order' })
-components.push({ component: 'machine-order/Edit', name: '', path: '/machine-order/edit' })
+components.push({ component: 'machine/order/Index', name: '', path: '/machine/order' })
+components.push({ component: 'machine/order/Edit', name: '', path: '/machine/order/edit' })
 //机械租赁结算单
-components.push({ component: 'machine-order/bill/Index', name: '', path: '/machine-order/bill' })
-components.push({ component: 'machine-order/bill/Edit', name: '', path: '/machine-order/bill/edit' })
+components.push({ component: 'machine/bill/Index', name: '', path: '/machine/bill' })
+components.push({ component: 'machine/bill/Edit', name: '', path: '/machine/bill/edit' })
+components.push({ component: 'machine/bill/Handle', name: '', path: '/machine/bill/handle' }) 
 
 // workflow
 components.push({ component: 'workflow/define/Index', name: '', path: '/workflow/define' })

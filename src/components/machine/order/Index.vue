@@ -171,7 +171,7 @@ export default {
       if (name === '编辑') {
         if (params.row) {
           this.$router.push({
-            path: '/machine-order/edit?id=' + params.row.machineOrderId
+            path: '/machine/order/edit?id=' + params.row.machineOrderId
           })
         }
       }
@@ -200,7 +200,7 @@ export default {
     },
     add: function () {
       //this.$refs.edit.open(0);
-      this.$router.push({ path: '/machine-order/edit' })
+      this.$router.push({ path: '/machine/order/edit' })
     },
   }
 }
