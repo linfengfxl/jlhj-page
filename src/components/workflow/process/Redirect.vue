@@ -39,12 +39,19 @@ export default {
         url = form.handleUrl;        
       }
 
+      if (action == 'restart') { 
+        url = form.startUrl;
+      } 
+
       if (action == 'view') { 
         url = form.viewUrl;        
       } 
 
       if (url) {
         url += '?forward&inst=' + instId;
+        if(action == 'restart'){
+          url += '&id=' + businessKey;
+        }
 
         this.$router.replace({
           path: url
