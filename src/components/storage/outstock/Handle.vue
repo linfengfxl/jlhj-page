@@ -133,7 +133,7 @@ export default {
       stockBillId: '',
       instId: 0,
       formItem: {
-        stockBillId: '',//入库单号
+        stockBillId: '',//出库单号
         type: 2,//类型:1.出库, 2.入库
         projectCode: '',//工程编号
         projectName: '',//工程名称
@@ -166,7 +166,7 @@ export default {
   methods: {
     instLoaded(proc) {
       this.stockBillId = proc.instance.businessKey;
-      this.title = "入库单_" + this.stockBillId;
+      this.title = "出库单_" + this.stockBillId;
       this.load();
     },
     selProvider(data) {
@@ -203,7 +203,7 @@ export default {
     },
     initNew() {
       Object.assign(this.formItem, {
-        stockBillId: '',//入库单号
+        stockBillId: '',//出库单号
         type: 2,//类型:1.出库, 2.入库
         projectCode: '',//工程编号
         contractNo: '',//合同编号

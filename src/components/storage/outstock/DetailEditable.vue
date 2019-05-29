@@ -23,9 +23,9 @@
           <span>税额(元)</span>
         </th>
       </thead>
-      <tbody> 
+      <tbody>
         <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
-          <td>{{index+1}}</td> 
+          <td>{{index+1}}</td>
           <td>
             {{item.materCode}}
             <!--  材料编码 -->

@@ -1,5 +1,5 @@
 <template>
-  <StartProcess ref="startProcess" defineId="4" :title="pageTitle" @on-submit="save">
+  <StartProcess ref="startProcess" :defineId="defineId" :title="pageTitle" @on-submit="save">
     <div class="page payPlan-edit">     
     <Loading :loading="loading">
       <div class="baseinfo"> 
@@ -14,10 +14,34 @@
             </colgroup>
             <tr>
               <td>
-                <FormItem prop="payPlanName" label="付款计划名称"> 
-                  <Input v-model="formItem.payPlanName"/>
+                <FormItem prop="fundsPlan" label="资金计划类型"> 
+                  <Select v-model="formItem.fundsPlan" @on-change="onFundsPlanChange">
+                    <Option v-for="item in fundsPlan" :value="item.code" :key="item.code">{{ item.text }}</Option>
+                  </Select>
                 </FormItem>
               </td>
+              <td>
+                <FormItem prop="payType" label="付款分类"> 
+                  <Select v-model="formItem.payType" @on-change="">
+                    <Option v-for="item in payType" :value="item.code" :key="item.code">{{ item.text }}</Option>
+                  </Select>
+                </FormItem>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <FormItem prop="payDate" label="付款日期">
+                   <DatePicker type="date" placeholder="" v-model="formItem.payDate" format="yyyy-MM-dd" 
+                   style="width:100%;"></DatePicker>
+                </FormItem>
+              </td>
+              <td>
+                <FormItem prop="projectCode" label="工程名称"> 
+                  <SelectProject v-model="formItem.projectCode" :model="formItem" :text="formItem.projectName" />
+                </FormItem>
+              </td>
+            </tr>
+            <tr>  
               <td>
                 <FormItem label="供应商" prop="providerCode">
                   <Input
@@ -30,116 +54,69 @@
                   />
                 </FormItem>
               </td>
-            </tr>
-            <tr>
-              <td>
-                <FormItem label="供应商联系人" prop="linkMan">
-                  <Input v-model="formItem.linkMan" readonly="readonly"/>
+             <td>
+                <FormItem prop="bank" label="开户银行"> 
+                  <Input v-model="formItem.bank"/>
                 </FormItem>
-              </td>
+              </td> 
+            </tr> 
+             <tr> 
                <td>
-                <FormItem prop="amount" label="发生额">
+                <FormItem prop="bankAccount" label="银行户名"> 
+                  <Input v-model="formItem.bankAccount"/>
+                </FormItem>
+              </td> 
+              <td>
+                <FormItem prop="bankCardNo" label="开户账号"> 
+                  <Input v-model="formItem.bankCardNo"/>
+                </FormItem>
+              </td>    
+            </tr> 
+            <tr>
+               <td>
+                <FormItem prop="amount" label="付款金额">
                    <InputNumber
                       style="width:100%;"
                       :max="9999999999"              
                       :min="0"               
                       v-model="formItem.amount"
+                      @on-change="onAmountChange"
                     ></InputNumber>
+                </FormItem>
+              </td>
+               <td>
+                <FormItem prop="amountCapital" label="付款金额大写"> 
+                  <Input v-model="formItem.amountCapital"/>
                 </FormItem>
               </td>
             </tr>
-            <tr>  
+            <tr>
               <td>
-                <FormItem prop="acumPayAmount" label="累计付款额">
-                   <InputNumber
-                      style="width:100%;"
-                      :max="9999999999"              
-                      :min="0"               
-                      v-model="formItem.acumPayAmount"
-                    ></InputNumber>
+                <FormItem prop="operatorName" label="经办人">
+                  <Input v-model="formItem.operatorName"/>
                 </FormItem>
               </td>
-              <td>
-                <FormItem prop="payableAmount" label="应付金额">
-                   <InputNumber
-                      style="width:100%;"
-                      :max="9999999999"              
-                      :min="0"               
-                      v-model="formItem.payableAmount"
-                    ></InputNumber>
-                </FormItem>
-              </td>    
-            </tr> 
-             <tr> 
                <td>
-                <FormItem prop="payableType" label="应付类型"> 
-                  <Select v-model="formItem.payableType">
-                    <Option v-for="item in payableType" :value="item.code" :key="item.code">{{ item.text }}</Option>
+                <FormItem prop="payWay" label="付款方式">
+                  <Select v-model="formItem.payWay">
+                    <Option v-for="item in $args.getArgGroup('pay_way')" :value="item.argCode" :key="item.argCode">{{ item.argText }}</Option>
                   </Select>
                 </FormItem>
-              </td>
-              <td>
-                <FormItem prop="currentPayableAmount" label="本期应付款额">
-                   <InputNumber
-                      style="width:100%;"
-                      :max="9999999999"              
-                      :min="0"               
-                      v-model="formItem.currentPayableAmount"
-                    ></InputNumber>
+              </td>  
+            </tr>
+            <tr>
+               <td>
+                <FormItem prop="legalSubject" label="法律主体">
+                  <Select v-model="formItem.legalSubject">
+                    <Option v-for="item in $args.getArgGroup('legal_subject')" :value="item.argCode" :key="item.argCode">{{ item.argText }}</Option>
+                  </Select>
                 </FormItem>
               </td>    
-            </tr> 
-            <tr>
-               <td>
-                <FormItem prop="currentPlanAmount" label="本期计划付款额">
-                   <InputNumber
-                      style="width:100%;"
-                      :max="9999999999"              
-                      :min="0"               
-                      v-model="formItem.currentPlanAmount"
-                    ></InputNumber>
-                </FormItem>
-              </td>
-               <td>
-                <FormItem prop="contractPayType" label="合同付款方式"> 
-                  <Input v-model="formItem.contractPayType"/>
-                </FormItem>
-              </td>
-            </tr>
-            <tr>
               <td>
-                <FormItem prop="contractBillPeriod" label="合同账期（%）">
-                  <Input v-model="formItem.contractBillPeriod"/>
-                </FormItem>
-              </td>
-               <td>
-                <FormItem prop="operatorName" label="申请人">
-                  <SelectMember
-                    v-model="formItem.operator"
-                    :model="formItem"
-                    :text="formItem.operatorName"
-                  />
-                </FormItem>
-              </td>   
-            </tr>
-            <tr>
-              <td>
-                <FormItem prop="deptId" label="申请部门">
-                  <SelectDept v-model="formItem.deptId" :model="formItem" :text="formItem.deptName" />
-                </FormItem>
-              </td>   
-              <td>
-                <FormItem prop="planYear" label="计划年度">
-                  <Input v-model="formItem.planYear"/>
+                <FormItem prop="payDesc" label="付款说明">
+                  <Input v-model="formItem.payDesc"/>
                 </FormItem>
               </td> 
-            </tr>
-            <tr>
-              <td>
-                <FormItem prop="planMonth" label="计划月份">
-                  <Input v-model="formItem.planMonth"/>
-                </FormItem>
-              </td>     
             </tr>
           </table>
         </Form>
@@ -172,67 +149,69 @@ export default {
     SelectDept,
     StartProcess,
     SelProvider,
-    SelectMember
+    SelectMember,
+    page
   },
   data() {
     return {
       loading: 0,
       pageFlag: 1,//1.新建 2.编辑 3.修订
       formItem: {
-        payPlanId:'',
-        payPlanName:'',
+        payOrderId:'',
+        fundsPlan:'',
+        payType:'',
+        payDate:'',
+        projectCode:'',
+        projectName:'',
         providerCode:'',
         providerName:'',
-        linkMan:'',
+        bank:'',
+        bankAccount:'',
+        bankCardNo:'',
         amount:0,
-        acumPayAmount:0,
-        payableAmount:0,
-        payableType:'',
-        currentPayableAmount:0,
-        currentPlanAmount:0,
-        contractPayType:'',
-        contractBillPeriod:'',
-        applyDeptId:'',
-        applyDeptName:'',
-        deptId:'',
-        deptName:'',
-        applicant:0,
-        applicantName:'',
-        planYear:'',
-        planMonth:'',
-        operator:0,
+        amountCapital:'',
         operatorName:'',
+        payWay:'',
+        legalSubject:'',
+        payDesc:'',
         status:0,
         instId:0
       },
       formRules: {
-        payPlanName:[
+        fundsPlan:[
           { required: true, whitespace: true, message: '该项为非空', trigger: 'change' }
         ],
         providerCode:[
           { required: true, whitespace: true, message: '该项为非空', trigger: 'change' }
         ],
-        payableType:[
+        payType:[
           { required: true, whitespace: true, message: '该项为非空', trigger: 'change' }
         ],
-        amount:[
+        projectCode:[
           { required: true, whitespace: true, message: '该项为非空', trigger: 'change' }
         ],
-        acumPayAmount:[
+        operatorName:[
           { required: true, whitespace: true, message: '该项为非空', trigger: 'change' }
         ]
       },
-      payPlanId:'',
+      defineId:7,
+      payOrderId:'',
       oriItem: {},
-      payableType:[
-        {code:'陈欠',text:'陈欠'},
-        {code:'新欠',text:'新欠'},
-      ]
+      fundsPlan:[
+        {code:'计划内',text:'计划内'},
+        {code:'计划外',text:'计划外'},
+      ],
+      payType:[
+        {code:'材料采购付款',text:'材料采购付款'},
+        {code:'机械租赁付款',text:'机械租赁付款'},
+        {code:'分包结算付款',text:'分包结算付款'},
+        {code:'其它付款',text:'其它付款'},
+      ],
     }
   },
   mounted: function () {
-    this.payPlanId = this.$route.query.id;
-    if (this.payPlanId) {
+    this.payOrderId = this.$route.query.id;
+    if (this.payOrderId) {
       this.pageFlag = 2;
       this.load();
     } else {
@@ -243,26 +222,27 @@ export default {
   computed: {
     pageTitle() {
       if (this.pageFlag == 1) {
-        return '付款计划';
+        return '付款单';
       }
       if (this.pageFlag == 2) {
-        return '付款计划 - 重新发起';
+        return '付款单 - 重新发起';
       }
     }
   },
   methods: {
     load() {
       this.loading = 1;
-
-      this.$http.post("/api/engine/financial/payPlan/get", {payPlanId:this.payPlanId}).then((res) => {
+      this.$http.post("/api/engine/financial/payOrder/get", {payOrderId:this.payOrderId}).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
           if (res.data.data) {
-            res.data.data.operator=res.data.data.applicant;
-            res.data.data.operatorName=res.data.data.applicantName;
-            res.data.data.deptId=res.data.data.applyDeptId;
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
-            Object.assign(this.formItem, res.data.data);         
+            Object.assign(this.formItem, res.data.data);     
+            if(this.formItem.fundsPlan=="计划内"){
+              this.defineId=7;
+            }else{
+              this.defineId=8;
+            }    
           } else {
             this.$Message.error('单据不存在！');
             this.goBack();
@@ -277,37 +257,32 @@ export default {
     },
     initNew() {
       Object.assign(this.formItem, {
-        payPlanId:'',
-        payPlanName:'',
+        payOrderId:'',
+        fundsPlan:'',
+        payType:'',
+        payDate:page.formatDate(new Date(),'yyyy-MM-dd'),
+        projectCode:'',
+        projectName:'',
         providerCode:'',
         providerName:'',
-        linkMan:'',
+        bank:'',
+        bankAccount:'',
+        bankCardNo:'',
         amount:0,
-        acumPayAmount:0,
-        payableAmount:0,
-        payableType:'',
-        currentPayableAmount:0,
-        currentPlanAmount:0,
-        contractPayType:'',
-        contractBillPeriod:'',
-        applyDeptId:'',
-        deptId:'',
-        deptName:'',
-        applicant:0,
-        applicantName:'',
-        operator:0,
+        amountCapital:'',
         operatorName:'',
-        planYear:'',
-        planMonth:'',
+        payWay:'',
+        legalSubject:'',
+        payDesc:'',
         status:0,
         instId:0
       });
-      this.formItem.operator=this.$user.userId;
       this.formItem.operatorName=this.$user.trueName;
     },
     save(proc) {
       var form = {};
       Object.assign(form, this.formItem);
+      form.payDate = page.formatDate(form.payDate);
       var pass = true;
       this.$refs.form.validate((valid) => {
         pass = valid;
@@ -317,16 +292,13 @@ export default {
         this.$Message.error('验证未通过！');
         return;
       }
-      form.applicant = form.operator;
-      form.applicantName = form.operatorName;
-      form.applyDeptId = form.deptId;
       form.proc = proc.formItem;
 
       // 提交
       this.loading = 1;
-      var uri = '/api/engine/financial/payPlan/start';
+      var uri = '/api/engine/financial/payOrder/start';
       if (this.pageFlag == 2) {
-        uri = '/api/engine/financial/payPlan/restart';
+        uri = '/api/engine/financial/payOrder/restart';
       }
 
       this.$http.post(uri, form).then((res) => {
@@ -349,10 +321,53 @@ export default {
           if (data) {
             this.formItem.providerCode = data.providerCode;
             this.formItem.providerName = data.providerName;
-            this.formItem.linkMan = data.linkMan;
+            this.formItem.bank = data.bank;
+            this.formItem.bankAccount = data.bankAccount;
+            this.formItem.bankCardNo = data.bankCardNo;
           }
         }
       });
+    },
+    onAmountChange(){
+      this.formItem.amountCapital=this.digitUppercase(this.formItem.amount);
+    },
+    onFundsPlanChange(){
+      if(this.formItem.fundsPlan=="计划内"){
+        this.defineId=7;
+      }else{
+        this.defineId=8;
+      }  
+    },
+    digitUppercase(n) {
+      var fraction = ['角', '分'];
+      var digit = [
+      '零', '壹', '贰', '叁', '肆',
+      '伍', '陆', '柒', '捌', '玖'
+      ];
+      var unit = [
+      ['圆', '万', '亿'],
+      ['', '拾', '佰', '仟']
+      ];
+      var head = n < 0 ? '欠' : '';
+      n = Math.abs(n);
+      var s = '';
+      for (var i = 0; i < fraction.length; i++) {
+        s += (digit[Math.floor(n * 10 * Math.pow(10, i)) % 10] + fraction[i]).replace(/零./, '');
+      }
+      s = s || '整';
+      n = Math.floor(n);
+      for (var i = 0; i < unit[0].length && n > 0; i++) {
+        var p = '';
+        for (var j = 0; j < unit[1].length && n > 0; j++) {
+          p = digit[n % 10] + unit[1][j] + p;
+          n = Math.floor(n / 10);
+        }
+        s = p.replace(/(零.)*零$/, '').replace(/^$/, '零') + unit[0][i] + s;
+      }
+      return head + s.replace(/(零.)*零分/, '分')
+      .replace(/(零.)+/g, '零')
+      .replace(/^整$/, '整');
+
     },
     reset() {
       if (this.pageFlag == 1) {

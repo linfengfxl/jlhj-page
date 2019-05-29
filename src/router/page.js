@@ -15,6 +15,12 @@ components.push({ component: 'storage/instock/Index', name: '', path: '/storage/
 components.push({ component: 'storage/instock/InStockEdit', name: '', path: '/storage/instock/edit' })
 components.push({ component: 'storage/instock/Handle', name: '', path: '/storage/instock/handle' })
 
+//出库单
+components.push({ component: 'storage/outstock/Index', name: '', path: '/storage/outstock' })
+components.push({ component: 'storage/outstock/OutStockEdit', name: '', path: '/storage/outstock/edit' })
+components.push({ component: 'storage/outstock/Handle', name: '', path: '/storage/outstock/handle' })
+
+
 components.push({ component: 'project/Index', name: '', path: '/project' })
 //机械作业单
 components.push({ component: 'machine/order/Index', name: '', path: '/machine/order' })
@@ -44,6 +50,12 @@ components.push({ component: 'financial/payPlan/Index', name: '', path: '/financ
 components.push({ component: 'financial/payPlan/PayPlanStart', name: '', path: '/financial/payplan/start' })
 components.push({ component: 'financial/payPlan/PayPlanHandle', name: '', path: '/financial/payplan/handle' })
 components.push({ component: 'financial/payPlan/PayPlanView', name: '', path: '/financial/payplan/view' })
+
+//付款单
+components.push({ component: 'financial/payOrder/Index', name: '', path: '/financial/payorder' })
+components.push({ component: 'financial/payOrder/PayOrderStart', name: '', path: '/financial/payorder/start' })
+components.push({ component: 'financial/payOrder/PayOrderHandle', name: '', path: '/financial/payorder/handle' })
+components.push({ component: 'financial/payOrder/PayOrderView', name: '', path: '/financial/payorder/view' })
  
 
  

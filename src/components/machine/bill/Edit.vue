@@ -177,9 +177,9 @@ export default {
 
         startDate: '',//结算开始日期
         endDate: '',//结算结束日期 
-        totalAmount: '',//金额合计
-        penalty: '',//罚款
-        totalPriceTax: '',//价税合计
+        totalAmount: 0,//金额合计
+        penalty: 0,//罚款
+        totalPriceTax: 0,//价税合计
         remark: '',//备注 
       },
       formRules: {
@@ -244,7 +244,7 @@ export default {
         if (res.data.code == 0) {
           if (res.data.data) {
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
-            Object.assign(this.formItem, res.data.data);
+            Object.assign(this.formItem, res.data.data); 
             this.list = res.data.data.detailList;
           } else {
             this.$Message.error('订单不存在！');
@@ -274,9 +274,9 @@ export default {
 
         startDate: '',//结算开始日期
         endDate: '',//结算结束日期 
-        totalAmount: '',//金额合计
-        penalty: '',//罚款
-        totalPriceTax: '',//价税合计
+        totalAmount: 0,//金额合计
+        penalty: 0,//罚款
+        totalPriceTax: 0,//价税合计
         remark: '',//备注 
       });
       this.list = [];

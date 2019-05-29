@@ -153,16 +153,17 @@
       </tbody>
     </table>
     <!-- 选择作业单 -->
-    <SelectMachineOrder ref="selmaterial" :transfer="true" :model="model"></SelectMachineOrder>
+    <!-- <SelectMachineOrder ref="selmaterial" :transfer="true" :model="model"></SelectMachineOrder> -->
   </Editable>
 </template>
 <script>
 import Editable from '@/components/editable-table';
 import floatObj from '@/assets/js/floatObj';
-import SelectMachineOrder from '@/components/machine/order/SelectMachineOrder'
+import page from '@/assets/js/page';
+//import SelectMachineOrder from '@/components/machine/order/SelectMachineOrder'
 export default {
   components: {
-    SelectMachineOrder,
+    // SelectMachineOrder,
     Editable,
   },
   props: {
@@ -260,6 +261,8 @@ export default {
         this.$Message.error('请选择供应商!');
         return;
       }
+      this.queryMachineOrder();
+      return;
       var selmaterial = this.$refs.selmaterial;
       selmaterial.show({
         ok: (data) => {
@@ -273,7 +276,34 @@ export default {
           });
         }
       });
+    },
 
+    queryMachineOrder() {
+      this.list = [];
+      var param = { page: 1, pageSize: 100 };
+      param.projectCode = this.model.projectCode;
+      param.providerCode = this.model.providerCode;
+      param.jobDate = page.formatDate(this.model.billDate);
+      this.$http.post('/api/engine/machine/order/list', param).then((res) => {
+        if (res.data.code === 0 && res.data.data != null) {
+          var rows = res.data.data.rows;
+          rows.map((item) => {
+            //if (_.findIndex(this.list, { 'machineOrderId': item.machineOrderId }) == -1) {
+            var row = this.listNewRow();
+            Object.assign(row, item);
+            this.computedAmount(row);
+            this.list.push(row);
+            //}
+          });
+          var total = res.data.data.total;
+        } else {
+          this.loading = 0;
+          this.$Message.error(res.data.message)
+        }
+      }).catch((error) => {
+        this.loading = 0;
+        this.$Message.error(error.message)
+      });
     },
   }
 }

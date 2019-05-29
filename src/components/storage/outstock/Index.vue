@@ -7,20 +7,24 @@
     :beforeLoad="beforeLoad"
   >
     <div class="page-title" slot="page-title">
-      <a @click="goPage('/storage/mgr')">物质库存</a> -&gt;入库单
+      <a @click="goPage('/storage/mgr')">物质库存</a> -&gt;出库单
     </div>
     <div class="page-searchbox">
       <table cellpadding="0" cellspacing="0">
-        <tr> 
+        <tr>
+          <td>
+            <!-- <SelStorage v-model="queryForm.storageId" @on-change="switStorage" style="width:150px;"></SelStorage> -->
+          </td>
           <td>
             <RadioGroup v-model="queryForm.status" type="button" @on-change="query">
               <Radio :label="2">通过</Radio>
               <Radio :label="1">审核中</Radio>
               <Radio :label="3">驳回</Radio>
+              <Radio :label="4">作废</Radio>
             </RadioGroup>
           </td>
           <td class="page-tools">
-            <Button @click="add" v-power icon="plus">入库单</Button>&nbsp;
+            <Button @click="add" v-power icon="plus">出库单</Button>&nbsp;
           </td>
           <td class="page-tools" v-if="queryForm.status==0"></td>
         </tr>
@@ -30,7 +34,7 @@
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td>
-            <Input v-model="queryForm.stockBillId" placeholder="入库单号" @keyup.enter.native="query"></Input>
+            <Input v-model="queryForm.stockBillId" placeholder="出库单号" @keyup.enter.native="query"></Input>
           </td>
           <td>
             <Input v-model="queryForm.projectName" placeholder="工程名" @keyup.enter.native="query"></Input>
@@ -88,6 +92,12 @@ export default {
       curRow: null,
       columns: [
         {
+          type: 'selection',
+          width: 60,
+          align: 'center',
+          fixed: 'left',
+        },
+        {
           title: '操作',
           width: 90,
           align: 'center',
@@ -116,7 +126,7 @@ export default {
           }
         },
         {
-          title: '入库单号',
+          title: '出库单号',
           key: 'stockBillId',
           width: 140,
           fixed: 'left',
@@ -152,6 +162,7 @@ export default {
             '1': '审核中',
             '2': '通过',
             '3': '驳回',
+            '4': '作废',
           }
         }),
         page.table.initDateColumn({
@@ -239,16 +250,14 @@ export default {
         projectName: '',
         deptName: '',
         materName: '',
-        type: 1,
-        operId: '',
-        operType: 1,
+        type: 2,
         createTime: null,
       },
       loading: 0
     }
   },
   mounted: function () {
-    this.reset();
+    this.query();
   },
   methods: {
     query() {
@@ -276,9 +285,7 @@ export default {
         projectName: '',
         deptName: '',
         materName: '',
-        type: 1,
-        operId: '',
-        operType: 1,
+        type: 2,
         stockBillId: '',
         createTime: []//[page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())]
       });
@@ -296,14 +303,46 @@ export default {
       }
     },
     add() {
-      this.$router.push({ path: '/storage/instock/edit?forward' })
+      this.$router.push({ path: '/storage/outstock/edit?forward' })
     },
     edit(row) {
       if (row) {
         this.$router.push({
-          path: '/storage/instock/edit?forward&id=' + row.stockBillId
+          path: '/storage/outstock/edit?forward&id=' + row.stockBillId
         })
       }
+    },
+    sendAudit() {
+      var selection = this.$refs.page.getSelection();
+      if (selection.length == 0) {
+        this.$Message.error('请选择要操作的数据行');
+        return;
+      }
+      var start = 0;
+      var handle = () => {
+        if (start >= selection.length) {
+          return;
+        }
+        var item = selection[start];
+        this.$http.post('/api/stock/bill/submit?stockBillId=' + item.stockBillId, {}).then((res) => {
+          if (res.data.code === 0) {
+            this.$Message.info("第 " + (start + 1) + " 条操作成功");
+            start++;
+            if (start < selection.length) {
+              handle();
+            } else {
+              this.$refs.page.load();
+            }
+          } else {
+            this.$Message.error(res.data.message)
+            this.$refs.page.load();
+          }
+        }).catch((error) => {
+          this.loading = 0;
+          this.$Message.error(error.toString())
+        });
+      }
+      handle();
     },
     del(row) {
       this.$Modal.confirm({
@@ -312,7 +351,7 @@ export default {
         onOk: () => {
           if (row) {
             this.loading = 1;
-            this.$http.post('/api/engine/storage/instock/delete', {
+            this.$http.post('/api/engine/storage/outstock/delete', {
               stockBillId: row.stockBillId,
             }).then((res) => {
               this.loading = 0;
