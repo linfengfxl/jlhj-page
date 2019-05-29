@@ -44,6 +44,12 @@ components.push({ component: 'financial/payPlan/Index', name: '', path: '/financ
 components.push({ component: 'financial/payPlan/PayPlanStart', name: '', path: '/financial/payplan/start' })
 components.push({ component: 'financial/payPlan/PayPlanHandle', name: '', path: '/financial/payplan/handle' })
 components.push({ component: 'financial/payPlan/PayPlanView', name: '', path: '/financial/payplan/view' })
+
+//付款单
+components.push({ component: 'financial/payOrder/Index', name: '', path: '/financial/payorder' })
+components.push({ component: 'financial/payOrder/PayOrderStart', name: '', path: '/financial/payorder/start' })
+components.push({ component: 'financial/payOrder/PayOrderHandle', name: '', path: '/financial/payorder/handle' })
+components.push({ component: 'financial/payOrder/PayOrderView', name: '', path: '/financial/payorder/view' })
  
 
  

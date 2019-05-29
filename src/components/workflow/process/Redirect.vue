@@ -36,6 +36,12 @@ export default {
         if (defineId == 5) {//机械租赁结算单
           url = '/machine/bill/handle?forward&inst=' + instId
         }
+        if (defineId == 7) {//付款单（计划内）
+          url = '/financial/payorder/handle?forward&inst=' + instId
+        }
+        if (defineId == 8) {//付款单(计划外)
+          url = '/financial/payorder/handle?forward&inst=' + instId
+        }
       }
 
       if (action == 'view') {
@@ -44,6 +50,12 @@ export default {
         }
         if (defineId == 4) {//付款计划
           url = '/financial/payplan/view?forward&inst=' + instId
+        }
+        if (defineId == 7) {//付款单（计划内）
+          url = '/financial/payorder/view?forward&inst=' + instId
+        }
+        if (defineId == 8) {//付款单(计划外)
+          url = '/financial/payorder/view?forward&inst=' + instId
         }
       }
       

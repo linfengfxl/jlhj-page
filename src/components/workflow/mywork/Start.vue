@@ -33,6 +33,8 @@
           {title:'材料出库单审核流程',url:""},
           {title:'材料采购付款审批流程',url:""},
           {title:'备用金申请流程',url:""},
+          {title:'付款计划审批流程',url:"/financial/payplan/start?forward"},
+          {title:'付款单审批流程',url:"/financial/payorder/start?forward"},
         ]
       }
     },
