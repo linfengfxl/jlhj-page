@@ -10,6 +10,15 @@
     <div class="page-searchbox" style="margin-top: 0px">
       <table cellpadding="0" cellspacing="0">
         <tr> 
+          <td v-if="queryForm.type>1">
+            <RadioGroup v-model="queryForm.status" type="button" @on-change="query">
+              <Radio :label="0">所有</Radio>              
+              <Radio :label="1">审批中</Radio>
+              <Radio :label="2">通过</Radio>
+              <Radio :label="3">驳回</Radio>
+              <Radio :label="4">作废</Radio>
+            </RadioGroup>
+          </td>
           <td>
             <Input v-model="queryForm.title" placeholder="请输入流程名称" style="width:150px" @keyup.enter.native="query"></Input>
           </td> 
@@ -184,7 +193,7 @@
                 return h('label',{
                 },'驳回');
               }
-              if(row.status == 3){
+              if(row.status == 4){
                 return h('label',{
                 },'作废');
               }
@@ -275,7 +284,7 @@
                 return h('label',{
                 },'驳回');
               }
-              if(row.status == 3){
+              if(row.status == 4){
                 return h('label',{
                 },'作废');
               }
@@ -283,10 +292,26 @@
           },
           {
             title: '操作',
-            width:100,
+            width:120,
             align:'center',
             render: (h, params) => {
+              var btn = 
+              h('Button', {
+                  props: {
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px',                    
+                  },
+                  on: {
+                    click: () => {
+                      this.edit(params.row);
+                    }
+                  }
+                }, '编辑');
+
               return h('div', [
+                params.row.status == 3?btn:null,
                 h('Button', {
                   props: {
                     size: 'small'
@@ -312,7 +337,8 @@
           title:'',
           page:'',
           pageSize:'',
-          status:3,//1.草稿 2.已发送 3.待处理 4.已处理 
+          type:1, //1.待处理 2.已处理 3.已发送
+          status:0, //1.审批中 2.通过 3.驳回 4.作废
         } 
       }
     },
@@ -349,6 +375,9 @@
       logs(id){
         this.$refs.log.open(id);
         return;
+      },
+      edit(row){
+        this.$router.push({path:'/workflow/process/redirect?forward&do=restart&inst=' + row.id +'&define='+row.defineId+'&businessKey='+row.businessKey});
       },
       reload(){
          console.log(this.name)

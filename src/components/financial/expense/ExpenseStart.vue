@@ -115,7 +115,7 @@
   </div>
 </StartProcess>  
 </template>
-<script>
+<script> 
 import Loading from '@/components/loading';
 import LayoutHor from '@/components/layout/LayoutHor';
 import Editable from './DetailEditable';

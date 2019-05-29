@@ -57,6 +57,10 @@ components.push({ component: 'financial/payPlan/PayPlanView', name: '', path: '/
 
 // 运输小票
 components.push({ component: 'transport/order/Index', name: '', path: '/transport/order' })
+// 运输结算单
+components.push({ component: 'transport/bill/Index', name: '', path: '/transport/bill' })
+components.push({ component: 'transport/bill/Edit', name: '', path: '/transport/bill/Edit' })
+components.push({ component: 'transport/bill/Handle', name: '', path: '/transport/bill/handle' })
 
 // //2.销售合同 -->
 // //客户

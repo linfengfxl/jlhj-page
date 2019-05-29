@@ -27,7 +27,7 @@
                 {{formItem.providerName}}
                 </FormItem>
               </td>
-            </tr>
+            </tr> 
             <tr>
               <td>
                 <FormItem   label="供应商联系人">{{formItem.linkMan}}</FormItem>

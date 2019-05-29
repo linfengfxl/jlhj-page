@@ -11,16 +11,12 @@
     </div>
     <div class="page-searchbox">
       <table cellpadding="0" cellspacing="0">
-        <tr>
-          <td>
-            <!-- <SelStorage v-model="queryForm.storageId" @on-change="switStorage" style="width:150px;"></SelStorage> -->
-          </td>
+        <tr> 
           <td>
             <RadioGroup v-model="queryForm.status" type="button" @on-change="query">
               <Radio :label="2">通过</Radio>
               <Radio :label="1">审核中</Radio>
               <Radio :label="3">驳回</Radio>
-              <Radio :label="4">作废</Radio>
             </RadioGroup>
           </td>
           <td class="page-tools">
@@ -92,12 +88,6 @@ export default {
       curRow: null,
       columns: [
         {
-          type: 'selection',
-          width: 60,
-          align: 'center',
-          fixed: 'left',
-        },
-        {
           title: '操作',
           width: 90,
           align: 'center',
@@ -162,7 +152,6 @@ export default {
             '1': '审核中',
             '2': '通过',
             '3': '驳回',
-            '4': '作废',
           }
         }),
         page.table.initDateColumn({
@@ -251,13 +240,15 @@ export default {
         deptName: '',
         materName: '',
         type: 1,
+        operId: '',
+        operType: 1,
         createTime: null,
       },
       loading: 0
     }
   },
   mounted: function () {
-    this.query();
+    this.reset();
   },
   methods: {
     query() {
@@ -286,6 +277,8 @@ export default {
         deptName: '',
         materName: '',
         type: 1,
+        operId: '',
+        operType: 1,
         stockBillId: '',
         createTime: []//[page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())]
       });
@@ -311,38 +304,6 @@ export default {
           path: '/storage/instock/edit?forward&id=' + row.stockBillId
         })
       }
-    },
-    sendAudit() {
-      var selection = this.$refs.page.getSelection();
-      if (selection.length == 0) {
-        this.$Message.error('请选择要操作的数据行');
-        return;
-      }
-      var start = 0;
-      var handle = () => {
-        if (start >= selection.length) {
-          return;
-        }
-        var item = selection[start];
-        this.$http.post('/api/stock/bill/submit?stockBillId=' + item.stockBillId, {}).then((res) => {
-          if (res.data.code === 0) {
-            this.$Message.info("第 " + (start + 1) + " 条操作成功");
-            start++;
-            if (start < selection.length) {
-              handle();
-            } else {
-              this.$refs.page.load();
-            }
-          } else {
-            this.$Message.error(res.data.message)
-            this.$refs.page.load();
-          }
-        }).catch((error) => {
-          this.loading = 0;
-          this.$Message.error(error.toString())
-        });
-      }
-      handle();
     },
     del(row) {
       this.$Modal.confirm({
