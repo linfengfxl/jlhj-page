@@ -45,14 +45,16 @@ export default {
         if (defineId == 1) {//报销单
           url = '/financial/expense/view?forward&inst=' + instId
         }
-<<<<<<< HEAD
 
         if (defineId == 6) {//运输结算单
           url = '/transport/bill/view?forward&inst=' + instId
-=======
+
         if (defineId == 4) {//付款计划
           url = '/financial/payplan/view?forward&inst=' + instId
->>>>>>> db38014d739453ee506563f0b21f0ef87b8052cf
+        }
+
+        if (defineId == 4) {//付款计划
+          url = '/financial/payplan/view?forward&inst=' + instId
         }
       }
       
@@ -64,6 +66,7 @@ export default {
         this.$Message.error('未知的类型');
         this.$router.go(-1);
       }
+    }
     },
     loadProcess: function () {
       this.loading = 1;
