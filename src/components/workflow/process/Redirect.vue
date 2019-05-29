@@ -3,6 +3,8 @@
 </template>
 <script>
 
+import defineCfg from '@/components/workflow/defineCfg'
+
 export default {
   components: {
   },
@@ -21,88 +23,37 @@ export default {
       var instId = this.$route.query.inst;
       var defineId = this.$route.query.define;
       var businessKey = this.$route.query.businessKey; 
+      
+
+      var form = defineCfg.getFormByDefine(defineId);
+      if(form == null){
+        this.$Message.error('未知的流程定义 ' + instId);
+        this.$router.go(-1);
+        return;
+      }
+
       var url = '';
 
-      if (action == 'handle') {
-        if (defineId == 1) {//报销单
-          url = '/financial/expense/handle?forward&inst=' + instId
-        }
-        if (defineId == 2) {//入库单
-          url = '/storage/instock/handle?forward&inst=' + instId
-        }
-        if (defineId == 4) {//付款计划
-          url = '/financial/payplan/handle?forward&inst=' + instId
-        }
-        if (defineId == 5) {//机械租赁结算单
-          url = '/machine/bill/handle?forward&inst=' + instId
-        }
-        if (defineId == 6) {//运输结算单
-          url = '/transport/bill/handle?forward&inst=' + instId
-        }
+
+      if (action == 'handle') { 
+        url = form.handleUrl;        
       }
 
-      if (action == 'view') {
-        if (defineId == 1) {//报销单
-          url = '/financial/expense/view?forward&inst=' + instId
-        }
+      if (action == 'view') { 
+        url = form.viewUrl;        
+      } 
 
-        if (defineId == 6) {//运输结算单
-          url = '/transport/bill/view?forward&inst=' + instId
-        }
-        if (defineId == 4) {//付款计划
-          url = '/financial/payplan/view?forward&inst=' + instId
-        }
-
-        if (defineId == 4) {//付款计划
-          url = '/financial/payplan/view?forward&inst=' + instId
-        }
-      }
-      
       if (url) {
+        url += '?forward&inst=' + instId;
+
         this.$router.replace({
           path: url
         })
       } else {
-        this.$Message.error('未知的类型');
+        this.$Message.error('表单未配置 url');
         this.$router.go(-1);
       }
     },
-    loadProcess: function () {
-      this.loading = 1;
-      this.$http.get('/api/engine/workflow/instance/get?id=' + this.instId).then((res) => {
-        this.loading = 0;
-        if (res.data.code === 0) {
-          var data = res.data.data;
-          if (data) {
-            Object.assign(this.instance, data);
-            this.formItem.instId = data.id;
-
-            this.nextNodes = [];
-            var nodeList = this.instance.nodeList;
-            for (var i = 0; i <= this.instance.cur + 1; i++) {
-              if (i < nodeList.length) {
-                var node = nodeList[i];
-                this.nextNodes.push({ index: i, key: node.key, text: node.text });
-              }
-            }
-            if (this.instance.cur + 1 >= nodeList.length) {
-              this.nextNodes.push({ index: nodeList.length, key: '--', text: '结束' });
-            }
-
-            this.formItem.nextCur = this.instance.cur + 1;
-            this.selNextNode();
-
-          } else {
-            this.$Message.info("流程实例不存在！");
-          }
-        } else {
-          this.$Message.error(res.data.message);
-        }
-      }).catch((error) => {
-        this.loading = 0;
-        this.$Message.error(error.toString())
-      })
-    }
   }
 }
 

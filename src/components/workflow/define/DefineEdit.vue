@@ -17,7 +17,7 @@
                  <tr v-for="(item,index) in nodes">
                    <td style="width: 40px;text-align: center;">{{index+1}}</td>
                    <td>
-                      <Select v-model="item.roleId">
+                      <Select v-model="item.roleId" :filterable="true">
                         <Option v-for="item in roles" :value="item.roleId" :key="item.roleId">{{ item.roleName }}</Option>
                       </Select>
                    </td>

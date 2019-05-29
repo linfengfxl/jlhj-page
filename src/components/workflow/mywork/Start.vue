@@ -2,47 +2,39 @@
   <div class="page wfstart">
     <div class="page-title">发起审批</div>
     <div class="wfstart-box">
-      <div class="wfstart-box-item" v-for="item in list" @click="goPage(item)">
-        <Icon type="paper-airplane icon"></Icon>
-        {{item.title}}
-      </div>
-      <div style="clear: both;"></div>
+      <template v-for="group in list">
+        <div style="clear: both;"></div>
+        <div class="wfstart-box-header">{{group.title}}</div>
+        <div class="wfstart-box-item" v-for="item in group.forms" @click="goPage(item)">
+          <Icon type="paper-airplane icon"></Icon>
+          {{item.title}}
+        </div>
+      </template>      
     </div>
   </div>
 </template>
 <script>
+  import defineCfg from '@/components/workflow/defineCfg'
 
   export default {
     components: { 
     },
     data() {       
       return {
-        list:[
-          {title:'费用报销单审批流程',url:"/financial/expense/start?forward"},
-          {title:'运输小票审核流程',url:""},
-          {title:'月物资需求计划审批流程',url:""},
-          {title:'月机械租赁计划审批流程',url:""},
-          {title:'物资采购合同审核流程',url:""},
-          {title:'机械作业单审核流程',url:""},
-          {title:'机械租赁合同审核流程',url:""},
-          {title:'机械租赁付款审批流程',url:""},
-          {title:'分包结算单审核流程',url:""},
-          {title:'分包合同审批流程',url:""},
-          {title:'费用报销审批流程',url:""},
-          {title:'材料入库单审核流程',url:"/storage/instock/edit?forward"},
-          {title:'材料出库单审核流程',url:""},
-          {title:'材料采购付款审批流程',url:""},
-          {title:'备用金申请流程',url:""},
-        ]
+        list:[]
       }
     },
     mounted: function () {
-       
+       this.list = defineCfg.formModules;
     },
     computed: {},
     methods: {
       goPage(item){
-        this.$router.push({ path: item.url });
+        if(item.startUrl == ''){
+          this.$Message.error('未配置 url');
+          return;
+        }
+        this.$router.push({ path: item.startUrl });
       }
     }
   }
@@ -56,18 +48,27 @@
     margin:0 auto;
     margin-top: 40px;
   }
+  .wfstart-box-header{
+    clear: both;
+    font-size: 18px;
+    color: #2b579a;
+    margin-top: 15px;
+    padding-left: 10px;
+    border-left:2px solid #2b579a;
+  }
+
   .wfstart-box-item{
     width: 280px;
-    height: 60px;    
-    line-height: 60px;
+    height: 50px;    
+    line-height: 50px;
     border:1px solid #eee;   
     border-radius: 3px;
     float: left;
     margin: 10px;
     padding: 0px 10px;
-    font-size: 18px;
+    font-size: 16px;
     cursor: pointer;
-    padding-left: 60px;
+    padding-left: 50px;
     position: relative;
   }
 
@@ -82,7 +83,7 @@
   }
 
   .wfstart-box-item .icon{
-    font-size: 36px;
+    font-size: 28px;
     position: absolute;
     left: 10px;
     top:10px;
