@@ -23,21 +23,9 @@
           <span>税额(元)</span>
         </th>
       </thead>
-      <tbody>
-<<<<<<< HEAD
-<<<<<<< HEAD
-      <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
-          <td>
-            {{index+1}}  
-          </td>
-=======
+      <tbody> 
         <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
-          <td>{{index+1}}</td>
->>>>>>> db38014d739453ee506563f0b21f0ef87b8052cf
-=======
-        <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
-          <td>{{index+1}}</td>
->>>>>>> db38014d739453ee506563f0b21f0ef87b8052cf
+          <td>{{index+1}}</td> 
           <td>
             {{item.materCode}}
             <!--  材料编码 -->

@@ -1,104 +1,106 @@
-<template> 
-<HandleProcess ref="handleProcess" :instId="instId" :title="title" @on-load="instLoaded" @on-submit="save">
-  <div class="page instock-edit"> 
-    <Loading :loading="loading">
-      <div class="baseinfo">
-        <div class="page-tools"></div>
-        <Form ref="form" class="page-form" :model="formItem" :rules="formRules" :label-width="120">
-          <table cellspacing="0" cellpadding="0">
-            <colgroup>
-              <col width="33%">
-              <col width="auto">
-              <col width="33%">
-            </colgroup>
-            <tr>
-              <td>
-                <FormItem  label="入往仓库">
-                   {{formItem.deptName}}
-                </FormItem>
-              </td>
-              <td>
-                <FormItem  label="工程名称">
-                {{formItem.projectName}}
-                </FormItem>
-              </td>
-              <td>
-                <FormItem   label="供应商">
-                {{formItem.providerName}}
-                </FormItem>
-              </td>
-            </tr> 
-            <tr>
-              <td>
-                <FormItem   label="供应商联系人">{{formItem.linkMan}}</FormItem>
-              </td>
-              <td>
-                <FormItem   label="税率">{{formItem.taxRate}} %</FormItem>
-              </td>
-              <td>
-                <FormItem 
-                  label="纳税人类型"
-                >{{$args.getArgText('taxpayer_type', formItem.taxpayerType)}}</FormItem>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <FormItem
-                  prop
-                  label="发票类型"
-                >{{$args.getArgText('invoice_type', formItem.invoiceType)}}</FormItem>
-              </td>
-              <td>
-                <FormItem prop label="日期">{{formItem.operateDate}}</FormItem>
-              </td>
-              <td>
-                <FormItem   label="收料员">
-                  {{formItem.operatorName}}
-                </FormItem>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <FormItem prop label="红蓝字">
-                  <template v-if="formItem.inboundType==1">
-                    <span style="color:blue;">蓝字</span>
-                  </template>
-                  <template v-if="formItem.inboundType==2"> 
-                     <span style="color:red;">红字</span>
-                  </template> 
-                </FormItem>
-              </td>
-              <td colspan="2">
-                <FormItem prop=" " label="备注">
-                  {{formItem.remark}}
-                </FormItem>
-              </td>
-            </tr>
-          </table>
-        </Form>
-      </div>
-      <div>
-        <div class="subheader">单据明细</div>
-        <Alert v-if="!formItem.deptId">请选择仓库</Alert>
-        <Editable
-          ref="editable"
-          :list="list"
-          :editable="false"
-          :deptId="formItem.deptId"
-          @on-amount-change="onAmountChange"
-          :style="{display: formItem.deptId?'':'none'}"
-        ></Editable>
-      </div>
-      <!-- <table class="savebar" cellpadding="0" cellspacing="0">
+<template>
+  <HandleProcess
+    ref="handleProcess"
+    :instId="instId"
+    :title="title"
+    @on-load="instLoaded"
+    @on-submit="save"
+  >
+    <div class="page instock-edit">
+      <Loading :loading="loading">
+        <div class="baseinfo">
+          <div class="page-tools"></div>
+          <Form
+            ref="form"
+            class="page-form"
+            :model="formItem"
+            :rules="formRules"
+            :label-width="120"
+          >
+            <table cellspacing="0" cellpadding="0">
+              <colgroup>
+                <col width="33%">
+                <col width="auto">
+                <col width="33%">
+              </colgroup>
+              <tr>
+                <td>
+                  <FormItem label="入往仓库">{{formItem.deptName}}</FormItem>
+                </td>
+                <td>
+                  <FormItem label="工程名称">{{formItem.projectName}}</FormItem>
+                </td>
+                <td>
+                  <FormItem label="供应商">{{formItem.providerName}}</FormItem>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <FormItem label="供应商联系人">{{formItem.linkMan}}</FormItem>
+                </td>
+                <td>
+                  <FormItem label="税率">{{formItem.taxRate}} %</FormItem>
+                </td>
+                <td>
+                  <FormItem
+                    label="纳税人类型"
+                  >{{$args.getArgText('taxpayer_type', formItem.taxpayerType)}}</FormItem>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <FormItem
+                    prop
+                    label="发票类型"
+                  >{{$args.getArgText('invoice_type', formItem.invoiceType)}}</FormItem>
+                </td>
+                <td>
+                  <FormItem prop label="日期">{{formItem.operateDate}}</FormItem>
+                </td>
+                <td>
+                  <FormItem label="收料员">{{formItem.operatorName}}</FormItem>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <FormItem prop label="红蓝字">
+                    <template v-if="formItem.inboundType==1">
+                      <span style="color:blue;">蓝字</span>
+                    </template>
+                    <template v-if="formItem.inboundType==2">
+                      <span style="color:red;">红字</span>
+                    </template>
+                  </FormItem>
+                </td>
+                <td colspan="2">
+                  <FormItem prop=" " label="备注">{{formItem.remark}}</FormItem>
+                </td>
+              </tr>
+            </table>
+          </Form>
+        </div>
+        <div>
+          <div class="subheader">单据明细</div>
+          <Alert v-if="!formItem.deptId">请选择仓库</Alert>
+          <Editable
+            ref="editable"
+            :list="list"
+            :editable="false"
+            :deptId="formItem.deptId"
+            @on-amount-change="onAmountChange"
+            :style="{display: formItem.deptId?'':'none'}"
+          ></Editable>
+        </div>
+        <!-- <table class="savebar" cellpadding="0" cellspacing="0">
         <tr>
           <td class="save" @click="save" v-if="pageFlag<=2">保存</td>
           <td class="reset" @click="reset">重置</td>
           <td></td>
         </tr>
-      </table> -->
-    </Loading>
-  </div>
-</HandleProcess>
+        </table>-->
+      </Loading>
+    </div>
+  </HandleProcess>
 </template>
 <script>
 import Loading from '@/components/loading';
@@ -110,7 +112,7 @@ import SelStorage from '@/components/storage/input/SelStorage';//仓库部门
 import SelectProject from '@/components/page/form/SelectProject';//工程名称
 import SelectMember from '@/components/page/form/SelectMember';//收料员
 import SelectProvider from '@/components/page/form/SelectProvider';//供应商
-import pagejs from '@/assets/js/page'; 
+import pagejs from '@/assets/js/page';
 
 import HandleProcess from '@/components/workflow/process/Handle';
 
@@ -122,14 +124,14 @@ export default {
     SelStorage,
     SelectProject,
     SelectMember,
-    SelectProvider, 
+    SelectProvider,
     HandleProcess
   },
   data() {
     return {
       loading: 0,
       stockBillId: '',
-      instId:0, 
+      instId: 0,
       formItem: {
         stockBillId: '',//入库单号
         type: 2,//类型:1.出库, 2.入库
@@ -149,20 +151,20 @@ export default {
         remark: '',
         operator: '',//
         operatorName: '',
-        instId:0,
-      }, 
+        instId: 0,
+      },
       list: [],
       oriItem: {},
       storage: []
     }
-  }, 
-  mounted: function () {
-    this.instId = this.$route.query.inst;   
   },
-  computed: { 
+  mounted: function () {
+    this.instId = this.$route.query.inst;
+  },
+  computed: {
   },
   methods: {
-    instLoaded(proc){  
+    instLoaded(proc) {
       this.stockBillId = proc.instance.businessKey;
       this.title = "入库单_" + this.stockBillId;
       this.load();
@@ -179,8 +181,8 @@ export default {
       }
     },
     load() {
-      this.loading = 1; 
-      this.$http.post("/api/engine/storage/instock/get?stockBillId=" + this.stockBillId, {}).then((res) => {
+      this.loading = 1;
+      this.$http.post("/api/engine/storage/instock/get", { stockBillId: this.stockBillId }).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
           if (res.data.data) {
@@ -256,11 +258,11 @@ export default {
           }
           form.detailList.push(item);
         }
-      } 
+      }
       form.proc = proc.formItem;
       // 提交
       this.loading = 1;
-      var uri = '/api/engine/storage/instock/submit'; 
+      var uri = '/api/engine/storage/instock/submit';
 
       this.$http.post(uri, form).then((res) => {
         this.loading = 0;
