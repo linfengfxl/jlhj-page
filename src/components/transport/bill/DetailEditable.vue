@@ -1,5 +1,5 @@
 <template>
-  <Editable @add="add" @remove="remove" :editable="editable" :model="model">
+  <Editable @add="add" @remove="remove" :editable="editable">
     <table cellspacing="0" cellpadding="0" v-if="!editable">
       <thead>
         <th class="col-xh">序号</th>
@@ -194,16 +194,7 @@ export default {
         var arr = [];
       }
     },
-    model: {
-      type: Object,
-      default: null
-    },
     editable: {
-      type: Boolean,
-      default: false
-    },
-    isImport: {
-      // 是否为导入的数据，导入的数据不能添加行，部分字段不能编辑
       type: Boolean,
       default: false
     }
@@ -253,6 +244,7 @@ export default {
       return def;
     },
     add() {
+      // 因为要获取外部数据，先抛出问题，传入父组件
       this.$emit('on-import');
     },
     remove() {
@@ -278,22 +270,6 @@ export default {
         totals = floatObj.add(totals, mater.amount);
       });
       return totals;
-    },
-    selMater() {
-     
-      // var selmaterial = this.$refs.selmaterial;
-      // selmaterial.show({
-      //   ok: (data) => {
-      //     data.map((item) => {
-      //       if (_.findIndex(this.list, { 'machineOrderId': item.machineOrderId }) == -1) {
-      //         var row = this.listNewRow();
-      //         Object.assign(row, item);
-      //         this.computedAmount(row);
-      //         this.list.push(row);
-      //       }
-      //     });
-      //   }
-      // });
     }
   }
 };

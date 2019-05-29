@@ -64,7 +64,7 @@
                   <FormItem prop label="供应商联系人">{{formItem.linkMan}}</FormItem>
                 </td>
                 <td>
-                  <FormItem prop="taxpayerType" label="纳税人类型">{{formItem.taxpayerType}}</FormItem>
+                  <FormItem prop="taxpayerType" label="纳税人类型">{{$args.getArgText('taxpayer_type', formItem.taxpayerType)}}</FormItem>
                 </td>
               </tr>
               <tr>
@@ -130,6 +130,7 @@
         </div>
         <div>
           <div class="subheader">运输结算明细</div>
+          <!-- 父组件接受on-import子组件的方法 -->
           <Editable
             ref="editable"
             :list="list"
@@ -174,6 +175,12 @@ export default {
     SelectProject,
     SelectMachine,
     StartProcess
+  },
+  props: {
+      api:{
+        type:String,
+        default:'/api/engine/transport/order/list'
+      },
   },
   data() {
     return {
@@ -405,32 +412,49 @@ export default {
     onAmountChange(val) {
       this.formItem.amount = val;
     },
+    // 对运输结算单进行新增前判断,通过后获取列表
     onImport() {
       if (this.formItem.deptId == "") {
         this.$Message.error("请选择部门");
         return;
       }
-      if (this.formItem.billDate == "") {
-        this.$Message.error("请选择结算日期");
-        return;
-      }
-      if (this.formItem.projectCode == "") {
-        this.$Message.error("请选择工程");
-        return;
-      }
-      if (this.formItem.providerCode == "") {
-        this.$Message.error("请选择供应商");
-        return;
-      }
-      if (this.formItem.startDate == "") {
-        this.$Message.error("请选择开始日期");
-        return;
-      }
-      if (this.formItem.endDate == "") {
-        this.$Message.error("请选择结束日期");
-        return;
-      }
-      
+      // if (this.formItem.billDate == "") {
+      //   this.$Message.error("请选择结算日期");
+      //   return;
+      // }
+      // if (this.formItem.projectCode == "") {
+      //   this.$Message.error("请选择工程");
+      //   return;
+      // }
+      // if (this.formItem.providerCode == "") {
+      //   this.$Message.error("请选择供应商");
+      //   return;
+      // }
+      // if (this.formItem.startDate == "") {
+      //   this.$Message.error("请选择开始日期");
+      //   return;
+      // }
+      // if (this.formItem.endDate == "") {
+      //   this.$Message.error("请选择结束日期");
+      //   return;
+      // }
+        this.$http.post(this.api, this.queryParam).then((res) => {
+          this.loading = 0;
+          if (res.data.code === 0) { 
+            this.loading = 0;
+            var data = res.data.data; 
+            this.$emit('on-load-data',data.rows);
+            this.list = data.rows;
+          } else {
+            this.loading = 0;
+            this.list = [];
+            this.$Message.error(res.data.message);
+          }
+        }).catch((error) => {
+          this.loading = 0;
+          this.$Message.error("请求失败，请重新发送")
+        });
+
     },
     reset() {
       if (this.pageFlag == 1) {

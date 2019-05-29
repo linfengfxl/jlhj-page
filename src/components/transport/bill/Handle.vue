@@ -255,7 +255,6 @@ export default {
       }
 
       form.proc = proc.formItem;
-
       // 提交
       this.loading = 1;
       var uri = '/api/engine/transport/bill/submit';

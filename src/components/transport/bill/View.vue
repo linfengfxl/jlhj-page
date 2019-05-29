@@ -16,7 +16,7 @@
               <tr>
                 <td>
                   <FormItem prop="deptId" label="部门">
-                    {{formItem.deptId}}
+                    {{formItem.deptName}}
                   </FormItem>
                 </td>
                 <td>
@@ -40,7 +40,7 @@
                   <FormItem prop label="供应商联系人">{{formItem.linkMan}}</FormItem>
                 </td>
                 <td>
-                  <FormItem prop label="纳税人类型">{{formItem.taxpayerType}}</FormItem>
+                  <FormItem prop label="纳税人类型">{{$args.getArgText('taxpayer_type', formItem.taxpayerType)}}</FormItem>
                 </td>
               </tr>
               <tr>
