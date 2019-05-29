@@ -20,9 +20,9 @@ export default {
       var action = this.$route.query.do;
       var instId = this.$route.query.inst;
       var defineId = this.$route.query.define;
-      var businessKey = this.$route.query.businessKey;
-
+      var businessKey = this.$route.query.businessKey; 
       var url = '';
+
       if (action == 'handle') {
         if (defineId == 1) {//报销单
           url = '/financial/expense/handle?forward&inst=' + instId
@@ -48,7 +48,7 @@ export default {
 
         if (defineId == 6) {//运输结算单
           url = '/transport/bill/view?forward&inst=' + instId
-
+        }
         if (defineId == 4) {//付款计划
           url = '/financial/payplan/view?forward&inst=' + instId
         }
@@ -66,7 +66,6 @@ export default {
         this.$Message.error('未知的类型');
         this.$router.go(-1);
       }
-    }
     },
     loadProcess: function () {
       this.loading = 1;
