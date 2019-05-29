@@ -7,16 +7,8 @@
     <div class="columns">
       <Card class="column">
           <a slot="title" @click="openMyWf">我的待办</a>
-          <a @click="openMyWork(item)" v-for="item in myworks">{{item.instName}}</a>
-      </Card>
-      <Card class="column">
-          <a slot="title" >安全库存</a>
-          
-      </Card>
-      <Card class="column">
-          <a slot="title" >我的关注</a>
-          
-      </Card>
+          <a @click="openMyWork(item)" v-for="item in myworks">{{item.title}}</a>
+      </Card>      
       <div class="clear"></div>
     </div>
 
@@ -48,11 +40,22 @@ export default {
       
     },
     loadMyWork:function(){ 
-        
+      this.loading = 1;
+      this.$http.post('api/engine/workflow/mywork', {type:1,pageSize:5}).then(res => {                  
+        if (res.data.code === 0) { 
+          this.myworks = res.data.data.rows;
+        } else {
+          this.loading = 0;
+          this.$Message.error(res.data.message);
+        }
+      })
+      .catch(error => {
+        this.loading = 0;
+        this.$Message.error(error.message);
+      });
     }, 
-    openMyWork(item){
-      let routeData = this.$router.resolve({ path:'/workflow/process?inst=' + item.instId + '&task=' + item.taskId});
-      window.open(routeData.href, '_blank');
+    openMyWork(row){
+      this.$router.push({path:'/workflow/process/redirect?forward&do=handle&inst=' + row.id +'&define='+row.defineId});
     },
     openMyWf(item){
       this.$router.push({path:'/workflow/mywork'})
