@@ -1,6 +1,6 @@
 <template>
-  <Modal v-model="show" :title="title" :closable="false" class="edit-user">
-    <div class="page">
+  <Modal v-model="show" title="设置审批层级" :closable="true" class="edit-user">
+    <div class="page define-edit">
       <Loading :loading="loading">
         <div class="page-form">
           <Form
@@ -13,11 +13,29 @@
             <FormItem label="流程名称" prop="title">{{formItem.title}}</FormItem>
             <FormItem label="标题格式" prop="instTitle">{{formItem.instTitle}}</FormItem>
             <FormItem label="审批层级" prop="nodes">
-              
+               <table class="nodestable" cellspacing="0" cellpadding="0">
+                 <tr v-for="(item,index) in nodes">
+                   <td style="width: 40px;text-align: center;">{{index+1}}</td>
+                   <td>
+                      <Select v-model="item.roleId">
+                        <Option v-for="item in roles" :value="item.roleId" :key="item.roleId">{{ item.roleName }}</Option>
+                      </Select>
+                   </td>
+                   <td>
+                      <Button @click="insert(index)" size="small">插入</Button>
+                      <Button @click="remove(index)" size="small" style="margin-left: 4px">移除</Button>
+                   </td>
+                 </tr>
+                 <tr>
+                   <td colspan="3">
+                     <Button @click="addrow" size="small">添加行</Button>
+                   </td> 
+                 </tr>
+               </table>
             </FormItem>
             <FormItem>
               <div class>
-                <Button icon="checkmark" type="primary" @click="save" v-if="this.isEdit!=2">保存</Button>
+                <Button icon="checkmark" type="primary" @click="onSave">保存</Button>
                 <Button @click="close" style="margin-left: 8px">取消</Button>
               </div>
             </FormItem>
@@ -25,8 +43,7 @@
         </div>
       </Loading>
     </div>
-    <div slot="footer"></div>
-    <SelectDept ref="dept" @on-check="updateDept" @on-close="closeDept"></SelectDept>
+    <div slot="footer"></div>    
   </Modal>
 </template>
 <script>
@@ -37,9 +54,7 @@ import page from "@/assets/js/page";
 
 export default {
   components: {
-    SelectDept,
-    Loading,
-    page
+    Loading
   },
   data() {
     return {  
@@ -49,32 +64,22 @@ export default {
       isEdit: 0,
       //表单对象formItem
       formItem: this.initItem(),
+      nodes:[{roleId:''}],
+      roles:[],
       ruleValidate: {
-        title: [
+        nodes: [
           {
             required: true,
             whitespace: true,
-            message: "编码不能为空",
-            trigger: "blur"
-          },
-          {
-            type: "string",
-            max: 30,
-            message: "不能超过30个字",
-            trigger: "blur"
+            message: "结点不能为空",
+            trigger: "change"
           }
         ],         
       }
     };
   },
   computed: {
-    title() {
-      if (this.isEdit === 0) {
-        return "添加";
-      } else {
-        return "修改";
-      }
-    }
+
   },
   methods: {
     // 初始化json数据
@@ -88,11 +93,36 @@ export default {
         createTime: ""
       };
     },
-    save() {
-      if (!this.formItem.resourceType) {
-        this.$Message.error("请选择资源类别");
+    loadRoles(){
+      this.$http.post('/api/engine/role/all').then(res => {           
+          this.loading = 0;
+          if (res.data.code == 0) {
+             this.roles = res.data.data;
+          } else {             
+            this.$Message.error(res.data.message);
+          }
+        })
+        .catch(error => {
+          this.loading = 0;
+          this.$Message.error(error.message);
+        });
+    },
+    onSave() {
+
+      for(var i =0;i<this.nodes.length;i++){
+        if(this.nodes[i].roleId == '' || this.nodes[i].roleId == null){
+          this.$Message.error('第 '+ (i+1) +' 行未选择岗位');
+          return;
+        }
+      }
+
+      if(this.nodes.length == 0){
+        this.$Message.error('至少选择一个岗位');
         return;
       }
+
+      this.formItem.nodes = this.nodes.map(item=>{return item.roleId}).join(',');
+
       this.$refs["form"].validate(valid => {
         if (valid) {
           this.save();
@@ -100,15 +130,8 @@ export default {
       });
     },
     save() {
-      let url = "";
-      let msg = "";
-      if (this.isEdit == 0) {
-        url = "/api/engine/material/add";
-        msg = "添加成功";
-      } else {
-        url = "/api/engine/workflow/define/update";
-        msg = "修改成功";
-      }
+      var url = "/api/engine/workflow/define/update";
+      var msg = "修改成功";
       this.loading = 1;
       this.$http
         .post(url, this.formItem)
@@ -131,53 +154,50 @@ export default {
     },
     //添加或编辑弹窗
     open(item) {
-      this.$refs["form"].resetFields();
-      // assign方法把最后一个属性赋值给前一个属性，得到的属性值赋给this.formItem;把item里面的属性值赋给this.initItem(),最后得到this.initItem()赋值给this.formItem
+      if(this.roles.length == 0){
+        this.loadRoles();
+      }
+      this.$refs["form"].resetFields();       
       this.formItem = Object.assign(this.initItem(), item);
-      console.log(this.formItem)
+
+      this.nodes = this.formItem.nodes.split(',').map(item=>{return {roleId:item}});
+
       this.show = true;
       if (this.formItem.id > 0) {
         this.isEdit = 1;
       } else {
         this.isEdit = 0;
       }
+    },     
+    addrow() {
+      this.nodes.push({roleId:''})
     },
-    // 审批层级添加、删除
-    addShow(index) {
-      var obj = {
-      }
-      this.data6.push(obj)
+    insert(index) { 
+      this.nodes.splice(index, 0,{roleId:''});
     },
-    // 审批层级删除
-    removeP(index) {
-      this.data6.splice(index, 1);
-    },
-    closeDept() {
-      this.show = true;
-    },
+    remove(index) {
+      if(this.nodes.length > 1){
+        this.nodes.splice(index, 1);
+      }else{
+        this.$Message.error('至少保留一个岗位');
+      } 
+    },     
     close() {
       this.show = false;
-    },
-    selectDept() {
-      if (this.isEdit != 2) {
-        this.show = false;
-        this.$refs.dept.selectIds = this.formItem.deptIds;
-        this.$refs.dept.open();
-      }
-    },
-    updateDept(depts) {
-      this.show = true;
-      this.formItem.deptIds = [];
-      this.formItem.deptNames = [];
-      depts.map(item => {
-        this.formItem.deptIds.push(item.deptId);
-        this.formItem.deptNames.push(item.deptName);
-      });
-
-      this.formItem.deptName = this.formItem.deptNames.join(",");
-
-      this.$refs.dept.close();
     }
   }
 };
 </script> 
+<style type="text/css">
+  .define-edit .nodestable{
+    border-collapse:collapse  
+  } 
+  .define-edit .nodestable td{
+    padding: 6px;
+    border:1px solid #eee;    
+  }
+  .define-edit .nodestable .ivu-select{
+    min-width: 150px;
+  } 
+
+</style>
