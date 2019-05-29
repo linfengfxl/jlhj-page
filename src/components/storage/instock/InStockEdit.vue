@@ -148,7 +148,7 @@ export default {
       pageFlag: 1,//1.新建 2.编辑 3.修订
       formItem: {
         stockBillId: '',//入库单号
-        type: 2,//类型:1.出库, 2.入库
+        type: 1,//类型:1.入库, 2.出库
         projectCode: '',//工程编号
         projectName: '',//工程名称
         contractNo: '',//合同编号
@@ -218,7 +218,7 @@ export default {
         this.formItem.linkPhone = data.linkPhone;//供应商联系电话
         this.formItem.taxpayerType = data.taxpayerType;//纳税人类型
         this.formItem.invoiceType = data.invoiceType;//发票类型
-        this.formItem.taxRate = data.taxRate;//税率 
+        this.formItem.taxRate = floatObj.multiply(data.taxRate, 100);//税率 
       }
     },
     load() {
