@@ -7,7 +7,7 @@
     :beforeLoad="beforeLoad"
   >
     <div class="page-title" slot="page-title">
-      <a @click="goPage('/storage/mgr')">物质库存</a> -&gt;入库单
+      <a @click="goPage('/storage/mgr')">物质库存</a> -&gt;出库单
     </div>
     <div class="page-searchbox">
       <table cellpadding="0" cellspacing="0">
@@ -24,7 +24,7 @@
             </RadioGroup>
           </td>
           <td class="page-tools">
-            <Button @click="add" v-power icon="plus">入库单</Button>&nbsp;
+            <Button @click="add" v-power icon="plus">出库单</Button>&nbsp;
           </td>
           <td class="page-tools" v-if="queryForm.status==0"></td>
         </tr>
@@ -34,7 +34,7 @@
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td>
-            <Input v-model="queryForm.stockBillId" placeholder="入库单号" @keyup.enter.native="query"></Input>
+            <Input v-model="queryForm.stockBillId" placeholder="出库单号" @keyup.enter.native="query"></Input>
           </td>
           <td>
             <Input v-model="queryForm.projectName" placeholder="工程名" @keyup.enter.native="query"></Input>
@@ -126,7 +126,7 @@ export default {
           }
         },
         {
-          title: '入库单号',
+          title: '出库单号',
           key: 'stockBillId',
           width: 140,
           fixed: 'left',
@@ -250,7 +250,7 @@ export default {
         projectName: '',
         deptName: '',
         materName: '',
-        type: 1,
+        type: 2,
         createTime: null,
       },
       loading: 0
@@ -285,7 +285,7 @@ export default {
         projectName: '',
         deptName: '',
         materName: '',
-        type: 1,
+        type: 2,
         stockBillId: '',
         createTime: []//[page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())]
       });
@@ -303,12 +303,12 @@ export default {
       }
     },
     add() {
-      this.$router.push({ path: '/storage/instock/edit?forward' })
+      this.$router.push({ path: '/storage/outstock/edit?forward' })
     },
     edit(row) {
       if (row) {
         this.$router.push({
-          path: '/storage/instock/edit?forward&id=' + row.stockBillId
+          path: '/storage/outstock/edit?forward&id=' + row.stockBillId
         })
       }
     },
@@ -351,7 +351,7 @@ export default {
         onOk: () => {
           if (row) {
             this.loading = 1;
-            this.$http.post('/api/engine/storage/instock/delete', {
+            this.$http.post('/api/engine/storage/outstock/delete', {
               stockBillId: row.stockBillId,
             }).then((res) => {
               this.loading = 0;

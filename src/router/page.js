@@ -15,6 +15,12 @@ components.push({ component: 'storage/instock/Index', name: '', path: '/storage/
 components.push({ component: 'storage/instock/InStockEdit', name: '', path: '/storage/instock/edit' })
 components.push({ component: 'storage/instock/Handle', name: '', path: '/storage/instock/handle' })
 
+//出库单
+components.push({ component: 'storage/outstock/Index', name: '', path: '/storage/outstock' })
+components.push({ component: 'storage/outstock/OutStockEdit', name: '', path: '/storage/outstock/edit' })
+components.push({ component: 'storage/outstock/Handle', name: '', path: '/storage/outstock/handle' })
+
+
 components.push({ component: 'project/Index', name: '', path: '/project' })
 //机械作业单
 components.push({ component: 'machine/order/Index', name: '', path: '/machine/order' })
