@@ -27,7 +27,7 @@ export default {
 
       var form = defineCfg.getFormByDefine(defineId);
       if(form == null){
-        this.$Message.error('未知的流程定义 ' + instId);
+        this.$Message.error('未知的流程定义 ' + defineId);
         this.$router.go(-1);
         return;
       }
