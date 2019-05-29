@@ -33,11 +33,18 @@ export default {
         if (defineId == 5) {//机械租赁结算单
           url = '/machine/bill/handle?forward&inst=' + instId
         }
+        if (defineId == 6) {//运输结算单
+          url = '/transport/bill/handle?forward&inst=' + instId
+        }
       }
 
       if (action == 'view') {
         if (defineId == 1) {//报销单
           url = '/financial/expense/view?forward&inst=' + instId
+        }
+
+        if (defineId == 6) {//运输结算单
+          url = '/transport/bill/view?forward&inst=' + instId
         }
       }
       

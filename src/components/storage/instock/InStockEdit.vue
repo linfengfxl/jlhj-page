@@ -44,7 +44,7 @@
               <td>
                 <FormItem prop="amount" label="税率">{{formItem.taxRate}} %</FormItem>
               </td>
-              <td>
+              <td> 
                 <FormItem
                   prop="remark"
                   label="纳税人类型"

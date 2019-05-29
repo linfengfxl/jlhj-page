@@ -26,7 +26,7 @@
       <tbody>
       <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
           <td>
-            {{index+1}} 
+            {{index+1}}  
           </td>
           <td>
             {{item.materCode}}<!--  材料编码 --> 

@@ -87,7 +87,7 @@ export default {
           title: '操作',
           width: 80,
           align: 'center',
-          fixed: 'left',
+          fixed: 'left', 
           render: (h, params) => {
             var row = params.row;             
             return h(DataRowOperate, {
