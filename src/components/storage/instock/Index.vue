@@ -296,12 +296,12 @@ export default {
       }
     },
     add() {
-      this.$router.push({ path: '/storage/instock/edit?forward' })
+      this.$router.push({ path: '/storage/instock/start?forward' })
     },
     edit(row) {
       if (row) {
         this.$router.push({
-          path: '/storage/instock/edit?forward&id=' + row.stockBillId
+          path: '/storage/instock/start?forward&id=' + row.stockBillId
         })
       }
     },

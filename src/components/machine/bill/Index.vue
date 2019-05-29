@@ -177,7 +177,7 @@ export default {
       if (name === '编辑') {
         if (params.row) {
           this.$router.push({
-            path: '/machine/bill/edit?id=' + params.row.machineBillCode
+            path: '/machine/bill/start?forward&id=' + params.row.machineBillCode
           })
         }
       }
@@ -204,9 +204,8 @@ export default {
     goBack: function () {
       this.$router.go(-1);
     },
-    add: function () {
-      //this.$refs.edit.open(0);
-      this.$router.push({ path: '/machine/bill/edit' })
+    add: function () { 
+      this.$router.push({ path: '/machine/bill/start?forward' })
     },
   }
 }

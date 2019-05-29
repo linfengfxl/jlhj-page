@@ -12,22 +12,22 @@ components.push({ component: 'machine/Index', name: '', path: '/machine' })
 //物质库存 
 //入库单
 components.push({ component: 'storage/instock/Index', name: '', path: '/storage/instock' })
-components.push({ component: 'storage/instock/InStockEdit', name: '', path: '/storage/instock/edit' })
+components.push({ component: 'storage/instock/InStockEdit', name: '', path: '/storage/instock/start' })
 components.push({ component: 'storage/instock/Handle', name: '', path: '/storage/instock/handle' })
 
 //出库单
 components.push({ component: 'storage/outstock/Index', name: '', path: '/storage/outstock' })
-components.push({ component: 'storage/outstock/OutStockEdit', name: '', path: '/storage/outstock/edit' })
+components.push({ component: 'storage/outstock/OutStockEdit', name: '', path: '/storage/outstock/start' })
 components.push({ component: 'storage/outstock/Handle', name: '', path: '/storage/outstock/handle' })
 
 
 components.push({ component: 'project/Index', name: '', path: '/project' })
 //机械作业单
 components.push({ component: 'machine/order/Index', name: '', path: '/machine/order' })
-components.push({ component: 'machine/order/Edit', name: '', path: '/machine/order/edit' })
+components.push({ component: 'machine/order/Edit', name: '', path: '/machine/order/start' })
 //机械租赁结算单
 components.push({ component: 'machine/bill/Index', name: '', path: '/machine/bill' })
-components.push({ component: 'machine/bill/Edit', name: '', path: '/machine/bill/edit' })
+components.push({ component: 'machine/bill/Edit', name: '', path: '/machine/bill/start' })
 components.push({ component: 'machine/bill/Handle', name: '', path: '/machine/bill/handle' }) 
 
 // workflow

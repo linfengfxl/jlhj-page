@@ -303,12 +303,12 @@ export default {
       }
     },
     add() {
-      this.$router.push({ path: '/storage/outstock/edit?forward' })
+      this.$router.push({ path: '/storage/outstock/start?forward' })
     },
     edit(row) {
       if (row) {
         this.$router.push({
-          path: '/storage/outstock/edit?forward&id=' + row.stockBillId
+          path: '/storage/outstock/start?forward&id=' + row.stockBillId
         })
       }
     },
