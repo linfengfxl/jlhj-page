@@ -58,10 +58,11 @@
   }
 
   .wfstart-box-item{
+    color:#2b579a;
     width: 280px;
     height: 50px;    
     line-height: 50px;
-    border:1px solid #eee;   
+    border:1px solid #BFD2ED;   
     border-radius: 3px;
     float: left;
     margin: 10px;
@@ -87,6 +88,6 @@
     position: absolute;
     left: 10px;
     top:10px;
-    color:#aaa;    
+    color:#BFD2ED;    
   }
 </style>
