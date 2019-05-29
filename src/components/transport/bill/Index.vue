@@ -1,8 +1,8 @@
 <template>
   <ListPage
     ref="page"
-    title="运输小票"
-    api="/api/engine/transport/order/list"
+    title="运输结算单"
+    api="/api/engine/transport/bill/list"
     :model="this"
     :beforeLoad="beforeLoad"
   >
@@ -10,8 +10,17 @@
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td>
+            <RadioGroup v-model="queryForm.status" type="button" @on-change="query">
+              <Radio :label="2">通过</Radio>
+              <Radio :label="1">审批中</Radio>
+              <Radio :label="3">驳回</Radio>
+              <Radio :label="4">作废</Radio>
+            </RadioGroup>
+          </td>
+          <td>
             <Button @click="add" icon="plus">添加</Button>
           </td>
+          <td class="page-tools" v-if="queryForm.status==0"></td>
         </tr>
       </table>
     </div>
@@ -38,7 +47,7 @@
           </td>
           <td>
             <Input
-              v-model="queryForm.transportOrderId"
+              v-model="queryForm.transportBillId"
               placeholder="单据编号"
               @keyup.enter.native="query"
             ></Input>
@@ -111,7 +120,8 @@ export default {
                     key: "edit"
                   },
                   {
-                    key: "delete"
+                    key: "delete",
+                    disabled: row.status !== 3
                   }
                 ]
               },
@@ -130,104 +140,85 @@ export default {
         },
         {
           title: "单据编号",
-          key: "transportOrderId",
+          key: "transportBillId",
           width: 120,
           align: "left"
         },
-        page.table.initDateColumn({
-          title: "运输日期",
-          key: "transportDate",
-          width: 120,
-          align: "left"
-        }),
         {
-          title: "所属部门",
+          title: "部门",
           key: "deptName",
-          width: 100,
+          width: 120,
           align: "center"
         },
         {
           title: "工程名称",
           key: "projectName",
-          width: 120,
           align: "left"
         },
+        page.table.initDateColumn({
+          title: "结算日期",
+          width: 120,
+          key: "billDate",
+          align: "left"
+        }),
         {
-          title: "供应商名称",
+          title: "供应商",
           key: "providerName",
-          width: 100,
+          width: 160,
           align: "left"
         },
         {
           title: "供应商联系人",
           key: "linkMan",
           width: 100,
+          align: "left"
+        },
+        {
+          title: "纳税人类型",
+          key: "taxpayerType",
+          width: 100,
           align: "center"
         },
         {
           title: "税率",
           key: "taxRate",
-          width: 60,
+          width: 80,
           align: "center"
         },
         {
-          title: "运输设备名称",
-          key: "transportType",
+          title: "发票类型",
+          key: "invoiceType",
           width: 100,
-          align: "left"
+          align: "center"
         },
         page.table.initDateColumn({
-          title: "运输时间",
-          key: "transportDate",
+          title: "结算开始日期",
+          key: "startDate",
           width: 120,
           align: "left"
         }),
-        {
-          title: "车牌号",
-          key: "vehicleNum",
-          width: 80,
-          align: "left"
-        },
-        {
-          title: "数量",
-          key: "num",
-          width: 60,
+        page.table.initDateColumn({
+          title: "结算结束日期",
+          key: "endDate",
+          width: 120,
           align: "center"
-        },
+        }),
         {
-          title: "单位",
-          key: "unit",
-          width: 60,
-          align: "center"
-        },
-        {
-          title: "里程数",
-          key: "milage",
-          width: 60,
-          align: "center"
-        },
-        {
-          title: "含税单价",
-          key: "taxUnitPrice",
+          title: "金额合计",
+          key: "amount",
           width: 80,
           align: "center"
         },
         {
-          title: "扣款金额",
+          title: "税额合计",
+          key: "tax",
+          width: 80,
+          align: "center"
+        },
+        {
+          title: "扣款合计",
           key: "deductAmount",
           width: 80,
-          align: "center"
-        },
-        {
-          title: "金额",
-          key: "amount",
-          width: 60,
-          align: "center"
-        },
-        {
-          title: "税额",
-          key: "tax",
-          width: 60,
           align: "center"
         },
         {
@@ -235,44 +226,15 @@ export default {
           key: "totalPriceTax",
           width: 80,
           align: "center"
-        },
-        {
-          title: "运输起点",
-          key: "transportStart",
-          width: 100,
-          align: "left"
-        },
-        {
-          title: "运输终点",
-          key: "transportEnd",
-          width: 100,
-          align: "left"
-        },
-        page.table.initDateColumn({
-          title: "抵达时间",
-          key: "arrivalTime",
-          width: 120,
-          align: "left"
-        }),
-        {
-          title: "运输类别",
-          key: "transportType",
-          width: 100,
-          align: "center"
-        },
-        {
-          title: "运输内容",
-          key: "transportContent",
-          width: 120,
-          align: "left"
         }
       ],
       list: [],
       total: 0,
       queryParam: {}, // creatTime生成的格式放入
       queryForm: {
+        status: 2,
         projectCode: "", // 工程名称ID
-        transportOrderId: "", // 单据编号ID
+        transportBillId: "", // 单据编号ID
         providerCode: "", // 供应商ID
         createTime: [] // 时间格式转换成简单格式
       },
@@ -315,11 +277,12 @@ export default {
     reset() {
       // 清空条件
       Object.assign(this.queryForm, {
+        status: 2,
         projectCode: "", // 工程名称ID
         projectName: "", // 工程名称name
         providerCode: "", // 供应商ID
         providerName: "", // 工程名称Name
-        transportOrderId: "", // 单据编号ID
+        transportBillId: "", // 单据编号ID
         createTime: [] // 时间
       });
       this.query();
@@ -329,8 +292,11 @@ export default {
     // },
     rowCommand: function(name, params) {
       if (name === "编辑") {
-        this.updateRole(params.row.transportOrderId);
-        return;
+        if (params.row) {
+          this.$router.push({
+            path: "/transport/bill/edit?id=" + params.row.transportBillId
+          });
+        }
       }
       if (name === "删除") {
         this.$Modal.confirm({
@@ -338,8 +304,8 @@ export default {
           content: "<p>删除后不能恢复，确定删除已选择的记录吗？</p>",
           onOk: () => {
             this.$http
-              .post("/api/engine/transport/order/delete", {
-                transportOrderId: params.row.transportOrderId
+              .post("/api/engine/transport/bill/delete", {
+                transportBillId: params.row.transportBillId
               })
               .then(res => {
                 if (res.data.code === 0) {
@@ -362,10 +328,10 @@ export default {
       this.$router.go(-1);
     },
     add: function() {
-      this.$refs.edit.open(0);
-    },
-    updateRole: function(roleId) {
-      this.$refs.edit.open(roleId);
+      //   this.$refs.edit.open(0);
+      this.$router.push({
+        path: "/transport/bill/edit"
+      });
     }
   }
 };

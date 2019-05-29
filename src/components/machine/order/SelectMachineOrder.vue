@@ -1,12 +1,13 @@
 <template>
   <Modal
     v-model="display"
-    title="选择作业单"
+    :title="title"
     :closable="false"
     :mask-closable="false"
     :transfer="transfer"
     :width="800"
     class="selmaterial"
+    :model="model"
   >
     <div class="page">
       <div class="page-searchbox">
@@ -15,7 +16,7 @@
             <td>
               <Input
                 v-model="queryForm.keyword"
-                placeholder="物料编码/名称/图号"
+                placeholder="作业单号"
                 style="width:200px;"
                 @keyup.enter.native="query"
               ></Input>
@@ -35,6 +36,7 @@
             :row-class-name="rowClassName"
             :columns="columns"
             @on-row-click="innerCheckRow(arguments[1])"
+            @on-selection-change="select"
             :data="list"
           ></i-table>
 
@@ -71,36 +73,46 @@ export default {
     transfer: {
       type: Boolean,
       default: true
+    },
+    model: {
+      type: Object,
+      default: null
     }
   },
   data() {
     var that = this;
     return {
+      title: "选择作业单",
       columns: [
+        // {
+        //   title: '选择',
+        //   key: '_checked',
+        //   width: 60,
+        //   render: function (h, params) {
+        //     var row = params.row;
+        //     var index = params.index;
+        //     var props = {
+        //       value: row._checked,
+        //     };
+        //     if (row.status == "2") {
+        //       props.disabled = true;
+        //     }
+        //     return h('Checkbox', {
+        //       props: props,
+        //       on: {
+        //         'on-change': () => {
+        //           that.innerCheckRow(index);
+        //         }
+        //       }
+        //     });
+        //   }
+        // },
         {
-          title: '选择',
-          key: '_checked',
+          type: 'selection',
           width: 60,
-          render: function (h, params) {
-            var row = params.row;
-            var index = params.index;
-            var props = {
-              value: row._checked,
-            };
-            if (row.status == "2") {
-              props.disabled = true;
-            }
-            return h('Checkbox', {
-              props: props,
-              on: {
-                'on-change': () => {
-                  that.innerCheckRow(index);
-                }
-              }
-            });
-          }
+          align: 'center'
         },
-         {
+        {
           title: '单号',
           key: 'machineOrderId',
           width: 120,
@@ -142,6 +154,7 @@ export default {
         keyword: '',
       },
       selected: [],
+      selection: [],
       loading: 0,
       options: {
         type: 1
@@ -153,12 +166,18 @@ export default {
   },
   computed: {},
   methods: {
-    load() {
+    load() { 
+      if (this.model != null) {
+        this.title = "选择作业单 " + this.model.projectName + " / " + this.model.providerName + " / " + page.formatDate(this.model.billDate);
+      }
       var pagebar = this.$refs.pagebar;
       this.loading = 1;
       this.queryParam.page = pagebar.currentPage;
       this.queryParam.pageSize = pagebar.currentPageSize;
       this.queryParam.type = this.options.type;
+      this.queryParam.projectCode = this.model.projectCode;//传递的
+      this.queryParam.providerCode = this.model.providerCode;//传递的
+      this.queryParam.jobDate = page.formatDate(this.model.billDate);
       this.$http.post('/api/engine/machine/order/list', this.queryParam).then((res) => {
         if (res.data.code === 0 && res.data.data != null) {
           this.loading = 0;
@@ -211,6 +230,9 @@ export default {
         this.load();
       }
     },
+    select: function (selection) {
+      this.selection = selection;
+    },
     innerCheckRow(index) {
       for (var i = 0; i < this.list.length; i++) {
         var item = this.list[i];
@@ -241,18 +263,20 @@ export default {
       this.options.cancel();
     },
     onOK() {
-      var select = null;
-      this.list.map((item) => {
-        if (item._checked) {
-          select = item;
-        }
-      });
-      if (select == null) {
-        this.$Message.error('请选择物料');
-        return;
-      }
+      // var select = null;
+      // this.list.map((item) => {
+      //   if (item._checked) {
+      //     select = item;
+      //   }
+      // });
+      // if (select == null) {
+      //   this.$Message.error('请选择物料');
+      //   return;
+      // }
+      // this.display = false;
+      // this.options.ok(select);
       this.display = false;
-      this.options.ok(select);
+      this.options.ok(this.selection);
     },
     onCancel() {
       this.display = false;
