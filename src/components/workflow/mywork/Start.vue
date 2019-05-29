@@ -29,7 +29,7 @@
           {title:'分包结算单审核流程',url:""},
           {title:'分包合同审批流程',url:""},
           {title:'费用报销审批流程',url:""},
-          {title:'材料入库单审核流程',url:""},
+          {title:'材料入库单审核流程',url:"/storage/instock/edit?forward"},
           {title:'材料出库单审核流程',url:""},
           {title:'材料采购付款审批流程',url:""},
           {title:'备用金申请流程',url:""},

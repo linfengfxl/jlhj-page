@@ -5,7 +5,7 @@
         <div class="page-form">
           <Form ref="form" :model="formItem" :rules="ruleValidate" :label-width="80">
             <FormItem label="编码" prop="code">
-              <Input size="small" v-model="formItem.code"></Input>
+              <Input size="small" v-model="formItem.code" :disabled="isEdit==1"></Input>
             </FormItem>
             <FormItem label="名称" prop="title">
               <Input size="small" v-model="formItem.title"></Input>
