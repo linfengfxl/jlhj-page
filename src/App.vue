@@ -113,15 +113,16 @@ export default {
           this.$user.isSuper = user.isSuper;
           
           this.message = '获取权限...';
-          this.$http.get('/api/login/getPowerKeys').then((res)=>{
+          this.$http.get('/api/engine/login/getPowerKeys').then((res)=>{
             this.$user.powerKeys = res.data.data;
 
             this.message = '获取菜单配置...';
-            this.$http.post('/api/engine/power.list').then((res)=>{              
-              power.rebuild(res.data.data);
-              power.each((item)=>{
-                item.hasPower = this.$user.hasPower(item.key);
-              }) 
+            this.$http.post('/api/engine/power.list').then((res)=>{
+              var powers = res.data.data;
+              powers.map(p=>{
+                p.hasPower = this.$user.hasPower(p.powerKey);
+              })
+              power.rebuild(powers);
 
               this.message = '获取数据字典...';
               this.loaded = 1;

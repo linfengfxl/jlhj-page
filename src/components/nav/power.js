@@ -39,7 +39,7 @@ power.build = function() {
     if((item.iconfont || item.icon || '') == ''){
       item.iconfont = power.defaultIconFont;
     }
-    if(item.parent == 0){
+    if(item.parent == 0 && item.hasPower){
       power.navs.push(item);
       item.subItems = [];
       buildSubItems(item);
@@ -48,7 +48,7 @@ power.build = function() {
 }
 function buildSubItems(nav) {
   power.items.map((item)=>{
-    if(item.parent == nav.id){
+    if(item.parent == nav.id && item.hasPower){
       nav.subItems.push(item);
       item.subItems = [];
       buildSubItems(item);
@@ -73,7 +73,7 @@ power.rebuild = function(items){
         iconfont:item.powerIcon,
         icon:'',
         parent:item.parentId,
-        hasPower:true
+        hasPower:item.hasPower
       });
     }
   });
