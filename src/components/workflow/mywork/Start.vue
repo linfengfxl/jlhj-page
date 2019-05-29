@@ -20,8 +20,8 @@
     components: { 
     },
     data() {       
-      return {
-        list:[]
+      return { 
+        list:[] 
       }
     },
     mounted: function () {

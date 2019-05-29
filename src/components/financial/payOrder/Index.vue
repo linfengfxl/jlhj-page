@@ -1,13 +1,13 @@
 <template>
   <ListPage
     ref="page"
-    api="/api/engine/financial/payPlan/list"
+    api="/api/engine/financial/payOrder/list"
     :model="this"
     @onCurrentRowChange="curRowChg"
     :beforeLoad="beforeLoad"
   >
     <div class="page-title" slot="page-title">
-      付款计划
+      付款单
     </div>
     <div class="page-searchbox">
       <table cellpadding="0" cellspacing="0">
@@ -21,7 +21,7 @@
             </RadioGroup>
           </td>
           <td class="page-tools">
-            <Button @click="add" v-power icon="plus">发起付款计划单</Button>&nbsp;
+            <Button @click="add" v-power icon="plus">发起付款单</Button>&nbsp;
           </td>
           <td class="page-tools" v-if="queryForm.status==0"></td>
         </tr>
@@ -31,7 +31,12 @@
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td>
-            <Input v-model="queryForm.payPlanId" placeholder="付款计划单号" @keyup.enter.native="query"></Input>
+            <Input v-model="queryForm.payOrderId" placeholder="付款单号" @keyup.enter.native="query"></Input>
+          </td>
+          <td>
+            <Select v-model="queryForm.fundsPlan" @on-change="query">
+              <Option v-for="item in fundsPlan" :value="item.code" :key="item.code" placeholder="资金计划类型">{{ item.text }}</Option>
+            </Select>
           </td>
           <td>创建日期</td>
           <td>
@@ -102,8 +107,8 @@ export default {
           }
         },
         {
-          title: '付款计划单号',
-          key: 'payPlanId',
+          title: '付款单号',
+          key: 'payOrderId',
           width: 140,
           align: 'center',
           fixed: 'left',
@@ -115,17 +120,34 @@ export default {
               },
               on:{
                 click:()=>{
-                  this.$router.push({path:'/financial/payplan/view?forward&inst='+row.instId});
+                  this.$router.push({path:'/financial/payorder/view?forward&inst='+row.instId});
                 }
               }
-            },row.payPlanId);
+            },row.payOrderId);
           }
         },
         {
-          title: '付款计划名称',
-          key: 'payPlanName',
+          title: '资金计划类型',
+          key: 'fundsPlan',
           align: 'center',
           width: 100,
+          fixed: 'left',
+        }, 
+        {
+          title: '付款分类',
+          key: 'payType',
+          align: 'center',
+          width: 100,
+        },
+         page.table.initDateColumn({
+          title: '付款日期',
+          key: 'payDate',
+        }),
+        {
+          title: '工程名称',
+          key: 'projectName',
+          align: 'left',
+          width: 150,
         },
         {
           title: '供应商',
@@ -134,80 +156,56 @@ export default {
           minWidth: 180,
         },
         {
-          title: '供应商联系人',
-          key: 'linkMan',
-          align: 'center',
-          width: 100,
-        },
-        {
-          title: '发生额',
+          title: '付款金额',
           key: 'amount',
           align: 'left',
           width: 150,
         },
         {
-          title: '累计付款额',
-          key: 'acumPayAmount',
+          title: '付款金额大写',
+          key: 'amountCapital',
+          align: 'left',
+          minWidth: 150,
+        },
+        {
+          title: '开户银行',
+          key: 'bank',
           align: 'left',
           width: 150,
         },
         {
-          title: '应付金额',
-          key: 'payableAmount',
+          title: '银行户名',
+          key: 'bankAccount',
           align: 'left',
           width: 150,
         },
         {
-          title: '应付类型',
-          key: 'payableType',
+          title: '开户账号',
+          key: 'bankCardNo',
+          align: 'left',
+          width: 150,
+        },
+        {
+          title: '经办人',
+          key: 'operatorName',
           align: 'center',
           width: 100,
         },
         {
-          title: '本期应付款额',
-          key: 'currentPayableAmount',
+          title: '付款方式',
+          key: 'payWay',
           align: 'center',
-          width: 120,
+          width: 100,
         },
         {
-          title: '本期计划付款额',
-          key: 'currentPlanAmount',
-          align: 'center',
-          width: 120,
-        },
-        {
-          title: '合同付款方式',
-          key: 'contractPayType',
+          title: '法律主体',
+          key: 'legalSubject',
           align: 'center',
           width: 100,
         },
          {
-          title: '合同账期(%)',
-          key: 'contractBillPeriod',
-          align: 'center',
-          width: 100,
-        },
-         {
-          title: '申请部门',
-          key: 'deptName',
-          align: 'center',
-          width: 100,
-        },
-         {
-          title: '申请人',
-          key: 'applicantName',
-          align: 'center',
-          width: 100,
-        },
-         {
-          title: '计划年度',
-          key: 'planYear',
-          align: 'center',
-          width: 100,
-        },
-         {
-          title: '计划月份',
-          key: 'planMonth',
+          title: '付款说明',
+          key: 'payDesc',
           align: 'center',
           width: 100,
         },
@@ -234,10 +232,16 @@ export default {
         }),
       ],
       queryForm: { 
-        payPlanId:'',
+        payOrderId:'',
+        payType:'',
         status: 2, 
         createTime: null,
       },
+      fundsPlan:[
+        {code:'',text:'全部'},
+        {code:'计划内',text:'计划内'},
+        {code:'计划外',text:'计划外'},
+      ],
       loading: 0
     }
   },
@@ -246,10 +250,6 @@ export default {
   },
   methods: {
     query() {
-      //   if (!this.queryForm.storageId) {
-      //     this.$Message.error('请选择仓库');
-      //     return;
-      //   }
       this.$refs.page.query();
     },
     beforeLoad() {
@@ -266,7 +266,8 @@ export default {
     },
     reset() {
       Object.assign(this.queryForm, {
-        payPlanId:'',
+        payOrderId:'',
+        payType:'',
         status: this.queryForm.status, 
         createTime: null,
         createTime: []//[page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())]
@@ -276,18 +277,18 @@ export default {
     curRowChg(row) {
       if(row != null) {
         this.curRow = row;
-        this.curRowId = row.payPlanId;
+        this.curRowId = row.payOrderId;
       } else {
         this.curRow = null;
         this.curRowId = null;
       }
     },
     add() {
-      this.$router.push({ path: '/financial/payplan/start?forward'})
+      this.$router.push({ path: '/financial/payorder/start?forward'})
     },
     edit(row) {
       this.$router.push({
-        path: '/financial/payplan/start?forward&id=' + row.payPlanId
+        path: '/financial/payorder/start?forward&id=' + row.payOrderId
       })
     },
     goPage(page) {

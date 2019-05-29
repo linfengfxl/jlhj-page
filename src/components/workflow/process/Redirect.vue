@@ -23,8 +23,7 @@ export default {
       var instId = this.$route.query.inst;
       var defineId = this.$route.query.define;
       var businessKey = this.$route.query.businessKey; 
-      
-
+       
       var form = defineCfg.getFormByDefine(defineId);
       if(form == null){
         this.$Message.error('未知的流程定义 ' + defineId);
@@ -33,10 +32,9 @@ export default {
       }
 
       var url = '';
-
-
+      
       if (action == 'handle') { 
-        url = form.handleUrl;        
+        url = form.handleUrl;
       }
 
       if (action == 'restart') { 
