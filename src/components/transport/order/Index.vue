@@ -176,7 +176,7 @@ export default {
         },
         {
           title: "运输设备名称",
-          key: "transportType",
+          key: "machineName",
           width: 100,
           align: "left"
         },

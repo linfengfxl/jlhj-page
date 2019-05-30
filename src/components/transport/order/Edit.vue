@@ -60,10 +60,10 @@
                 @on-change="onChangeAmount"
               ></InputNumber>
             </FormItem>
-            <FormItem label="运输设备名称" prop="transportType">
-              <Select v-model="formItem.transportType" style="width:180px;" placeholder="运输设备名称">
+            <FormItem label="运输设备名称" prop="machineCode">
+              <Select v-model="formItem.machineCode" style="width:180px;" placeholder="运输设备名称">
                 <Option
-                  v-for="item in transportTypes"
+                  v-for="item in machines"
                   :value="item.machineCode"
                   :key="item.machineCode"
                 >{{ item.machineName }}</Option>
@@ -82,7 +82,7 @@
               <Input v-model="formItem.vehicleNum" placeholder="车牌号不能为空"/>
             </FormItem>
             <FormItem label="数量" prop>
-              <InputNumber v-model="formItem.num" :min="1" style="width:180px;" @on-change="onChangeAmount"></InputNumber>
+              <InputNumber v-model="formItem.num" :min="0" style="width:180px;" @on-change="onChangeAmount"></InputNumber>
             </FormItem>
             <FormItem label="单位" prop>
               <Select v-model="formItem.unit" style="width:180px;" placeholder="类型">
@@ -168,7 +168,7 @@ export default {
       isEdit: 0,
       //表单对象
       formItem: this.getInitFormItem(),
-      transportTypes:[],
+      machines:[],
       //验证
       ruleValidate: {
         transportDate: [
@@ -314,7 +314,6 @@ export default {
           providerName: "", // 供应商名称
           linkMan: "", //供应商联系人',
           taxRate: 0, //税率',
-          taxRate1: 0, //税率',
           transportType: "", //运输设备名称',
           vehicleNum: "", //车牌号',
           num: 0, //数量',
@@ -348,7 +347,7 @@ export default {
       this.$http.post("/api/engine/machine/listAll", {}).then(res => {
         this.loading = 0;
         if (res.data.code === 0) {
-          this.transportTypes=res.data.data.rows;
+          this.machines=res.data.data.rows;
         } else {
           this.$Message.error(res.data.message);
         }
@@ -366,7 +365,7 @@ export default {
           this.loading = 0;
           if (res.data.code === 0) {
             Object.assign(this.formItem, res.data.data);
-            this.formItem.taxRate = parseFloat(this.formItem.taxRate * 100).toFixed(2);
+            this.formItem.taxRate = parseFloat(parseFloat(this.formItem.taxRate * 100).toFixed(2));
           } else {
             this.$Message.error(res.data.message);
           }
@@ -379,7 +378,7 @@ export default {
     selProvider(data) {
       if (data) {
         this.formItem.linkMan = data.linkMan; //供应商联系人
-        this.formItem.taxRate = parseFloat(data.taxRate*100).toFixed(2); //税率
+        this.formItem.taxRate = parseFloat(parseFloat(data.taxRate * 100).toFixed(2)); //税率
         this.onChangeAmount();
       }
     },
