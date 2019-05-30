@@ -14,11 +14,12 @@ components.push({ component: 'machine/Index', name: '', path: '/machine' })
 components.push({ component: 'storage/instock/Index', name: '', path: '/storage/instock' })
 components.push({ component: 'storage/instock/InStockEdit', name: '', path: '/storage/instock/start' })
 components.push({ component: 'storage/instock/Handle', name: '', path: '/storage/instock/handle' })
-
+components.push({ component: 'storage/instock/View', name: '', path: '/storage/instock/view' }) 
 //出库单
 components.push({ component: 'storage/outstock/Index', name: '', path: '/storage/outstock' })
 components.push({ component: 'storage/outstock/OutStockEdit', name: '', path: '/storage/outstock/start' })
 components.push({ component: 'storage/outstock/Handle', name: '', path: '/storage/outstock/handle' })
+components.push({ component: 'storage/outstock/View', name: '', path: '/storage/outstock/view' })
 
 
 components.push({ component: 'project/Index', name: '', path: '/project' })

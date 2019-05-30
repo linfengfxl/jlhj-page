@@ -57,15 +57,15 @@
                   </FormItem>
                 </td>
                 <td>
-                  <FormItem prop label="供应商联系人">{{formItem.linkMan}}</FormItem>
+                  <FormItem label="供应商联系人">{{formItem.linkMan}}</FormItem>
                 </td>
                 <td>
-                  <FormItem prop label="税率">{{formItem.taxRate1}}%</FormItem>
+                  <FormItem label="税率">{{formItem.taxRate1}}%</FormItem>
                 </td>
               </tr>
               <tr>
                 <td>
-                  <FormItem prop label="发票类型">{{formItem.invoiceType}}</FormItem>
+                  <FormItem label="发票类型">{{formItem.invoiceType}}</FormItem>
                 </td>
                 <td>
                   <FormItem prop="startDate" label="结算开始日期">
@@ -90,7 +90,7 @@
               </tr>
               <tr>
                 <td>
-                  <FormItem prop label="金额合计">{{formItem.totalAmount}}</FormItem>
+                  <FormItem label="金额合计">{{formItem.totalAmount}}</FormItem>
                 </td>
                 <td>
                   <FormItem prop="penalty" label="罚款">
@@ -103,9 +103,7 @@
                   </FormItem>
                 </td>
                 <td>
-                  <FormItem prop="totalPriceTax" label="价税合计">
-                    <InputNumber :max="999999999" :min="0" v-model="formItem.totalPriceTax"></InputNumber>
-                  </FormItem>
+                  <FormItem label="价税合计">{{formItem.totalPriceTax}}</FormItem>
                 </td>
               </tr>
               <tr>
@@ -208,9 +206,6 @@ export default {
         ],
         penalty: [
           { required: true, type: 'number', message: '请填写罚款', trigger: 'change' }
-        ],
-        totalPriceTax: [
-          { required: true, type: 'number', message: '请填写价格合计', trigger: 'change' }
         ],
       },
       list: [],
