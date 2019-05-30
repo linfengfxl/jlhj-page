@@ -81,10 +81,6 @@ export default {
     editable: {
       type: Boolean,
       default: false
-    },
-    isImport: {  // 是否为导入的数据，导入的数据不能添加行，部分字段不能编辑
-      type: Boolean,
-      default: false
     }
   },
   data() {
@@ -98,7 +94,7 @@ export default {
   computed: {},
   watch: {
     list(val, old) {
-      this.$emit('on-amount-change', this.sumAmount());
+
     }
   },
   methods: {
@@ -111,15 +107,13 @@ export default {
         type: 2,//入库
         startTime: '',//开始时间
         endTime: '',//结束时间
-        useTime: '',//作业用时:结束时间-开始时间
-        taiban: '',//作业台班:默认为作业用时/8
+        useTime: null,//作业用时:结束时间-开始时间
+        taiban: null,//作业台班:默认为作业用时/8
       };
       return def;
     },
     add() {
-      if (!this.isImport) {
-        this.list.push(this.listNewRow());
-      }
+      this.list.push(this.listNewRow());
     },
     remove() {
       if (this.list.length > this.curIndex) {
@@ -132,14 +126,24 @@ export default {
         this.curIndex = 0;
       }
     },
-    datePickerChange(item, args) {
-      item.needDate = args[0];
-    },
     computedAmount(item) {
-      item.useTime = 0;//作业用时
-      item.taiban = 0;//作业台班
+      if (item.startTime && item.endTime) {
+        item.useTime = this.dateDiff(item.startTime, item.endTime);//作业用时
+        item.taiban = floatObj.divide(item.useTime, 8, 2);//作业台班 默认为作业用时/8，可以手工输入或修改
+      }
     },
-
+    dateDiff(date1, date2) {
+      var type1 = typeof date1, type2 = typeof date2;
+      if (type1 == 'string')
+        date1 = stringToTime(date1);
+      else if (date1.getTime)
+        date1 = date1.getTime();
+      if (type2 == 'string')
+        date2 = stringToTime(date2);
+      else if (date2.getTime)
+        date2 = date2.getTime();
+      return (date2 - date1) / 1000 / 60 / 60 / 24;//除1000是毫秒，不加是秒   
+    }
   }
 }
 

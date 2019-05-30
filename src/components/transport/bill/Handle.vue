@@ -1,5 +1,11 @@
 <template>
-    <HandleProcess ref="handleProcess" :instId="instId" :title="title" @on-load="instLoaded" @on-submit="save">
+  <HandleProcess
+    ref="handleProcess"
+    :instId="instId"
+    :title="title"
+    @on-load="instLoaded"
+    @on-submit="save"
+  >
     <div class="page instock-edit">
       <Loading :loading="loading">
         <div class="baseinfo">
@@ -20,40 +26,24 @@
               <tr>
                 <td>
                   <FormItem prop="deptId" label="部门">
-                    <SelStorage v-model="formItem.deptId" :model="formItem"></SelStorage>
+                    {{formItem.deptId}}
                   </FormItem>
                 </td>
                 <td>
                   <FormItem prop="billDate" label="结算日期">
-                    <Date-picker
-                      type="date"
-                      placeholder="选择日期"
-                      v-model="formItem.billDate"
-                      format="yyyy-MM-dd"
-                    ></Date-picker>
+                   {{formItem.billDate}}
                   </FormItem>
                 </td>
                 <td>
                   <FormItem prop="projectCode" label="工程名称">
-                    <SelectProject
-                      v-model="formItem.projectCode"
-                      :model="formItem"
-                      :text="formItem.projectName"
-                    />
+                   {{formItem.projectName}}
                   </FormItem>
                 </td>
               </tr>
               <tr>
                 <td>
                   <FormItem prop="providerCode" label="供应商">
-                    <Input
-                      v-model="formItem.providerName"
-                      placeholder
-                      class="width-1"
-                      readonly="readonly"
-                      icon="search"
-                      @on-click="selProvider"
-                    />
+                   {{formItem.providerName}}
                   </FormItem>
                 </td>
                 <td>
@@ -72,52 +62,42 @@
                 </td>
                 <td>
                   <FormItem prop label="结算开始日期">
-                    <Date-picker
-                      type="date"
-                      placeholder="选择日期"
-                      v-model="formItem.startDate"
-                      format="yyyy-MM-dd"
-                    ></Date-picker>
+                   {{formItem.startDate}}
                   </FormItem>
                 </td>
               </tr>
               <tr>
                 <td>
                   <FormItem prop label="结算结束日期">
-                    <Date-picker
-                      type="date"
-                      placeholder="选择日期"
-                      v-model="formItem.endDate"
-                      format="yyyy-MM-dd"
-                    ></Date-picker>
+                   {{formItem.endDate}}
                   </FormItem>
                 </td>
                 <td>
                   <FormItem prop label="金额合计">
-                    <Input v-model="formItem.amount"/>
+                    {{formItem.amount}}
                   </FormItem>
                 </td>
 
                 <td>
                   <FormItem prop label="税额合计">
-                    <Input v-model="formItem.tax"/>
+                    {{formItem.tax}}
                   </FormItem>
                 </td>
               </tr>
               <tr>
                 <td>
                   <FormItem prop label="扣款合计">
-                    <Input v-model="formItem.deductAmount"/>
+                   {{formItem.deductAmount}}
                   </FormItem>
                 </td>
                 <td>
                   <FormItem prop label="价税合计">
-                    <Input v-model="formItem.totalPriceTax"/>
+                   {{formItem.totalPriceTax}}
                   </FormItem>
                 </td>
                 <td>
                   <FormItem prop=" " label="备注">
-                    <Input type="textarea" :rows="2" v-model="formItem.remark"/>
+                  {{formItem.remark}}
                   </FormItem>
                 </td>
               </tr>
@@ -126,7 +106,7 @@
         </div>
         <div>
           <div class="subheader">运输结算明细</div>
-          <Editable ref="editable" :list="list" :editable="true" @on-amount-change="onAmountChange"></Editable>
+          <Editable ref="editable" :list="list" :editable="false" @on-amount-change="onAmountChange"></Editable>
         </div>
         <!-- <table class="savebar" cellpadding="0" cellspacing="0">
         <tr>
@@ -151,7 +131,6 @@ import pagejs from "@/assets/js/page";
 import SelStorage from "@/components/storage/input/SelStorage";
 import SelProvider from "@/components/provider/SelectProvider";
 import SelectProject from "@/components/page/form/SelectProject";
-import SelectMachine from "@/components/page/form/SelectMachine";
 
 import HandleProcess from "@/components/workflow/process/Handle";
 export default {
@@ -162,50 +141,17 @@ export default {
     SelStorage,
     SelProvider,
     SelectProject,
-    SelectMachine,
     HandleProcess
   },
   data() {
     return {
       loading: 0,
-      instId:0,
-      title:'',
+      instId: 0,
+      title: "",
       transportBillId: "",
       pageFlag: 1, //1.新建 2.编辑 3.修订
       formItem: this.getInitFormItem(),
       formRules: {
-        deptId: [
-          {
-            required: true,
-            whitespace: true,
-            message: "请选择部门",
-            trigger: "change"
-          }
-        ],
-        billDate: [
-          {
-            required: true,
-            message: "请选择作业日期",
-            trigger: "change",
-            pattern: /.+/
-          }
-        ],
-        projectCode: [
-          {
-            required: true,
-            whitespace: true,
-            message: "请选择工程",
-            trigger: "change"
-          }
-        ],
-        providerCode: [
-          {
-            required: true,
-            whitespace: true,
-            message: "请选择供应商",
-            trigger: "change"
-          }
-        ]
       },
       list: [],
       oriItem: {},
@@ -233,15 +179,18 @@ export default {
         return "运输结算单 - 编辑";
       }
     }
-  }, 
+  },
   methods: {
+    instLoaded(proc) {
+      this.transportBillId = proc.instance.businessKey;
+      this.title = "结算单_" + this.transportBillId;
+      this.load();
+    },
     load() {
       this.loading = 1;
       this.$http
-        .post("/api/engine/transport/bill/get", {
-          transportBillId: this.transportBillId
-        })
-        .then(res => { 
+        .post("/api/engine/transport/bill/get?transportBillId="+this.transportBillId)
+        .then(res => {
           this.loading = 0;
           if (res.data.code == 0) {
             if (res.data.data) {
@@ -308,26 +257,20 @@ export default {
       form.proc = proc.formItem;
       // 提交
       this.loading = 1;
-      var uri = "/api/engine/transport/bill/add ";
-      if (this.pageFlag == 2) {
-        uri = "/api/engine/transport/bill/update ";
-      }
+      var uri = '/api/engine/transport/bill/submit';
 
-      this.$http
-        .post(uri, form)
-        .then(res => {
-          this.loading = 0;
-          if (res.data.code == 0) {
-            this.$Message.success("操作成功！");
-            this.goBack();
-          } else {
-            this.$Message.error(res.data.message);
-          }
-        })
-        .catch(error => {
-          this.loading = 0;
-          this.$Message.error("请求失败，请重新操作");
-        });
+      this.$http.post(uri, form).then((res) => {
+        this.loading = 0;
+        if (res.data.code == 0) {
+          this.$Message.success("操作成功！");
+          this.goBack();
+        } else {
+          this.$Message.error(res.data.message);
+        }
+      }).catch((error) => {
+        this.loading = 0;
+        this.$Message.error("请求失败，请重新操作")
+      }); 
     },
     // 初始化表单数据
     getInitFormItem() {
@@ -340,8 +283,13 @@ export default {
         providerCode: "", //供应商名称,
         providerName: "", // 供应商名称
         linkMan: "", //供应商联系人',
+        taxpayerType: "", //纳税人类型
+        invoiceType: "", // 发票类型
         taxRate: 0, //税率',
         taxRate1: 0, //税率',
+        startDate: "", // 结算开始日期
+        endDate: "", // 结算结束日期
+        billDate: "", // 结算日期
         taxUnitPrice: 0, //含税单价',
         deductAmount: 0, //扣款金额',
         amount: 0, //金额',
@@ -349,44 +297,11 @@ export default {
         totalPriceTax: 0, //价税合计',
         transportStart: "", //运输起点',
         transportEnd: "", //运输终点',
-        arrivalTime: "", //抵达时间',
         transportType: "", //运输类别
         transportContent: "", //运输内容
-        status:0, //  审批状态
+        status: 0 //  审批状态
       };
       return obj;
-    },
-    open(id) {
-      this.show = true;
-      this.$refs["form"].resetFields();
-      this.checked = [];
-      if (id) {
-        this.isEdit = 1;
-        this.formItem.transportBillId = id;
-        this.get(id);
-      } else {
-        this.loading = 0;
-        this.isEdit = 0;
-        this.formItem = this.getInitFormItem();
-      }
-    },
-    get(id) {
-      this.loading = 1;
-      this.$http
-        .post("/api/engine/transport/bill/get?id=" + id, {})
-        .then(res => {
-          this.loading = 0;
-          if (res.data.code === 0) {
-            Object.assign(this.formItem, res.data.data);
-            this.formItem.taxRate1 = this.formItem.taxRate * 100;
-          } else {
-            this.$Message.error(res.data.message);
-          }
-        })
-        .catch(error => {
-          this.loading = 0;
-          this.$Message.error(error.message);
-        });
     },
     selProvider(row) {
       var sel = this.$refs.selProvider; //引用该控件，赋值给变量对象
@@ -422,9 +337,6 @@ export default {
     },
     goBack() {
       this.$router.go(-1);
-    },
-    instLoaded(){
-
     }
   }
 };

@@ -236,10 +236,11 @@ export default {
     datePickerChange(item, args) {
       item.needDate = args[0];
     },
-    computedAmount(item) { 
-      item.amount = floatObj.multiply(item.quantity, item.taxUnitPrice);//数量*含税单价   
-      item.unitPrice = floatObj.multiply(item.taxUnitPrice, floatObj.subtract(1, this.model.taxRate));//含税单价*(1-税率)
-      item.tax = floatObj.multiply(item.amount, this.model.taxRate);//数量*含税单价*税率
+    computedAmount(item) {
+      var taxRate = floatObj.multiply(0.01, this.model.taxRate);
+      item.amount = floatObj.multiply(item.taxUnitPrice, item.quantity);//数量*含税单价  
+      item.unitPrice = floatObj.multiply(item.quantity, floatObj.subtract(1, taxRate));//含税单价*(1-税率)
+      item.tax = floatObj.multiply(item.amount, taxRate);//数量*含税单价*税率
       this.$emit('on-amount-change', this.sumAmount());
     },
     sumAmount() {

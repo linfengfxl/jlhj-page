@@ -1,11 +1,5 @@
 <template>
-  <HandleProcess
-    ref="handleProcess"
-    :instId="instId"
-    :title="title"
-    @on-load="instLoaded"
-    @on-submit="save"
-  >
+  <StartProcess ref="startProcess" defineId="3" :title="pageTitle" @on-submit="save">
     <div class="page instock-edit">
       <Loading :loading="loading">
         <div class="baseinfo">
@@ -25,24 +19,40 @@
               </colgroup>
               <tr>
                 <td>
-                  <FormItem label="入往仓库">{{formItem.deptName}}</FormItem>
+                  <FormItem prop="deptId" label="出往仓库">
+                    <SelStorage v-model="formItem.deptId" :model="formItem"></SelStorage>
+                  </FormItem>
                 </td>
                 <td>
-                  <FormItem label="工程名称">{{formItem.projectName}}</FormItem>
+                  <FormItem prop="projectCode" label="工程名称">
+                    <SelectProject
+                      v-model="formItem.projectCode"
+                      :model="formItem"
+                      :text="formItem.projectName"
+                    />
+                  </FormItem>
                 </td>
                 <td>
-                  <FormItem label="供应商">{{formItem.providerName}}</FormItem>
+                  <FormItem prop="providerCode" label="供应商">
+                    <SelectProvider
+                      v-model="formItem.providerCode"
+                      :model="formItem"
+                      :text="formItem.providerName"
+                      @on-select="selProvider"
+                    />
+                  </FormItem>
                 </td>
               </tr>
               <tr>
                 <td>
-                  <FormItem label="供应商联系人">{{formItem.linkMan}}</FormItem>
+                  <FormItem prop label="供应商联系人">{{formItem.linkMan}}</FormItem>
                 </td>
                 <td>
-                  <FormItem label="税率">{{formItem.taxRate}} %</FormItem>
+                  <FormItem prop="amount" label="税率">{{formItem.taxRate}} %</FormItem>
                 </td>
                 <td>
                   <FormItem
+                    prop="remark"
                     label="纳税人类型"
                   >{{$args.getArgText('taxpayer_type', formItem.taxpayerType)}}</FormItem>
                 </td>
@@ -58,22 +68,28 @@
                   <FormItem prop label="日期">{{formItem.operateDate}}</FormItem>
                 </td>
                 <td>
-                  <FormItem label="收料员">{{formItem.operatorName}}</FormItem>
+                  <FormItem prop="operatorName" label="收料员">
+                    <SelectMember
+                      v-model="formItem.operator"
+                      :model="formItem"
+                      :text="formItem.operatorName"
+                    />
+                  </FormItem>
                 </td>
               </tr>
               <tr>
                 <td>
                   <FormItem prop label="红蓝字">
-                    <template v-if="formItem.inboundType==1">
-                      <span style="color:blue;">蓝字</span>
-                    </template>
-                    <template v-if="formItem.inboundType==2">
-                      <span style="color:red;">红字</span>
-                    </template>
+                    <Radio-group v-model="formItem.inboundType">
+                      <Radio :label="1" style="color:blue;">蓝字</Radio>
+                      <Radio :label="2" style="color:red;">红字</Radio>
+                    </Radio-group>
                   </FormItem>
                 </td>
                 <td colspan="2">
-                  <FormItem prop=" " label="备注">{{formItem.remark}}</FormItem>
+                  <FormItem prop=" " label="备注">
+                    <Input type="textarea" :rows="2" v-model="formItem.remark"/>
+                  </FormItem>
                 </td>
               </tr>
             </table>
@@ -85,8 +101,8 @@
           <Editable
             ref="editable"
             :list="list"
-            :editable="false"
-            :deptId="formItem.deptId"
+            :editable="true"
+            :model="formItem"
             @on-amount-change="onAmountChange"
             :style="{display: formItem.deptId?'':'none'}"
           ></Editable>
@@ -100,7 +116,7 @@
         </table>-->
       </Loading>
     </div>
-  </HandleProcess>
+  </StartProcess>
 </template>
 <script>
 import Loading from '@/components/loading';
@@ -113,9 +129,7 @@ import SelectProject from '@/components/page/form/SelectProject';//工程名称
 import SelectMember from '@/components/page/form/SelectMember';//收料员
 import SelectProvider from '@/components/page/form/SelectProvider';//供应商
 import pagejs from '@/assets/js/page';
-
-import HandleProcess from '@/components/workflow/process/Handle';
-
+import StartProcess from '@/components/workflow/process/Start';
 export default {
   components: {
     Loading,
@@ -125,20 +139,21 @@ export default {
     SelectProject,
     SelectMember,
     SelectProvider,
-    HandleProcess
+    StartProcess,
   },
   data() {
     return {
       loading: 0,
       stockBillId: '',
-      instId: 0,
+      pageFlag: 1,//1.新建 2.编辑 3.修订
       formItem: {
         stockBillId: '',//入库单号
-        type: 2,//类型:1.出库, 2.入库
+        type: 2,//类型:1.入库, 2.出库
         projectCode: '',//工程编号
         projectName: '',//工程名称
         contractNo: '',//合同编号
         deptId: '',//仓库或部门 
+        deptName: '',//
         providerCode: '',//供应商编号
         providerName: '',//供应商名称
         linkMan: '',//供应商联系人
@@ -151,7 +166,20 @@ export default {
         remark: '',
         operator: '',//
         operatorName: '',
-        instId: 0,
+      },
+      formRules: {
+        deptId: [
+          { required: true, whitespace: true, message: '请选择仓库', trigger: 'change' }
+        ],
+        projectCode: [
+          { required: true, whitespace: true, message: '请选择工程', trigger: 'change' }
+        ],
+        providerCode: [
+          { required: true, whitespace: true, message: '请选择供应商', trigger: 'change' }
+        ],
+        operatorName: [
+          { required: true, whitespace: true, message: '请选择收料员', trigger: 'change' }
+        ],
       },
       list: [],
       oriItem: {},
@@ -159,16 +187,29 @@ export default {
     }
   },
   mounted: function () {
-    this.instId = this.$route.query.inst;
+    this.stockBillId = this.$route.query.id;
+    if (this.stockBillId) {
+      this.pageFlag = 2;
+      this.load();
+    } else {
+      this.pageFlag = 1;
+      this.initNew();
+    }
   },
   computed: {
+    pageTitle() {
+      if (this.pageFlag == 1) {
+        return '出库单 - 创建';
+      }
+      if (this.pageFlag == 2) {
+        return '出库单 - 编辑';
+      }
+      if (this.pageFlag == 3) {
+        return '出库单 - 修订';
+      }
+    }
   },
   methods: {
-    instLoaded(proc) {
-      this.stockBillId = proc.instance.businessKey;
-      this.title = "入库单_" + this.stockBillId;
-      this.load();
-    },
     selProvider(data) {
       if (data) {
         this.formItem.providerName = data.providerName;
@@ -177,12 +218,12 @@ export default {
         this.formItem.linkPhone = data.linkPhone;//供应商联系电话
         this.formItem.taxpayerType = data.taxpayerType;//纳税人类型
         this.formItem.invoiceType = data.invoiceType;//发票类型
-        this.formItem.taxRate = data.taxRate;//税率 
+        this.formItem.taxRate = floatObj.multiply(data.taxRate, 100);//税率 
       }
     },
     load() {
       this.loading = 1;
-      this.$http.post("/api/engine/storage/instock/get", { stockBillId: this.stockBillId }).then((res) => {
+      this.$http.post("/api/engine/storage/instock/get?stockBillId=" + this.stockBillId, {}).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
           if (res.data.data) {
@@ -207,8 +248,7 @@ export default {
         type: 2,//类型:1.出库, 2.入库
         projectCode: '',//工程编号
         contractNo: '',//合同编号
-        deptId: '',//仓库或部门
-        deptId: '',
+        deptId: '',//仓库或部门 
         providerCode: '',//供应商编号
         providerName: '',//供应商名称
         linkMan: '',//供应商联系人
@@ -228,7 +268,6 @@ export default {
       var form = {
         detailList: []
       };
-
       Object.assign(form, this.formItem);
       form.signDate = page.formatDate(form.signDate);
 
@@ -259,10 +298,14 @@ export default {
           form.detailList.push(item);
         }
       }
+
       form.proc = proc.formItem;
       // 提交
       this.loading = 1;
-      var uri = '/api/engine/storage/instock/submit';
+      var uri = '/api/engine/storage/instock/start';
+      if (this.pageFlag == 2) {
+        uri = '/api/engine/storage/instock/restart';
+      }
 
       this.$http.post(uri, form).then((res) => {
         this.loading = 0;

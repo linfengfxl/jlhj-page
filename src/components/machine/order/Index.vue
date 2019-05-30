@@ -171,7 +171,7 @@ export default {
       if (name === '编辑') {
         if (params.row) {
           this.$router.push({
-            path: '/machine/order/edit?id=' + params.row.machineOrderId
+            path: '/machine/order/start?forward&id=' + params.row.machineOrderId
           })
         }
       }
@@ -198,9 +198,8 @@ export default {
     goBack: function () {
       this.$router.go(-1);
     },
-    add: function () {
-      //this.$refs.edit.open(0);
-      this.$router.push({ path: '/machine/order/edit' })
+    add: function () { 
+      this.$router.push({ path: '/machine/order/start?forward' })
     },
   }
 }

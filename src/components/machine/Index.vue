@@ -164,7 +164,7 @@ export default {
     },
     rowCommand: function (name, params) {
       if (name === '编辑') {
-        this.updateRole(params.row.id);
+        this.updateItem(params.row.machineCode);
         return;
       }
       if (name === '删除') {
@@ -191,10 +191,10 @@ export default {
       this.$router.go(-1);
     },
     add: function () {
-      this.$refs.edit.open(0);
+      this.$refs.edit.open('');
     },
-    updateRole: function (roleId) {
-      this.$refs.edit.open(roleId);
+    updateItem: function (code) {
+      this.$refs.edit.open(code);
     },
   }
 }

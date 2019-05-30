@@ -48,7 +48,7 @@
                   <FormItem prop label="供应商联系人">{{formItem.linkMan}}</FormItem>
                 </td>
                 <td>
-                  <FormItem prop="amount" label="税率">{{formItem.taxRate}} %</FormItem>
+                  <FormItem prop="amount" label="税率">{{formItem.taxRate1}} %</FormItem>
                 </td>
                 <td>
                   <FormItem
@@ -161,6 +161,7 @@ export default {
         taxpayerType: '',//纳税人类型
         invoiceType: '',//发票类型
         taxRate: '',//税率 
+        taxRate1: '',//税率 
         inboundType: 1,//红蓝字:1.“蓝字”表示入库，2.“红字”表示退货
         operateDate: page.formatDate(new Date(), 'yyyy-MM-dd'),
         remark: '',
@@ -218,7 +219,8 @@ export default {
         this.formItem.linkPhone = data.linkPhone;//供应商联系电话
         this.formItem.taxpayerType = data.taxpayerType;//纳税人类型
         this.formItem.invoiceType = data.invoiceType;//发票类型
-        this.formItem.taxRate = floatObj.multiply(data.taxRate, 100);//税率 
+        this.formItem.taxRate = data.taxRate;//税率 
+        this.formItem.taxRate1 = floatObj.multiply(data.taxRate, 100);//税率 
       }
     },
     load() {
@@ -245,7 +247,7 @@ export default {
     initNew() {
       Object.assign(this.formItem, {
         stockBillId: '',//入库单号
-        type: 2,//类型:1.出库, 2.入库
+        type: 1,//类型:1.入库, 2.出库
         projectCode: '',//工程编号
         contractNo: '',//合同编号
         deptId: '',//仓库或部门 

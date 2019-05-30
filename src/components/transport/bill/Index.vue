@@ -117,10 +117,7 @@ export default {
               props: {
                 btns: [
                   {
-                    key: "edit"
-                  },
-                  {
-                    key: "delete",
+                    key: "edit",
                     disabled: row.status !== 3
                   }
                 ]
@@ -141,8 +138,27 @@ export default {
         {
           title: "单据编号",
           key: "transportBillId",
-          width: 120,
-          align: "left"
+          width: 140,
+          align: "center",
+          render: (h, params) => {
+            var row = params.row;
+            var text = row.transportBillId;
+            text = text;
+            return h(
+              "a",
+              {
+                props: {},
+                on: {
+                  click: () => {
+                    this.$router.push({
+                      path: "/transport/bill/view?forward&inst=" + row.instId
+                    });
+                  }
+                }
+              },
+              text
+            );
+          }
         },
         {
           title: "部门",
@@ -153,6 +169,7 @@ export default {
         {
           title: "工程名称",
           key: "projectName",
+          width: 120,
           align: "left"
         },
         page.table.initDateColumn({
@@ -171,7 +188,7 @@ export default {
           title: "供应商联系人",
           key: "linkMan",
           width: 100,
-          align: "left"
+          align: "center"
         },
         {
           title: "纳税人类型",

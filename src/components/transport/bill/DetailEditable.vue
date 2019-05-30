@@ -25,7 +25,7 @@
             <!--  序号 -->
           </td>
           <td>
-            {{item.transportBillId}}
+            {{item.transportOrderId}}
             <!--  运输单号 -->
           </td>
           <td>
@@ -113,12 +113,13 @@
             {{index+1}}
             <!--  序号 -->
           </td>
-          <td class="col-select" @click="editable && !isImport &&  selMater(item)">
-            <span>{{item.transportBillId}}</span>
+          <!-- 点击新增进行验证 -->
+          <td class="col-select" @click="editable && selMater(item)">
+            <span>{{item.transportOrderId}}</span>
             <!--  运输单号 -->
           </td>
           <td>
-            {{item.machineCode}} 
+            {{item.machineCode}}
             <!--  机械编码 -->
           </td>
           <td>
@@ -177,17 +178,13 @@
         </tr>
       </tbody>
     </table>
-    <!-- 选择作业单 -->
-    <SelectMachineOrder ref="selmaterial" :transfer="true"></SelectMachineOrder>
   </Editable>
 </template>
 <script>
 import Editable from "@/components/editable-table";
-import floatObj from "@/assets/js/floatObj";
-import SelectMachineOrder from "@/components/machine/order/SelectMachineOrder";
+import floatObj from "@/assets/js/floatObj"; 
 export default {
-  components: {
-    SelectMachineOrder,
+  components: { 
     Editable
   },
   props: {
@@ -197,13 +194,7 @@ export default {
         var arr = [];
       }
     },
-
     editable: {
-      type: Boolean,
-      default: false
-    },
-    isImport: {
-      // 是否为导入的数据，导入的数据不能添加行，部分字段不能编辑
       type: Boolean,
       default: false
     }
@@ -225,27 +216,36 @@ export default {
     listNewRow() {
       var def = {
         id: 0,
-        transportBillId: "", //运输单号
-        machineCode: "", //机械代码
-        machineName: "", //机械名称
-        machineModel: "", //机械型号
-        transportType: "", // 运输类型
-        transportDate: "", // 运输时间
-        num: "", // 运输量
-        unit: "", // 计量单位
-        milage: "", // 里程数
-        taxUnitPrice: 0, //含税单价(元)
-        deductAmount: 0, // 扣款金额
-        amount: 0, //结算金额
-        tax: 0, //税额
-        totalPriceTax: 0 //价税合计
+        transportOrderId: "", //单据编号
+        deptId: "", //所属部门
+        deptName: "", // 所属部门
+        projectCode: "", //工程代码
+        projectName: "", //工程名称
+        providerCode: "", //供应商名称,
+        providerName: "", // 供应商名称
+        linkMan: "", //供应商联系人',
+        taxpayerType: "", //纳税人类型
+        invoiceType: "", // 发票类型
+        taxRate: 0, //税率',
+        taxRate1: 0, //税率',
+        startDate: "", // 结算开始日期
+        endDate: "", // 结算结束日期
+        billDate: "", // 结算日期
+        taxUnitPrice: 0, //含税单价',
+        deductAmount: 0, //扣款金额',
+        amount: 0, //金额',
+        tax: 0, //税额',
+        totalPriceTax: 0, //价税合计',
+        transportStart: "", //运输起点',
+        transportEnd: "", //运输终点',
+        transportType: "", //运输类别
+        transportContent: "" //运输内容
       };
       return def;
     },
     add() {
-      if (!this.isImport) {
-        this.list.push(this.listNewRow());
-      }
+      // 因为要获取外部数据，先抛出问题，传入父组件
+      this.$emit('on-import');
     },
     remove() {
       if (this.list.length > this.curIndex) {
@@ -262,9 +262,6 @@ export default {
       item.needDate = args[0];
     },
     computedAmount(item) {
-      item.amount = floatObj.multiply(item.taxUnitPrice, 1); //結算金額= 含税单价*作业台班*(1-税率)
-      item.tax = 0; //税额
-      item.totalPriceTax = 0; //
       this.$emit("on-amount-change", this.sumAmount());
     },
     sumAmount() {
@@ -273,24 +270,6 @@ export default {
         totals = floatObj.add(totals, mater.amount);
       });
       return totals;
-    },
-    selMater(row) {
-      var selmaterial = this.$refs.selmaterial;
-      selmaterial.show({
-        ok: data => {
-          if (
-            _.findIndex(this.list, {
-              transportBillId: data.transportBillId
-            }) >= 0
-          ) {
-            this.$Message.error("运输单已存在!");
-            return;
-          }
-          console.log(data);
-          Object.assign(row, data);
-          this.computedAmount(row);
-        }
-      });
     }
   }
 };

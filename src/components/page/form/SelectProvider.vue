@@ -7,7 +7,7 @@
 </template>
 
 <script>  
-import selProvider from '@/components/Provider/SelectProvider'
+import selProvider from '@/components/provider/SelectProvider'
 
 export default { 
   components: { 

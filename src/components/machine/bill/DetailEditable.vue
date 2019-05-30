@@ -96,7 +96,7 @@
             {{index+1}}
             <!--  序号 -->
           </td>
-          <td class="col-select" @click="editable &&  selMater(item)">
+          <td class="col-select">
             <span>{{item.machineOrderId}}</span>
             <!--  作业单号 -->
           </td>
@@ -131,7 +131,7 @@
           <td class="col-price">
             <!--  含税单价(元) -->
             <InputNumber
-              :max="999999"
+              :max="999999999"
               :min="0"
               v-model="item.taibanPrice"
               @on-change="computedAmount(item)"
@@ -152,17 +152,16 @@
         </tr>
       </tbody>
     </table>
-    <!-- 选择作业单 -->
-    <SelectMachineOrder ref="selmaterial" :transfer="true" :model="model"></SelectMachineOrder>
   </Editable>
 </template>
 <script>
 import Editable from '@/components/editable-table';
 import floatObj from '@/assets/js/floatObj';
-import SelectMachineOrder from '@/components/machine/order/SelectMachineOrder'
+import page from '@/assets/js/page';
+//import SelectMachineOrder from '@/components/machine/order/SelectMachineOrder'
 export default {
   components: {
-    SelectMachineOrder,
+    // SelectMachineOrder,
     Editable,
   },
   props: {
@@ -218,7 +217,7 @@ export default {
       return def;
     },
     add() {
-      this.selMater();
+      this.$emit('on-import');
     },
     remove() {
       if (this.list.length > this.curIndex) {
@@ -234,10 +233,11 @@ export default {
     datePickerChange(item, args) {
       item.needDate = args[0];
     },
-    computedAmount(item) {
-      item.amount = floatObj.multiply(item.taibanPrice, 1);//結算金額= 含税单价*作业台班*(1-税率)
-      item.tax = 0;//税额
-      item.totalPriceTax = 0;//
+    computedAmount(item) { 
+      var taxSub = floatObj.subtract(1, this.model.taxRate);
+      item.amount = floatObj.multiply(item.taibanPrice, floatObj.multiply(item.taiban, taxSub),2);//結算金額= 含税单价*作业台班*(1-税率)
+      item.tax = floatObj.multiply(floatObj.multiply(item.taibanPrice, item.taiban), this.model.taxRate);//税额 = 含税单价*作业台班*税率
+      item.totalPriceTax = floatObj.multiply(item.taibanPrice, item.taiban);//价税合计 = 含税单价*作业台班
       this.$emit('on-amount-change', this.sumAmount());
     },
     sumAmount() {
@@ -246,34 +246,6 @@ export default {
         totals = floatObj.add(totals, mater.amount);
       });
       return totals;
-    },
-    selMater(row) {
-      if (this.model == null || this.model.billDate == null || this.model.billDate == '') {//
-        this.$Message.error('请选择作业日期!');
-        return;
-      }
-      if (this.model == null || this.model.projectCode == null || this.model.projectCode == '') {//
-        this.$Message.error('请选择工程!');
-        return;
-      }
-      if (this.model == null || this.model.providerCode == null || this.model.providerCode == '') {//
-        this.$Message.error('请选择供应商!');
-        return;
-      }
-      var selmaterial = this.$refs.selmaterial;
-      selmaterial.show({
-        ok: (data) => {
-          data.map((item) => {
-            if (_.findIndex(this.list, { 'machineOrderId': item.machineOrderId }) == -1) {
-              var row = this.listNewRow();
-              Object.assign(row, item);
-              this.computedAmount(row);
-              this.list.push(row);
-            }
-          });
-        }
-      });
-
     },
   }
 }

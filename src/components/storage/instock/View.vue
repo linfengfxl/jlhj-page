@@ -1,11 +1,5 @@
 <template>
-  <HandleProcess
-    ref="handleProcess"
-    :instId="instId"
-    :title="title"
-    @on-load="instLoaded"
-    @on-submit="save"
-  >
+  <ViewProcess ref="ViewProcess" :instId="instId" :title="title" @on-load="instLoaded" @on-submit="save">
     <div class="page instock-edit">
       <Loading :loading="loading">
         <div class="baseinfo">
@@ -100,7 +94,7 @@
         </table>-->
       </Loading>
     </div>
-  </HandleProcess>
+  </ViewProcess>
 </template>
 <script>
 import Loading from '@/components/loading';
@@ -114,7 +108,7 @@ import SelectMember from '@/components/page/form/SelectMember';//收料员
 import SelectProvider from '@/components/page/form/SelectProvider';//供应商
 import pagejs from '@/assets/js/page';
 
-import HandleProcess from '@/components/workflow/process/Handle';
+import ViewProcess from '@/components/workflow/process/View';
 
 export default {
   components: {
@@ -125,7 +119,7 @@ export default {
     SelectProject,
     SelectMember,
     SelectProvider,
-    HandleProcess
+    ViewProcess
   },
   data() {
     return {
