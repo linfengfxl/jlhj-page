@@ -24,7 +24,7 @@
                   </FormItem>
                 </td>
                 <td>
-                  <FormItem prop="billDate" label="作业日期">
+                  <FormItem prop="billDate" label="结算日期">
                     <Date-picker
                       type="date"
                       placeholder="选择日期"
@@ -60,6 +60,14 @@
                   <FormItem prop label="供应商联系人">{{formItem.linkMan}}</FormItem>
                 </td>
                 <td>
+                  <FormItem prop label="税率">{{formItem.taxRate1}}%</FormItem>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <FormItem prop label="发票类型">{{formItem.invoiceType}}</FormItem>
+                </td>
+                <td>
                   <FormItem prop="startDate" label="结算开始日期">
                     <Date-picker
                       type="date"
@@ -69,8 +77,6 @@
                     ></Date-picker>
                   </FormItem>
                 </td>
-              </tr>
-              <tr>
                 <td>
                   <FormItem prop="endDate" label="结算结束日期">
                     <Date-picker
@@ -81,26 +87,31 @@
                     ></Date-picker>
                   </FormItem>
                 </td>
+              </tr>
+              <tr>
                 <td>
-                  <FormItem prop="totalAmount" label="金额合计">
-                    <InputNumber :max="999999999" :min="0" v-model="formItem.totalAmount"></InputNumber>
-                  </FormItem>
+                  <FormItem prop label="金额合计">{{formItem.totalAmount}}</FormItem>
                 </td>
                 <td>
                   <FormItem prop="penalty" label="罚款">
-                    <InputNumber :max="999999999" :min="0" v-model="formItem.penalty"></InputNumber>
+                    <InputNumber
+                      :max="999999999"
+                      :min="0"
+                      v-model="formItem.penalty"
+                      @on-change="computedTotalPriceTax()"
+                    ></InputNumber>
                   </FormItem>
                 </td>
-              </tr>
-              <tr>
                 <td>
                   <FormItem prop="totalPriceTax" label="价税合计">
                     <InputNumber :max="999999999" :min="0" v-model="formItem.totalPriceTax"></InputNumber>
                   </FormItem>
                 </td>
-                <td>
+              </tr>
+              <tr>
+                <td colspan="3">
                   <FormItem label="备注">
-                    <Input type="textarea" :rows="2" v-model="formItem.remark"/>
+                    <Input type="textarea" v-model="formItem.remark"/>
                   </FormItem>
                 </td>
               </tr>
@@ -114,19 +125,12 @@
             ref="editable"
             :list="list"
             :editable="true"
-            :deptId="formItem.deptId"
             :model="formItem"
             @on-amount-change="onAmountChange"
+            @on-import="onImport"
             :style="{display: formItem.deptId?'':'none'}"
           ></Editable>
         </div>
-        <!-- <table class="savebar" cellpadding="0" cellspacing="0">
-        <tr>
-          <td class="save" @click="save" v-if="pageFlag<=2">保存</td>
-          <td class="reset" @click="reset">重置</td>
-          <td></td>
-        </tr>
-        </table>-->
       </Loading>
       <SelProvider ref="selProvider"></SelProvider>
     </div>
@@ -173,6 +177,7 @@ export default {
         linkMan: '',//供应商联系人
         taxpayerType: '',//纳税人类型
         taxRate: '',   //税率
+        taxRate1: '',   //税率
         invoiceType: '',//发票类型 
 
         startDate: '',//结算开始日期
@@ -200,9 +205,6 @@ export default {
         ],
         endDate: [
           { required: true, message: '请选择结算结束日期', trigger: 'change', pattern: /.+/ }
-        ],
-        totalAmount: [
-          { required: true, type: 'number', message: '请填写金额合计', trigger: 'change' }
         ],
         penalty: [
           { required: true, type: 'number', message: '请填写罚款', trigger: 'change' }
@@ -244,7 +246,7 @@ export default {
         if (res.data.code == 0) {
           if (res.data.data) {
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
-            Object.assign(this.formItem, res.data.data); 
+            Object.assign(this.formItem, res.data.data);
             this.list = res.data.data.detailList;
           } else {
             this.$Message.error('订单不存在！');
@@ -358,13 +360,53 @@ export default {
             this.formItem.linkPhone = data.linkPhone;//供应商联系电话
             this.formItem.taxpayerType = this.$args.getArgText('taxpayer_type', data.taxpayerType);//纳税人类型
             this.formItem.invoiceType = this.$args.getArgText('invoice_type', data.invoiceType);//发票类型
-            this.formItem.taxRate = data.taxRate;//税率 
+            this.formItem.taxRate = data.taxRate;//税率
+            this.formItem.taxRate1 = floatObj.multiply(data.taxRate, 100);//税率
           }
         }
       });
     },
+    computedTotalPriceTax() {
+      this.formItem.totalPriceTax = floatObj.subtract(this.formItem.totalAmount, this.formItem.penalty);
+    },
     onAmountChange(val) {
-      this.formItem.amount = val;
+      this.formItem.totalAmount = val;
+    },
+    onImport() {
+      if (this.formItem == null || this.formItem.billDate == null || this.formItem.billDate == '') {//
+        this.$Message.error('请选择作业日期!');
+        return;
+      }
+      if (this.formItem == null || this.formItem.projectCode == null || this.formItem.projectCode == '') {//
+        this.$Message.error('请选择工程!');
+        return;
+      }
+      if (this.formItem == null || this.formItem.providerCode == null || this.formItem.providerCode == '') {//
+        this.$Message.error('请选择供应商!');
+        return;
+      }
+      this.list = [];
+      var param = { page: 1, pageSize: 100 };
+      param.projectCode = this.formItem.projectCode;
+      param.providerCode = this.formItem.providerCode;
+      param.jobDate = page.formatDate(this.formItem.billDate);
+      this.$http.post('/api/engine/machine/order/list', param).then((res) => {
+        this.loading = 0;
+        if (res.data.code === 0 && res.data.data != null) {
+          var rows = res.data.data.rows;
+          var total = res.data.data.total;
+          if (total == 0) {
+            this.$Message.error("抱歉，没有找到对应的数据！");
+          }
+          this.$emit('on-load-data', rows);
+          this.list = rows;
+        } else {
+          this.$Message.error(res.data.message)
+        }
+      }).catch((error) => {
+        this.loading = 0;
+        this.$Message.error(error.message)
+      });
     },
     reset() {
       if (this.pageFlag == 1) {

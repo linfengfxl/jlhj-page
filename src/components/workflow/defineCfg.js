@@ -16,7 +16,7 @@ cfg.forms = [
   {module:'1',title:'付款单',startUrl:'/financial/payorder/start',handleUrl:'/financial/payorder/handle',viewUrl:'/financial/payorder/view',defineIds:[7,8]},
   {module:'1',title:'机械租赁结算单',startUrl:'/machine/bill/start',handleUrl:'/machine/bill/handle',viewUrl:'/machine/bill/view',defineIds:[5]},   
   {module:'2',title:'材料入库单',startUrl:'/storage/instock/start',handleUrl:'/storage/instock/handle',viewUrl:'/storage/instock/view',defineIds:[2]},
-  {module:'2',title:'材料出库单',startUrl:'',handleUrl:'',viewUrl:'',defineIds:[]},
+  {module:'2',title:'材料出库单',startUrl:'/storage/outstock/start',handleUrl:'/storage/outstock/handle',viewUrl:'/storage/outstock/view',defineIds:[3]},
   {module:'3',title:'运输结算单',startUrl:'/transport/bill/handle',handleUrl:'/transport/bill/handle',viewUrl:'/transport/bill/view',defineIds:[6]},  
   //{title:'标题',startUrl:'',handleUrl:'',viewUrl:'',defineIds:[]},
 ]

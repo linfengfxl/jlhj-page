@@ -274,6 +274,7 @@ export default {
       }
 
       form.detailList = [];
+      var taiban = 0, useTime = 0;
       // 明细
       for (var i = 0; i < this.list.length; i++) {
         var item = this.list[i];
@@ -282,25 +283,22 @@ export default {
           this.$Message.error(msg + '请选择开始时间');
           return;
         }
-         if (item.endTime == '') {
+        if (item.endTime == '') {
           this.$Message.error(msg + '请选择结束时间');
           return;
         }
-        // if (item.startTime != '') {
-        //   if (item.quantity == 0) {
-        //     this.$Message.error(msg + '请录入数量');
-        //     return;
-        //   }
-        //   if (item.taxUnitPrice == '') {
-        //     this.$Message.error(msg + '请录入含税单价');
-        //     return;
-        //   }
-        //   form.detailList.push(item);
-        // }
+        if (item.taiban == 0) {
+          this.$Message.error(msg + '请录入作业台班');
+          return;
+        }
         item['startTime'] = page.formatDate(item['startTime']);
         item['endTime'] = page.formatDate(item['endTime']);
         form.detailList.push(item);
+        taiban = floatObj.add(item['taiban'], taiban);
+        useTime = floatObj.add(item['useTime'], useTime);
       }
+      form.taiban = taiban;//作业台班 合计
+      form.useTime = useTime;//作用用时 合计
       console.log(form);
       // 提交
       this.loading = 1;
@@ -330,7 +328,7 @@ export default {
         this.formItem.linkPhone = data.linkPhone;//供应商联系电话
         this.formItem.taxpayerType = this.$args.getArgText('taxpayer_type', data.taxpayerType);//纳税人类型
         this.formItem.invoiceType = this.$args.getArgText('invoice_type', data.invoiceType);//发票类型
-        this.formItem.taxRate = data.taxRate;//税率 
+        this.formItem.taxRate =  floatObj.multiply(data.taxRate, 100);//税率 
       }
     },
     selMachine(data) {

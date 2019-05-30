@@ -18,12 +18,7 @@
             </FormItem>
             <FormItem label="机械型号" prop>
               <Input v-model="formItem.machineModel" placeholder="不超过64个字符"/>
-            </FormItem>
-
-            <!-- <FormItem label="供应商名称" prop>
-              <Input v-model="formItem.provider" placeholder="不超过64个字符"/>
-            </FormItem>-->
-
+            </FormItem> 
             <FormItem label="供应商" prop="provider">
               <Input
                 v-model="formItem.providerName"
@@ -80,6 +75,7 @@ export default {
       isEdit: 0,
       //表单对象
       formItem: {
+        id:'',
         machineCode: '',//机械代码
         machineName: '',//机械名称
         machineModel: '',//机械型号 
@@ -150,14 +146,14 @@ export default {
         this.$Message.error(error.message)
       });
     },
-    open(id) {
+    open(code) {
       this.show = true;
       this.$refs['form'].resetFields();
       this.checked = [];
-      if (id > 0) {
+      if (code!='') {
         this.isEdit = 1;
-        this.formItem.id = id;
-        this.get(id);
+        this.formItem.machineCode = code;
+        this.get(code);
       } else {
         this.loading = 0;
         this.isEdit = 0;
@@ -166,8 +162,8 @@ export default {
         }
       }
     },
-    get(id) {
-      this.$http.post('/api/engine/machine/get?id=' + id, {}).then((res) => {
+    get(code) {
+      this.$http.post('/api/engine/machine/get?machineCode=' + code, {}).then((res) => {
         if (res.data.code === 0) {
           this.loading = 0;
           Object.assign(this.formItem, res.data.data);
