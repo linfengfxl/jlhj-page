@@ -139,13 +139,6 @@
             @on-amount-change="onAmountChange"
           ></Editable>
         </div>
-        <!-- <table class="savebar" cellpadding="0" cellspacing="0">
-        <tr>
-          <td class="save" @click="save" v-if="pageFlag<=2">保存</td>
-          <td class="reset" @click="reset">重置</td>
-          <td></td>
-        </tr>
-        </table>-->
       </Loading>
       <SelProvider ref="selProvider"></SelProvider>
     </div>
@@ -179,7 +172,7 @@ export default {
   props: {
       api:{
         type:String,
-        default:'/api/engine/transport/order/list'
+        default:'/api/engine/transport/order/listAll'
       },
   },
   data() {
@@ -409,8 +402,11 @@ export default {
         }
       });
     },
-    onAmountChange(val) {
-      this.formItem.amount = val;
+    onAmountChange(total) {
+      this.formItem.amount = total.amountTotal;
+      this.formItem.tax = total.taxTotal;
+      this.formItem.deductAmount = total.deductAmountTotal;
+      this.formItem.totalPriceTax = total.totalPriceTaxTotal;
     },
     // 对运输结算单进行新增前判断,通过后获取列表
     onImport() {
@@ -418,32 +414,28 @@ export default {
         this.$Message.error("请选择部门");
         return;
       }
-      // if (this.formItem.billDate == "") {
-      //   this.$Message.error("请选择结算日期");
-      //   return;
-      // }
-      // if (this.formItem.projectCode == "") {
-      //   this.$Message.error("请选择工程");
-      //   return;
-      // }
-      // if (this.formItem.providerCode == "") {
-      //   this.$Message.error("请选择供应商");
-      //   return;
-      // }
-      // if (this.formItem.startDate == "") {
-      //   this.$Message.error("请选择开始日期");
-      //   return;
-      // }
-      // if (this.formItem.endDate == "") {
-      //   this.$Message.error("请选择结束日期");
-      //   return;
-      // }
-        this.$http.post(this.api, this.queryParam).then((res) => {
+      if (this.formItem.projectCode == "") {
+        this.$Message.error("请选择工程");
+        return;
+      }
+      if (this.formItem.providerCode == "") {
+        this.$Message.error("请选择供应商");
+        return;
+      }
+      if (this.formItem.startDate == "") {
+        this.$Message.error("请选择开始日期");
+        return;
+      }
+      if (this.formItem.endDate == "") {
+        this.$Message.error("请选择结束日期");
+        return;
+      }
+        this.$http.post(this.api, this.formItem).then((res) => {
           this.loading = 0;
           if (res.data.code === 0) { 
             this.loading = 0;
             var data = res.data.data; 
-            this.$emit('on-load-data',data.rows);
+            //this.$emit('on-load-data',data.rows);
             this.list = data.rows;
           } else {
             this.loading = 0;

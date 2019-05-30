@@ -62,12 +62,7 @@
           </td>
           <td class="col-price">
             <!--  含税单价(元) -->
-            <InputNumber
-              :max="999999"
-              :min="0"
-              v-model="item.taxUnitPrice"
-              @on-change="computedAmount(item)"
-            ></InputNumber>
+            {{item.taxUnitPrice}}
           </td>
           <td class="col-amount">
             <!--  扣款金额  -->
@@ -152,12 +147,7 @@
           </td>
           <td class="col-price">
             <!--  含税单价(元) -->
-            <InputNumber
-              :max="999999"
-              :min="0"
-              v-model="item.taxUnitPrice"
-              @on-change="computedAmount(item)"
-            ></InputNumber>
+            {{item.taxUnitPrice}}
           </td>
           <td class="col-amount">
             <!--  扣款金额  -->
@@ -201,7 +191,7 @@ export default {
   },
   data() {
     return {
-      curIndex: 0
+      curIndex: 0,
     };
   },
   mounted: function() {},
@@ -265,9 +255,17 @@ export default {
       this.$emit("on-amount-change", this.sumAmount());
     },
     sumAmount() {
-      var totals = 0;
+      var totals = {
+        amountTotal:0,
+        taxTotal:0,
+        deductAmountTotal:0,
+        totalPriceTaxTotal:0,
+      };
       this.list.map(mater => {
-        totals = floatObj.add(totals, mater.amount);
+        totals.amountTotal = floatObj.add(totals.amountTotal, mater.amount);
+        totals.taxTotal = floatObj.add( totals.taxTotal, mater.tax);
+        totals.deductAmountTotal = floatObj.add(totals.deductAmountTotal, mater.deductAmount);
+        totals.totalPriceTaxTotal = floatObj.add(totals.totalPriceTaxTotal, mater.totalPriceTax);
       });
       return totals;
     }

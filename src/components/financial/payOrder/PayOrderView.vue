@@ -154,6 +154,7 @@ export default {
          
       },
       list: [],
+      payOrderId:'',
       oriItem: {},
       storage: [],
     }

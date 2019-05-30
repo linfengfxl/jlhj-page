@@ -31,20 +31,24 @@
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td>
-            <Input v-model="queryForm.payOrderId" placeholder="付款单号" @keyup.enter.native="query"></Input>
+            <Input v-model="queryForm.payOrderId" placeholder="付款单号" @keyup.enter.native="query" style="width:160px;"></Input>
           </td>
           <td>
-            <Select v-model="queryForm.fundsPlan" @on-change="query">
+            <Select v-model="queryForm.fundsPlan" @on-change="query" style="width:160px;">
               <Option v-for="item in fundsPlan" :value="item.code" :key="item.code" placeholder="资金计划类型">{{ item.text }}</Option>
             </Select>
           </td>
-          <td>创建日期</td>
+          <td>
+            <SelectProject v-model="queryForm.projectCode" :model="queryForm" :text="queryForm.projectName" placeholder="工程名称"
+            textProp="projectName" />
+          </td>
+          <td>付款日期</td>
           <td>
             <DatePicker
               type="daterange"
-              v-model="queryForm.createTime"
+              v-model="queryForm.payDate"
               split-panels
-              placeholder="创建日期"
+              placeholder="付款日期"
               style="width: 180px"
               :clearable="true"
               ::transfer="true"
@@ -66,6 +70,7 @@ import ListPage from '@/components/page/ListPage';
 import ListPageDetail from '@/components/page/ListPageDetail';
 import DataRowOperate from '@/components/commons/DataRowOperate';
 import UploadBox from '@/components/upload/Index';
+import SelectProject from '@/components/page/form/SelectProject';
 
 import page from '@/assets/js/page';
 
@@ -74,7 +79,8 @@ export default {
     ListPage, 
     DataRowOperate,
     ListPageDetail,
-    UploadBox
+    UploadBox,
+    SelectProject
   },
   data() {
     let that = this;
@@ -233,12 +239,13 @@ export default {
       ],
       queryForm: { 
         payOrderId:'',
-        payType:'',
+        fundsPlan:'',
+        projectCode:'',
+        projectName:'',
         status: 2, 
-        createTime: null,
+        payDate: null,
       },
       fundsPlan:[
-        {code:'',text:'全部'},
         {code:'计划内',text:'计划内'},
         {code:'计划外',text:'计划外'},
       ],
@@ -254,23 +261,24 @@ export default {
     },
     beforeLoad() {
       var queryParam = this.$refs.page.queryParam;
-      queryParam.createTimeStart = '';
-      queryParam.createTimeEnd = '';
-      delete queryParam.createTime;
-      if (this.queryForm.createTime.length > 0) {
-        queryParam.createTimeStart = page.formatDate(this.queryForm.createTime[0]);
+      queryParam.payDateStart = '';
+      queryParam.payDateEnd = '';
+      delete queryParam.payDate;
+      if (this.queryForm.payDate.length > 0) {
+        queryParam.payDateStart = page.formatDate(this.queryForm.payDate[0]);
       }
-      if (this.queryForm.createTime.length > 1) {
-        queryParam.createTimeEnd = page.formatDate(this.queryForm.createTime[1]);
+      if (this.queryForm.payDate.length > 1) {
+        queryParam.payDateEnd = page.formatDate(this.queryForm.payDate[1]);
       }
     },
     reset() {
       Object.assign(this.queryForm, {
         payOrderId:'',
-        payType:'',
+        fundsPlan:'',
+        projectCode:'',
+        projectName:'',
         status: this.queryForm.status, 
-        createTime: null,
-        createTime: []//[page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())]
+        payDate:[page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())],
       });
       this.query();
     },

@@ -48,7 +48,7 @@
               type="daterange"
               v-model="queryForm.createTime"
               split-panels
-              placeholder="创建日期"
+              placeholder="运输时间"
               style="width: 180px"
               :clearable="true"
               ::transfer="true"
@@ -168,11 +168,15 @@ export default {
           title: "税率",
           key: "taxRate",
           width: 60,
-          align: "center"
+          align: "center",
+          render: (h, params) => {
+            var row = params.row;
+            return h('span',(parseFloat(row.taxRate*100).toFixed(2)+"%"));
+          }
         },
         {
           title: "运输设备名称",
-          key: "transportType",
+          key: "machineName",
           width: 100,
           align: "left"
         },
