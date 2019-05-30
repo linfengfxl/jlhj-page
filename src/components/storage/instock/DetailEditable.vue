@@ -10,10 +10,10 @@
         <th class="col-quantity">
           <span>数量</span>
         </th>
-        <th class="col-price">
+        <th class="col-amount">
           <span>含税单价(元)</span>
         </th>
-        <th class="col-price">
+        <th class="col-amount">
           <span>单价(元)</span>
         </th>
         <th class="col-amount">

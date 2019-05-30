@@ -1,5 +1,5 @@
 <template>
- <HandleProcess ref="handleProcess" :instId="instId" :title="title" @on-load="instLoaded" @on-submit="save">
+<ViewProcess ref="ViewProcess" :instId="instId" :title="title" @on-load="instLoaded" @on-submit="save">
   <div class="page instock-edit"> 
     <Loading :loading="loading">
       <div class="baseinfo">
@@ -97,7 +97,7 @@
     </Loading>
     <SelProvider ref="selProvider"></SelProvider>
   </div>
- </HandleProcess>
+ </ViewProcess>
 </template>
 <script>
 import Loading from '@/components/loading';
@@ -112,7 +112,7 @@ import SelProvider from '@/components/provider/SelectProvider';
 import SelectProject from '@/components/page/form/SelectProject';
 import SelectMachine from '@/components/page/form/SelectMachine';
 
-import HandleProcess from '@/components/workflow/process/Handle';
+import ViewProcess from '@/components/workflow/process/View';
 export default {
   components: {
     Loading,
@@ -122,7 +122,7 @@ export default {
     SelProvider,
     SelectProject,
     SelectMachine,
-    HandleProcess,
+    ViewProcess,
   },
   data() {
     return {
@@ -150,16 +150,7 @@ export default {
         totalPriceTax: '',//价税合计
         remark: '',//备注 
       },
-      formRules: {
-        // deptId: [
-        //   { required: true, whitespace: true, message: '请选择部门', trigger: 'change' }
-        // ],
-        // projectCode: [
-        //   { required: true, whitespace: true, message: '请选择工程', trigger: 'change' }
-        // ],
-        // providerCode: [
-        //   { required: true, whitespace: true, message: '请选择供应商', trigger: 'change' }
-        // ],
+      formRules: { 
 
       },
       list: [],
@@ -245,19 +236,7 @@ export default {
       // 明细
       for (var i = 0; i < this.list.length; i++) {
         var item = this.list[i];
-        var msg = '明细第 ' + (i + 1) + ' 行，';
-        // if (item.materCode != '') {
-        //   if (item.quantity == 0) {
-        //     this.$Message.error(msg + '请录入数量');
-        //     return;
-        //   }
-        //   if (item.taxUnitPrice == '') {
-      //     this.$Message.error(msg + '请录入含税单价');
-        //     return;
-        //   }
-        //   form.detailList.push(item);
-        // }
-        
+        var msg = '明细第 ' + (i + 1) + ' 行，';  
         form.detailList.push(item);
       }
       

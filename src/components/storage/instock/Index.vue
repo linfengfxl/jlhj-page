@@ -17,6 +17,7 @@
               <Radio :label="2">通过</Radio>
               <Radio :label="1">审核中</Radio>
               <Radio :label="3">驳回</Radio>
+              <Radio :label="4">作废</Radio>
             </RadioGroup>
           </td>
           <td class="page-tools">

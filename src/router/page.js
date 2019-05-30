@@ -30,6 +30,7 @@ components.push({ component: 'machine/order/Edit', name: '', path: '/machine/ord
 components.push({ component: 'machine/bill/Index', name: '', path: '/machine/bill' })
 components.push({ component: 'machine/bill/Edit', name: '', path: '/machine/bill/start' })
 components.push({ component: 'machine/bill/Handle', name: '', path: '/machine/bill/handle' }) 
+components.push({ component: 'machine/bill/View', name: '', path: '/machine/bill/view' }) 
 
 // workflow
 components.push({ component: 'workflow/define/Index', name: '', path: '/workflow/define' })

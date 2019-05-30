@@ -303,23 +303,15 @@ export default {
       for (var i = 0; i < this.list.length; i++) {
         var item = this.list[i];
         var msg = '明细第 ' + (i + 1) + ' 行，';
-        debugger;
-        if (item.projectCode != form.projectCode || item.providerCode != form.providerCode || item.jobDate != form.billDate) {
-          this.$Message.error(msg + '作业单选择有误');
+
+        // if (item.projectCode != form.projectCode || item.providerCode != form.providerCode || item.jobDate != form.billDate) {
+        //   this.$Message.error(msg + '作业单选择有误');
+        //   return;
+        // }
+        if (item.taibanPrice == null || item.taibanPrice == '') {
+          this.$Message.error(msg + '请录入含税单价');
           return;
         }
-        // if (item.materCode != '') {
-        //   if (item.quantity == 0) {
-        //     this.$Message.error(msg + '请录入数量');
-        //     return;
-        //   }
-        //   if (item.taxUnitPrice == '') {
-        //     this.$Message.error(msg + '请录入含税单价');
-        //     return;
-        //   }
-        //   form.detailList.push(item);
-        // }
-
         form.detailList.push(item);
       }
 
@@ -366,6 +358,7 @@ export default {
     },
     onAmountChange(val) {
       this.formItem.totalAmount = val;
+      this.computedTotalPriceTax();
     },
     onImport() {
       if (this.formItem == null || this.formItem.billDate == null || this.formItem.billDate == '') {//
@@ -385,6 +378,11 @@ export default {
       param.projectCode = this.formItem.projectCode;
       param.providerCode = this.formItem.providerCode;
       param.jobDate = page.formatDate(this.formItem.billDate);
+      if (this.formItem.machineBillCode != '') {
+        param.machineBillCode = this.formItem.machineBillCode;
+      } else {
+        param.machineBillCode ="0";
+      } 
       this.$http.post('/api/engine/machine/order/list', param).then((res) => {
         this.loading = 0;
         if (res.data.code === 0 && res.data.data != null) {
