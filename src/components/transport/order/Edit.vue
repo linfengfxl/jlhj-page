@@ -1,5 +1,5 @@
 <template>
-  <Modal v-model="show" :title="title" :closable="false" :mask-closable="false">
+  <Modal v-model="show" :title="title" :closable="false" :mask-closable="false" >
     <div class="page">
       <Loading :loading="loading">
         <div class="page-form">
@@ -13,14 +13,14 @@
             <FormItem label="单据编码" prop="transportOrderId">
               <Input v-model="formItem.transportOrderId" :disabled="true" class="width-1"/>
             </FormItem>
-            <FormItem label="运输日期" prop="transportDate">
+            <!--<FormItem label="运输日期" prop="transportDate">
               <Date-picker
                 type="date"
                 placeholder="选择日期"
                 v-model="formItem.transportDate"
                 format="yyyy-MM-dd"
               ></Date-picker>
-            </FormItem>
+            </FormItem>-->
             <FormItem prop="deptId" label="所属部门">
               <SelectDept
                 v-model="formItem.deptId"
@@ -52,13 +52,22 @@
 
             <FormItem label="税率" prop>
               <InputNumber
-                v-model="formItem.taxRate1"
+                v-model="formItem.taxRate"
                 :formatter="value => `${value}%`"
                 :parser="value => value.replace('%', '')"
+                style="width:180px;"
+                readonly="readonly"
+                @on-change="onChangeAmount"
               ></InputNumber>
             </FormItem>
             <FormItem label="运输设备名称" prop="transportType">
-              <Input v-model="formItem.transportType" placeholder="名称不能为空"/>
+              <Select v-model="formItem.transportType" style="width:180px;" placeholder="运输设备名称">
+                <Option
+                  v-for="item in transportTypes"
+                  :value="item.machineCode"
+                  :key="item.machineCode"
+                >{{ item.machineName }}</Option>
+                </Select>
             </FormItem>
 
             <FormItem label="运输时间" prop>
@@ -66,41 +75,41 @@
                 type="date"
                 placeholder="选择日期"
                 v-model="formItem.transportDate"
-                format="yyyy-MM-dd"
+                format="yyyy-MM-dd" style="width:180px;"
               ></Date-picker>
             </FormItem>
             <FormItem label="车牌号" prop="vehicleNum">
               <Input v-model="formItem.vehicleNum" placeholder="车牌号不能为空"/>
             </FormItem>
             <FormItem label="数量" prop>
-              <InputNumber v-model="formItem.num" :min="1"></InputNumber>
+              <InputNumber v-model="formItem.num" :min="1" style="width:180px;" @on-change="onChangeAmount"></InputNumber>
             </FormItem>
             <FormItem label="单位" prop>
-              <Select v-model="formItem.unit" style="width:150px" placeholder="类型">
+              <Select v-model="formItem.unit" style="width:180px;" placeholder="类型">
                 <Option
-                  v-for="item in $args.getArgGroup('provider_type')"
+                  v-for="item in $args.getArgGroup('unit')"
                   :value="item.argCode"
                   :key="item.argCode"
                 >{{ item.argText }}</Option>
               </Select>
             </FormItem>
             <FormItem label="里程数" prop>
-              <Input-number v-model="formItem.milage" :min="1"></Input-number>
+              <Input-number v-model="formItem.milage" :min="1" style="width:180px;" @on-change="onChangeAmount"></Input-number>
             </FormItem>
             <FormItem label="含税单价" prop>
-              <Input-number v-model="formItem.taxUnitPrice" :min="1"></Input-number>
+              <Input-number v-model="formItem.taxUnitPrice" :min="1" style="width:180px;" @on-change="onChangeAmount"></Input-number>
             </FormItem>
             <FormItem label="扣款金额" prop>
-              <Input-number v-model="formItem.deductAmount" :min="1"></Input-number>
+              <Input-number v-model="formItem.deductAmount" :min="1" style="width:180px;" @on-change="onChangeAmount"></Input-number>
             </FormItem>
             <FormItem label="金额" prop>
-              <Input-number v-model="formItem.amount" :min="1"></Input-number>
+              <Input-number v-model="formItem.amount" :min="1" style="width:180px;"></Input-number>
             </FormItem>
             <FormItem label="税额" prop>
-              <Input-number v-model="formItem.tax" :min="1"></Input-number>
+              <Input-number v-model="formItem.tax" :min="1" style="width:180px;"></Input-number>
             </FormItem>
             <FormItem label="价税合计" prop>
-              <Input-number v-model="formItem.totalPriceTax" :min="1"></Input-number>
+              <Input-number v-model="formItem.totalPriceTax" :min="1" style="width:180px;"></Input-number>
             </FormItem>
             <FormItem label="运输起点" prop="transportStart">
               <Input v-model="formItem.transportStart" placeholder="请填写运输起点"/>
@@ -114,15 +123,12 @@
                 placeholder="选择日期"
                 v-model="formItem.arrivalTime"
                 format="yyyy-MM-dd"
+                style="width:180px;"
               ></Date-picker>
             </Form-item>
             <FormItem label="运输类别" prop>
-              <Select v-model="formItem.transportType" style="width:150px" placeholder="类型">
-                <Option
-                  v-for="item in $args.getArgGroup('taxpayer_type')"
-                  :value="item.argCode"
-                  :key="item.argCode"
-                >{{ item.argText }}</Option>
+              <Select v-model="formItem.transportType" style="width:180px" >
+                <Option v-for="item in transportType" :value="item.code" :key="item.code">{{ item.text }}</Option>
               </Select>
             </FormItem>
             <FormItem label="运输内容" prop="transportContent">
@@ -162,6 +168,7 @@ export default {
       isEdit: 0,
       //表单对象
       formItem: this.getInitFormItem(),
+      transportTypes:[],
       //验证
       ruleValidate: {
         transportDate: [
@@ -197,14 +204,6 @@ export default {
             trigger: "change"
           }
         ],
-        // linkMan: [
-        //   {
-        //     required: true,
-        //     whitespace: true,
-        //     message: "请填写供应商联系人",
-        //     trigger: "blur"
-        //   }
-        // ],
         transportType: [
           {
             required: true,
@@ -236,22 +235,15 @@ export default {
             message: "请填写运输终点",
             trigger: "blur"
           }
-        ],
-        transportContent: [
-          {
-            required: true,
-            message: "请输入运输内容",
-            trigger: 'blur'
-          },
-          {
-            type: 'string',
-            min: 1,
-            message: '最少不少于1字',
-            trigger: 'blur'
-          }
         ]
-      }
-    };
+        
+      },
+      transportType:[
+        {code:'内倒',text:'内倒'},
+        {code:'外弃',text:'外弃'},
+        {code:'运材料',text:'运材料'},
+      ],
+    }
   },
   computed: {
     title() {
@@ -289,7 +281,7 @@ export default {
       if (!this.formItem.transportDate) {
         this.formItem.transportDate = null;
       }
-      this.formItem.taxRate = this.formItem.taxRate1 * 0.01; //税率
+      //this.formItem.taxRate = this.formItem.taxRate1 * 0.01; //税率
       this.loading = 1;
       this.$http
         .post(url, this.formItem)
@@ -341,8 +333,7 @@ export default {
         };
       return obj;
     },
-    open(id) {
-      this.show = true;
+    open(id) {  
       this.$refs["form"].resetFields();
       this.checked = [];
       if (id) {
@@ -354,6 +345,18 @@ export default {
         this.isEdit = 0;
         this.formItem = this.getInitFormItem();
       }
+      this.$http.post("/api/engine/machine/listAll", {}).then(res => {
+        this.loading = 0;
+        if (res.data.code === 0) {
+          this.transportTypes=res.data.data.rows;
+        } else {
+          this.$Message.error(res.data.message);
+        }
+      }).catch(error => {
+          this.loading = 0;
+          this.$Message.error(error.message);
+      });
+      this.show = true;
     },
     get(id) {
       this.loading = 1;
@@ -363,7 +366,7 @@ export default {
           this.loading = 0;
           if (res.data.code === 0) {
             Object.assign(this.formItem, res.data.data);
-            this.formItem.taxRate1 = this.formItem.taxRate * 100;
+            this.formItem.taxRate = parseFloat(this.formItem.taxRate * 100).toFixed(2);
           } else {
             this.$Message.error(res.data.message);
           }
@@ -376,6 +379,18 @@ export default {
     selProvider(data) {
       if (data) {
         this.formItem.linkMan = data.linkMan; //供应商联系人
+        this.formItem.taxRate = parseFloat(data.taxRate*100).toFixed(2); //税率
+        this.onChangeAmount();
+      }
+    },
+    onChangeAmount() {
+      if (this.formItem.num!=null&&this.formItem.milage!=null&&this.formItem.taxUnitPrice!=null&&this.formItem.taxUnitPrice!=null&&
+        this.formItem.taxRate!=null) {
+        this.formItem.amount=this.formItem.num*this.formItem.milage*this.formItem.taxUnitPrice*(1-(this.formItem.taxRate>0?this.formItem.taxRate/100:0));
+        this.formItem.tax=this.formItem.num*this.formItem.milage*this.formItem.taxUnitPrice*(this.formItem.taxRate>0?this.formItem.taxRate/100:0);
+        if(this.formItem.deductAmount!=null){
+          this.formItem.totalPriceTax=this.formItem.num*this.formItem.milage*this.formItem.taxUnitPrice-this.formItem.deductAmount;
+        }
       }
     },
     close() {

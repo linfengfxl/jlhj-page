@@ -50,6 +50,12 @@ components.push({ component: 'financial/payOrder/Index', name: '', path: '/finan
 components.push({ component: 'financial/payOrder/PayOrderStart', name: '', path: '/financial/payorder/start' })
 components.push({ component: 'financial/payOrder/PayOrderHandle', name: '', path: '/financial/payorder/handle' })
 components.push({ component: 'financial/payOrder/PayOrderView', name: '', path: '/financial/payorder/view' })
+
+//备用金申请单
+components.push({ component: 'financial/reserve/Index', name: '', path: '/financial/reserve' })
+components.push({ component: 'financial/reserve/ReserveStart', name: '', path: '/financial/reserve/start' })
+components.push({ component: 'financial/reserve/ReserveHandle', name: '', path: '/financial/reserve/handle' })
+components.push({ component: 'financial/reserve/ReserveView', name: '', path: '/financial/reserve/view' })
  
 
  

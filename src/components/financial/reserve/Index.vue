@@ -1,13 +1,13 @@
 <template>
   <ListPage
     ref="page"
-    api="/api/engine/financial/payPlan/list"
+    api="/api/engine/financial/reserve/list"
     :model="this"
     @onCurrentRowChange="curRowChg"
     :beforeLoad="beforeLoad"
   >
     <div class="page-title" slot="page-title">
-      付款计划
+      备用金申请单
     </div>
     <div class="page-searchbox">
       <table cellpadding="0" cellspacing="0">
@@ -21,7 +21,7 @@
             </RadioGroup>
           </td>
           <td class="page-tools">
-            <Button @click="add" v-power icon="plus">发起付款计划单</Button>&nbsp;
+            <Button @click="add" v-power icon="plus">发起备用金申请单</Button>&nbsp;
           </td>
           <td class="page-tools" v-if="queryForm.status==0"></td>
         </tr>
@@ -31,15 +31,22 @@
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td>
-            <Input v-model="queryForm.payPlanId" placeholder="付款计划单号" @keyup.enter.native="query"></Input>
+            <Input v-model="queryForm.reserveApplyId" placeholder="备用金申请单号" @keyup.enter.native="query" style="width:160px;"></Input>
           </td>
-          <td>创建日期</td>
+
+          <td>备用金类型</td>
+          <td>
+            <Select v-model="queryForm.reverseType" @on-change="query" style="width:160px;">
+              <Option v-for="item in reverseType" :value="item.code" :key="item.code" placeholder="备用金类型">{{ item.text }}</Option>
+            </Select>
+          </td>
+          <td>最后付款日期</td>
           <td>
             <DatePicker
               type="daterange"
-              v-model="queryForm.createTime"
+              v-model="queryForm.finalPaymentDate"
               split-panels
-              placeholder="创建日期"
+              placeholder="最后付款日期"
               style="width: 180px"
               :clearable="true"
               ::transfer="true"
@@ -61,6 +68,7 @@ import ListPage from '@/components/page/ListPage';
 import ListPageDetail from '@/components/page/ListPageDetail';
 import DataRowOperate from '@/components/commons/DataRowOperate';
 import UploadBox from '@/components/upload/Index';
+import SelectProject from '@/components/page/form/SelectProject';
 
 import page from '@/assets/js/page';
 
@@ -69,7 +77,8 @@ export default {
     ListPage, 
     DataRowOperate,
     ListPageDetail,
-    UploadBox
+    UploadBox,
+    SelectProject
   },
   data() {
     let that = this;
@@ -102,8 +111,8 @@ export default {
           }
         },
         {
-          title: '付款计划单号',
-          key: 'payPlanId',
+          title: '备用金申请单号',
+          key: 'reserveApplyId',
           width: 140,
           align: 'center',
           fixed: 'left',
@@ -115,101 +124,100 @@ export default {
               },
               on:{
                 click:()=>{
-                  this.$router.push({path:'/financial/payplan/view?forward&inst='+row.instId});
+                  this.$router.push({path:'/financial/reserve/view?forward&inst='+row.instId});
                 }
               }
-            },row.payPlanId);
+            },row.reserveApplyId);
           }
         },
         {
-          title: '付款计划名称',
-          key: 'payPlanName',
-          align: 'center',
-          width: 100,
-        },
-        {
-          title: '供应商',
-          key: 'providerName',
-          align: 'left',
-          minWidth: 180,
-        },
-        {
-          title: '供应商联系人',
-          key: 'linkMan',
-          align: 'center',
-          width: 100,
-        },
-        {
-          title: '发生额',
-          key: 'amount',
-          align: 'left',
-          width: 150,
-        },
-        {
-          title: '累计付款额',
-          key: 'acumPayAmount',
-          align: 'left',
-          width: 150,
-        },
-        {
-          title: '应付金额',
-          key: 'payableAmount',
-          align: 'left',
-          width: 150,
-        },
-        {
-          title: '应付类型',
-          key: 'payableType',
-          align: 'center',
-          width: 100,
-        },
-        {
-          title: '本期应付款额',
-          key: 'currentPayableAmount',
-          align: 'center',
-          width: 120,
-        },
-        {
-          title: '本期计划付款额',
-          key: 'currentPlanAmount',
-          align: 'center',
-          width: 120,
-        },
-        {
-          title: '合同付款方式',
-          key: 'contractPayType',
-          align: 'center',
-          width: 100,
-        },
-         {
-          title: '合同账期(%)',
-          key: 'contractBillPeriod',
-          align: 'center',
-          width: 100,
-        },
-         {
           title: '申请部门',
-          key: 'deptName',
+          key: 'applyDeptName',
           align: 'center',
           width: 100,
-        },
-         {
+        }, 
+        {
           title: '申请人',
           key: 'applicantName',
           align: 'center',
           width: 100,
         },
-         {
-          title: '计划年度',
-          key: 'planYear',
+        {
+          title: '备用金类型',
+          key: 'reverseType',
+          align: 'left',
+          width: 150,
+        },
+        page.table.initDateColumn({
+          title: '预计冲销日期',
+          key: 'offsetDate',
+        }),
+        {
+          title: '收款人',
+          key: 'payee',
+          align: 'left',
+          minWidth: 120,
+        },
+        {
+          title: '开户银行',
+          key: 'bankOpen',
+          align: 'left',
+          width: 150,
+        },
+        {
+          title: '银行户名',
+          key: 'bankAccName',
+          align: 'left',
+          width: 150,
+        },
+        {
+          title: '银行账号',
+          key: 'bankAccount',
+          align: 'left',
+          width: 150,
+        },
+        {
+          title: '金额',
+          key: 'amount',
+          align: 'left',
+          width: 150,
+        },
+        {
+          title: '付款方式',
+          key: 'payWay',
           align: 'center',
           width: 100,
         },
-         {
-          title: '计划月份',
-          key: 'planMonth',
+        {
+          title: '法律主体',
+          key: 'legalSubject',
           align: 'center',
           width: 100,
+        },
+        page.table.initDateColumn({
+          title: '最后付款日期',
+          key: 'finalPaymentDate',
+        }),
+        {
+          title: '备用金用途',
+          key: 'reserveUse',
+          align: 'center',
+          width: 120,
+        },
+        {
+          title: '附件',
+          key: 'files',
+          align: 'center',
+          width: 200,
+          render:(h,params)=>{
+            var row = params.row;
+            return h(UploadBox,{
+              props:{
+                value:row.files,
+                readonly:true
+              }
+            });
+          }
         },
         page.table.initMapColumn({
           title: '状态',
@@ -234,10 +242,16 @@ export default {
         }),
       ],
       queryForm: { 
-        payPlanId:'',
+        reserveApplyId:'',
+        reverseType:'',
         status: 2, 
-        createTime: null,
+        finalPaymentDate: null,
       },
+      reverseType:[
+        {code:'临时备用金',text:'临时备用金'},
+        {code:'定额备用金',text:'定额备用金'},
+        {code:'特殊备用金',text:'特殊备用金'},
+      ],
       loading: 0
     }
   },
@@ -246,47 +260,45 @@ export default {
   },
   methods: {
     query() {
-      //   if (!this.queryForm.storageId) {
-      //     this.$Message.error('请选择仓库');
-      //     return;
-      //   }
       this.$refs.page.query();
     },
     beforeLoad() {
       var queryParam = this.$refs.page.queryParam;
-      queryParam.createTimeStart = '';
-      queryParam.createTimeEnd = '';
-      delete queryParam.createTime;
-      if (this.queryForm.createTime.length > 0) {
-        queryParam.createTimeStart = page.formatDate(this.queryForm.createTime[0]);
+      queryParam.finalPaymentDateStart = '';
+      queryParam.finalPaymentDateEnd = '';
+      delete queryParam.finalPaymentDate;
+      if (this.queryForm.finalPaymentDate.length > 0) {
+        queryParam.finalPaymentDateStart = page.formatDate(this.queryForm.finalPaymentDate[0]);
       }
-      if (this.queryForm.createTime.length > 1) {
-        queryParam.createTimeEnd = page.formatDate(this.queryForm.createTime[1]);
+      if (this.queryForm.finalPaymentDate.length > 1) {
+        queryParam.finalPaymentDateEnd = page.formatDate(this.queryForm.finalPaymentDate[1]);
       }
     },
     reset() {
       Object.assign(this.queryForm, {
-        payPlanId:'',
+        reserveApplyId:'',
+        reverseType:'',
+        status: 2, 
+        finalPaymentDate: [page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())],
         status: this.queryForm.status, 
-        createTime: [page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())]
       });
       this.query();
     },
     curRowChg(row) {
       if(row != null) {
         this.curRow = row;
-        this.curRowId = row.payPlanId;
+        this.curRowId = row.reserveApplyId;
       } else {
         this.curRow = null;
         this.curRowId = null;
       }
     },
     add() {
-      this.$router.push({ path: '/financial/payplan/start?forward'})
+      this.$router.push({ path: '/financial/reserve/start?forward'})
     },
     edit(row) {
       this.$router.push({
-        path: '/financial/payplan/start?forward&id=' + row.payPlanId
+        path: '/financial/reserve/start?forward&id=' + row.reserveApplyId
       })
     },
     goPage(page) {

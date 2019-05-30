@@ -14,94 +14,89 @@
             </colgroup>
             <tr>
               <td>
-                <FormItem prop="payPlanName" label="付款计划名称"> 
-                  {{formItem.payPlanName}}
+                <FormItem prop="applyDeptId" label="申请部门">
+                  {{formItem.applyDeptName}}
                 </FormItem>
-              </td>
+              </td> 
               <td>
-                <FormItem label="供应商" prop="providerCode">
-                  {{formItem.providerName}}
-                </FormItem>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <FormItem label="供应商联系人" prop="linkMan">
-                  {{formItem.linkMan}}
-                </FormItem>
-              </td>
-               <td>
-                <FormItem prop="amount" label="发生额">
-                  {{formItem.amount}}
-                </FormItem>
-              </td>
-            </tr>
-            <tr>  
-              <td>
-                <FormItem prop="acumPayAmount" label="累计付款额">
-                  {{formItem.acumPayAmount}}
-                </FormItem>
-              </td>
-              <td>
-                <FormItem prop="payableAmount" label="应付金额">
-                  {{formItem.payableAmount}}
-                </FormItem>
-              </td>    
-            </tr> 
-             <tr> 
-               <td>
-                <FormItem prop="payableType" label="应付类型"> 
-                  {{formItem.payableType}}
-                </FormItem>
-              </td>
-              <td>
-                <FormItem prop="currentPayableAmount" label="本期应付款额">
-                  {{formItem.currentPayableAmount}}
-                </FormItem>
-              </td>    
-            </tr> 
-            <tr>
-               <td>
-                <FormItem prop="currentPlanAmount" label="本期计划付款额">
-                  {{formItem.currentPlanAmount}}
-                </FormItem>
-              </td>
-               <td>
-                <FormItem prop="contractPayType" label="合同付款方式"> 
-                  {{formItem.contractPayType}}
-                </FormItem>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <FormItem prop="contractBillPeriod" label="合同账期（%）">
-                  {{formItem.contractBillPeriod}}
-                </FormItem>
-              </td>
-               <td>
-                <FormItem prop="operatorName" label="申请人">
+                <FormItem prop="applicant" label="申请人">
                   {{formItem.applicantName}}
                 </FormItem>
-              </td>   
+              </td>
             </tr>
             <tr>
               <td>
-                <FormItem prop="deptId" label="申请部门">
-                   {{formItem.deptName}}
+                <FormItem prop="reverseType" label="备用金类型"> 
+                  {{formItem.reverseType}}
                 </FormItem>
-              </td>   
+              </td>
               <td>
-                <FormItem prop="planYear" label="计划年度">
-                  {{formItem.planYear}}
+                <FormItem prop="offsetDate" label="预计冲销日期">
+                   {{formItem.offsetDate}}
+                </FormItem>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <FormItem prop="payee" label="收款人">
+                  {{formItem.payee}}
+                </FormItem>
+              </td>
+              <td>
+                <FormItem prop="bankOpen" label="开户银行"> 
+                  {{formItem.bankOpen}}
                 </FormItem>
               </td> 
             </tr>
+            <tr>  
+             <td>
+                <FormItem prop="bankAccName" label="银行户名"> 
+                  {{formItem.bankAccName}}
+                </FormItem>
+              </td> 
+              <td>
+                <FormItem prop="bankAccount" label="银行账号"> 
+                  {{formItem.bankAccount}}
+                </FormItem>
+              </td>  
+            </tr> 
+            <tr> 
+              <td>
+                <FormItem prop="amount" label="金额">
+                  {{formItem.amount}}
+                </FormItem>
+              </td>
+              <td>
+                <FormItem prop="payWay" label="付款方式">
+                  {{formItem.payWay}}
+                </FormItem>
+              </td>    
+            </tr> 
             <tr>
               <td>
-                <FormItem prop="planMonth" label="计划月份">
-                  {{formItem.planMonth}}
+                <FormItem prop="legalSubject" label="法律主体">
+                  {{formItem.legalSubject}}
                 </FormItem>
-              </td>     
+              </td> 
+              <td>
+                <FormItem prop="finalPaymentDate" label="最后付款日期">
+                   {{formItem.finalPaymentDate}}
+                </FormItem>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <FormItem prop="reserveUse" label="备用金用途"> 
+                  {{formItem.reserveUse}}
+                </FormItem>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <FormItem prop="files" label="附件">
+                  <UploadBox v-model="formItem.files" :readonly="true"></UploadBox>
+                </FormItem>
+              </td> 
             </tr>
           </table>
         </Form>
@@ -117,10 +112,8 @@ import page from '@/assets/js/page';
 import floatObj from '@/assets/js/floatObj'; 
 import pagejs from '@/assets/js/page';
 import UploadBox from '@/components/upload/Index';
-
 import SelectProject from '@/components/page/form/SelectProject';
 import SelectDept from '@/components/page/form/SelectDept';
-
 import HandleProcess from '@/components/workflow/process/Handle';
 
 export default {
@@ -130,44 +123,39 @@ export default {
     UploadBox,
     SelectProject,
     SelectDept,
-    HandleProcess
+    HandleProcess,
+    page
   },
   data() {
     return {
-      title:'付款计划',
+      title:'备用金申请单',
       loading: 0,
       instId:0,     
       formItem: {
-        payPlanId:'',
-        payPlanName:'',
-        providerCode:'',
-        providerName:'',
-        linkMan:'',
-        amount:0,
-        acumPayAmount:0,
-        payableAmount:0,
-        payableType:'',
-        currentPayableAmount:0,
-        currentPlanAmount:0,
-        contractPayType:'',
-        contractBillPeriod:'',
+        reserveApplyId:'',
         applyDeptId:'',
         applyDeptName:'',
-        deptId:'',
-        deptName:'',
-        applicant:'',
+        applicant:0,
         applicantName:'',
-        planYear:'',
-        planMonth:'',
-        operator:'',
-        operatorName:'',
+        reverseType:'',
+        offsetDate:'',
+        payee:'',
+        bankOpen:'',
+        bankAccName:'',
+        bankAccount:'',
+        amount:0,
+        payWay:'',
+        legalSubject:'',
+        finalPaymentDate:'',
+        reserveUse:'',
+        files:'',
         status:0,
         instId:0
       },
       formRules: {
          
       },
-      payPlanId:'',
+      reserveApplyId:'',
       oriItem: {},
     }
   },
@@ -178,22 +166,23 @@ export default {
   },
   methods: {
     instLoaded(proc){ 
-      this.payPlanId = proc.instance.businessKey;
-      this.title = "付款计划_" + this.payPlanId;
+      this.reserveApplyId = proc.instance.businessKey;
+      this.title = "备用金申请单" + this.reserveApplyId;
       this.load();
     },
     load() {
       this.loading = 1;
 
-      this.$http.post("/api/engine/financial/payPlan/get", {payPlanId:this.payPlanId}).then((res) => {
+      this.$http.post("/api/engine/financial/reserve/get", {reserveApplyId:this.reserveApplyId}).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
           if (res.data.data) {
-            res.data.data.operator=res.data.data.applicant;
-            res.data.data.operatorName=res.data.data.applicantName;
-            res.data.data.deptId=res.data.data.applyDeptId;
+            res.data.data.offsetDate=res.data.data.offsetDate.length>=10?res.data.data.
+            offsetDate.substring(0,10):res.data.data.offsetDate;
+            res.data.data.
+            finalPaymentDate=res.data.data.finalPaymentDate.length>=10?res.data.data.finalPaymentDate.substring(0,10):res.data.data.finalPaymentDate; 
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
-            Object.assign(this.formItem, res.data.data);         
+            Object.assign(this.formItem, res.data.data);      
           } else {
             this.$Message.error('单据不存在！');
             this.goBack();
@@ -208,29 +197,23 @@ export default {
     },
     initNew() {
       Object.assign(this.formItem, {
-        payPlanId:'',
-        payPlanName:'',
-        providerCode:'',
-        providerName:'',
-        linkMan:'',
-        amount:0,
-        acumPayAmount:0,
-        payableAmount:0,
-        payableType:'',
-        currentPayableAmount:0,
-        currentPlanAmount:0,
-        contractPayType:'',
-        contractBillPeriod:'',
+        reserveApplyId:'',
         applyDeptId:'',
         applyDeptName:'',
-        deptId:'',
-        deptName:'',
-        applicant:'',
+        applicant:0,
         applicantName:'',
-        planYear:'',
-        planMonth:'',
-        operator:'',
-        operatorName:'',
+        reverseType:'',
+        offsetDate:page.formatDate(new Date(),'yyyy-MM-dd'),
+        payee:'',
+        bankOpen:'',
+        bankAccName:'',
+        bankAccount:'',
+        amount:0,
+        payWay:'',
+        legalSubject:'',
+        finalPaymentDate:page.formatDate(new Date(),'yyyy-MM-dd'),
+        reserveUse:'',
+        files:'',
         status:0,
         instId:0
       });
@@ -254,7 +237,7 @@ export default {
 
       // 提交
       this.loading = 1;
-      var uri = '/api/engine/financial/payPlan/submit';
+      var uri = '/api/engine/financial/reserve/submit';
 
       this.$http.post(uri, form).then((res) => {
         this.loading = 0;
