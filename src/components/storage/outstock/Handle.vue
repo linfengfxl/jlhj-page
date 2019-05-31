@@ -13,8 +13,7 @@
           <Form
             ref="form"
             class="page-form"
-            :model="formItem"
-            :rules="formRules"
+            :model="formItem" 
             :label-width="120"
           >
             <table cellspacing="0" cellpadding="0">
@@ -113,6 +112,7 @@ export default {
       loading: 0,
       stockBillId: '',
       instId: 0,
+      title:'',
       formItem: {
         stockBillId: '',//出库单号
         type: 2,//类型:1.出库, 2.入库

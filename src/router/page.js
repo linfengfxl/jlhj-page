@@ -20,7 +20,9 @@ components.push({ component: 'storage/outstock/Index', name: '', path: '/storage
 components.push({ component: 'storage/outstock/OutStockEdit', name: '', path: '/storage/outstock/start' })
 components.push({ component: 'storage/outstock/Handle', name: '', path: '/storage/outstock/handle' })
 components.push({ component: 'storage/outstock/View', name: '', path: '/storage/outstock/view' })
-
+//采购合同
+components.push({ component: 'storage/contract/Index', name: '', path: '/storage/contract' })
+components.push({ component: 'storage/contract/Edit', name: '', path: '/storage/contract/edit' })
 
 components.push({ component: 'project/Index', name: '', path: '/project' })
 //机械作业单
