@@ -165,7 +165,7 @@
         pagebar.currentPage = 1;
         pagebar.currentPageSize = 10;
         Object.assign(this.queryParam,this.queryForm);
-        this.beforeLoad(this); 
+        this.beforeLoad(this);          
         this.load();
       }, 
       //public
@@ -176,6 +176,24 @@
         pagebar.currentPage = 1;
         pagebar.currentPageSize = 10;
         this.query();
+      },
+      exportDown(){
+        var pagebar = this.$refs.pagebar;
+        this.loading = 1;         
+        this.$http.post(this.api, Object.assign({},this.queryParam,{_action:'export'})).then((res) => {
+          this.loading = 0;
+          if (res.data.code === 0) { 
+            this.loading = 0;
+            var data = res.data.data;
+            window.open(this.$http.defaults.baseURL + '/api/file/download?fileId=' + data);
+          } else {
+            this.loading = 0;             
+            this.$Message.error(res.data.message);
+          }
+        }).catch((error) => {
+          this.loading = 0;
+          this.$Message.error("请求失败，请重新发送")
+        });
       },
       //public
       getSelection(){

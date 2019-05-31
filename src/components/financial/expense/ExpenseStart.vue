@@ -1,5 +1,5 @@
 <template>
-  <StartProcess ref="startProcess" defineId="1" :title="pageTitle" @on-submit="save">
+  <StartProcess ref="startProcess" :defineId="defineId" :title="pageTitle" @on-submit="save">
     <div class="page expense-edit">     
     <Loading :loading="loading">
       <div class="baseinfo"> 
@@ -59,8 +59,10 @@
               </td>
               <td>
                 <FormItem prop="legal" label="法律主体">
-                  <Input v-model="formItem.legal"/>
-                </FormItem>
+                  <Select v-model="formItem.legal">
+                    <Option v-for="item in $args.getArgGroup('legal')" :value="item.argCode" :key="item.argCode">{{ item.argText }}</Option>
+                  </Select>
+                </FormItem> 
               </td>
               <td>
                  <FormItem prop="amount" label="报销金额">
@@ -143,7 +145,7 @@ export default {
     return {
       loading: 0,
       stockBillId: '',
-      pageFlag: 1,//1.新建 2.编辑 3.修订
+      pageFlag: 1,//1.新建 2.编辑 3.修订 
       formItem: {
         billId:'',
         catalog:'',
@@ -228,6 +230,12 @@ export default {
       if (this.pageFlag == 2) {
         return '报销单 - 重新发起';
       }
+    },
+    defineId(){
+      if(this.formItem.catalog == '业务招待费'){
+        return 10;
+      }
+      return 1;
     }
   },
   methods: {
