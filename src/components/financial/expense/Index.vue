@@ -21,7 +21,7 @@
             </RadioGroup>
           </td>
           <td class="page-tools">
-            <Button @click="add" v-power icon="plus">发起报销单</Button>&nbsp;
+            <Button @click="add" v-power icon="plus">报销单</Button>&nbsp;
           </td>
           <td class="page-tools" v-if="queryForm.status==0"></td>
         </tr>
@@ -65,6 +65,8 @@
           <td>
             <Button @click="reset">重置</Button>
           </td>
+          <td>&nbsp;</td>
+          <td><Button @click="exportDown" type="info" icon="ios-download-outline">导出</Button></td>
         </tr>
       </table>
     </div> 
@@ -346,6 +348,9 @@ export default {
       this.$router.push({
         path: '/financial/expense/start?forward&id=' + row.billId
       })
+    },
+    exportDown(){
+      this.$refs.page.exportDown();
     },
     sendAudit() {
       var selection = this.$refs.page.getSelection();

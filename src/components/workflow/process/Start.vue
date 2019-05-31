@@ -19,8 +19,8 @@
             <td >
               <div class="nodes">
                 <template v-for="(item,index) in define.nodeList">
-                  <Tag type="dot" color="blue" v-if="index == 0">{{item.text}}</Tag>
-                  <Tag type="dot" v-else>{{item.text}}</Tag>
+                  <div v-if="index == 0" class="nodes-item cur"><Icon type="ios-circle-filled"></Icon>&nbsp;{{item.text}}</div>
+                  <div v-else class="nodes-item"><Icon type="ios-circle-outline"></Icon>&nbsp;{{item.text}}</div>
                 </template>
               </div>
             </td>
@@ -221,14 +221,33 @@
     padding: 4px;
   }
 
-  .wfprocess-footer .nodes li{
+  .wfprocess-footer .nodes .nodes-item{
     display: block;
     padding: 4px 8px;
     border:1px solid #eee;
     border-radius: 3px;
     float: left;
     margin-right: 10px;
+    background-color: white;
+    color: #999;
   }
+  .wfprocess-footer .nodes .nodes-item .ivu-icon{
+    font-size: 18px;
+  }
+
+  .wfprocess-footer .nodes .nodes-item.cur{
+    color:#2d8cf0;font-weight: bold;
+  }  
+
+  .wfprocess-footer .nodes .nodes-item.pass{
+    color:#19be6b;
+  }
+
+  .ivu-icon-ios-checkmark:before {
+    content: "\F3FF";
+  }
+
+
   .wfprocess-footer .label{
     width:70px;text-align: right;
     padding-right: 10px;  
