@@ -25,53 +25,34 @@
               </colgroup>
               <tr>
                 <td>
-                  <FormItem label="入往仓库">{{formItem.deptName}}</FormItem>
+                  <FormItem prop label="出往仓库">{{formItem.deptName}}</FormItem>
                 </td>
                 <td>
-                  <FormItem label="工程名称">{{formItem.projectName}}</FormItem>
+                  <FormItem prop label="工程名称">{{formItem.projectName}}</FormItem>
                 </td>
                 <td>
-                  <FormItem label="供应商">{{formItem.providerName}}</FormItem>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <FormItem label="供应商联系人">{{formItem.linkMan}}</FormItem>
-                </td>
-                <td>
-                  <FormItem label="税率">{{formItem.taxRate}} %</FormItem>
-                </td>
-                <td>
-                  <FormItem
-                    label="纳税人类型"
-                  >{{$args.getArgText('taxpayer_type', formItem.taxpayerType)}}</FormItem>
+                  <FormItem prop label="领料员">{{formItem.operatorName}}</FormItem>
                 </td>
               </tr>
               <tr>
                 <td>
-                  <FormItem
-                    prop
-                    label="发票类型"
-                  >{{$args.getArgText('invoice_type', formItem.invoiceType)}}</FormItem>
+                  <FormItem prop label="出库日期">{{formItem.operateDate}}</FormItem>
                 </td>
                 <td>
-                  <FormItem prop label="日期">{{formItem.operateDate}}</FormItem>
-                </td>
-                <td>
-                  <FormItem label="收料员">{{formItem.operatorName}}</FormItem>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <FormItem prop label="红蓝字">
-                    <template v-if="formItem.inboundType==1">
+                  <FormItem prop label="红蓝字">  <template v-if="formItem.inboundType==1">
                       <span style="color:blue;">蓝字</span>
                     </template>
                     <template v-if="formItem.inboundType==2">
                       <span style="color:red;">红字</span>
-                    </template>
-                  </FormItem>
+                    </template></FormItem>
                 </td>
+                <td>
+                  <FormItem
+                    label="出库类别"
+                  >{{$args.getArgText('taxpayer_type', formItem.materialType)}}</FormItem>
+                </td>
+              </tr>
+              <tr>
                 <td colspan="2">
                   <FormItem prop=" " label="备注">{{formItem.remark}}</FormItem>
                 </td>

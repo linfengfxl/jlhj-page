@@ -33,42 +33,7 @@
                   </FormItem>
                 </td>
                 <td>
-                  <FormItem prop="providerCode" label="供应商">
-                    <SelectProvider
-                      v-model="formItem.providerCode"
-                      :model="formItem"
-                      :text="formItem.providerName"
-                      @on-select="selProvider"
-                    />
-                  </FormItem>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <FormItem prop label="供应商联系人">{{formItem.linkMan}}</FormItem>
-                </td>
-                <td>
-                  <FormItem prop="amount" label="税率">{{formItem.taxRate}} %</FormItem>
-                </td>
-                <td>
-                  <FormItem
-                    prop="remark"
-                    label="纳税人类型"
-                  >{{$args.getArgText('taxpayer_type', formItem.taxpayerType)}}</FormItem>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <FormItem
-                    prop
-                    label="发票类型"
-                  >{{$args.getArgText('invoice_type', formItem.invoiceType)}}</FormItem>
-                </td>
-                <td>
-                  <FormItem prop label="日期">{{formItem.operateDate}}</FormItem>
-                </td>
-                <td>
-                  <FormItem prop="operatorName" label="收料员">
+                  <FormItem prop="operatorName" label="领料员">
                     <SelectMember
                       v-model="formItem.operator"
                       :model="formItem"
@@ -79,6 +44,16 @@
               </tr>
               <tr>
                 <td>
+                  <FormItem prop label="出库日期">
+                    <Date-picker
+                      type="date"
+                      placeholder="选择日期"
+                      v-model="formItem.operateDate"
+                      format="yyyy-MM-dd"
+                    ></Date-picker>
+                  </FormItem>
+                </td>
+                <td>
                   <FormItem prop label="红蓝字">
                     <Radio-group v-model="formItem.inboundType">
                       <Radio :label="1" style="color:blue;">蓝字</Radio>
@@ -86,6 +61,19 @@
                     </Radio-group>
                   </FormItem>
                 </td>
+                <td>
+                  <FormItem prop label="出库类别">
+                    <Select v-model="formItem.materialType" style="width:150px" placeholder="类型">
+                <Option
+                  v-for="item in $args.getArgGroup('provider_type')"
+                  :value="item.argCode"
+                  :key="item.argCode"
+                >{{ item.argText }}</Option>
+              </Select>
+                  </FormItem> 
+                </td>
+              </tr>
+              <tr>
                 <td colspan="2">
                   <FormItem prop=" " label="备注">
                     <Input type="textarea" :rows="2" v-model="formItem.remark"/>
@@ -153,14 +141,7 @@ export default {
         projectName: '',//工程名称
         contractNo: '',//合同编号
         deptId: '',//仓库或部门 
-        deptName: '',//
-        providerCode: '',//供应商编号
-        providerName: '',//供应商名称
-        linkMan: '',//供应商联系人
-        linkPhone: '',//供应商联系电话
-        taxpayerType: '',//纳税人类型
-        invoiceType: '',//发票类型
-        taxRate: '',//税率 
+        deptName: '',// 
         inboundType: 1,//红蓝字:1.“蓝字”表示入库，2.“红字”表示退货
         operateDate: page.formatDate(new Date(), 'yyyy-MM-dd'),
         remark: '',
@@ -297,9 +278,8 @@ export default {
           }
           form.detailList.push(item);
         }
-      }
-
-      form.proc = proc.formItem;
+      } 
+      form.proc = proc.formItem; 
       // 提交
       this.loading = 1;
       var uri = '/api/engine/storage/instock/start';
