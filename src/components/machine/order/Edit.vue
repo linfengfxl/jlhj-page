@@ -220,6 +220,9 @@ export default {
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
             Object.assign(this.formItem, res.data.data);
             this.list = res.data.data.detailList;
+            this.list.map(p => {
+              p.times = [p.startTime, p.endTime];
+            });
           } else {
             this.$Message.error('订单不存在！');
             this.goBack();
@@ -280,11 +283,11 @@ export default {
         var item = this.list[i];
         var msg = '明细第 ' + (i + 1) + ' 行，';
         if (item.startTime == '') {
-          this.$Message.error(msg + '请选择开始时间');
+          this.$Message.error(msg + '请选择时间');
           return;
         }
         if (item.endTime == '') {
-          this.$Message.error(msg + '请选择结束时间');
+          this.$Message.error(msg + '请选择时间');
           return;
         }
         if (item.taiban == 0) {
@@ -328,7 +331,7 @@ export default {
         this.formItem.linkPhone = data.linkPhone;//供应商联系电话
         this.formItem.taxpayerType = this.$args.getArgText('taxpayer_type', data.taxpayerType);//纳税人类型
         this.formItem.invoiceType = this.$args.getArgText('invoice_type', data.invoiceType);//发票类型
-        this.formItem.taxRate =  floatObj.multiply(data.taxRate, 100);//税率 
+        this.formItem.taxRate = floatObj.multiply(data.taxRate, 100);//税率 
       }
     },
     selMachine(data) {
