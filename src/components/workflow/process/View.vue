@@ -17,10 +17,16 @@
             <td class="label">审批流程</td>            
             <td >
               <div class="nodes">
-                <template v-for="(item,index) in instance.nodeList">                  
-                  <Tag type="dot" color="green" v-if="index<instance.cur">{{item.text}}</Tag>
-                  <Tag type="dot" color="blue" v-if="index==instance.cur" >{{item.text}}</Tag>                  
-                  <Tag type="dot" v-if="index>instance.cur" >{{item.text}}</Tag>                  
+                <template v-for="(item,index) in instance.nodeList">
+                  <div v-if="index<instance.cur" class="nodes-item pass">
+                    <Icon type="ios-checkmark"></Icon>&nbsp;{{item.text}}
+                  </div>
+                  <div v-if="index==instance.cur" class="nodes-item cur">
+                    <Icon type="ios-circle-filled"></Icon>&nbsp;{{item.text}}
+                  </div>
+                  <div v-if="index>instance.cur" class="nodes-item">
+                    <Icon type="ios-circle-outline"></Icon></Icon>&nbsp;{{item.text}}
+                  </div>
                 </template>
               </div>
             </td>            
@@ -200,26 +206,40 @@
 
   .wfprocess-footer td{
     padding: 4px;
-  }
+  }  
 
-  .wfprocess-footer .nodes li{
+  .wfprocess-footer .nodes .nodes-item{
     display: block;
     padding: 4px 8px;
     border:1px solid #eee;
     border-radius: 3px;
     float: left;
     margin-right: 10px;
+    background-color: white;
+    color: #999;
   }
+  .wfprocess-footer .nodes .nodes-item .ivu-icon{
+    font-size: 18px;
+  }
+
+  .wfprocess-footer .nodes .nodes-item.cur{
+    color:#2d8cf0;font-weight: bold;
+  }  
+
+  .wfprocess-footer .nodes .nodes-item.pass{
+    color:#19be6b;
+  }
+
+  .ivu-icon-ios-checkmark:before {
+    content: "\F3FF";
+  }
+
+
   .wfprocess-footer .label{
     width:70px;text-align: right;
     padding-right: 10px;  
   } 
-
   .wfprocess-footer .btn-submit{
     height: 40px;width: 140px;    
-  }
-
-  .wfprocess-footer .btn-terminate{
-    height: 40px;margin-left: 80px;
   }
 </style>

@@ -229,13 +229,14 @@ export default {
       if (this.curIndex == -1) {
         this.curIndex = 0;
       }
+      this.$emit('on-amount-change', this.sumAmount());
     },
     datePickerChange(item, args) {
       item.needDate = args[0];
     },
-    computedAmount(item) { 
+    computedAmount(item) {
       var taxSub = floatObj.subtract(1, this.model.taxRate);
-      item.amount = floatObj.multiply(item.taibanPrice, floatObj.multiply(item.taiban, taxSub),2);//結算金額= 含税单价*作业台班*(1-税率)
+      item.amount = floatObj.multiply(item.taibanPrice, floatObj.multiply(item.taiban, taxSub), 2);//結算金額= 含税单价*作业台班*(1-税率)
       item.tax = floatObj.multiply(floatObj.multiply(item.taibanPrice, item.taiban), this.model.taxRate);//税额 = 含税单价*作业台班*税率
       item.totalPriceTax = floatObj.multiply(item.taibanPrice, item.taiban);//价税合计 = 含税单价*作业台班
       this.$emit('on-amount-change', this.sumAmount());

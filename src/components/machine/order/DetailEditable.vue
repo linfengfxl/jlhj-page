@@ -22,8 +22,7 @@
     <table cellspacing="0" cellpadding="0" v-else>
       <thead>
         <th class="col-xh">序号</th>
-        <th>开始时间</th>
-        <th>结束时间</th>
+        <th>时间</th>
         <th>作业用时</th>
         <th>作业台班</th>
       </thead>
@@ -34,22 +33,16 @@
             <!--  序号 -->
           </td>
           <td class="col-select">
-            <Date-picker
-              type="date"
-              placeholder="选择日期"
-              v-model="item.startTime"
-              format="yyyy-MM-dd"
+            <TimePicker
+              format="HH:mm"
+              v-model="item.times"
+              confirm
+              type="timerange"
+              placement="bottom-end"
+              placeholder="选择时间"
+              style="width: 168px"
               @on-change="computedAmount(item)"
-            ></Date-picker>
-          </td>
-          <td>
-            <Date-picker
-              type="date"
-              placeholder="选择日期"
-              v-model="item.endTime"
-              format="yyyy-MM-dd"
-              @on-change="computedAmount(item)"
-            ></Date-picker>
+            ></TimePicker>
           </td>
           <td>{{item.useTime}}</td>
           <td>
@@ -127,22 +120,22 @@ export default {
       }
     },
     computedAmount(item) {
-      if (item.startTime && item.endTime) {
-        item.useTime = this.dateDiff(item.startTime, item.endTime);//作业用时
-        item.taiban = floatObj.divide(item.useTime, 8, 2);//作业台班 默认为作业用时/8，可以手工输入或修改
-      }
+      item.startTime = item.times[0];
+      item.endTime = item.times[1];
+      item.useTime = this.getInervalHour("1900-01-01 " + item.startTime, "1900-01-01 " + item.endTime);//作业用时
+      item.taiban = floatObj.divide(item.useTime, 8, 3);//作业台班 默认为作业用时/8，可以手工输入或修改
+
     },
-    dateDiff(date1, date2) {
-      var type1 = typeof date1, type2 = typeof date2;
-      if (type1 == 'string')
-        date1 = stringToTime(date1);
-      else if (date1.getTime)
-        date1 = date1.getTime();
-      if (type2 == 'string')
-        date2 = stringToTime(date2);
-      else if (date2.getTime)
-        date2 = date2.getTime();
-      return (date2 - date1) / 1000 / 60 / 60 / 24;//除1000是毫秒，不加是秒   
+    getInervalHour(sDate1, sDate2) {
+      var oDate1, oDate2;
+      oDate1 = new Date(sDate1).getTime();
+      oDate2 = new Date(sDate2).getTime();
+      var TotalMilliseconds = oDate2 - oDate1;//相差的毫秒数
+      if (isNaN(TotalMilliseconds) || TotalMilliseconds < 0) {
+        return 0;
+      }
+      var hours = TotalMilliseconds / 1000 / 60 / 60;//除1000是毫秒，不加是秒  
+      return hours.toFixed(3);
     }
   }
 }

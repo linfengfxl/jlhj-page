@@ -13,14 +13,11 @@
         <th class="col-price">
           <span>含税单价(元)</span>
         </th>
-        <th class="col-price">
-          <span>单价(元)</span>
+        <th>
+          <span>施工部位</span>
         </th>
-        <th class="col-amount">
-          <span>金额(元)</span>
-        </th>
-        <th class="col-amount">
-          <span>税额(元)</span>
+        <th>
+          <span>产成品名称</span>
         </th>
       </thead>
       <tbody>
@@ -50,18 +47,12 @@
             {{item.taxUnitPrice}}
             <!--  含税单价(元) -->
           </td>
-          <td class="col-amount">
-            {{item.unitPrice}}
-            <!--  单价(元) -->
-          </td>
-          <td class="col-amount">
-            {{item.amount}}
-            <!--  金额(元) -->
-          </td>
-          <td class="col-amount">
-            {{item.tax}}
-            <!--  税额(元) -->
-          </td>
+          <th>
+            <span> {{item.constructionSite}}</span>
+          </th>
+          <th>
+            <span> {{item.productName}}</span>
+          </th>
         </tr>
       </tbody>
     </table>
@@ -79,14 +70,11 @@
         <th class="col-price">
           <span>含税单价(元)</span>
         </th>
-        <th class="col-price">
-          <span>单价(元)</span>
+        <th>
+          <span>施工部位</span>
         </th>
-        <th class="col-amount">
-          <span>金额(元)</span>
-        </th>
-        <th class="col-amount">
-          <span>税额(元)</span>
+        <th>
+          <span>产成品名称</span>
         </th>
       </thead>
       <tbody>
@@ -129,17 +117,13 @@
               @on-change="computedAmount(item)"
             ></InputNumber>
           </td>
-          <td class="col-amount">
-            <!--  单价(元) -->
-            {{item.unitPrice}}
+          <td>
+            <!-- 施工部位 -->
+              <Input v-model="item.constructionSite"  />
           </td>
-          <td class="col-amount">
-            <!--  金额(元) -->
-            {{item.amount}}
-          </td>
-          <td class="col-amount">
-            <!--  税额(元) -->
-            {{item.tax}}
+          <td>
+            <!-- 产成品名称 -->
+              <Input v-model="item.productName"  />
           </td>
         </tr>
       </tbody>
@@ -237,6 +221,7 @@ export default {
       item.needDate = args[0];
     },
     computedAmount(item) {
+      return;
       var taxRate = floatObj.multiply(0.01, this.model.taxRate);
       item.amount = floatObj.multiply(item.taxUnitPrice, item.quantity);//数量*含税单价  
       item.unitPrice = floatObj.multiply(item.quantity, floatObj.subtract(1, taxRate));//含税单价*(1-税率)

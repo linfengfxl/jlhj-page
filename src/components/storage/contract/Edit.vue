@@ -20,18 +20,13 @@
             </colgroup>
             <tr>
               <td>
-                <FormItem prop="deptId" label="部门">
-                  <SelStorage v-model="formItem.deptId"></SelStorage>
+                <FormItem label="编码" prop="providerCode">
+                  <Input v-model="formItem.providerCode" :disabled="isEdit == 1" class="width-1"/>
                 </FormItem>
               </td>
               <td>
-                <FormItem prop="jobDate" label="作业日期">
-                  <Date-picker
-                    type="date"
-                    placeholder="选择日期"
-                    v-model="formItem.jobDate"
-                    format="yyyy-MM-dd"
-                  ></Date-picker>
+                <FormItem label="名称" prop="providerName">
+                  <Input v-model="formItem.providerName" placeholder="不超过64个字符"/>
                 </FormItem>
               </td>
               <td>
@@ -41,6 +36,29 @@
                     :model="formItem"
                     :text="formItem.projectName"
                   />
+                </FormItem>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <FormItem label="签订日期" prop>
+                  <Date-picker
+                    type="date"
+                    placeholder="选择日期"
+                    v-model="formItem.developTime"
+                    format="yyyy-MM-dd"
+                  ></Date-picker>
+                </FormItem>
+              </td>
+              <td>
+                <FormItem label="签订份数" prop>
+                  <Input v-model="formItem.address" placeholder="不超过64个字符"/>
+                </FormItem>
+              </td>
+
+              <td>
+                <FormItem label="合同金额" prop>
+                  <Input v-model="formItem.legalPerson"/>
                 </FormItem>
               </td>
             </tr>
@@ -56,38 +74,70 @@
                 </FormItem>
               </td>
               <td>
-                <FormItem prop label="供应商联系人">{{formItem.linkMan}}</FormItem>
+                <FormItem label="联系人" prop>{{formItem.linkMan}}</FormItem>
               </td>
+
               <td>
-                <FormItem prop label="加班时长">
-                  <Input v-model="formItem.overtime"/>
+                <FormItem label="付款方式" prop>
+                  <Select v-model="formItem.providerType" style="width:150px" placeholder="付款方式">
+                    <Option
+                      v-for="item in $args.getArgGroup('provider_type')"
+                      :value="item.argCode"
+                      :key="item.argCode"
+                    >{{ item.argText }}</Option>
+                  </Select>
                 </FormItem>
               </td>
             </tr>
             <tr>
               <td>
-                <FormItem prop="machineName" label="机械名称">
-                  <SelectMachine
-                    v-model="formItem.machineCode"
-                    :model="formItem"
-                    :text="formItem.machineName"
-                    @on-select="selMachine"
-                  />
+                <FormItem label="预付款" prop>
+                  <Input v-model="formItem.taxNo" class="width-2"/>
                 </FormItem>
               </td>
               <td>
-                <FormItem prop label="租赁方式">{{$args.getArgText('lease_type', formItem.leaseType)}}</FormItem>
+                <FormItem label="质保金金额" prop>
+                  <Input v-model="formItem.taxNo" class="width-2"/>
+                </FormItem>
               </td>
+
               <td>
-                <FormItem prop label="加油数量">
-                  <Input v-model="formItem.addFuel"/>
+                <FormItem label="税率" prop>
+                  <InputNumber
+                    v-model="formItem.taxRate1"
+                    :formatter="value => `${value}%`"
+                    :parser="value => value.replace('%', '')"
+                  ></InputNumber>
                 </FormItem>
               </td>
             </tr>
             <tr>
-              <td colspan="3">
-                <FormItem prop=" " label="备注">
-                  <Input type="textarea" :rows="2" v-model="formItem.remark"/>
+              <td>
+                <FormItem label="合同状态" prop>
+                  <Select v-model="formItem.invoiceType" style="width:150px" placeholder="类型">
+                    <Option
+                      v-for="item in $args.getArgGroup('invoice_type')"
+                      :value="item.argCode"
+                      :key="item.argCode"
+                    >{{ item.argText }}</Option>
+                  </Select>
+                </FormItem>
+              </td>
+              <td>
+                <FormItem label="合同要点" prop>
+                  <Input type="textarea" :rows="2" v-model="formItem.bank"/>
+                </FormItem>
+              </td>
+              <td>
+                <FormItem label="专项条款" prop>
+                  <Input type="textarea" :rows="2" v-model="formItem.bankAccount"/>
+                </FormItem>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <FormItem label="风险款" prop>
+                  <Input type="textarea" :rows="2" v-model="formItem.bankCardNo"/>
                 </FormItem>
               </td>
             </tr>
@@ -95,24 +145,22 @@
         </Form>
       </div>
       <div>
-        <div class="subheader">单据明细</div>
-        <Alert v-if="!formItem.deptId">请选择部门</Alert>
+        <div class="subheader">单据明细</div> 
         <Editable
           ref="editable"
           :list="list"
           :editable="true"
-          :deptId="formItem.deptId"
-          @on-amount-change="onAmountChange"
-          :style="{display: formItem.deptId?'':'none'}"
+          :model="formItem"
+          @on-amount-change="onAmountChange" 
         ></Editable>
       </div>
-      <table class="savebar" cellpadding="0" cellspacing="0">
+      <!-- <table class="savebar" cellpadding="0" cellspacing="0">
         <tr>
           <td class="save" @click="save" v-if="pageFlag<=2">保存</td>
           <td class="reset" @click="reset">重置</td>
           <td></td>
         </tr>
-      </table>
+      </table>-->
     </Loading>
   </div>
 </template>
@@ -122,16 +170,11 @@ import LayoutHor from '@/components/layout/LayoutHor';
 import Editable from './DetailEditable';
 import page from '@/assets/js/page';
 import floatObj from '@/assets/js/floatObj';
+import SelStorage from '@/components/storage/input/SelStorage';//仓库部门
+import SelectProject from '@/components/page/form/SelectProject';//工程名称
+import SelectMember from '@/components/page/form/SelectMember';//收料员
+import SelectProvider from '@/components/page/form/SelectProvider';//供应商
 import pagejs from '@/assets/js/page';
-
-import SelStorage from '@/components/storage/input/SelStorage';
-
-import SelectProject from '@/components/page/form/SelectProject';
-import SelectMachine from '@/components/page/form/SelectMachine';
-import SelectProvider from '@/components/page/form/SelectProvider';
-
-
-
 export default {
   components: {
     Loading,
@@ -139,38 +182,39 @@ export default {
     Editable,
     SelStorage,
     SelectProject,
-    SelectMachine,
+    SelectMember,
     SelectProvider,
   },
   data() {
     return {
       loading: 0,
-      machineOrderId: '',
+      stockBillId: '',
       pageFlag: 1,//1.新建 2.编辑 3.修订
       formItem: {
-        machineOrderId: '',//单据编号
-        deptId: '',//所属部门
-        projectCode: '',//工程代码
-        projectName: '',//工程名
-        machineCode: '',//机械代码
-        machineName: '',//机械名称
-        machineModel: '',//机械型号
-        providerCode: '',//供应商名称
+        stockBillId: '',//入库单号
+        type: 1,//类型:1.入库, 2.出库
+        projectCode: '',//工程编号
+        projectName: '',//工程名称
+        contractNo: '',//合同编号
+        deptId: '',//仓库或部门 
+        deptName: '',//
+        providerCode: '',//供应商编号
+        providerName: '',//供应商名称
         linkMan: '',//供应商联系人
-        jobDate: '',//作业日期
-        operator: '',//司机/操作手姓名
-        operatorTel: '',//司机/操作手电话
-        leaseType: '',//租赁方式
-        taibanPrice: '',//台班单价
-        remark: '',//备注
-        overtime: '',//加班时长
-        addFuel: '',//加油数量
-        taibanPrice: null,//
-        source: 1,
+        linkPhone: '',//供应商联系电话
+        taxpayerType: '',//纳税人类型
+        invoiceType: '',//发票类型
+        taxRate: '',//税率 
+        taxRate1: '',//税率 
+        inboundType: 1,//红蓝字:1.“蓝字”表示入库，2.“红字”表示退货
+        operateDate: page.formatDate(new Date(), 'yyyy-MM-dd'),
+        remark: '',
+        operator: '',//
+        operatorName: '',
       },
       formRules: {
         deptId: [
-          { required: true, whitespace: true, message: '请选择部门', trigger: 'change' }
+          { required: true, whitespace: true, message: '请选择仓库', trigger: 'change' }
         ],
         projectCode: [
           { required: true, whitespace: true, message: '请选择工程', trigger: 'change' }
@@ -178,11 +222,8 @@ export default {
         providerCode: [
           { required: true, whitespace: true, message: '请选择供应商', trigger: 'change' }
         ],
-        machineName: [
-          { required: true, whitespace: true, message: '请选择机械名称', trigger: 'change' }
-        ],
-        jobDate: [
-          { required: true, message: '请选择作业日期', trigger: 'change', pattern: /.+/ }
+        operatorName: [
+          { required: true, whitespace: true, message: '请选择收料员', trigger: 'change' }
         ],
       },
       list: [],
@@ -191,8 +232,8 @@ export default {
     }
   },
   mounted: function () {
-    this.machineOrderId = this.$route.query.id;
-    if (this.machineOrderId) {
+    this.stockBillId = this.$route.query.id;
+    if (this.stockBillId) {
       this.pageFlag = 2;
       this.load();
     } else {
@@ -203,26 +244,38 @@ export default {
   computed: {
     pageTitle() {
       if (this.pageFlag == 1) {
-        return '机械作业单 - 创建';
+        return '采购合同 - 创建';
       }
       if (this.pageFlag == 2) {
-        return '机械作业单 - 编辑';
+        return '采购合同 - 编辑';
+      }
+      if (this.pageFlag == 3) {
+        return '采购合同 - 修订';
       }
     }
   },
   methods: {
+    selProvider(data) {
+      if (data) {
+        this.formItem.providerName = data.providerName;
+        this.formItem.providerCode = data.providerCode;
+        this.formItem.linkMan = data.linkMan;//供应商联系人
+        this.formItem.linkPhone = data.linkPhone;//供应商联系电话
+        this.formItem.taxpayerType = data.taxpayerType;//纳税人类型
+        this.formItem.invoiceType = data.invoiceType;//发票类型
+        this.formItem.taxRate = data.taxRate;//税率 
+        this.formItem.taxRate1 = floatObj.multiply(data.taxRate, 100);//税率 
+      }
+    },
     load() {
       this.loading = 1;
-      this.$http.post("/api/engine/machine/order/get", { "machineOrderId": this.machineOrderId }).then((res) => {
+      this.$http.post("/api/engine/storage/instock/get?stockBillId=" + this.stockBillId, {}).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
           if (res.data.data) {
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
             Object.assign(this.formItem, res.data.data);
             this.list = res.data.data.detailList;
-            this.list.map(p => {
-              p.times = [p.startTime, p.endTime];
-            });
           } else {
             this.$Message.error('订单不存在！');
             this.goBack();
@@ -237,12 +290,11 @@ export default {
     },
     initNew() {
       Object.assign(this.formItem, {
-        machineOrderId: '',//入库单号
-        type: 2,//类型:1.出库, 2.入库
+        stockBillId: '',//入库单号
+        type: 1,//类型:1.入库, 2.出库
         projectCode: '',//工程编号
         contractNo: '',//合同编号
-        deptId: '',//仓库或部门
-        deptId: '',
+        deptId: '',//仓库或部门 
         providerCode: '',//供应商编号
         providerName: '',//供应商名称
         linkMan: '',//供应商联系人
@@ -258,13 +310,12 @@ export default {
       this.list.push(this.$refs.editable.listNewRow());
       this.list.push(this.$refs.editable.listNewRow());
     },
-    save() {
+    save(proc) {
       var form = {
         detailList: []
       };
-
       Object.assign(form, this.formItem);
-      form.jobDate = page.formatDate(form.jobDate);
+      form.signDate = page.formatDate(form.signDate);
 
       var pass = true;
       this.$refs.form.validate((valid) => {
@@ -277,37 +328,29 @@ export default {
       }
 
       form.detailList = [];
-      var taiban = 0, useTime = 0;
       // 明细
       for (var i = 0; i < this.list.length; i++) {
         var item = this.list[i];
         var msg = '明细第 ' + (i + 1) + ' 行，';
-        if (item.startTime == '') {
-          this.$Message.error(msg + '请选择时间');
-          return;
+        if (item.materCode != '') {
+          if (item.quantity == 0) {
+            this.$Message.error(msg + '请录入数量');
+            return;
+          }
+          if (item.taxUnitPrice == '') {
+            this.$Message.error(msg + '请录入含税单价');
+            return;
+          }
+          form.detailList.push(item);
         }
-        if (item.endTime == '') {
-          this.$Message.error(msg + '请选择时间');
-          return;
-        }
-        if (item.taiban == 0) {
-          this.$Message.error(msg + '请录入作业台班');
-          return;
-        }
-        item['startTime'] = page.formatDate(item['startTime']);
-        item['endTime'] = page.formatDate(item['endTime']);
-        form.detailList.push(item);
-        taiban = floatObj.add(item['taiban'], taiban);
-        useTime = floatObj.add(item['useTime'], useTime);
       }
-      form.taiban = taiban;//作业台班 合计
-      form.useTime = useTime;//作用用时 合计
-      console.log(form);
+
+      form.proc = proc.formItem;
       // 提交
       this.loading = 1;
-      var uri = '/api/engine/machine/order/add';
+      var uri = '/api/engine/storage/instock/start';
       if (this.pageFlag == 2) {
-        uri = '/api/engine/machine/order/update';
+        uri = '/api/engine/storage/instock/restart';
       }
 
       this.$http.post(uri, form).then((res) => {
@@ -322,22 +365,6 @@ export default {
         this.loading = 0;
         this.$Message.error("请求失败，请重新操作")
       });
-    },
-    selProvider(data) {
-      if (data) {
-        this.formItem.providerName = data.providerName;
-        this.formItem.providerCode = data.providerCode;
-        this.formItem.linkMan = data.linkMan;//供应商联系人
-        this.formItem.linkPhone = data.linkPhone;//供应商联系电话
-        this.formItem.taxpayerType = this.$args.getArgText('taxpayer_type', data.taxpayerType);//纳税人类型
-        this.formItem.invoiceType = this.$args.getArgText('invoice_type', data.invoiceType);//发票类型
-        this.formItem.taxRate = floatObj.multiply(data.taxRate, 100);//税率 
-      }
-    },
-    selMachine(data) {
-      if (data) {
-        this.formItem.leaseType = data.leaseType;
-      }
     },
     onAmountChange(val) {
       this.formItem.amount = val;
@@ -360,7 +387,7 @@ export default {
 <style type="text/css">
 .instock-edit.page {
   width: 900px;
-  /* margin: 0 auto; */
+   margin: 0 auto;  
   padding: 10px 20px;
   position: relative;
 }

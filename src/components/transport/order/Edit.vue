@@ -361,7 +361,7 @@ export default {
     get(id) {
       this.loading = 1;
       this.$http
-        .post("/api/engine/transport/order/get?id=" + id, {})
+        .post("/api/engine/transport/order/get?transportOrderId=" + id, {})
         .then(res => {
           this.loading = 0;
           if (res.data.code === 0) {

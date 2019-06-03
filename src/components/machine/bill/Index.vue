@@ -10,6 +10,14 @@
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td>
+            <RadioGroup v-model="queryForm.status" type="button" @on-change="query">
+              <Radio :label="2">通过</Radio>
+              <Radio :label="1">审核中</Radio>
+              <Radio :label="3">驳回</Radio>
+              <Radio :label="4">作废</Radio>
+            </RadioGroup>
+          </td>
+          <td>
             <Button @click="add" icon="plus">添加</Button>
           </td>
         </tr>
@@ -143,6 +151,7 @@ export default {
       queryParam: {},
       queryForm: {
         keyword: '',
+        status: 2,
         page: '',
         pageSize: ''
       },
@@ -204,7 +213,7 @@ export default {
     goBack: function () {
       this.$router.go(-1);
     },
-    add: function () { 
+    add: function () {
       this.$router.push({ path: '/machine/bill/start?forward' })
     },
   }

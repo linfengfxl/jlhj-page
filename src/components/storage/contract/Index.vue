@@ -1,27 +1,19 @@
 <template>
   <ListPage
     ref="page"
-    api="/api/engine/storage/instock/list"
+    api="/api/engine/material/contract/list"
     :model="this"
     @onCurrentRowChange="curRowChg"
     :beforeLoad="beforeLoad"
   >
     <div class="page-title" slot="page-title">
-      <a @click="goPage('/storage/mgr')">物质库存</a> -&gt;入库单
+      <a @click="goPage('/storage/mgr')">物质库存</a> -&gt;采购合同
     </div>
     <div class="page-searchbox">
       <table cellpadding="0" cellspacing="0">
-        <tr> 
-          <td>
-            <RadioGroup v-model="queryForm.status" type="button" @on-change="query">
-              <Radio :label="2">通过</Radio>
-              <Radio :label="1">审核中</Radio>
-              <Radio :label="3">驳回</Radio>
-              <Radio :label="4">作废</Radio>
-            </RadioGroup>
-          </td>
+        <tr>  
           <td class="page-tools">
-            <Button @click="add" v-power icon="plus">入库单</Button>&nbsp;
+            <Button @click="add" v-power icon="plus">添加</Button>&nbsp;
           </td>
           <td class="page-tools" v-if="queryForm.status==0"></td>
         </tr>
@@ -235,8 +227,7 @@ export default {
         },
       ],
       queryForm: {
-        stockBillId: '',
-        status: 2,
+        stockBillId: '', 
         projectName: '',
         deptName: '',
         materName: '',
@@ -272,8 +263,7 @@ export default {
       }
     },
     reset() {
-      Object.assign(this.queryForm, {
-        status: 2,
+      Object.assign(this.queryForm, { 
         projectName: '',
         deptName: '',
         materName: '',
@@ -297,7 +287,7 @@ export default {
       }
     },
     add() {
-      this.$router.push({ path: '/storage/instock/start?forward' })
+      this.$router.push({ path: '/storage/contract/edit' })
     },
     edit(row) {
       if (row) {
