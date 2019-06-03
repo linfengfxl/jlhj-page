@@ -294,7 +294,7 @@ export default {
     reset() {
       // 清空条件
       Object.assign(this.queryForm, {
-        status: 2,
+        status: this.queryForm.status,
         projectCode: "", // 工程名称ID
         projectName: "", // 工程名称name
         providerCode: "", // 供应商ID
@@ -311,7 +311,7 @@ export default {
       if (name === "编辑") {
         if (params.row) {
           this.$router.push({
-            path: "/transport/bill/edit?id=" + params.row.transportBillId
+            path: "/transport/bill/edit?forward&id=" + params.row.transportBillId
           });
         }
       }
@@ -347,7 +347,7 @@ export default {
     add: function() {
       //   this.$refs.edit.open(0);
       this.$router.push({
-        path: "/transport/bill/edit"
+        path: "/transport/bill/edit?forward"
       });
     }
   }

@@ -24,6 +24,7 @@
                       v-model="formItem.deptId"
                       :model="formItem"
                       :text="formItem.deptName"
+                      @on-change="onQueryChange"
                     ></SelStorage>
                   </FormItem>
                 </td>
@@ -43,6 +44,7 @@
                       v-model="formItem.projectCode"
                       :model="formItem"
                       :text="formItem.projectName"
+                      @on-select="onQueryChange"
                     />
                   </FormItem>
                 </td>
@@ -69,7 +71,7 @@
               </tr>
               <tr>
                 <td>
-                  <FormItem prop label="税率">{{formItem.taxRate}}</FormItem>
+                  <FormItem prop label="税率">{{formItem.taxRate}}%</FormItem>
                 </td>
                 <td>
                   <FormItem prop label="发票类型">{{formItem.invoiceType}}</FormItem>
@@ -81,6 +83,7 @@
                       placeholder="选择日期"
                       v-model="formItem.startDate"
                       format="yyyy-MM-dd"
+                      @on-change="onQueryChange"
                     ></Date-picker>
                   </FormItem>
                 </td>
@@ -93,30 +96,31 @@
                       placeholder="选择日期"
                       v-model="formItem.endDate"
                       format="yyyy-MM-dd"
+                      @on-change="onQueryChange"
                     ></Date-picker>
                   </FormItem>
                 </td>
                 <td>
                   <FormItem prop label="金额合计">
-                    <Input v-model="formItem.amount"/>
+                    <Input v-model="formItem.amount" readonly="readonly"/>
                   </FormItem>
                 </td>
 
                 <td>
                   <FormItem prop label="税额合计">
-                    <Input v-model="formItem.tax"/>
+                    <Input v-model="formItem.tax" readonly="readonly"/>
                   </FormItem>
                 </td>
               </tr>
               <tr>
                 <td>
                   <FormItem prop label="扣款合计">
-                    <Input v-model="formItem.deductAmount"/>
+                    <Input v-model="formItem.deductAmount" readonly="readonly"/>
                   </FormItem>
                 </td>
                 <td>
                   <FormItem prop label="价税合计">
-                    <Input v-model="formItem.totalPriceTax"/>
+                    <Input v-model="formItem.totalPriceTax" readonly="readonly"/>
                   </FormItem>
                 </td>
                 <td>
@@ -156,7 +160,6 @@ import SelStorage from "@/components/storage/input/SelStorage";
 import SelProvider from "@/components/provider/SelectProvider";
 import SelectProject from "@/components/page/form/SelectProject";
 import SelectMachine from "@/components/page/form/SelectMachine";
-
 import StartProcess from "@/components/workflow/process/Start";
 export default {
   components: {
@@ -260,16 +263,23 @@ export default {
     load() {
       this.loading = 1;
       this.$http
-        .post("/api/engine/transport/bill/get", {
+        .post("/api/engine/transport/bill/get?transportBillId="+this.transportBillId, {
           transportBillId: this.transportBillId
         })
         .then(res => {
           this.loading = 0;
           if (res.data.code == 0) {
             if (res.data.data) {
+              res.data.data.taxRate=floatObj.multiply(res.data.data.taxRate,100);
               this.oriItem = eval("(" + JSON.stringify(res.data.data) + ")");
               Object.assign(this.formItem, res.data.data);
               this.list = res.data.data.detailList;
+              this.list.map((item)=>{
+                item.transportDate=item.transportDate.length>=10?item.transportDate.substring(0,10):item.transportDate;
+              })
+              this.$nextTick(()=>{
+                this.list = res.data.data.detailList;
+              })
             } else {
               this.$Message.error("订单不存在！");
               this.goBack();
@@ -397,10 +407,11 @@ export default {
               "invoice_type",
               data.invoiceType
             ); //发票类型
-            this.formItem.taxRate = data.taxRate; //税率
+            this.formItem.taxRate = floatObj.multiply(data.taxRate,100); //税率
           }
         }
       });
+      this.list=[];
     },
     onAmountChange(total) {
       this.formItem.amount = total.amountTotal;
@@ -430,13 +441,22 @@ export default {
         this.$Message.error("请选择结束日期");
         return;
       }
+      this.formItem.startDate = page.formatDate(this.formItem.startDate);
+      this.formItem.endDate = page.formatDate(this.formItem.endDate);
         this.$http.post(this.api, this.formItem).then((res) => {
           this.loading = 0;
           if (res.data.code === 0) { 
             this.loading = 0;
             var data = res.data.data; 
-            //this.$emit('on-load-data',data.rows);
             this.list = data.rows;
+            this.list.map((item)=>{
+              item.transportDate=item.transportDate.length>=10?item.transportDate.substring(0,10):item.transportDate;
+            })
+            if(this.list.length==0){
+              this.$Message.error("抱歉，没有找到对应数据");
+            }else{
+              this.$Message.success("共查询"+this.list.length+"条数据"); 
+            }        
           } else {
             this.loading = 0;
             this.list = [];
@@ -447,6 +467,9 @@ export default {
           this.$Message.error("请求失败，请重新发送")
         });
 
+    },
+    onQueryChange(){
+      this.list = [];
     },
     reset() {
       if (this.pageFlag == 1) {

@@ -73,6 +73,7 @@ export default {
             if(this.model){ 
               this.model[this.textProp] = data.name;
             }
+            this.$emit('on-select',data);
           }
         }
       });

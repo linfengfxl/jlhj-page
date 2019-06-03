@@ -73,6 +73,7 @@ import DataRowOperate from "@/components/commons/DataRowOperate";
 import SelectProject from "@/components/page/form/SelectProject"; // 工程
 import SelectProvider from "@/components/page/form/SelectProvider"; //供应商
 import page from "@/assets/js/page";
+import floatObj from '@/assets/js/floatObj';
 
 export default {
   components: {
@@ -134,12 +135,6 @@ export default {
           width: 120,
           align: "left"
         },
-        page.table.initDateColumn({
-          title: "运输日期",
-          key: "transportDate",
-          width: 120,
-          align: "left"
-        }),
         {
           title: "所属部门",
           key: "deptName",
@@ -171,7 +166,7 @@ export default {
           align: "center",
           render: (h, params) => {
             var row = params.row;
-            return h('span',(parseFloat(row.taxRate*100).toFixed(2)+"%"));
+            return h('span',floatObj.multiply(row.taxRate,100)+"%");
           }
         },
         {

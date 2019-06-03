@@ -278,7 +278,6 @@ export default {
       Object.assign(this.queryForm, {
         reserveApplyId:'',
         reverseType:'',
-        status: 2, 
         finalPaymentDate: [page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())],
         status: this.queryForm.status, 
       });

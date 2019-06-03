@@ -45,7 +45,7 @@
               </tr>
               <tr>
                 <td>
-                  <FormItem prop label="税率">{{formItem.taxRate}}</FormItem>
+                  <FormItem prop label="税率">{{formItem.taxRate}}%</FormItem>
                 </td>
                 <td>
                   <FormItem prop label="发票类型">{{formItem.invoiceType}}</FormItem>
@@ -163,10 +163,17 @@ export default {
       this.$http.post("/api/engine/transport/bill/get?transportBillId=" + this.transportBillId, {}).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
-          if (res.data.data) {            
+          if (res.data.data) {     
+            res.data.data.taxRate=floatObj.multiply(res.data.data.taxRate,100);
+            res.data.data.billDate=res.data.data.billDate.length>=10?res.data.data.billDate.substring(0,10):res.data.data.billDate; 
+            res.data.data.startDate=res.data.data.startDate.length>=10?res.data.data.startDate.substring(0,10):res.data.data.startDate; 
+            res.data.data.endDate=res.data.data.endDate.length>=10?res.data.data.endDate.substring(0,10):res.data.data.endDate;        
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
             Object.assign(this.formItem, res.data.data);             
             this.list = res.data.data.detailList;
+            this.list.map((item)=>{
+                item.transportDate=item.transportDate.length>=10?item.transportDate.substring(0,10):item.transportDate;
+            })
           } else {
             this.$Message.error('单据不存在！');
             this.goBack();
@@ -268,7 +275,7 @@ export default {
       });
     },  
     onAmountChange(val) {
-      this.formItem.amount = val;
+      //this.formItem.amount = val;
     },
     reset() {
       Object.assign(this.formItem, this.oriItem);

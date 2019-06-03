@@ -33,6 +33,7 @@
           <td>
             <Input v-model="queryForm.payOrderId" placeholder="付款单号" @keyup.enter.native="query" style="width:160px;"></Input>
           </td>
+          <td>资金计划类型</td>
           <td>
             <Select v-model="queryForm.fundsPlan" @on-change="query" style="width:160px;">
               <Option v-for="item in fundsPlan" :value="item.code" :key="item.code" placeholder="资金计划类型">{{ item.text }}</Option>

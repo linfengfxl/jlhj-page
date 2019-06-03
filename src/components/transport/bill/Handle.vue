@@ -26,7 +26,7 @@
               <tr>
                 <td>
                   <FormItem prop="deptId" label="部门">
-                    {{formItem.deptId}}
+                    {{formItem.deptName}}
                   </FormItem>
                 </td>
                 <td>
@@ -50,7 +50,7 @@
                   <FormItem prop label="供应商联系人">{{formItem.linkMan}}</FormItem>
                 </td>
                 <td>
-                  <FormItem prop label="纳税人类型">{{formItem.taxpayerType}}</FormItem>
+                  <FormItem prop label="纳税人类型">{{$args.getArgText('taxpayer_type', formItem.taxpayerType)}}</FormItem>
                 </td>
               </tr>
               <tr>
@@ -127,11 +127,9 @@ import Editable from "./DetailEditable";
 import page from "@/assets/js/page";
 import floatObj from "@/assets/js/floatObj";
 import pagejs from "@/assets/js/page";
-
 import SelStorage from "@/components/storage/input/SelStorage";
 import SelProvider from "@/components/provider/SelectProvider";
 import SelectProject from "@/components/page/form/SelectProject";
-
 import HandleProcess from "@/components/workflow/process/Handle";
 export default {
   components: {
@@ -183,7 +181,7 @@ export default {
   methods: {
     instLoaded(proc) {
       this.transportBillId = proc.instance.businessKey;
-      this.title = "结算单_" + this.transportBillId;
+      this.title = "运输结算单_" + this.transportBillId;
       this.load();
     },
     load() {
@@ -194,9 +192,16 @@ export default {
           this.loading = 0;
           if (res.data.code == 0) {
             if (res.data.data) {
+              res.data.data.taxRate=floatObj.multiply(res.data.data.taxRate,100);
+              res.data.data.billDate=res.data.data.billDate.length>=10?res.data.data.billDate.substring(0,10):res.data.data.billDate; 
+              res.data.data.startDate=res.data.data.startDate.length>=10?res.data.data.startDate.substring(0,10):res.data.data.startDate; 
+              res.data.data.endDate=res.data.data.endDate.length>=10?res.data.data.endDate.substring(0,10):res.data.data.endDate; 
               this.oriItem = eval("(" + JSON.stringify(res.data.data) + ")");
               Object.assign(this.formItem, res.data.data);
               this.list = res.data.data.detailList;
+              this.list.map((item)=>{
+                item.transportDate=item.transportDate.length>=10?item.transportDate.substring(0,10):item.transportDate;
+              })
             } else {
               this.$Message.error("订单不存在！");
               this.goBack();
@@ -239,17 +244,6 @@ export default {
       for (var i = 0; i < this.list.length; i++) {
         var item = this.list[i];
         var msg = "明细第 " + (i + 1) + " 行，";
-        // if (item.materCode != '') {
-        //   if (item.quantity == 0) {
-        //     this.$Message.error(msg + '请录入数量');
-        //     return;
-        //   }
-        //   if (item.taxUnitPrice == '') {
-        //     this.$Message.error(msg + '请录入含税单价');
-        //     return;
-        //   }
-        //   form.detailList.push(item);
-        // }
 
         form.detailList.push(item);
       }
@@ -326,7 +320,7 @@ export default {
       });
     },
     onAmountChange(val) {
-      this.formItem.amount = val;
+      //this.formItem.amount = val;
     },
     reset() {
       if (this.pageFlag == 1) {

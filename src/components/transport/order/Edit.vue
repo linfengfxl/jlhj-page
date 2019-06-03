@@ -47,7 +47,7 @@
             </FormItem>
 
             <FormItem label="供应商联系人" prop="linkMan">
-              <Input v-model="formItem.linkMan" placeholder="请填写供应商联系人"/>
+              <Input v-model="formItem.linkMan" placeholder="" readonly="readonly"/>
             </FormItem>
 
             <FormItem label="税率" prop>
@@ -103,13 +103,13 @@
               <Input-number v-model="formItem.deductAmount" :min="1" style="width:180px;" @on-change="onChangeAmount"></Input-number>
             </FormItem>
             <FormItem label="金额" prop>
-              <Input-number v-model="formItem.amount" :min="1" style="width:180px;"></Input-number>
+              <Input-number v-model="formItem.amount" :min="1" style="width:180px;" readonly="readonly"></Input-number>
             </FormItem>
             <FormItem label="税额" prop>
-              <Input-number v-model="formItem.tax" :min="1" style="width:180px;"></Input-number>
+              <Input-number v-model="formItem.tax" :min="1" style="width:180px;" readonly="readonly"></Input-number>
             </FormItem>
             <FormItem label="价税合计" prop>
-              <Input-number v-model="formItem.totalPriceTax" :min="1" style="width:180px;"></Input-number>
+              <Input-number v-model="formItem.totalPriceTax" :min="1" style="width:180px;" readonly="readonly"></Input-number>
             </FormItem>
             <FormItem label="运输起点" prop="transportStart">
               <Input v-model="formItem.transportStart" placeholder="请填写运输起点"/>
@@ -152,6 +152,7 @@ import SelectProvider from "@/components/page/form/SelectProvider"; //供应商
 import SelectDept from "@/components/page/form/SelectDept"; // 所属部门
 import SelContacts from "@/components/selcontacts";
 import page from "@/assets/js/page";
+import floatObj from '@/assets/js/floatObj';
 export default {
   components: {
     Loading,
@@ -281,7 +282,6 @@ export default {
       if (!this.formItem.transportDate) {
         this.formItem.transportDate = null;
       }
-      //this.formItem.taxRate = this.formItem.taxRate1 * 0.01; //税率
       this.loading = 1;
       this.$http
         .post(url, this.formItem)
@@ -313,7 +313,8 @@ export default {
           providerCode: "", //供应商名称,
           providerName: "", // 供应商名称
           linkMan: "", //供应商联系人',
-          taxRate: 0, //税率',
+          taxRate: 0, //税率%',
+          taxRate1: 0, //税率',
           transportType: "", //运输设备名称',
           vehicleNum: "", //车牌号',
           num: 0, //数量',
@@ -365,7 +366,7 @@ export default {
           this.loading = 0;
           if (res.data.code === 0) {
             Object.assign(this.formItem, res.data.data);
-            this.formItem.taxRate = parseFloat(parseFloat(this.formItem.taxRate * 100).toFixed(2));
+            this.formItem.taxRate =floatObj.multiply(this.formItem.taxRate,100);
           } else {
             this.$Message.error(res.data.message);
           }
@@ -378,17 +379,18 @@ export default {
     selProvider(data) {
       if (data) {
         this.formItem.linkMan = data.linkMan; //供应商联系人
-        this.formItem.taxRate = parseFloat(parseFloat(data.taxRate * 100).toFixed(2)); //税率
+        this.formItem.taxRate = floatObj.multiply(data.taxRate,100); //税率%
+        this.formItem.taxRate1 = data.taxRate;//税率不带%
         this.onChangeAmount();
       }
     },
     onChangeAmount() {
       if (this.formItem.num!=null&&this.formItem.milage!=null&&this.formItem.taxUnitPrice!=null&&this.formItem.taxUnitPrice!=null&&
         this.formItem.taxRate!=null) {
-        this.formItem.amount=this.formItem.num*this.formItem.milage*this.formItem.taxUnitPrice*(1-(this.formItem.taxRate>0?this.formItem.taxRate/100:0));
-        this.formItem.tax=this.formItem.num*this.formItem.milage*this.formItem.taxUnitPrice*(this.formItem.taxRate>0?this.formItem.taxRate/100:0);
+        this.formItem.amount=floatObj.multiply(floatObj.multiply(floatObj.multiply(this.formItem.num,this.formItem.milage),this.formItem.taxUnitPrice),floatObj.subtract(1, this.formItem.taxRate1))
+        this.formItem.tax=floatObj.multiply(floatObj.multiply(floatObj.multiply(this.formItem.num,this.formItem.milage),this.formItem.taxUnitPrice),this.formItem.taxRate1);
         if(this.formItem.deductAmount!=null){
-          this.formItem.totalPriceTax=this.formItem.num*this.formItem.milage*this.formItem.taxUnitPrice-this.formItem.deductAmount;
+          this.formItem.totalPriceTax=floatObj.subtract(floatObj.multiply(floatObj.multiply(this.formItem.num,this.formItem.milage),this.formItem.taxUnitPrice),this.formItem.deductAmount);
         }
       }
     },

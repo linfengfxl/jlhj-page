@@ -64,6 +64,8 @@ components.push({ component: 'financial/reserve/ReserveStart', name: '', path: '
 components.push({ component: 'financial/reserve/ReserveHandle', name: '', path: '/financial/reserve/handle' })
 components.push({ component: 'financial/reserve/ReserveView', name: '', path: '/financial/reserve/view' })
  
+//应付账款汇总
+components.push({ component: 'financial/payTotal/Index', name: '', path: '/financial/paytotal' })
 
  
 
