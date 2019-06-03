@@ -25,15 +25,12 @@
           <td>
             <Input v-model="queryForm.contractId" placeholder="编号" @keyup.enter.native="query"></Input>
           </td>
+            <td>
+            <Input v-model="queryForm.contractName" placeholder="合同名称" @keyup.enter.native="query"></Input>
+          </td>
           <td>
             <Input v-model="queryForm.projectName" placeholder="工程名" @keyup.enter.native="query"></Input>
-          </td>
-          <td>
-            <Input v-model="queryForm.deptName" placeholder="项目（或仓库）" @keyup.enter.native="query"></Input>
-          </td>
-          <td>
-            <Input v-model="queryForm.materName" placeholder="材料" @keyup.enter.native="query"></Input>
-          </td>
+          </td> 
           <td>
             <DatePicker
               type="daterange"
@@ -91,6 +88,10 @@ export default {
               props: {
                 btns: [{
                   key: 'edit',
+                  //power: 'ckgl.rk.edit',
+                  //disabled: row.status != 0
+                },{
+                  key: 'delete',
                   //power: 'ckgl.rk.edit',
                   //disabled: row.status != 0
                 }]
@@ -233,10 +234,9 @@ export default {
         },
       ],
       queryForm: {
-        contractId: '', 
-        projectName: '',
-        deptName: '',
-        materName: '',
+        contractId: '',
+        contractName:'',
+        projectName: '', 
         type: 1,
         operId: '',
         operType: 1,
@@ -270,13 +270,12 @@ export default {
     },
     reset() {
       Object.assign(this.queryForm, { 
-        projectName: '',
-        deptName: '',
-        materName: '',
+        projectName: '', 
         type: 1,
         operId: '',
         operType: 1,
         contractId: '',
+        contractName:'',
         createTime: []//[page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())]
       });
       this.query();
@@ -309,7 +308,7 @@ export default {
         onOk: () => {
           if (row) {
             this.loading = 1;
-            this.$http.post('/api/engine/storage/instock/delete', {
+            this.$http.post('/api/engine/material/contract/delete', {
               contractId: row.contractId,
             }).then((res) => {
               this.loading = 0;

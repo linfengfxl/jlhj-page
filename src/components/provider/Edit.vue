@@ -119,6 +119,7 @@
 import Loading from '@/components/loading';
 import SelArea from '@/components/selarea';
 import SelContacts from '@/components/selcontacts';
+import floatObj from '@/assets/js/floatObj';
 import page from '@/assets/js/page';
 export default {
   components: {

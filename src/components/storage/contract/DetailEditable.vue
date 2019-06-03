@@ -24,7 +24,7 @@
         </th>
         <th class="col-amount">
           <span>价税合计(元)</span>
-        </th> 
+        </th>
       </thead>
       <tbody>
         <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
@@ -95,9 +95,9 @@
         <th class="col-amount">
           <span>税额(元)</span>
         </th>
-         <th class="col-amount">
+        <th class="col-amount">
           <span>价税合计(元)</span>
-        </th> 
+        </th>
       </thead>
       <tbody>
         <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
@@ -151,13 +151,9 @@
             <!--  税额(元) -->
             {{item.tax}}
           </td>
-           <td class="col-price">
+          <td class="col-price">
             <!--  价税合计(元) -->
-            <InputNumber
-              :max="999999"
-              :min="0"
-              v-model="item.totalPriceTax"
-            ></InputNumber>
+            <InputNumber :max="999999" :min="0" v-model="item.totalPriceTax"></InputNumber>
           </td>
         </tr>
       </tbody>
@@ -210,7 +206,7 @@ export default {
   computed: {},
   watch: {
     list(val, old) {
-      this.$emit('on-amount-change', this.sumAmount());
+      // this.$emit('on-amount-change', this.sumAmount());
     }
   },
   methods: {
@@ -230,7 +226,7 @@ export default {
         taxUnitPrice: 0,//含税单价
         tax: 0,//税额
         amount: 0,//金额
-        totalPriceTax:0,
+        totalPriceTax: 0,
         constructionSite: '',//施工部位
         productName: ''//产成品名称
       };
@@ -255,18 +251,12 @@ export default {
     datePickerChange(item, args) {
       item.needDate = args[0];
     },
-    computedAmount(item) { 
-      item.amount = floatObj.multiply(item.quantity, item.taxUnitPrice);//数量*含税单价   
-      item.unitPrice = floatObj.multiply(item.taxUnitPrice, floatObj.subtract(1, this.model.taxRate));//含税单价*(1-税率)
-      item.tax = floatObj.multiply(item.amount, this.model.taxRate);//数量*含税单价*税率
-      this.$emit('on-amount-change', this.sumAmount());
-    },
-    sumAmount() {
-      var totals = 0;
-      this.list.map((mater) => {
-        totals = floatObj.add(totals, mater.amount);
-      });
-      return totals;
+    computedAmount(item) {
+      var taxRate = floatObj.multiply(this.model.taxRate1, 0.01);//税率
+      item.totalPriceTax = floatObj.multiply(item.quantity, item.taxUnitPrice);//价税合计(元)=数量*含税单价   
+      item.unitPrice = floatObj.multiply(item.taxUnitPrice, floatObj.subtract(1, taxRate));//单价(元)=含税单价*(1-税率)
+      item.tax = floatObj.multiply(item.totalPriceTax, taxRate);//税额(元) = 价税合计(元)*税率
+      item.amount = floatObj.multiply(item.quantity, item.unitPrice); //金额= 数量*单价
     },
     selMater(row) {
       var selmaterial = this.$refs.selmaterial;

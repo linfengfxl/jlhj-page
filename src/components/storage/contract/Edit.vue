@@ -51,14 +51,14 @@
                 </FormItem>
               </td>
               <td>
-                <FormItem label="签订份数" prop>
-                  <Input v-model="formItem.signNum" placeholder="不超过64个字符"/>
+                <FormItem label="签订份数" prop="signNum"> 
+                   <InputNumber v-model="formItem.signNum"  ></InputNumber>
                 </FormItem>
               </td>
 
               <td>
-                <FormItem label="合同金额" prop>
-                  <Input v-model="formItem.amount"/>
+                <FormItem label="合同金额" prop="amount">
+                  <InputNumber v-model="formItem.amount"></InputNumber>
                 </FormItem>
               </td>
             </tr>
@@ -78,10 +78,10 @@
               </td>
 
               <td>
-                <FormItem label="付款方式" prop>
+                <FormItem label="付款方式" prop="payWay">
                   <Select v-model="formItem.payWay" style="width:150px" placeholder="付款方式">
                     <Option
-                      v-for="item in $args.getArgGroup('provider_type')"
+                      v-for="item in $args.getArgGroup('pay_way')"
                       :value="item.argCode"
                       :key="item.argCode"
                     >{{ item.argText }}</Option>
@@ -92,12 +92,12 @@
             <tr>
               <td>
                 <FormItem label="预付款" prop>
-                  <Input v-model="formItem.prepayment" class="width-2"/>
+                  <InputNumber v-model="formItem.prepayment"></InputNumber>
                 </FormItem>
               </td>
               <td>
                 <FormItem label="质保金金额" prop>
-                  <Input v-model="formItem.warranty" class="width-2"/>
+                  <InputNumber v-model="formItem.warranty"></InputNumber>
                 </FormItem>
               </td>
 
@@ -107,6 +107,7 @@
                     v-model="formItem.taxRate1"
                     :formatter="value => `${value}%`"
                     :parser="value => value.replace('%', '')"
+                    @on-change="computedDetailList()"
                   ></InputNumber>
                 </FormItem>
               </td>
@@ -115,11 +116,12 @@
               <td>
                 <FormItem label="合同状态" prop>
                   <Select v-model="formItem.status" style="width:150px" placeholder="类型">
-                    <Option
-                      v-for="item in $args.getArgGroup('invoice_type')"
-                      :value="item.argCode"
-                      :key="item.argCode"
-                    >{{ item.argText }}</Option>
+                    <!--1.执行中 2.终止 3.已结算 4.解除 5关闭 -->
+                    <Option value="1">执行中</Option>
+                    <Option value="1">终止</Option>
+                    <Option value="3">已结算</Option>
+                    <Option value="4">解除</Option>
+                    <Option value="5">关闭</Option>
                   </Select>
                 </FormItem>
               </td>
@@ -145,22 +147,16 @@
         </Form>
       </div>
       <div>
-        <div class="subheader">单据明细</div> 
-        <Editable
-          ref="editable"
-          :list="list"
-          :editable="true"
-          :model="formItem"
-          @on-amount-change="onAmountChange" 
-        ></Editable>
+        <div class="subheader">单据明细</div>
+        <Editable ref="editable" :list="list" :editable="true" :model="formItem"></Editable>
       </div>
-       <table class="savebar" cellpadding="0" cellspacing="0">
+      <table class="savebar" cellpadding="0" cellspacing="0">
         <tr>
           <td class="save" @click="save" v-if="pageFlag<=2">保存</td>
           <td class="reset" @click="reset">重置</td>
           <td></td>
         </tr>
-      </table> 
+      </table>
     </Loading>
   </div>
 </template>
@@ -190,45 +186,58 @@ export default {
       loading: 0,
       contractId: '',
       pageFlag: 1,//1.新建 2.编辑 3.修订
-      isEdit:0,
-      formItem: { 
-        contractId:'',//合同编号
-        contractName:'',//合同名称
-        projectCode:'',//对应工程
-        signDate:'',//签订日期
-        signNum:'',//签定份数
-        providerCode:'',//供应商
+      isEdit: 0,
+      formItem: {
+        contractId: '',//合同编号
+        contractName: '',//合同名称
+        projectCode: '',//对应工程
+        signDate: '',//签订日期
+        signNum: 0,//签定份数
+        providerCode: '',//供应商
         providerName: '',//供应商名称
         linkMan: '',//供应商联系人
-        amount:'',//	合同金额
-        payWy	:'',//付款方式:从字典中选择
-        prepayment:'',//	预付款
-        warranty:'',//		质保金
-        taxRate:'',//		税率
-        contractPoint:'',//		合同要点
-        specialTerms	:'',//		专项条款
-        riskItem:'',//		风险项 
-        status:'',//	合同状态 1.执行中 2.终止 3.已结算 4.解除 5关闭  
+        amount: 0,//	合同金额
+        payWy: '',//付款方式:从字典中选择
+        prepayment: 0,//	预付款
+        warranty: 0,//		质保金
+        taxRate: '',//		税率
+        taxRate1: '',//		税率
+        contractPoint: '',//		合同要点
+        specialTerms: '',//		专项条款
+        riskItem: '',//		风险项 
+        status: '1',//	合同状态 1.执行中 2.终止 3.已结算 4.解除 5关闭  
       },
       formRules: {
-        deptId: [
-          { required: true, whitespace: true, message: '请选择仓库', trigger: 'change' }
+        contractId: [
+          { required: true, whitespace: true, message: '编码不能为空', trigger: 'blur' },
+          { type: 'string', max: 50, message: '不能超过50个字', trigger: 'blur' }
+        ],
+        contractName: [
+          { required: true, whitespace: true, message: '名称不能为空', trigger: 'blur' },
+          { type: 'string', max: 50, message: '不能超过50个字', trigger: 'blur' }
         ],
         projectCode: [
           { required: true, whitespace: true, message: '请选择工程', trigger: 'change' }
         ],
+        signNum: [
+          {type: 'number', required: true, whitespace: true, message: '不能为空', trigger: 'blur' },
+        ],
+        amount: [
+          {type: 'number', required: true, whitespace: true, message: '不能为空', trigger: 'blur' },
+        ],
         providerCode: [
           { required: true, whitespace: true, message: '请选择供应商', trigger: 'change' }
         ],
-        operatorName: [
-          { required: true, whitespace: true, message: '请选择收料员', trigger: 'change' }
-        ],
+        payWay: [
+          { required: true, whitespace: true, message: '请选择付款方式', trigger: 'change' }
+        ]
       },
       list: [],
       oriItem: {},
       storage: []
     }
   },
+  
   mounted: function () {
     this.contractId = this.$route.query.id;
     if (this.contractId) {
@@ -258,22 +267,19 @@ export default {
         this.formItem.providerName = data.providerName;
         this.formItem.providerCode = data.providerCode;
         this.formItem.linkMan = data.linkMan;//供应商联系人
-        this.formItem.linkPhone = data.linkPhone;//供应商联系电话
-        this.formItem.taxpayerType = data.taxpayerType;//纳税人类型
-        this.formItem.invoiceType = data.invoiceType;//发票类型
-        this.formItem.taxRate = data.taxRate;//税率 
-        this.formItem.taxRate1 = floatObj.multiply(data.taxRate, 100);//税率 
       }
     },
     load() {
       this.loading = 1;
-      this.$http.post("/api/engine/material/contract/get",{contractId:this.contractId}).then((res) => {
+      this.$http.post("/api/engine/material/contract/get", { contractId: this.contractId }).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
           if (res.data.data) {
             console.log(res.data.data);
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
             Object.assign(this.formItem, res.data.data);
+            this.formItem.status = this.formItem.status.toString();
+            this.formItem.taxRate1 = floatObj.multiply(this.formItem.taxRate, 100);//税率
             this.list = res.data.data.detailList;
           } else {
             this.$Message.error('订单不存在！');
@@ -296,10 +302,9 @@ export default {
         deptId: '',//仓库或部门 
         providerCode: '',//供应商编号
         providerName: '',//供应商名称
-        linkMan: '',//供应商联系人
-        linkPhone: '',//供应商联系电话
-        taxpayerType: '',//纳税人类型
+        linkMan: '',//供应商联系人 
         taxRate: '',//税率  
+        taxRate1: '',//		税率
         inboundType: 1,
         remark: '',
         operator: '',//
@@ -315,7 +320,7 @@ export default {
       };
       Object.assign(form, this.formItem);
       form.signDate = page.formatDate(form.signDate);
-
+      form.taxRate = floatObj.multiply(form.taxRate1, 0.01);//税率
       var pass = true;
       this.$refs.form.validate((valid) => {
         pass = valid;
@@ -326,7 +331,7 @@ export default {
         return;
       }
 
-      form.detailList = [];
+      form.detailList = []; 
       // 明细
       for (var i = 0; i < this.list.length; i++) {
         var item = this.list[i];
@@ -344,7 +349,6 @@ export default {
         }
       }
 
-      form.proc = proc.formItem;
       // 提交
       this.loading = 1;
       var uri = '/api/engine/material/contract/add';
@@ -365,8 +369,10 @@ export default {
         this.$Message.error("请求失败，请重新操作")
       });
     },
-    onAmountChange(val) {
-      this.formItem.amount = val;
+    computedDetailList() {
+      // for (var i = 0; i < this.list.length; i++) {
+      //   this.list[i].quantity = 0;
+      // }
     },
     reset() {
       if (this.pageFlag == 1) {
@@ -386,7 +392,7 @@ export default {
 <style type="text/css">
 .instock-edit.page {
   width: 900px;
-   margin: 0 auto;  
+  margin: 0 auto;
   padding: 10px 20px;
   position: relative;
 }
