@@ -14,8 +14,8 @@
         <tr>
           <td>
             <RadioGroup v-model="queryForm.status" type="button" @on-change="query">
-              <Radio :label="1">应付款</Radio>
-              <Radio :label="2">全部</Radio>
+              <Radio :label="0">应付款</Radio>
+              <Radio :label="1">全部</Radio>
             </RadioGroup>
           </td>
         </tr>
@@ -98,31 +98,48 @@ export default {
           key: 'providerType',
           align: 'left',
           minWidth: 150,
-          
+          render: (h, params) => {
+            var row = params.row;
+            return h('label', this.$args.getArgText('provider_type', row.providerType));
+          }
         },
         {
           title: '发生额',
           key: 'amount',
           align: 'left',
           width: 120,
+          render: (h, params) => {
+            var row = params.row;
+            return h('span', row.amount==0?"":row.amount);
+          }
         },
         {
           title: '累计已付款额',
           key: 'payed',
           align: 'left',
           width: 150,
+          render: (h, params) => {
+            var row = params.row;
+            return h('span', row.payed==0?"":row.payed);
+          }
         },
         {
           title: '应付帐款金额',
-          key: 'payNeed',
+          key: 'payneed',
           align: 'left',
           width: 150,
+          render: (h, params) => {
+            var row = params.row;
+            var payneed =row.payneed;
+            return h('span', payneed>0?payneed:"");
+          }
         },
       ],
       queryForm: { 
         providerCode:'',
-        status: 2, 
-        createTime: null,
+        providerName:'',
+        providerType:'',
+        status: 0, 
       },
       loading: 0
     }
@@ -135,21 +152,12 @@ export default {
       this.$refs.page.query();
     },
     beforeLoad() {
-      var queryParam = this.$refs.page.queryParam;
-      queryParam.createTimeStart = '';
-      queryParam.createTimeEnd = '';
-      delete queryParam.createTime;
-      if (this.queryForm.createTime.length > 0) {
-        queryParam.createTimeStart = page.formatDate(this.queryForm.createTime[0]);
-      }
-      if (this.queryForm.createTime.length > 1) {
-        queryParam.createTimeEnd = page.formatDate(this.queryForm.createTime[1]);
-      }
     },
     reset() {
       Object.assign(this.queryForm, {
         providerCode:'',
-        createTime: [page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())],
+        providerName:'',
+        providerType:'',
         status: this.queryForm.status, 
       });
       this.query();

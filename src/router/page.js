@@ -23,8 +23,13 @@ components.push({ component: 'storage/outstock/View', name: '', path: '/storage/
 //采购合同
 components.push({ component: 'storage/contract/Index', name: '', path: '/storage/contract' })
 components.push({ component: 'storage/contract/Edit', name: '', path: '/storage/contract/edit' })
-
+//施工管理
+//工程登记
 components.push({ component: 'project/Index', name: '', path: '/project' })
+//工程量导入
+components.push({ component: 'project/workload/Index', name: '', path: '/workload' })
+components.push({ component: 'project/workload/workload', name: '', path: '/workload/workload' })
+//机械作业单
 //机械作业单
 components.push({ component: 'machine/order/Index', name: '', path: '/machine/order' })
 components.push({ component: 'machine/order/Edit', name: '', path: '/machine/order/start' })

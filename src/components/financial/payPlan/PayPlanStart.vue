@@ -216,10 +216,10 @@ export default {
           { required: true, whitespace: true, message: '该项为非空', trigger: 'change' }
         ],
         amount:[
-          { required: true, whitespace: true, message: '该项为非空', trigger: 'change' }
+          { type:'number',required: true, whitespace: true, message: '该项为非空', trigger: 'blur' }
         ],
         acumPayAmount:[
-          { required: true, whitespace: true, message: '该项为非空', trigger: 'change' }
+          { type:'number',required: true, whitespace: true, message: '该项为非空', trigger: 'blur' }
         ]
       },
       payPlanId:'',

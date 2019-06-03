@@ -1,20 +1,11 @@
 <template>
   <ListPage
     ref="page"
-    title="工程登记"
+    title="工程量导入"
     api="/api/engine/project/list"
     :model="this"
     :beforeLoad="beforeLoad"
   >
-    <div class="page-tools">
-      <table cellpadding="0" cellspacing="0">
-        <tr>
-          <td>
-            <Button @click="add" icon="plus">添加</Button>
-          </td>
-        </tr>
-      </table>
-    </div>
     <div class="page-searchbox">
       <table cellpadding="0" cellspacing="0">
         <tr>
@@ -49,17 +40,6 @@ export default {
     return {
       tabName: '1',
       columns: [
-        /*
-        {
-          type: 'selection',
-          width: 50,
-          align: 'center',
-          render: function (h,params) {
-            if(params.row.roleId === 1){
-              params.row._disabled = true
-            }
-          }
-        },*/
         {
           title: '操作',
           width: 120,
@@ -70,19 +50,13 @@ export default {
               props: {
                 btns: [{
                   key: 'edit',
-
-                },
-                {
-                  key: 'delete',
+                  text:'工程量导入'
                 }]
               },
               on: {
                 click: (key) => {
                   if (key == "edit") {
-                    this.rowCommand("编辑", params);
-                  }
-                  if (key == "delete") {
-                    this.rowCommand("删除", params);
+                    this.$router.push({ path: '/workload/workload?forward&projectCode='+row.projectCode+'&name='+row.name})
                   }
                 }
               }
@@ -141,10 +115,6 @@ export default {
   },
   computed: {},
   methods: {
-    goTab(index) {
-      var pages = ['/admin', '/provider'];
-      this.$router.push({ path: pages[index] });
-    },
     beforeLoad() {
 
     },
@@ -159,39 +129,8 @@ export default {
     select: function (selection) {
       this.selection = selection;
     },
-    rowCommand: function (name, params) {
-      if (name === '编辑') {
-        this.updateRole(params.row.projectCode);
-        return;
-      }
-      if (name === '删除') {
-        this.$Modal.confirm({
-          title: '删除确认',
-          content: '<p>删除后不能恢复，确定删除已选择的记录吗？</p>',
-          onOk: () => {
-            this.$http.post('/api/engine/project/delete?id=' + params.row.projectCode, {}).then((res) => {
-              if (res.data.code === 0) {
-                this.$Message.success("删除成功");
-                $.extend(this.queryForm, this.queryParam);
-                this.query();
-              } else {
-                this.$Message.error(res.data.message)
-              }
-            }).catch((error) => {
-              this.$Message.error(error.toString())
-            });
-          }
-        });
-      }
-    },
     goBack: function () {
       this.$router.go(-1);
-    },
-    add: function () {
-      this.$refs.edit.open(0);
-    },
-    updateRole: function (roleId) {
-      this.$refs.edit.open(roleId);
     },
   }
 }

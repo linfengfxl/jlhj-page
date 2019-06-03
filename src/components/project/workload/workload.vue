@@ -1,11 +1,14 @@
 <template>
   <ListPage
     ref="page"
-    title="工程登记"
-    api="/api/engine/project/list"
+    title="工程量明细导入"
+    api="/api/engine/project/workload/list"
     :model="this"
     :beforeLoad="beforeLoad"
   >
+    <div class="page-title" slot="page-title">
+      <a @click="goPage('/workload')">工程量导入</a> -&gt;工程量明细导入_{{name}}
+    </div>
     <div class="page-tools">
       <table cellpadding="0" cellspacing="0">
         <tr>
@@ -19,7 +22,7 @@
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td>
-            <Input v-model="queryForm.keyword" placeholder="编码、名称" @on-enter="query"/>
+            <Input v-model="queryForm.subProjectName" placeholder="名称" @on-enter="query"/>
           </td>
           <td>
             <Button @click="query" type="primary" icon="ios-search">查询</Button>
@@ -34,32 +37,29 @@
   </ListPage>
 </template>
 <script>    
-import Edit from '@/components/project/Edit';
+import Edit from '@/components/project/workload/workloadEdit';
 import ListPage from '@/components/page/ListPage';
 import DataRowOperate from '@/components/commons/DataRowOperate';
+import page from '@/assets/js/page';
 
 export default {
   components: {
     Edit,
     ListPage,
     DataRowOperate,
+    page
   },
   data() {
     let that = this;
     return {
       tabName: '1',
       columns: [
-        /*
         {
+          title: '序号',
           type: 'selection',
           width: 50,
           align: 'center',
-          render: function (h,params) {
-            if(params.row.roleId === 1){
-              params.row._disabled = true
-            }
-          }
-        },*/
+        },
         {
           title: '操作',
           width: 120,
@@ -90,61 +90,60 @@ export default {
           }
         },
         {
-          title: '编码',
-          key: 'projectCode',
+          title: '层级编码',
+          key: 'levelCode',
           width: 100,
         },
         {
-          title: '名称',
-          key: 'name',
-          width: 150,
+          title: '分步分项工程名称',
+          key: 'subProjectName',
+          width: 220,
         },
         {
-          title: '委托单位',
-          key: 'customerCode',
+          title: '设计工作量',
+          key: 'designWorkload',
           align: 'left',
           minWidth: 150
         },
         {
-          title: '联系人',
-          key: 'linkMan',
+          title: '复核工作量',
+          key: 'reviewWorkload',
           align: 'center',
           width: 130,
         },
-        {
-          title: '创建人',
-          key: 'creatorName',
+        page.table.initArgColumn({
+          title: '单位',
+          key: 'unit',
           align: 'center',
-          width: 100,
-        },
-        {
-          title: '创建时间',
-          key: 'createTime',
-          align: 'center',
-          width: 160,
-        }
+          group: 'unit',
+          width: 100
+        }),
       ],
       list: [],
       total: 0,
       queryParam: {},
       queryForm: {
-        keyword: '',
-        page: '',
-        pageSize: ''
+        projectCode: '',
+        subProjectName: '',
       },
       selection: [],
+      name:'',
       loading: 0
     }
   },
   mounted: function () {
-    this.query();
+    this.queryForm.projectCode = this.$route.query.projectCode;
+    this.name = this.$route.query.name;
+    if (this.queryForm.projectCode) {
+      this.query();
+    } else {
+      this.$Message.error("请选择工程");
+      this.goBack();
+    }
+    
   },
   computed: {},
   methods: {
-    goTab(index) {
-      var pages = ['/admin', '/provider'];
-      this.$router.push({ path: pages[index] });
-    },
     beforeLoad() {
 
     },
@@ -153,7 +152,7 @@ export default {
     },
     reset: function () {
       // 清空条件
-      this.queryForm.keyword = '';
+      this.queryForm.subProjectName = '';
       this.query();
     },
     select: function (selection) {
@@ -161,7 +160,7 @@ export default {
     },
     rowCommand: function (name, params) {
       if (name === '编辑') {
-        this.updateRole(params.row.projectCode);
+        this.updateRole(params.row.workloadId);
         return;
       }
       if (name === '删除') {
@@ -169,10 +168,9 @@ export default {
           title: '删除确认',
           content: '<p>删除后不能恢复，确定删除已选择的记录吗？</p>',
           onOk: () => {
-            this.$http.post('/api/engine/project/delete?id=' + params.row.projectCode, {}).then((res) => {
+            this.$http.post('/api/engine/project/workload/delete?workloadId=' + params.row.workloadId, {workloadId:params.row.workloadId}).then((res) => {
               if (res.data.code === 0) {
                 this.$Message.success("删除成功");
-                $.extend(this.queryForm, this.queryParam);
                 this.query();
               } else {
                 this.$Message.error(res.data.message)
@@ -187,11 +185,14 @@ export default {
     goBack: function () {
       this.$router.go(-1);
     },
+    goPage(path){
+      this.$router.push({ path: path})
+    },
     add: function () {
-      this.$refs.edit.open(0);
+      this.$refs.edit.openAdd(this.queryForm.projectCode);
     },
     updateRole: function (roleId) {
-      this.$refs.edit.open(roleId);
+      this.$refs.edit.openEdit(roleId);
     },
   }
 }
