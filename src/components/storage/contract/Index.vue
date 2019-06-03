@@ -23,7 +23,7 @@
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td>
-            <Input v-model="queryForm.stockBillId" placeholder="入库单号" @keyup.enter.native="query"></Input>
+            <Input v-model="queryForm.contractId" placeholder="编号" @keyup.enter.native="query"></Input>
           </td>
           <td>
             <Input v-model="queryForm.projectName" placeholder="工程名" @keyup.enter.native="query"></Input>
@@ -57,7 +57,7 @@
     <ListPageDetail
       ref="detail"
       slot="page-datatable-detail"
-      api="/api/engine/storage/instock/getDetailList?stockBillId="
+      api="/api/engine/material/contract/getDetailList?contractId="
       :columns="columns1"
     ></ListPageDetail>
   </ListPage>
@@ -92,7 +92,7 @@ export default {
                 btns: [{
                   key: 'edit',
                   //power: 'ckgl.rk.edit',
-                  disabled: row.status != 3
+                  //disabled: row.status != 0
                 }]
               },
               on: {
@@ -109,42 +109,49 @@ export default {
           }
         },
         {
-          title: '入库单号',
-          key: 'stockBillId',
+          title: '编号',
+          key: 'contractId',
           width: 140,
           fixed: 'left',
-        },
-        page.table.initDateColumn({
-          title: '单据日期',
-          key: 'operateDate',
-          align: 'left',
-        }),
+        }, 
         {
-          title: '仓库',
-          key: 'deptName',
+          title: '合同名称',
+          key: 'contractName',
           align: 'right',
           width: 100,
         },
-        {
+         {
           title: '工程名称',
           key: 'projectName',
           align: 'right',
           width: 100,
         },
+        page.table.initDateColumn({
+          title: '签订日期',
+          key: 'signDate',
+          align: 'left',
+        }),
+       
+          page.table.initDateColumn({
+          title: '签订份额',
+          key: 'signNum',
+          align: 'left',
+        }),
         {
-          title: '申请人',
-          key: 'creatorName',
+          title: '合同金额',
+          key: 'amount',
           align: 'right',
           width: 100,
         },
         page.table.initMapColumn({
           title: '状态',
           key: 'status',
-          data: {
-            '0': '待提交',
-            '1': '审核中',
-            '2': '通过',
-            '3': '驳回',
+          data: { 
+            '1': '执行中',
+            '2': '终止',
+            '3': '已结算',
+            '4': '解除',
+            '5': '关闭',
           }
         }),
         page.table.initDateColumn({
@@ -152,8 +159,7 @@ export default {
           key: 'createTime',
         }),
         {
-          title: '备注',
-          key: 'remark',
+          title: ' ', 
           align: 'left',
         },
       ],
@@ -227,7 +233,7 @@ export default {
         },
       ],
       queryForm: {
-        stockBillId: '', 
+        contractId: '', 
         projectName: '',
         deptName: '',
         materName: '',
@@ -270,7 +276,7 @@ export default {
         type: 1,
         operId: '',
         operType: 1,
-        stockBillId: '',
+        contractId: '',
         createTime: []//[page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())]
       });
       this.query();
@@ -278,7 +284,7 @@ export default {
     curRowChg(row) {
       if (row != null) {
         this.curRow = row;
-        this.curRowId = row.stockBillId;
+        this.curRowId = row.contractId;
         this.$refs.detail.load(this.curRowId);
       } else {
         this.curRow = null;
@@ -292,7 +298,7 @@ export default {
     edit(row) {
       if (row) {
         this.$router.push({
-          path: '/storage/instock/start?forward&id=' + row.stockBillId
+          path: '/storage/contract/edit?id=' + row.contractId
         })
       }
     },
@@ -304,7 +310,7 @@ export default {
           if (row) {
             this.loading = 1;
             this.$http.post('/api/engine/storage/instock/delete', {
-              stockBillId: row.stockBillId,
+              contractId: row.contractId,
             }).then((res) => {
               this.loading = 0;
               if (res.data.code === 0) {

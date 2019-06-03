@@ -20,13 +20,13 @@
             </colgroup>
             <tr>
               <td>
-                <FormItem label="编码" prop="providerCode">
-                  <Input v-model="formItem.providerCode" :disabled="isEdit == 1" class="width-1"/>
+                <FormItem label="编码" prop="contractId">
+                  <Input v-model="formItem.contractId" :disabled="isEdit == 1" class="width-1"/>
                 </FormItem>
               </td>
               <td>
-                <FormItem label="名称" prop="providerName">
-                  <Input v-model="formItem.providerName" placeholder="不超过64个字符"/>
+                <FormItem label="名称" prop="contractName">
+                  <Input v-model="formItem.contractName" placeholder="不超过64个字符"/>
                 </FormItem>
               </td>
               <td>
@@ -45,20 +45,20 @@
                   <Date-picker
                     type="date"
                     placeholder="选择日期"
-                    v-model="formItem.developTime"
+                    v-model="formItem.signDate"
                     format="yyyy-MM-dd"
                   ></Date-picker>
                 </FormItem>
               </td>
               <td>
                 <FormItem label="签订份数" prop>
-                  <Input v-model="formItem.address" placeholder="不超过64个字符"/>
+                  <Input v-model="formItem.signNum" placeholder="不超过64个字符"/>
                 </FormItem>
               </td>
 
               <td>
                 <FormItem label="合同金额" prop>
-                  <Input v-model="formItem.legalPerson"/>
+                  <Input v-model="formItem.amount"/>
                 </FormItem>
               </td>
             </tr>
@@ -79,7 +79,7 @@
 
               <td>
                 <FormItem label="付款方式" prop>
-                  <Select v-model="formItem.providerType" style="width:150px" placeholder="付款方式">
+                  <Select v-model="formItem.payWay" style="width:150px" placeholder="付款方式">
                     <Option
                       v-for="item in $args.getArgGroup('provider_type')"
                       :value="item.argCode"
@@ -92,12 +92,12 @@
             <tr>
               <td>
                 <FormItem label="预付款" prop>
-                  <Input v-model="formItem.taxNo" class="width-2"/>
+                  <Input v-model="formItem.prepayment" class="width-2"/>
                 </FormItem>
               </td>
               <td>
                 <FormItem label="质保金金额" prop>
-                  <Input v-model="formItem.taxNo" class="width-2"/>
+                  <Input v-model="formItem.warranty" class="width-2"/>
                 </FormItem>
               </td>
 
@@ -114,7 +114,7 @@
             <tr>
               <td>
                 <FormItem label="合同状态" prop>
-                  <Select v-model="formItem.invoiceType" style="width:150px" placeholder="类型">
+                  <Select v-model="formItem.status" style="width:150px" placeholder="类型">
                     <Option
                       v-for="item in $args.getArgGroup('invoice_type')"
                       :value="item.argCode"
@@ -125,19 +125,19 @@
               </td>
               <td>
                 <FormItem label="合同要点" prop>
-                  <Input type="textarea" :rows="2" v-model="formItem.bank"/>
+                  <Input type="textarea" :rows="2" v-model="formItem.contractPoint"/>
                 </FormItem>
               </td>
               <td>
                 <FormItem label="专项条款" prop>
-                  <Input type="textarea" :rows="2" v-model="formItem.bankAccount"/>
+                  <Input type="textarea" :rows="2" v-model="formItem.specialTerms"/>
                 </FormItem>
               </td>
             </tr>
             <tr>
               <td>
                 <FormItem label="风险款" prop>
-                  <Input type="textarea" :rows="2" v-model="formItem.bankCardNo"/>
+                  <Input type="textarea" :rows="2" v-model="formItem.riskItem"/>
                 </FormItem>
               </td>
             </tr>
@@ -154,13 +154,13 @@
           @on-amount-change="onAmountChange" 
         ></Editable>
       </div>
-      <!-- <table class="savebar" cellpadding="0" cellspacing="0">
+       <table class="savebar" cellpadding="0" cellspacing="0">
         <tr>
           <td class="save" @click="save" v-if="pageFlag<=2">保存</td>
           <td class="reset" @click="reset">重置</td>
           <td></td>
         </tr>
-      </table>-->
+      </table> 
     </Loading>
   </div>
 </template>
@@ -188,29 +188,27 @@ export default {
   data() {
     return {
       loading: 0,
-      stockBillId: '',
+      contractId: '',
       pageFlag: 1,//1.新建 2.编辑 3.修订
-      formItem: {
-        stockBillId: '',//入库单号
-        type: 1,//类型:1.入库, 2.出库
-        projectCode: '',//工程编号
-        projectName: '',//工程名称
-        contractNo: '',//合同编号
-        deptId: '',//仓库或部门 
-        deptName: '',//
-        providerCode: '',//供应商编号
+      isEdit:0,
+      formItem: { 
+        contractId:'',//合同编号
+        contractName:'',//合同名称
+        projectCode:'',//对应工程
+        signDate:'',//签订日期
+        signNum:'',//签定份数
+        providerCode:'',//供应商
         providerName: '',//供应商名称
         linkMan: '',//供应商联系人
-        linkPhone: '',//供应商联系电话
-        taxpayerType: '',//纳税人类型
-        invoiceType: '',//发票类型
-        taxRate: '',//税率 
-        taxRate1: '',//税率 
-        inboundType: 1,//红蓝字:1.“蓝字”表示入库，2.“红字”表示退货
-        operateDate: page.formatDate(new Date(), 'yyyy-MM-dd'),
-        remark: '',
-        operator: '',//
-        operatorName: '',
+        amount:'',//	合同金额
+        payWy	:'',//付款方式:从字典中选择
+        prepayment:'',//	预付款
+        warranty:'',//		质保金
+        taxRate:'',//		税率
+        contractPoint:'',//		合同要点
+        specialTerms	:'',//		专项条款
+        riskItem:'',//		风险项 
+        status:'',//	合同状态 1.执行中 2.终止 3.已结算 4.解除 5关闭  
       },
       formRules: {
         deptId: [
@@ -232,8 +230,8 @@ export default {
     }
   },
   mounted: function () {
-    this.stockBillId = this.$route.query.id;
-    if (this.stockBillId) {
+    this.contractId = this.$route.query.id;
+    if (this.contractId) {
       this.pageFlag = 2;
       this.load();
     } else {
@@ -269,10 +267,11 @@ export default {
     },
     load() {
       this.loading = 1;
-      this.$http.post("/api/engine/storage/instock/get?stockBillId=" + this.stockBillId, {}).then((res) => {
+      this.$http.post("/api/engine/material/contract/get",{contractId:this.contractId}).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
           if (res.data.data) {
+            console.log(res.data.data);
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
             Object.assign(this.formItem, res.data.data);
             this.list = res.data.data.detailList;
@@ -290,9 +289,9 @@ export default {
     },
     initNew() {
       Object.assign(this.formItem, {
-        stockBillId: '',//入库单号
-        type: 1,//类型:1.入库, 2.出库
-        projectCode: '',//工程编号
+        contractId: '',//合同编号
+        contractName: '',//合同名称 
+        projectCode: '',//对应工程
         contractNo: '',//合同编号
         deptId: '',//仓库或部门 
         providerCode: '',//供应商编号
@@ -348,9 +347,9 @@ export default {
       form.proc = proc.formItem;
       // 提交
       this.loading = 1;
-      var uri = '/api/engine/storage/instock/start';
+      var uri = '/api/engine/material/contract/add';
       if (this.pageFlag == 2) {
-        uri = '/api/engine/storage/instock/restart';
+        uri = '/api/engine/material/contract/update';
       }
 
       this.$http.post(uri, form).then((res) => {

@@ -22,6 +22,9 @@
         <th class="col-amount">
           <span>税额(元)</span>
         </th>
+        <th class="col-amount">
+          <span>价税合计(元)</span>
+        </th> 
       </thead>
       <tbody>
         <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
@@ -62,6 +65,10 @@
             {{item.tax}}
             <!--  税额(元) -->
           </td>
+          <td class="col-amount">
+            {{item.totalPriceTax}}
+            <!--  价税合计(元) -->
+          </td>
         </tr>
       </tbody>
     </table>
@@ -88,6 +95,9 @@
         <th class="col-amount">
           <span>税额(元)</span>
         </th>
+         <th class="col-amount">
+          <span>价税合计(元)</span>
+        </th> 
       </thead>
       <tbody>
         <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
@@ -140,6 +150,14 @@
           <td class="col-amount">
             <!--  税额(元) -->
             {{item.tax}}
+          </td>
+           <td class="col-price">
+            <!--  价税合计(元) -->
+            <InputNumber
+              :max="999999"
+              :min="0"
+              v-model="item.totalPriceTax"
+            ></InputNumber>
           </td>
         </tr>
       </tbody>
@@ -212,6 +230,7 @@ export default {
         taxUnitPrice: 0,//含税单价
         tax: 0,//税额
         amount: 0,//金额
+        totalPriceTax:0,
         constructionSite: '',//施工部位
         productName: ''//产成品名称
       };
