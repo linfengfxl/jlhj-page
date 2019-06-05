@@ -29,10 +29,16 @@ components.push({ component: 'project/Index', name: '', path: '/project' })
 //工程量导入
 components.push({ component: 'project/workload/Index', name: '', path: '/workload' })
 components.push({ component: 'project/workload/workload', name: '', path: '/workload/workload' })
+//工作日报
+components.push({ component: 'project/daily/Index', name: '', path: '/project/daily' })
+components.push({ component: 'project/daily/Edit', name: '', path: '/project/daily/edit' })
+
+
 //机械作业单
 //机械作业单
 components.push({ component: 'machine/order/Index', name: '', path: '/machine/order' })
 components.push({ component: 'machine/order/Edit', name: '', path: '/machine/order/start' })
+components.push({ component: 'machine/order/View', name: '', path: '/machine/order/view' })
 //机械租赁结算单
 components.push({ component: 'machine/bill/Index', name: '', path: '/machine/bill' })
 components.push({ component: 'machine/bill/Edit', name: '', path: '/machine/bill/start' })

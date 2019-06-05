@@ -269,7 +269,7 @@ export default {
         this.formItem.linkMan = data.linkMan;//供应商联系人
       }
     },
-    load() {
+    load() { 
       this.loading = 1;
       this.$http.post("/api/engine/material/contract/get", { contractId: this.contractId }).then((res) => {
         this.loading = 0;

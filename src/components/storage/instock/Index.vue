@@ -11,7 +11,7 @@
     </div>
     <div class="page-searchbox">
       <table cellpadding="0" cellspacing="0">
-        <tr> 
+        <tr>
           <td>
             <RadioGroup v-model="queryForm.status" type="button" @on-change="query">
               <Radio :label="2">通过</Radio>
@@ -32,6 +32,9 @@
         <tr>
           <td>
             <Input v-model="queryForm.stockBillId" placeholder="入库单号" @keyup.enter.native="query"></Input>
+          </td>
+          <td>
+            <Input v-model="queryForm.providerName" placeholder="供应商" @keyup.enter.native="query"></Input>
           </td>
           <td>
             <Input v-model="queryForm.projectName" placeholder="工程名" @keyup.enter.native="query"></Input>
@@ -138,8 +141,12 @@ export default {
           key: 'projectName',
           align: 'right',
           width: 100,
-        },
-        {
+        }, {
+          title: '供应商',
+          key: 'providerName',
+          align: 'right',
+          width: 200,
+        }, {
           title: '申请人',
           key: 'creatorName',
           align: 'right',
@@ -238,6 +245,7 @@ export default {
         stockBillId: '',
         status: 2,
         projectName: '',
+        providerName: '',
         deptName: '',
         materName: '',
         type: 1,
@@ -275,6 +283,7 @@ export default {
       Object.assign(this.queryForm, {
         status: 2,
         projectName: '',
+        providerName: '',
         deptName: '',
         materName: '',
         type: 1,

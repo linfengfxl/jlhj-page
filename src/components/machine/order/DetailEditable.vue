@@ -33,16 +33,14 @@
             <!--  序号 -->
           </td>
           <td class="col-select">
-            <TimePicker
-              format="HH:mm"
+            <DatePicker
+              type="datetimerange"
+              format="yyyy-MM-dd HH:mm"
               v-model="item.times"
-              confirm
-              type="timerange"
-              placement="bottom-end"
               placeholder="选择时间"
-              style="width: 168px"
+              style="width: 300px"
               @on-change="computedAmount(item)"
-            ></TimePicker>
+            ></DatePicker>
           </td>
           <td>{{item.useTime}}</td>
           <td>
@@ -66,10 +64,6 @@ export default {
       default: function () {
         var arr = [];
       }
-    },
-    storageId: {
-      type: String,
-      default: ''
     },
     editable: {
       type: Boolean,
@@ -122,7 +116,7 @@ export default {
     computedAmount(item) {
       item.startTime = item.times[0];
       item.endTime = item.times[1];
-      item.useTime = this.getInervalHour("1900-01-01 " + item.startTime, "1900-01-01 " + item.endTime);//作业用时
+      item.useTime = this.getInervalHour(item.startTime, item.endTime);//作业用时
       item.taiban = floatObj.divide(item.useTime, 8, 3);//作业台班 默认为作业用时/8，可以手工输入或修改
 
     },

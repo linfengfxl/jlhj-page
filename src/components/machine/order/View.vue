@@ -20,68 +20,35 @@
             </colgroup>
             <tr>
               <td>
-                <FormItem prop="deptId" label="部门">
-                  <SelStorage v-model="formItem.deptId"></SelStorage>
-                </FormItem>
+                <FormItem prop="deptId" label="部门">{{formItem.deptName}}</FormItem>
               </td>
               <td>
-                <FormItem prop="jobDate" label="作业日期">
-                  <Date-picker
-                    type="date"
-                    placeholder="选择日期"
-                    v-model="formItem.jobDate"
-                    format="yyyy-MM-dd"
-                  ></Date-picker>
-                </FormItem>
+                <FormItem prop="jobDate" label="作业日期">{{formItem.jobDate}}</FormItem>
               </td>
               <td>
-                <FormItem prop="projectCode" label="工程名称">
-                  <SelectProject
-                    v-model="formItem.projectCode"
-                    :model="formItem"
-                    :text="formItem.projectName"
-                  />
-                </FormItem>
+                <FormItem prop="projectCode" label="工程名称">{{formItem.projectName}}</FormItem>
               </td>
             </tr>
             <tr>
               <td>
-                <FormItem prop="providerCode" label="供应商">
-                  <SelectProvider
-                    v-model="formItem.providerCode"
-                    :model="formItem"
-                    :text="formItem.providerName"
-                    @on-select="selProvider"
-                  />
-                </FormItem>
+                <FormItem prop="providerCode" label="供应商">{{formItem.providerName}}</FormItem>
               </td>
               <td>
                 <FormItem prop label="供应商联系人">{{formItem.linkMan}}</FormItem>
               </td>
               <td>
-                <FormItem prop label="加班时长">
-                  <Input v-model="formItem.overtime"/>
-                </FormItem>
+                <FormItem prop label="加班时长">{{formItem.overtime}}</FormItem>
               </td>
             </tr>
             <tr>
               <td>
-                <FormItem prop="machineName" label="机械名称">
-                  <SelectMachine
-                    v-model="formItem.machineCode"
-                    :model="formItem"
-                    :text="formItem.machineName"
-                    @on-select="selMachine"
-                  />
-                </FormItem>
+                <FormItem prop="machineName" label="机械名称">{{formItem.machineName}}</FormItem>
               </td>
               <td>
                 <FormItem prop label="租赁方式">{{$args.getArgText('lease_type', formItem.leaseType)}}</FormItem>
               </td>
               <td>
-                <FormItem prop label="加油数量">
-                  <Input v-model="formItem.addFuel"/>
-                </FormItem>
+                <FormItem prop label="加油数量">{{formItem.addFuel}}</FormItem>
               </td>
             </tr>
             <tr>
@@ -92,22 +59,16 @@
                 <FormItem prop label="机械型号">{{formItem.machineModel}}</FormItem>
               </td>
               <td>
-                <FormItem prop label=" 司机/操作手姓名">
-                  <Input v-model="formItem.operator"/>
-                </FormItem>
+                <FormItem prop label=" 司机/操作手姓名">{{formItem.operator}}</FormItem>
               </td>
             </tr>
 
             <tr>
               <td>
-                <FormItem prop label="司机/操作手电话">
-                  <Input v-model="formItem.operatorTel"/>
-                </FormItem>
+                <FormItem prop label="司机/操作手电话">{{formItem.operatorTel}}</FormItem>
               </td>
               <td colspan="2">
-                <FormItem prop=" " label="备注">
-                  <Input type="textarea" :rows="2" v-model="formItem.remark"/>
-                </FormItem>
+                <FormItem prop=" " label="备注">{{formItem.remark}}</FormItem>
               </td>
             </tr>
           </table>
@@ -119,19 +80,12 @@
         <Editable
           ref="editable"
           :list="list"
-          :editable="true"
+          :editable="false"
           :deptId="formItem.deptId"
           @on-amount-change="onAmountChange"
           :style="{display: formItem.deptId?'':'none'}"
         ></Editable>
       </div>
-      <table class="savebar" cellpadding="0" cellspacing="0">
-        <tr>
-          <td class="save" @click="save" v-if="pageFlag<=2">保存</td>
-          <td class="reset" @click="reset">重置</td>
-          <td></td>
-        </tr>
-      </table>
     </Loading>
   </div>
 </template>
@@ -187,23 +141,6 @@ export default {
         taibanPrice: null,//
         source: 1,
       },
-      formRules: {
-        deptId: [
-          { required: true, whitespace: true, message: '请选择部门', trigger: 'change' }
-        ],
-        projectCode: [
-          { required: true, whitespace: true, message: '请选择工程', trigger: 'change' }
-        ],
-        providerCode: [
-          { required: true, whitespace: true, message: '请选择供应商', trigger: 'change' }
-        ],
-        machineName: [
-          { required: true, whitespace: true, message: '请选择机械名称', trigger: 'change' }
-        ],
-        jobDate: [
-          { required: true, message: '请选择作业日期', trigger: 'change', pattern: /.+/ }
-        ],
-      },
       list: [],
       oriItem: {},
       storage: []
@@ -221,12 +158,7 @@ export default {
   },
   computed: {
     pageTitle() {
-      if (this.pageFlag == 1) {
-        return '机械作业单 - 创建';
-      }
-      if (this.pageFlag == 2) {
-        return '机械作业单 - 编辑';
-      }
+      return '机械作业单 - 明細';
     }
   },
   methods: {
@@ -315,7 +247,7 @@ export default {
         if (item.taiban == 0) {
           this.$Message.error(msg + '请录入作业台班');
           return;
-        } 
+        }
         item['startTime'] = page.formatDateTime(item['startTime']);
         item['endTime'] = page.formatDateTime(item['endTime']);
         form.detailList.push(item);

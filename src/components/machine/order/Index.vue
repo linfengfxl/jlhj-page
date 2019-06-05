@@ -91,6 +91,27 @@ export default {
           key: 'machineOrderId',
           width: 120,
         }, {
+          title: '单号',
+          key: 'machineOrderId',
+          width: 140,
+          align: 'center',
+          fixed: 'left',
+          render:(h,params)=>{
+            var row = params.row;
+            var text = row.machineOrderId;
+            text = text;
+            return h('a',{
+              props:{
+
+              },
+              on:{
+                click:()=>{
+                  this.$router.push({  path: '/machine/order/view?forward&id=' + row.machineOrderId}); 
+                }
+              }
+            },text);
+          }
+        }, {
           title: '部门',
           key: 'deptName',
           width: 120,
