@@ -1,6 +1,6 @@
 <template>
   <Modal
-    v-model="display" 
+    v-model="display"
     title="选择"
     :closable="false"
     :mask-closable="false"
@@ -31,6 +31,7 @@
             :row-class-name="rowClassName"
             :columns="columns"
             @on-row-click="innerCheckRow(arguments[1])"
+            @on-selection-change="select"
             :data="list"
           ></i-table>
 
@@ -67,7 +68,7 @@ export default {
       type: Boolean,
       default: true
     },
-   projectCode: {
+    projectCode: {
       type: String,
       default: ''
     },
@@ -76,30 +77,34 @@ export default {
     var that = this;
     return {
       columns: [
+        // {
+        //   title: '选择',
+        //   key: '_checked',
+        //   width: 60,
+        //   render: function (h, params) {
+        //     var row = params.row;
+        //     var index = params.index;
+        //     var props = {
+        //       value: row._checked,
+        //     };
+        //     if (row.status == "2") {
+        //       props.disabled = true;
+        //     }
+        //     return h('Checkbox', {
+        //       props: props,
+        //       on: {
+        //         'on-change': () => {
+        //           that.innerCheckRow(index);
+        //         }
+        //       }
+        //     });
+        //   }
+        // },
         {
-          title: '选择',
-          key: '_checked',
+          type: 'selection',
           width: 60,
-          render: function (h, params) {
-            var row = params.row;
-            var index = params.index;
-            var props = {
-              value: row._checked,
-            };
-            if (row.status == "2") {
-              props.disabled = true;
-            }
-            return h('Checkbox', {
-              props: props,
-              on: {
-                'on-change': () => {
-                  that.innerCheckRow(index);
-                }
-              }
-            });
-          }
+          align: 'center'
         },
-
         {
           title: '层级编码',
           key: 'levelCode',
@@ -141,6 +146,7 @@ export default {
       },
       industry: [],
       selected: [],
+      selection: [],
       loading: 0,
       options: {}
     }
@@ -155,9 +161,9 @@ export default {
       this.loading = 1;
       this.queryParam.page = pagebar.currentPage;
       this.queryParam.pageSize = pagebar.currentPageSize;
-      this.queryParam.projectCode=this.projectCode;
+      this.queryParam.projectCode = this.projectCode;
       this.$http.post("/api/engine/project/workload/list", this.queryParam).then((res) => {
-        this.loading = 0; 
+        this.loading = 0;
         if (res.data.code === 0) {
           this.loading = 0;
           var list = res.data.data.rows;
@@ -197,6 +203,9 @@ export default {
         item._checked = index == i && item.status != 2;
       }
     },
+    select: function (selection) {
+      this.selection = selection;
+    },
     reset: function () {
       Object.assign(this.queryForm, {
         keyword: '',
@@ -227,18 +236,20 @@ export default {
       this.display = false;
     },
     onOK() {
-      var select = null;
-      this.list.map((item) => {
-        if (item._checked) {
-          select = item;
-        }
-      });
-      if (select == null) {
-        this.$Message.error('请选择');
-        return;
-      }
+      // var select = null;
+      // this.list.map((item) => {
+      //   if (item._checked) {
+      //     select = item;
+      //   }
+      // });
+      // if (select == null) {
+      //   this.$Message.error('请选择');
+      //   return;
+      // }
+      // this.display = false;
+      // this.options.ok(select);
       this.display = false;
-      this.options.ok(select);
+      this.options.ok(this.selection);
     },
     onCancel() {
       this.display = false;

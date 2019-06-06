@@ -118,55 +118,55 @@ export default {
               }
             });
           }
-        }, 
-         {
+        },
+        {
           title: '单号',
           key: 'stockBillId',
-          width: 140,
+          width: 120,
           align: 'center',
           fixed: 'left',
-          render:(h,params)=>{
+          render: (h, params) => {
             var row = params.row;
             var text = row.stockBillId;
             text = text;
-            return h('a',{
-              props:{
+            return h('a', {
+              props: {
 
               },
-              on:{
-                click:()=>{
-                  debugger;
-                  this.$router.push({  path:  '/storage/instock/view?forward&inst='+row.instId}); 
+              on: {
+                click: () => {
+                  this.$router.push({ path: '/storage/instock/view?forward&inst=' + row.instId });
                 }
               }
-            },text);
+            }, text);
           }
         },
         page.table.initDateColumn({
           title: '单据日期',
           key: 'operateDate',
-          align: 'left',
+          align: 'center',
+          width: 100,
         }),
         {
           title: '仓库',
           key: 'deptName',
-          align: 'right',
-          width: 100,
+          align: 'left',
+          width: 160,
         },
         {
           title: '工程名称',
           key: 'projectName',
-          align: 'right',
-          width: 100,
+          align: 'left',
+          width: 120,
         }, {
           title: '供应商',
           key: 'providerName',
-          align: 'right',
+          align: 'left',
           width: 200,
         }, {
           title: '申请人',
           key: 'creatorName',
-          align: 'right',
+          align: 'left',
           width: 100,
         },
         page.table.initMapColumn({
@@ -177,16 +177,17 @@ export default {
             '1': '审核中',
             '2': '通过',
             '3': '驳回',
-          }
+          },
+          width: 80,
         }),
         page.table.initDateColumn({
           title: '创建日期',
           key: 'createTime',
+          align: 'center',
+          width: 100,
         }),
         {
-          title: '备注',
-          key: 'remark',
-          align: 'left',
+          title: ' ',
         },
       ],
       columns1: [

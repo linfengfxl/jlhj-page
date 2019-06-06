@@ -32,7 +32,7 @@ components.push({ component: 'project/workload/workload', name: '', path: '/work
 //工作日报
 components.push({ component: 'project/daily/Index', name: '', path: '/project/daily' })
 components.push({ component: 'project/daily/Edit', name: '', path: '/project/daily/edit' })
-
+components.push({ component: 'project/daily/List', name: '', path: '/project/daily/list' })
 
 //机械作业单
 //机械作业单

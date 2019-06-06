@@ -97,14 +97,14 @@
             {{index+1}}
             <!--  序号 -->
           </td>
-          <td class="col-select" @click="editable && !isImport">
+          <td @click="editable && !isImport">
             <span>
-              {{item.materCode}}
-              <SelectWorkload
+              {{item.subProjectName}}
+              <!-- <SelectWorkload
                 :projectCode="projectCode"
                 :text="item.subProjectName"
                 @on-select="selProvider(item,arguments[0])"
-              />
+              />-->
             </span>
             <!--    -->
           </td>
@@ -117,7 +117,9 @@
             <!--  复核工程量 -->
           </td>
           <td>{{item.unit}}</td>
-          <td>{{item.place}}</td>
+          <td>
+            <Input v-model="item.place" placeholder :maxlength="100"/>
+          </td>
           <td class="col-quantity">
             <InputNumber :max="999999" :min="0" v-model="item.workloadPlan"></InputNumber>
           </td>
@@ -143,12 +145,13 @@
         </tr>
       </tbody>
     </table>
+    <selectWorkload ref="selectWorkload" :projectCode="projectCode"></selectWorkload>
   </Editable>
 </template>
 <script>
 import Editable from '@/components/editable-table';
 import floatObj from '@/assets/js/floatObj';
-import SelectWorkload from '@/components/page/form/SelectWorkload'
+import SelectWorkload from '@/components/project/workload/SelectWorkload'// '@/components/page/form/SelectWorkload'
 export default {
   components: {
     SelectWorkload,
@@ -198,8 +201,7 @@ export default {
         item.subProjectName = args.subProjectName; //分部分项工程名  
         item.levelCode = args.levelCode;//层次编码 
         item.reviewWorkload = args.reviewWorkload;//复核工程量 
-        item.unit = args.unit;//单位  
-        item.place = args.place;//部位
+        item.unit = args.unit;//单位   
       }
     },
     load() {
@@ -224,9 +226,31 @@ export default {
       return def;
     },
     add() {
-      if (!this.isImport) {
-        this.list.push(this.listNewRow());
-      }
+      // if (!this.isImport) {
+      //   this.list.push(this.listNewRow());
+      // }
+      var sel = this.$refs.selectWorkload;//引用该控件，赋值给变量对象
+      sel.show({
+        ok: (data) => {
+          if (data) {
+            var that = this;
+            //this.$emit('input', data.projectCode);
+
+            this.$emit('on-select', data);
+            data.map(args => {
+              if (_.findIndex(that.list, { 'workloadId': args.workloadId }) >= 0) {
+
+              } else {
+                var item = this.listNewRow();
+                Object.assign(item, args);
+                that.list.push(item);
+              }
+            })
+
+          }
+        }
+      });
+
     },
     remove() {
       if (this.list.length > this.curIndex) {

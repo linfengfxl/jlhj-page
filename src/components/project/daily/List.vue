@@ -1,13 +1,14 @@
 <template>
   <ListPage
     ref="page"
-    title="施工日报"
-    api="/api/engine/project/workload/list"
+    title="工程量填报"
+    api="/api/engine/project/daily/list"
     :model="this"
     :beforeLoad="beforeLoad"
   >
     <div class="page-title" slot="page-title">
-      <a @click="goPage('/workload')">工程量导入</a> -&gt;工程量明细导入_{{name}}
+      <a @click="goPage('/project/daily')">施工日报</a>
+      -&gt;工程量填报_{{name}}
     </div>
     <div class="page-tools">
       <table cellpadding="0" cellspacing="0">
@@ -70,10 +71,6 @@ export default {
               props: {
                 btns: [{
                   key: 'edit',
-
-                },
-                {
-                  key: 'delete',
                 }]
               },
               on: {
@@ -89,35 +86,22 @@ export default {
             });
           }
         },
-        {
-          title: '层级编码',
-          key: 'levelCode',
+        page.table.initDateColumn({
+          title: '填报日期',
+          key: 'dailyDate',
           width: 100,
-        },
-        {
-          title: '分步分项工程名称',
-          key: 'subProjectName',
-          width: 220,
-        },
-        {
-          title: '设计工作量',
-          key: 'designWorkload',
-          align: 'left',
-          minWidth: 150
-        },
-        {
-          title: '复核工作量',
-          key: 'reviewWorkload',
-          align: 'center',
-          width: 130,
-        },
-        page.table.initArgColumn({
-          title: '单位',
-          key: 'unit',
-          align: 'center',
-          group: 'unit',
-          width: 100
         }),
+        {
+          title: '本日工作',
+          key: 'dayWork',
+          width: 100,
+        }, {
+          title: '明日计划',
+          key: 'nextDayPlan',
+          width: 220,
+        }, {
+          title: ' '
+        }
       ],
       list: [],
       total: 0,
@@ -127,7 +111,7 @@ export default {
         subProjectName: '',
       },
       selection: [],
-      name:'',
+      name: '',
       loading: 0
     }
   },
@@ -140,7 +124,7 @@ export default {
       this.$Message.error("请选择工程");
       this.goBack();
     }
-    
+
   },
   computed: {},
   methods: {
@@ -160,36 +144,18 @@ export default {
     },
     rowCommand: function (name, params) {
       if (name === '编辑') {
-        this.updateRole(params.row.workloadId);
+        this.$router.push({ path: '/project/daily/edit?id=' + params.row.dailyId + '&projectCode=' + this.queryForm.projectCode + '&name=' + this.name })
         return;
-      }
-      if (name === '删除') {
-        this.$Modal.confirm({
-          title: '删除确认',
-          content: '<p>删除后不能恢复，确定删除已选择的记录吗？</p>',
-          onOk: () => {
-            this.$http.post('/api/engine/project/workload/delete?workloadId=' + params.row.workloadId, {workloadId:params.row.workloadId}).then((res) => {
-              if (res.data.code === 0) {
-                this.$Message.success("删除成功");
-                this.query();
-              } else {
-                this.$Message.error(res.data.message)
-              }
-            }).catch((error) => {
-              this.$Message.error(error.toString())
-            });
-          }
-        });
       }
     },
     goBack: function () {
       this.$router.go(-1);
     },
-    goPage(path){
-      this.$router.push({ path: path})
+    goPage(path) {
+      this.$router.push({ path: path })
     },
     add: function () {
-      this.$refs.edit.openAdd(this.queryForm.projectCode);
+      this.$router.push({ path: '/project/daily/edit?projectCode=' + this.queryForm.projectCode + '&name=' + this.name })
     },
     updateRole: function (roleId) {
       this.$refs.edit.openEdit(roleId);

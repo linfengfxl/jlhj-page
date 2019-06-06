@@ -56,7 +56,7 @@ export default {
               on: {
                 click: (key) => {
                   if (key == "edit") {
-                    this.$router.push({ path: '/project/daily/edit?forward&projectCode='+row.projectCode+'&name='+row.name})
+                    this.$router.push({ path: '/project/daily/list?projectCode='+row.projectCode+'&name='+row.name})
                   }
                 }
               }

@@ -37,6 +37,9 @@
             <Input v-model="queryForm.stockBillId" placeholder="出库单号" @keyup.enter.native="query"></Input>
           </td>
           <td>
+            <Input v-model="queryForm.providerName" placeholder="供应商" @keyup.enter.native="query"></Input>
+          </td>
+          <td>
             <Input v-model="queryForm.projectName" placeholder="工程名" @keyup.enter.native="query"></Input>
           </td>
           <td>
@@ -124,34 +127,55 @@ export default {
               }
             });
           }
-        },
-        {
-          title: '出库单号',
+        }, {
+          title: '单号',
           key: 'stockBillId',
           width: 140,
+          align: 'center',
           fixed: 'left',
+          render: (h, params) => {
+            var row = params.row;
+            var text = row.stockBillId;
+            text = text;
+            return h('a', {
+              props: {
+
+              },
+              on: {
+                click: () => {
+                  this.$router.push({ path: '/storage/outstock/view?forward&inst=' + row.instId });
+                }
+              }
+            }, text);
+          }
         },
         page.table.initDateColumn({
           title: '单据日期',
           key: 'operateDate',
-          align: 'left',
+          align: 'center',
+          width: 100,
         }),
         {
           title: '仓库',
           key: 'deptName',
-          align: 'right',
-          width: 100,
+          align: 'left',
+          width: 160,
         },
         {
           title: '工程名称',
           key: 'projectName',
-          align: 'right',
-          width: 100,
+          align: 'left',
+          width: 120,
+        }, {
+          title: '供应商',
+          key: 'providerName',
+          align: 'left',
+          width: 200,
         },
         {
           title: '申请人',
           key: 'creatorName',
-          align: 'right',
+          align: 'left',
           width: 100,
         },
         page.table.initMapColumn({
@@ -163,16 +187,17 @@ export default {
             '2': '通过',
             '3': '驳回',
             '4': '作废',
-          }
+          },
+          width: 80,
         }),
         page.table.initDateColumn({
           title: '创建日期',
           key: 'createTime',
+          align: 'center',
+          width: 100,
         }),
         {
-          title: '备注',
-          key: 'remark',
-          align: 'left',
+          title: ' '
         },
       ],
       columns1: [
@@ -248,6 +273,7 @@ export default {
         stockBillId: '',
         status: 2,
         projectName: '',
+        providerName: '',
         deptName: '',
         materName: '',
         type: 2,
@@ -283,6 +309,7 @@ export default {
       Object.assign(this.queryForm, {
         status: 2,
         projectName: '',
+        providerName:'',
         deptName: '',
         materName: '',
         type: 2,

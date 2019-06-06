@@ -93,11 +93,27 @@ export default {
               }
             });
           }
-        },
-        {
+        }, {
           title: '单号',
           key: 'machineBillCode',
-          width: 130,
+          width: 140,
+          align: 'center',
+          fixed: 'left',
+          render: (h, params) => {
+            var row = params.row;
+            var text = row.machineBillCode;
+            text = text;
+            return h('a', {
+              props: {
+
+              },
+              on: {
+                click: () => {
+                  this.$router.push({ path: '/machine/bill/view?forward&inst=' + row.instId });
+                }
+              }
+            }, text);
+          }
         }, {
           title: '部门',
           key: 'deptName',
@@ -110,7 +126,7 @@ export default {
         }, {
           title: '供应商',
           key: 'providerName',
-          width: 120,
+          width: 160,
         },
         page.table.initDateColumn({
           title: '结算时间',
@@ -128,12 +144,6 @@ export default {
           }
         }),
         {
-          title: '备注',
-          key: 'remark',
-          align: 'left',
-          minWidth: 150
-        },
-        {
           title: '创建人',
           key: 'creatorName',
           align: 'center',
@@ -144,6 +154,9 @@ export default {
           key: 'createTime',
           align: 'center',
           width: 160,
+        },
+        {
+          title: ' ',
         }
       ],
       list: [],

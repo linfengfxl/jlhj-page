@@ -85,31 +85,26 @@ export default {
               }
             });
           }
-        },
-        {
-          title: '单号',
-          key: 'machineOrderId',
-          width: 120,
         }, {
           title: '单号',
           key: 'machineOrderId',
           width: 140,
           align: 'center',
           fixed: 'left',
-          render:(h,params)=>{
+          render: (h, params) => {
             var row = params.row;
             var text = row.machineOrderId;
             text = text;
-            return h('a',{
-              props:{
+            return h('a', {
+              props: {
 
               },
-              on:{
-                click:()=>{
-                  this.$router.push({  path: '/machine/order/view?forward&id=' + row.machineOrderId}); 
+              on: {
+                click: () => {
+                  this.$router.push({ path: '/machine/order/view?forward&id=' + row.machineOrderId });
                 }
               }
-            },text);
+            }, text);
           }
         }, {
           title: '部门',
@@ -123,7 +118,7 @@ export default {
         }, {
           title: '供应商',
           key: 'providerName',
-          width: 120,
+          width: 160,
         },
         {
           title: '机械名称',
@@ -135,12 +130,6 @@ export default {
           key: 'jobDate',
         }),
         {
-          title: '备注',
-          key: 'remark',
-          align: 'left',
-          minWidth: 150
-        },
-        {
           title: '创建人',
           key: 'creatorName',
           align: 'center',
@@ -151,6 +140,9 @@ export default {
           key: 'createTime',
           align: 'center',
           width: 160,
+        },
+        {
+          title: ' '
         }
       ],
       list: [],
@@ -219,7 +211,7 @@ export default {
     goBack: function () {
       this.$router.go(-1);
     },
-    add: function () { 
+    add: function () {
       this.$router.push({ path: '/machine/order/start?forward' })
     },
   }

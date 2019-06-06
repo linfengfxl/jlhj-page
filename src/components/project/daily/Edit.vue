@@ -83,6 +83,7 @@ export default {
       loading: 0,
       dailyId: '',
       projectCode: '',
+      projectName: '',
       pageFlag: 1,//1.新建 2.编辑 3.修订
       isEdit: 0,
       formItem: {
@@ -110,6 +111,7 @@ export default {
   mounted: function () {
     this.dailyId = this.$route.query.id;
     this.projectCode = this.$route.query.projectCode;
+    this.projectName = this.$route.query.name;
     this.formItem.projectCode = this.projectCode;
     if (this.dailyId) {
       this.pageFlag = 2;
@@ -122,28 +124,26 @@ export default {
   computed: {
     pageTitle() {
       if (this.pageFlag == 1) {
-        return '施工日报 ' + this.projectCode + ' - 创建';
+        return '施工日报 ' + this.projectName + ' - 创建';
       }
       if (this.pageFlag == 2) {
-        return '施工日报 ' + this.projectCode + '- 编辑';
+        return '施工日报 ' + this.projectName + '- 编辑';
       }
       if (this.pageFlag == 3) {
-        return '施工日报 ' + this.projectCode + '- 修订';
+        return '施工日报 ' + this.projectName + '- 修订';
       }
     }
   },
   methods: {
     load() {
       this.loading = 1;
-      this.$http.post("/api/engine/material/contract/get", { dailyId: this.dailyId }).then((res) => {
+      this.$http.post("/api/engine/project/daily/get", { dailyId: this.dailyId }).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
           if (res.data.data) {
             console.log(res.data.data);
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
             Object.assign(this.formItem, res.data.data);
-            this.formItem.status = this.formItem.status.toString();
-            this.formItem.taxRate1 = floatObj.multiply(this.formItem.taxRate, 100);//税率
             this.list = res.data.data.detailList;
           } else {
             this.$Message.error('订单不存在！');
@@ -164,16 +164,12 @@ export default {
         nextDayPlan: '',//明日计划  
       });
       this.list = [];
-      this.list.push(this.$refs.editable.listNewRow());
-      this.list.push(this.$refs.editable.listNewRow());
     },
     save() {
       var form = {
         detailList: []
       };
       Object.assign(form, this.formItem);
-      form.signDate = page.formatDate(form.signDate);
-      form.taxRate = floatObj.multiply(form.taxRate1, 0.01);//税率
       var pass = true;
       this.$refs.form.validate((valid) => {
         pass = valid;
@@ -219,6 +215,7 @@ export default {
         this.$Message.error('请至少填写一项分部分项工程名');
         return;
       }
+      debugger
       // 提交
       this.loading = 1;
       var uri = '/api/engine/project/daily/add';
