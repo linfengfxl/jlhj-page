@@ -118,12 +118,29 @@ export default {
               }
             });
           }
-        },
-        {
-          title: '入库单号',
+        }, 
+         {
+          title: '单号',
           key: 'stockBillId',
           width: 140,
+          align: 'center',
           fixed: 'left',
+          render:(h,params)=>{
+            var row = params.row;
+            var text = row.stockBillId;
+            text = text;
+            return h('a',{
+              props:{
+
+              },
+              on:{
+                click:()=>{
+                  debugger;
+                  this.$router.push({  path:  '/storage/instock/view?forward&inst='+row.instId}); 
+                }
+              }
+            },text);
+          }
         },
         page.table.initDateColumn({
           title: '单据日期',
