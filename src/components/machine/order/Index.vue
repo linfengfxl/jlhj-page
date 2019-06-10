@@ -10,6 +10,14 @@
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td>
+            <RadioGroup v-model="queryForm.status" type="button" @on-change="query">
+              <Radio :label="2">通过</Radio>
+              <Radio :label="1">审核中</Radio>
+              <Radio :label="3">驳回</Radio>
+              <Radio :label="4">作废</Radio>
+            </RadioGroup>
+          </td>
+          <td>
             <Button @click="add" icon="plus">添加</Button>
           </td>
         </tr>
@@ -151,7 +159,8 @@ export default {
       queryForm: {
         keyword: '',
         page: '',
-        pageSize: ''
+        pageSize: '',
+        status: 2,
       },
       selection: [],
       loading: 0

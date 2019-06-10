@@ -93,12 +93,10 @@ export default {
         }),
         {
           title: '本日工作',
-          key: 'dayWork',
-          width: 100,
+          key: 'dayWork', 
         }, {
           title: '明日计划',
-          key: 'nextDayPlan',
-          width: 220,
+          key: 'nextDayPlan', 
         }, {
           title: ' '
         }

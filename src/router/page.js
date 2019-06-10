@@ -38,6 +38,7 @@ components.push({ component: 'project/daily/List', name: '', path: '/project/dai
 //机械作业单
 components.push({ component: 'machine/order/Index', name: '', path: '/machine/order' })
 components.push({ component: 'machine/order/Edit', name: '', path: '/machine/order/start' })
+components.push({ component: 'machine/order/Handle', name: '', path: '/machine/order/handle' }) 
 components.push({ component: 'machine/order/View', name: '', path: '/machine/order/view' })
 //机械租赁结算单
 components.push({ component: 'machine/bill/Index', name: '', path: '/machine/bill' })
