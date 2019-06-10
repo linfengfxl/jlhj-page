@@ -43,7 +43,7 @@
           </td>
           <td><Input v-model="queryForm.operatorName" placeholder="经办人"/></td>
           <td>
-            <Select v-model="queryForm.catalog" style="width:100px;" placeholder="法律主体">
+            <Select v-model="queryForm.legal" style="width:100px;" placeholder="法律主体">
               <Option v-for="item in $args.getArgGroup('legal')" :value="item.argCode" :key="item.argCode">{{ item.argCode }}</Option>
             </Select>
           </td>
@@ -151,7 +151,7 @@ export default {
           }
         },
         page.table.initDateColumn({
-          title: '单据日期',
+          title: '报销日期',
           key: 'billDate',
           align: 'center', 
         }),
