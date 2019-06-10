@@ -1,13 +1,6 @@
 <template>
-  <div class="page instock-edit">
-    <div class="page-bar">
-      <LayoutHor>
-        <div slot="left">
-          <Button size="small" @click="goBack" icon="chevron-left" type="warning">返回</Button>
-        </div>
-        <div class="page-bar-title">{{pageTitle}}</div>
-      </LayoutHor>
-    </div>
+<ViewProcess ref="ViewProcess" :instId="instId" :title="title" @on-load="instLoaded" @on-submit="save">
+  <div class="page instock-edit"> 
     <Loading :loading="loading">
       <div class="baseinfo">
         <div class="page-tools"></div>
@@ -88,6 +81,7 @@
       </div>
     </Loading>
   </div>
+</ViewProcess>
 </template>
 <script>
 import Loading from '@/components/loading';
@@ -103,7 +97,7 @@ import SelectProject from '@/components/page/form/SelectProject';
 import SelectMachine from '@/components/page/form/SelectMachine';
 import SelectProvider from '@/components/page/form/SelectProvider';
 
-
+import ViewProcess from '@/components/workflow/process/View';
 
 export default {
   components: {
@@ -114,10 +108,12 @@ export default {
     SelectProject,
     SelectMachine,
     SelectProvider,
+      ViewProcess,
   },
   data() {
     return {
       loading: 0,
+       instId:0, 
       machineOrderId: '',
       pageFlag: 1,//1.新建 2.编辑 3.修订
       formItem: {
@@ -146,22 +142,20 @@ export default {
       storage: []
     }
   },
-  mounted: function () {
-    this.machineOrderId = this.$route.query.id;
-    if (this.machineOrderId) {
-      this.pageFlag = 2;
-      this.load();
-    } else {
-      this.pageFlag = 1;
-      this.initNew();
-    }
-  },
+    mounted: function () {
+    this.instId = this.$route.query.inst;  
+  }, 
   computed: {
     pageTitle() {
       return '机械作业单 - 明細';
     }
   },
   methods: {
+     instLoaded(proc){  
+      this.machineOrderId = proc.instance.businessKey;
+      this.title = "机械作业单_" + this.machineOrderId;
+      this.load();
+    },
     load() {
       this.loading = 1;
       this.$http.post("/api/engine/machine/order/get", { "machineOrderId": this.machineOrderId }).then((res) => {

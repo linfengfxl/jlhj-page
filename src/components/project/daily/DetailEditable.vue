@@ -118,7 +118,7 @@
           </td>
           <td>{{item.unit}}</td>
           <td>
-            <Input v-model="item.place" placeholder :maxlength="100"/>
+            <Input v-model="item.place" placeholder  :maxlength="100"/>
           </td>
           <td class="col-quantity">
             <InputNumber :max="999999" :min="0" v-model="item.workloadPlan"></InputNumber>
