@@ -31,7 +31,9 @@ components.push({ component: 'project/workload/Index', name: '', path: '/workloa
 components.push({ component: 'project/workload/workload', name: '', path: '/workload/workload' })
 //工作日报
 components.push({ component: 'project/daily/Index', name: '', path: '/project/daily' })
-components.push({ component: 'project/daily/Edit', name: '', path: '/project/daily/edit' })
+components.push({ component: 'project/daily/Edit', name: '', path: '/project/daily/start' })
+components.push({ component: 'project/daily/Handle', name: '', path: '/project/daily/handle' })
+components.push({ component: 'project/daily/View', name: '', path: '/project/daily/view' })
 components.push({ component: 'project/daily/List', name: '', path: '/project/daily/list' })
 
 //机械作业单
@@ -89,7 +91,7 @@ components.push({ component: 'financial/payTotal/Index', name: '', path: '/finan
 components.push({ component: 'transport/order/Index', name: '', path: '/transport/order' })
 // 运输结算单
 components.push({ component: 'transport/bill/Index', name: '', path: '/transport/bill' })
-components.push({ component: 'transport/bill/Edit', name: '', path: '/transport/bill/edit' })
+components.push({ component: 'transport/bill/Edit', name: '', path: '/transport/bill/start' })
 components.push({ component: 'transport/bill/Handle', name: '', path: '/transport/bill/handle' })
 components.push({ component: 'transport/bill/View', name: '', path: '/transport/bill/view' })
 

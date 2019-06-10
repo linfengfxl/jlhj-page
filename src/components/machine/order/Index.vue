@@ -27,6 +27,11 @@
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td>
+              <td>
+            <Input v-model="queryForm.machineOrderId" placeholder="单号" @keyup.enter.native="query"></Input>
+          </td>
+          </td>
+          <td>
             <Input v-model="queryForm.keyword" placeholder="供应商、工程" @on-enter="query"/>
           </td>
           <td>
@@ -75,7 +80,7 @@ export default {
               props: {
                 btns: [{
                   key: 'edit',
-
+                  disabled: row.status != 3
                 },
                 {
                   key: 'delete',
@@ -109,7 +114,7 @@ export default {
               },
               on: {
                 click: () => {
-                  this.$router.push({ path: '/machine/order/view?forward&id=' + row.machineOrderId });
+                    this.$router.push({ path: '/machine/order/view?forward&inst=' + row.instId }); 
                 }
               }
             }, text);
@@ -158,6 +163,7 @@ export default {
       queryParam: {},
       queryForm: {
         keyword: '',
+        machineOrderId:'',
         page: '',
         pageSize: '',
         status: 2,
@@ -184,6 +190,7 @@ export default {
     reset: function () {
       // 清空条件
       this.queryForm.keyword = '';
+      this.queryForm.machineOrderId = ''; 
       this.query();
     },
     select: function (selection) {
