@@ -10,7 +10,7 @@ cfg.formModules = [
 
 // 表单
 cfg.forms = [
-  {module:'1',title:'费用报销单',startUrl:'/financial/expense/start',handleUrl:'/financial/expense/handle',viewUrl:'/financial/expense/view',defineIds:[1,10]},
+  {module:'1',title:'费用报销单',startUrl:'/financial/expense/start',handleUrl:'/financial/expense/handle',viewUrl:'/financial/expense/view',printUrl:'bill/bx/',defineIds:[1,10]},
   {module:'1',title:'备用金申请',startUrl:'',handleUrl:'',viewUrl:'',defineIds:[]},
   {module:'1',title:'付款计划',startUrl:'/financial/payplan/start',handleUrl:'/financial/payplan/handle',viewUrl:'/financial/payplan/view',defineIds:[4]},
   {module:'1',title:'付款单',startUrl:'/financial/payorder/start',handleUrl:'/financial/payorder/handle',viewUrl:'/financial/payorder/view',defineIds:[7,8]},
