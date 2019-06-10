@@ -11,7 +11,7 @@
     </div>
     <div class="page-searchbox">
       <table cellpadding="0" cellspacing="0">
-        <tr>  
+        <tr>
           <td class="page-tools">
             <Button @click="add" v-power icon="plus">添加</Button>&nbsp;
           </td>
@@ -25,12 +25,12 @@
           <td>
             <Input v-model="queryForm.contractId" placeholder="编号" @keyup.enter.native="query"></Input>
           </td>
-            <td>
+          <td>
             <Input v-model="queryForm.contractName" placeholder="合同名称" @keyup.enter.native="query"></Input>
           </td>
           <td>
             <Input v-model="queryForm.projectName" placeholder="工程名" @keyup.enter.native="query"></Input>
-          </td> 
+          </td>
           <td>
             <DatePicker
               type="daterange"
@@ -90,7 +90,7 @@ export default {
                   key: 'edit',
                   //power: 'ckgl.rk.edit',
                   //disabled: row.status != 0
-                },{
+                }, {
                   key: 'delete',
                   //power: 'ckgl.rk.edit',
                   //disabled: row.status != 0
@@ -114,29 +114,31 @@ export default {
           key: 'contractId',
           width: 140,
           fixed: 'left',
-        }, 
+        },
         {
           title: '合同名称',
           key: 'contractName',
-          align: 'right',
-          width: 100,
+          align: 'left',
+          width: 120,
         },
-         {
+        {
           title: '工程名称',
           key: 'projectName',
-          align: 'right',
-          width: 100,
+          align: 'left',
+          width: 140,
         },
         page.table.initDateColumn({
           title: '签订日期',
           key: 'signDate',
-          align: 'left',
+          width: 100,
+          align: 'center',
         }),
-       
-          page.table.initDateColumn({
-          title: '签订份额',
+
+        page.table.initDateColumn({
+          title: '签订份数',
           key: 'signNum',
-          align: 'left',
+          width: 100,
+          align: 'center',
         }),
         {
           title: '合同金额',
@@ -147,7 +149,8 @@ export default {
         page.table.initMapColumn({
           title: '状态',
           key: 'status',
-          data: { 
+          width: 100,
+          data: {
             '1': '执行中',
             '2': '终止',
             '3': '已结算',
@@ -158,10 +161,11 @@ export default {
         page.table.initDateColumn({
           title: '创建日期',
           key: 'createTime',
+          align: 'center',
+          width: 100,
         }),
         {
-          title: ' ', 
-          align: 'left',
+          title: ' ',
         },
       ],
       columns1: [
@@ -235,8 +239,8 @@ export default {
       ],
       queryForm: {
         contractId: '',
-        contractName:'',
-        projectName: '', 
+        contractName: '',
+        projectName: '',
         type: 1,
         operId: '',
         operType: 1,
@@ -269,13 +273,13 @@ export default {
       }
     },
     reset() {
-      Object.assign(this.queryForm, { 
-        projectName: '', 
+      Object.assign(this.queryForm, {
+        projectName: '',
         type: 1,
         operId: '',
         operType: 1,
         contractId: '',
-        contractName:'',
+        contractName: '',
         createTime: []//[page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())]
       });
       this.query();

@@ -64,13 +64,13 @@
                 <td>
                   <FormItem prop label="出库类别">
                     <Select v-model="formItem.materialType" style="width:150px" placeholder="类型">
-                <Option
-                  v-for="item in $args.getArgGroup('provider_type')"
-                  :value="item.argCode"
-                  :key="item.argCode"
-                >{{ item.argText }}</Option>
-              </Select>
-                  </FormItem> 
+                      <Option
+                        v-for="item in $args.getArgGroup('provider_type')"
+                        :value="item.argCode"
+                        :key="item.argCode"
+                      >{{ item.argText }}</Option>
+                    </Select>
+                  </FormItem>
                 </td>
               </tr>
               <tr>
@@ -204,7 +204,7 @@ export default {
     },
     load() {
       this.loading = 1;
-      this.$http.post("/api/engine/storage/instock/get?stockBillId=" + this.stockBillId, {}).then((res) => {
+      this.$http.post("/api/engine/storage/instock/get", { stockBillId: this.stockBillId }).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
           if (res.data.data) {
@@ -278,8 +278,8 @@ export default {
           }
           form.detailList.push(item);
         }
-      } 
-      form.proc = proc.formItem; 
+      }
+      form.proc = proc.formItem;
       // 提交
       this.loading = 1;
       var uri = '/api/engine/storage/instock/start';

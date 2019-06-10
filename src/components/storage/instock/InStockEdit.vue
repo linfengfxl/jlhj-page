@@ -223,9 +223,9 @@ export default {
         this.formItem.taxRate1 = floatObj.multiply(data.taxRate, 100);//税率 
       }
     },
-    load() {
+    load() { 
       this.loading = 1;
-      this.$http.post("/api/engine/storage/instock/get?stockBillId=" + this.stockBillId, {}).then((res) => {
+      this.$http.post("/api/engine/storage/instock/get", {stockBillId:this.stockBillId}).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
           if (res.data.data) {
