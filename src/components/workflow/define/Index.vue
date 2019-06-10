@@ -23,10 +23,7 @@
           </td>
           <td>
             <Button @click="reset">重置</Button>
-          </td>
-          <td>
-            <Button @click="add" icon="plus">添加</Button> 
-          </td>
+          </td> 
         </tr>
       </table>
     </div>

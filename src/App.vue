@@ -51,9 +51,7 @@ export default {
         this.appRightInnerScroll = true;
       }else{
         this.appRightInnerScroll = false;
-      } 
-      var rightMaxPath = [];//['/workflow/initproc','/workflow/process'];
-      this.appRightMax = rightMaxPath.indexOf(path) >= 0;
+      }
     });
   },
   watch: {
@@ -65,7 +63,10 @@ export default {
       }
     }
   },
-  mounted() { 
+  mounted() {
+    if(window.location.href.indexOf('_max')>=0){
+      this.appRightMax = true;
+    }
     Vue.$app = this;
     this.load();
   },
