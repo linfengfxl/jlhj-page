@@ -72,8 +72,9 @@ export default {
         },*/
         {
           title: '操作',
-          width: 120,
+          width: 90,
           align: 'center',
+          fixed: 'left',
           render: (h, params) => {
             var row = params.row;
             return h(DataRowOperate, {
@@ -81,9 +82,6 @@ export default {
                 btns: [{
                   key: 'edit',
                   disabled: row.status != 3
-                },
-                {
-                  key: 'delete',
                 }]
               },
               on: {

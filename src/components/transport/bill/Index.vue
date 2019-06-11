@@ -72,7 +72,7 @@
           </td>
         </tr>
       </table>
-    </div> 
+    </div>
   </ListPage>
 </template>
 <script> 
@@ -83,7 +83,7 @@ import SelectProvider from "@/components/page/form/SelectProvider"; //供应商
 import page from "@/assets/js/page";
 
 export default {
-  components: { 
+  components: {
     ListPage,
     DataRowOperate,
     SelectProject,
@@ -107,7 +107,8 @@ export default {
         },*/
         {
           title: "操作",
-          width: 120,
+          width: 90,
+          fixed: 'left',
           align: "center",
           render: (h, params) => {
             var row = params.row;
@@ -137,6 +138,7 @@ export default {
           title: "单据编号",
           key: "transportBillId",
           width: 140,
+          fixed: 'left',
           align: "center",
           render: (h, params) => {
             var row = params.row;
@@ -258,7 +260,7 @@ export default {
       loading: 0
     };
   },
-  mounted: function() {
+  mounted: function () {
     this.query();
   },
   computed: {},
@@ -306,11 +308,11 @@ export default {
     // select: function (selection) {
     //   this.selection = selection;
     // },
-    rowCommand: function(name, params) {
+    rowCommand: function (name, params) {
       if (name === "编辑") {
         if (params.row) {
           this.$router.push({
-            path: "/transport/bill/edit?forward&id=" + params.row.transportBillId
+            path: "/transport/bill/start?forward&id=" + params.row.transportBillId
           });
         }
       }
@@ -339,11 +341,11 @@ export default {
         });
       }
     },
-    selProvider() {},
-    goBack: function() {
+    selProvider() { },
+    goBack: function () {
       this.$router.go(-1);
     },
-    add: function() { 
+    add: function () {
       this.$router.push({
         path: "/transport/bill/start?forward"
       });

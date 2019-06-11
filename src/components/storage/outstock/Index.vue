@@ -6,15 +6,10 @@
     @onCurrentRowChange="curRowChg"
     :beforeLoad="beforeLoad"
   >
-    <div class="page-title" slot="page-title">
-      出库单
-    </div>
+    <div class="page-title" slot="page-title">出库单</div>
     <div class="page-searchbox">
       <table cellpadding="0" cellspacing="0">
-        <tr>
-          <td>
-            <!-- <SelStorage v-model="queryForm.storageId" @on-change="switStorage" style="width:150px;"></SelStorage> -->
-          </td>
+        <tr> 
           <td>
             <RadioGroup v-model="queryForm.status" type="button" @on-change="query">
               <Radio :label="2">通过</Radio>
@@ -35,7 +30,7 @@
         <tr>
           <td>
             <Input v-model="queryForm.stockBillId" placeholder="出库单号" @keyup.enter.native="query"></Input>
-          </td> 
+          </td>
           <td>
             <Input v-model="queryForm.projectName" placeholder="工程名" @keyup.enter.native="query"></Input>
           </td>
@@ -92,12 +87,6 @@ export default {
       curRow: null,
       columns: [
         {
-          type: 'selection',
-          width: 60,
-          align: 'center',
-          fixed: 'left',
-        },
-        {
           title: '操作',
           width: 90,
           align: 'center',
@@ -127,7 +116,7 @@ export default {
         }, {
           title: '单号',
           key: 'stockBillId',
-          width: 140,
+          width: 120,
           align: 'center',
           fixed: 'left',
           render: (h, params) => {
@@ -163,7 +152,7 @@ export default {
           key: 'projectName',
           align: 'left',
           width: 120,
-        }, 
+        },
         {
           title: '申请人',
           key: 'creatorName',
@@ -301,7 +290,7 @@ export default {
       Object.assign(this.queryForm, {
         status: 2,
         projectName: '',
-        providerName:'',
+        providerName: '',
         deptName: '',
         materName: '',
         type: 2,
