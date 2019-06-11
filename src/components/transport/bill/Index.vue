@@ -71,12 +71,10 @@
           </td>
         </tr>
       </table>
-    </div>
-    <Edit ref="edit" @on-save="query"></Edit>
+    </div> 
   </ListPage>
 </template>
-<script>
-import Edit from "@/components/transport/order/Edit";
+<script> 
 import ListPage from "@/components/page/ListPage";
 import DataRowOperate from "@/components/commons/DataRowOperate";
 import SelectProject from "@/components/page/form/SelectProject"; // 工程
@@ -84,8 +82,7 @@ import SelectProvider from "@/components/page/form/SelectProvider"; //供应商
 import page from "@/assets/js/page";
 
 export default {
-  components: {
-    Edit,
+  components: { 
     ListPage,
     DataRowOperate,
     SelectProject,
@@ -344,10 +341,9 @@ export default {
     goBack: function() {
       this.$router.go(-1);
     },
-    add: function() {
-      //   this.$refs.edit.open(0);
+    add: function() { 
       this.$router.push({
-        path: "/transport/bill/edit?forward"
+        path: "/transport/bill/start?forward"
       });
     }
   }

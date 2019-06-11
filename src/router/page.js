@@ -89,6 +89,9 @@ components.push({ component: 'financial/payTotal/Index', name: '', path: '/finan
 
 // 运输小票
 components.push({ component: 'transport/order/Index', name: '', path: '/transport/order' })
+components.push({ component: 'transport/order/Start', name: '', path: '/transport/order/start' })
+components.push({ component: 'transport/order/Handle', name: '', path: '/transport/order/handle' })
+components.push({ component: 'transport/order/View', name: '', path: '/transport/order/view' })
 // 运输结算单
 components.push({ component: 'transport/bill/Index', name: '', path: '/transport/bill' })
 components.push({ component: 'transport/bill/Edit', name: '', path: '/transport/bill/start' })
