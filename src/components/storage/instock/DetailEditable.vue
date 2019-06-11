@@ -202,7 +202,7 @@ export default {
     listNewRow() {
       var def = {
         id: 0,
-        type: 2,//入库
+        type: 1,//入库
         materCode: '',//材料编号
         materName: '',//材料名称
         spec: '',//规格型号

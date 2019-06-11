@@ -35,10 +35,7 @@
         <tr>
           <td>
             <Input v-model="queryForm.stockBillId" placeholder="出库单号" @keyup.enter.native="query"></Input>
-          </td>
-          <td>
-            <Input v-model="queryForm.providerName" placeholder="供应商" @keyup.enter.native="query"></Input>
-          </td>
+          </td> 
           <td>
             <Input v-model="queryForm.projectName" placeholder="工程名" @keyup.enter.native="query"></Input>
           </td>
@@ -166,12 +163,7 @@ export default {
           key: 'projectName',
           align: 'left',
           width: 120,
-        }, {
-          title: '供应商',
-          key: 'providerName',
-          align: 'left',
-          width: 200,
-        },
+        }, 
         {
           title: '申请人',
           key: 'creatorName',
