@@ -365,7 +365,7 @@ export default {
         s = p.replace(/(零.)*零$/, '').replace(/^$/, '零') + unit[0][i] + s;
       }
       return head + s.replace(/(零.)*零分/, '分')
-      .replace(/(零.)+/g, '零')
+      .replace(/(零.)+/g, '圆')
       .replace(/^整$/, '整');
 
     },
