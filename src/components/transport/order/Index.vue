@@ -109,6 +109,7 @@ export default {
         {
           title: "操作",
           width: 120,
+          fixed: 'left',
           align: "center",
           render: (h, params) => {
             var row = params.row;
@@ -136,10 +137,11 @@ export default {
         },
         {
           title: "单据编号",
+          fixed: 'left',
           key: "transportOrderId",
           width: 120,
           align: "left",
-            render: (h, params) => {
+          render: (h, params) => {
             var row = params.row;
             var text = row.transportOrderId;
             text = text;
@@ -353,8 +355,11 @@ export default {
     // },
     rowCommand: function (name, params) {
       if (name === "编辑") {
-        this.updateRole(params.row.transportOrderId);
-        return;
+        if (params.row) {
+          this.$router.push({
+            path: "/transport/order/start?forward&id=" + params.row.transportOrderId
+          });
+        }
       }
       if (name === "删除") {
         this.$Modal.confirm({

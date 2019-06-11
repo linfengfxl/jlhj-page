@@ -64,14 +64,9 @@ export default {
       tabName: '1',
       columns: [
         {
-          title: '序号',
-          type: 'selection',
-          width: 50,
-          align: 'center',
-        },
-        {
           title: '操作',
-          width: 120,
+          width: 90,
+          fixed: 'left',
           align: 'center',
           render: (h, params) => {
             var row = params.row;
@@ -93,6 +88,28 @@ export default {
                 }
               }
             });
+          }
+        },
+        {
+          title: '单号',
+          key: 'dailyId',
+          width: 140,
+          align: 'center',
+          fixed: 'left',
+          render: (h, params) => {
+            var row = params.row;
+            var text = row.dailyId;
+            text = text;
+            return h('a', {
+              props: {
+
+              },
+              on: {
+                click: () => {
+                  this.$router.push({ path: '/project/daily/view?forward&inst=' + row.instId });
+                }
+              }
+            }, text);
           }
         },
         page.table.initDateColumn({
