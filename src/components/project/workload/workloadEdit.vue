@@ -6,7 +6,7 @@
           <Form
             :model="formItem"
             ref="form"
-            :label-width="100"
+            :label-width="130"
             :rules="ruleValidate"
             class="form-item"
           >

@@ -49,6 +49,8 @@
           <td>
             <Button @click="reset">重置</Button>
           </td>
+          <td>&nbsp;</td>
+          <td><Button @click="exportDown" type="info" icon="ios-download-outline">导出</Button></td>
         </tr>
       </table>
     </div> 
@@ -152,6 +154,9 @@ export default {
       this.$refs.page.query();
     },
     beforeLoad() {
+    },
+    exportDown(){
+      this.$refs.page.exportDown();
     },
     reset() {
       Object.assign(this.queryForm, {

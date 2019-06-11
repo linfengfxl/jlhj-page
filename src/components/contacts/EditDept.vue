@@ -67,7 +67,7 @@ export default {
   methods:{
     openEdit(init){
       this.title = "修改部门"
-
+      this.$refs['form'].resetFields();
       this.formItem = Object.assign({
         deptId:'',
         deptName:'',
@@ -82,7 +82,7 @@ export default {
     },
     openAdd(init){ 
       this.title = "新建部门"
-
+      this.$refs['form'].resetFields();
       this.formItem = Object.assign({
         deptId:'',
         deptName:'',

@@ -39,11 +39,11 @@
             </Select>
           </td>
           <td>
-            <SelectProject v-model="queryForm.projectId" :model="queryForm" :text="queryForm.projectName" textProp="projectName" />
+            <SelectProject v-model="queryForm.projectId" :model="queryForm" :text="queryForm.projectName" textProp="projectName" placeholder="工程名称" />
           </td>
           <td><Input v-model="queryForm.operatorName" placeholder="经办人"/></td>
           <td>
-            <Select v-model="queryForm.catalog" style="width:100px;" placeholder="法律主体">
+            <Select v-model="queryForm.legal" style="width:100px;" placeholder="法律主体">
               <Option v-for="item in $args.getArgGroup('legal')" :value="item.argCode" :key="item.argCode">{{ item.argCode }}</Option>
             </Select>
           </td>
@@ -282,6 +282,7 @@ export default {
         projectId:'',
         projectName:'',
         catalog:'',
+        legal:'',
         status: 2,  
         billDate: [page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())]
       },
@@ -325,6 +326,7 @@ export default {
         projectId:'',
         projectName:'',
         catalog:'',
+        legal:'',
         status: 2,  
         billDate: [page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())]
       });
