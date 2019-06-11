@@ -23,9 +23,13 @@
           </td>
           <td>
             <Button @click="query" type="primary" icon="ios-search">查询</Button>
-          </td>
+          </td>          
           <td>
             <Button @click="reset" type="default">重置</Button>
+          </td>
+          <td width="40"></td>
+          <td>
+            <Button @click="printQr" type="info" icon="printer" >打印二维码</Button>
           </td>
         </tr>
       </table>
@@ -129,7 +133,7 @@ export default {
       ],
       list: [],
       total: 0,
-      queryParam: {},
+      queryParam: {keyword:''},
       queryForm: {
         keyword: '',
         page: '',
@@ -195,6 +199,9 @@ export default {
     },
     updateItem: function (code) {
       this.$refs.edit.open(code);
+    },
+    printQr(){
+      window.open('./machine/print?keyword=' + encodeURI(this.$refs.page.queryParam.keyword));
     },
   }
 }
