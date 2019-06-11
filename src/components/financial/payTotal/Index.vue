@@ -25,13 +25,14 @@
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td>
-            <SelectProvider
+            <!--<SelectProvider
               v-model="queryForm.providerCode"
               :model="queryForm"
               :text="queryForm.providerName"
               placeholder="供应商名称"
               style="width:240px"
-            />
+            />-->
+             <Input v-model="queryForm.providerName" placeholder="供应商名称"></Input>
           </td>
           <td>供应商类别</td>
           <td>

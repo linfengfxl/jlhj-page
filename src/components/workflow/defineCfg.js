@@ -12,9 +12,9 @@ cfg.formModules = [
 cfg.forms = [
   {module:'1',title:'费用报销单',startUrl:'/financial/expense/start',handleUrl:'/financial/expense/handle',viewUrl:'/financial/expense/view',printUrl:'bill/bx/',defineIds:[1,10]},
   {module:'1',title:'备用金申请',startUrl:'',handleUrl:'',viewUrl:'',defineIds:[]},
-  {module:'1',title:'付款计划',startUrl:'/financial/payplan/start',handleUrl:'/financial/payplan/handle',viewUrl:'/financial/payplan/view',defineIds:[4]},
-  {module:'1',title:'付款单',startUrl:'/financial/payorder/start',handleUrl:'/financial/payorder/handle',viewUrl:'/financial/payorder/view',defineIds:[7,8]},
-  {module:'1',title:'备用金申请单',startUrl:'/financial/reserve/start',handleUrl:'/financial/reserve/handle',viewUrl:'/financial/reserve/view',defineIds:[9]},
+  {module:'1',title:'付款计划',startUrl:'/financial/payplan/start',handleUrl:'/financial/payplan/handle',viewUrl:'/financial/payplan/view',printUrl:'bill/fkjh/',defineIds:[4]},
+  {module:'1',title:'付款单',startUrl:'/financial/payorder/start',handleUrl:'/financial/payorder/handle',viewUrl:'/financial/payorder/view',printUrl:'bill/fk/',defineIds:[7,8]},
+  {module:'1',title:'备用金申请单',startUrl:'/financial/reserve/start',handleUrl:'/financial/reserve/handle',viewUrl:'/financial/reserve/view',printUrl:'bill/byj/',defineIds:[9]},
 
   {module:'1',title:'机械作业单',startUrl:'/machine/order/start',handleUrl:'/machine/order/handle',viewUrl:'/machine/order/view',defineIds:[12]},  
   {module:'1',title:'机械租赁结算单',startUrl:'/machine/bill/start',handleUrl:'/machine/bill/handle',viewUrl:'/machine/bill/view',defineIds:[5]},   
