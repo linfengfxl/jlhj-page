@@ -1,53 +1,59 @@
 <template>
-<StartProcess ref="startProcess" defineId="11" :title="pageTitle" @on-submit="save">
-  <div class="page instock-edit"> 
-    <Loading :loading="loading">
-      <div class="baseinfo">
-        <div class="page-tools"></div>
-        <Form ref="form" class="page-form" :model="formItem" :rules="formRules" :label-width="120">
-          <table cellspacing="0" cellpadding="0">
-            <colgroup>
-              <col width="50%">
-              <col width="50%">
-            </colgroup>
-            <tr>
-              <td>
-                <FormItem label="本日进行" prop="dayWork">
-                  <Input type="textarea" :rows="2" v-model="formItem.dayWork"/>
-                </FormItem>
-              </td>
-              <td>
-                <FormItem label="明日计划" prop="nextDayPlan">
-                  <Input type="textarea" :rows="2" v-model="formItem.nextDayPlan"/>
-                </FormItem>
-              </td>
-            </tr>
-            <!-- <tr>
+<ViewProcess ref="ViewProcess" :instId="instId" :title="title" @on-load="instLoaded" @on-submit="save">
+    <div class="page instock-edit">
+      <Loading :loading="loading">
+        <div class="baseinfo">
+          <div class="page-tools"></div>
+          <Form
+            ref="form"
+            class="page-form"
+            :model="formItem"
+            :rules="formRules"
+            :label-width="120"
+          >
+            <table cellspacing="0" cellpadding="0">
+              <colgroup>
+                <col width="50%">
+                <col width="50%">
+              </colgroup>
+              <tr>
+                <td>
+                  <FormItem label="本日进行" prop="">
+                   {{formItem.dayWork}}
+                  </FormItem>
+                </td>
+                <td>
+                  <FormItem label="明日计划" prop="">
+                    {{formItem.nextDayPlan}}
+                  </FormItem>
+                </td>
+              </tr>
+              <!-- <tr>
               <td colspan="2">
                 <FormItem label="班前教育" prop></FormItem>
               </td>
-            </tr>-->
-          </table>
-        </Form>
-      </div>
-      <div>
-        <div class="subheader">完成工作项</div>
-        <Editable ref="editable" :list="list" :editable="true" :projectCode="projectCode"></Editable>
-      </div>
-      <!-- <div>
+              </tr>-->
+            </table>
+          </Form>
+        </div>
+        <div>
+          <div class="subheader">完成工作项</div>
+          <Editable ref="editable" :list="list" :editable="false" :projectCode="projectCode"></Editable>
+        </div>
+        <!-- <div>
         <div class="subheader">劳务用工登记</div>
         <Editable2 ref="editable" :list="list2" :editable="true" ></Editable2>
-      </div>-->
-      <!-- <table class="savebar" cellpadding="0" cellspacing="0">
+        </div>-->
+        <!-- <table class="savebar" cellpadding="0" cellspacing="0">
         <tr>
           <td class="save" @click="save" v-if="pageFlag<=2">保存</td>
           <td class="reset" @click="reset">重置</td>
           <td></td>
         </tr>
-      </table> -->
-    </Loading>
-  </div>
-</StartProcess>
+        </table>-->
+      </Loading>
+    </div>
+</ViewProcess>
 </template>
 <script>
 import Loading from '@/components/loading';
@@ -62,8 +68,7 @@ import SelectMember from '@/components/page/form/SelectMember';//收料员
 import SelectProvider from '@/components/page/form/SelectProvider';//供应商
 import pagejs from '@/assets/js/page';
 
-import StartProcess from '@/components/workflow/process/Start';
-
+import ViewProcess from '@/components/workflow/process/View';
 export default {
   components: {
     Loading,
@@ -74,11 +79,12 @@ export default {
     SelectProject,
     SelectMember,
     SelectProvider,
-    StartProcess
+    ViewProcess
   },
   data() {
     return {
       loading: 0,
+      instId:0,
       dailyId: '',
       projectCode: '',
       projectName: '',
@@ -105,34 +111,20 @@ export default {
       storage: []
     }
   },
-
   mounted: function () {
-    this.dailyId = this.$route.query.id;
-    this.projectCode = this.$route.query.projectCode;
-    this.projectName = this.$route.query.name;
-    this.formItem.projectCode = this.projectCode;
-    if (this.dailyId) {
-      this.pageFlag = 2;
-      this.load();
-    } else {
-      this.pageFlag = 1;
-      this.initNew();
-    }
+    this.instId = this.$route.query.inst;
   },
   computed: {
     pageTitle() {
-      if (this.pageFlag == 1) {
-        return '施工日报 ' + this.projectName + ' - 创建';
-      }
-      if (this.pageFlag == 2) {
-        return '施工日报 ' + this.projectName + '- 编辑';
-      }
-      if (this.pageFlag == 3) {
-        return '施工日报 ' + this.projectName + '- 修订';
-      }
+      return '施工日报 - 明細';
     }
   },
   methods: {
+    instLoaded(proc) {
+      this.dailyId = proc.instance.businessKey;
+      this.title = "施工日报_" + this.dailyId;
+      this.load();
+    },
     load() {
       this.loading = 1;
       this.$http.post("/api/engine/project/daily/get", { dailyId: this.dailyId }).then((res) => {
@@ -217,10 +209,7 @@ export default {
       form.proc = proc.formItem;
       // 提交
       this.loading = 1;
-      var uri = '/api/engine/project/daily/add';
-      if (this.pageFlag == 2) {
-        uri = '/api/engine/project/daily/update';
-      }
+      var uri = '/api/engine/project/daily/submit'; 
 
       this.$http.post(uri, form).then((res) => {
         this.loading = 0;

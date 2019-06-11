@@ -4,13 +4,18 @@
       审批详情 - {{title}}
       <div class="header-left">
         <Button size="small" @click="goBack" icon="chevron-left" type="warning">返回</Button>
-      </div>      
+      </div>
+      <div class="header-right">
+        <Button size="small" @click="print" icon="printer" type="info">打印</Button>
+      </div>
     </div>  
     <div class="wfprocess-container">
       <div class="wfprocess-bill">
-        <slot></slot>
-      </div>
-      <div class="wfprocess-footer">
+        <slot></slot> 
+        <AuditLogs :instId="instId"></AuditLogs>
+      </div> 
+    </div>
+    <div class="wfprocess-footer">
         <div class="wfprocess-footer-body">
         <table cellpadding="0" cellspacing="0" style="width: 100%">
           <tr>
@@ -40,31 +45,33 @@
           <tr v-if="instance.status == 2">
             <td class="label">状态</td>
             <td>
-               <Tag checkable color="green">完成</Tag>      
+               <Tag color="green">完成</Tag>      
             </td>
           </tr>
           <tr v-if="instance.status == 3">
             <td class="label">状态</td>
             <td>
-               <Tag checkable color="red">驳回终止</Tag>    
+               <Tag color="red">驳回终止</Tag>    
             </td>
           </tr>
           <tr v-if="instance.status == 4">
             <td class="label">状态</td>
             <td>
-               <Tag checkable color="red">作废</Tag>    
+               <Tag color="red">作废</Tag>    
             </td>
           </tr>
         </table>
         </div>
       </div>
-    </div>
   </div>
 </template>
 <script>
+  import defineCfg from '@/components/workflow/defineCfg'
+  import AuditLogs from './AuditLogs'
 
   export default {
     components: { 
+      AuditLogs
     },
     props:{
       title: {
@@ -143,7 +150,15 @@
       }, 
       goBack(){
         this.$router.go(-1);
-      }      
+      },
+      print(){
+        if(this.instance.id){
+          var form = defineCfg.getFormByDefine(this.instance.defineId);
+          if(form && form.printUrl){
+            window.open(form.printUrl + this.instance.businessKey);
+          }
+        }
+      }  
     }
   }
 
@@ -169,6 +184,11 @@
   }
   .wfprocess-header .header-left{
     top:0px;
+    position: absolute; 
+  }
+  .wfprocess-header .header-right{
+    top:0px;
+    right:10px;
     position: absolute; 
   }
   
@@ -241,5 +261,9 @@
   } 
   .wfprocess-footer .btn-submit{
     height: 40px;width: 140px;    
-  }
+  } 
+  
 </style>
+
+
+

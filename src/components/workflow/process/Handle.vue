@@ -9,8 +9,10 @@
     <div class="wfprocess-container">
       <div class="wfprocess-bill">
         <slot></slot>
-      </div>
-      <div class="wfprocess-footer">
+        <AuditLogs :instId="instId"></AuditLogs>
+      </div> 
+    </div>
+    <div class="wfprocess-footer">
         <div class="wfprocess-footer-body">
         <table cellpadding="0" cellspacing="0" style="width: 100%">
           <tr>
@@ -67,14 +69,15 @@
         </table>
         </div>
       </div>
-    </div>
   </div>
 </template>
 <script>
   import SelMember from '@/components/page/form/SelectMember'
+  import AuditLogs from './AuditLogs'
   export default {
     components: { 
-      SelMember
+      SelMember,
+      AuditLogs
     },
     props:{
       title: {

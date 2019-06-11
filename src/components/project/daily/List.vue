@@ -14,6 +14,14 @@
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td>
+            <RadioGroup v-model="queryForm.status" type="button" @on-change="query">
+              <Radio :label="2">通过</Radio>
+              <Radio :label="1">审核中</Radio>
+              <Radio :label="3">驳回</Radio>
+              <Radio :label="4">作废</Radio>
+            </RadioGroup>
+          </td>
+          <td>
             <Button @click="add" icon="plus">添加</Button>
           </td>
         </tr>
@@ -71,6 +79,7 @@ export default {
               props: {
                 btns: [{
                   key: 'edit',
+                  disabled: row.status != 3
                 }]
               },
               on: {
@@ -94,11 +103,9 @@ export default {
         {
           title: '本日工作',
           key: 'dayWork',
-          width: 100,
         }, {
           title: '明日计划',
           key: 'nextDayPlan',
-          width: 220,
         }, {
           title: ' '
         }
@@ -107,8 +114,10 @@ export default {
       total: 0,
       queryParam: {},
       queryForm: {
-        projectCode: '',
-        subProjectName: '',
+        keyword: '',
+        page: '',
+        pageSize: '',
+        status: 2,
       },
       selection: [],
       name: '',
@@ -144,7 +153,7 @@ export default {
     },
     rowCommand: function (name, params) {
       if (name === '编辑') {
-        this.$router.push({ path: '/project/daily/edit?id=' + params.row.dailyId + '&projectCode=' + this.queryForm.projectCode + '&name=' + this.name })
+        this.$router.push({ path: '/project/daily/start?id=' + params.row.dailyId + '&projectCode=' + this.queryForm.projectCode + '&name=' + this.name })
         return;
       }
     },
@@ -155,7 +164,7 @@ export default {
       this.$router.push({ path: path })
     },
     add: function () {
-      this.$router.push({ path: '/project/daily/edit?projectCode=' + this.queryForm.projectCode + '&name=' + this.name })
+      this.$router.push({ path: '/project/daily/start?projectCode=' + this.queryForm.projectCode + '&name=' + this.name })
     },
     updateRole: function (roleId) {
       this.$refs.edit.openEdit(roleId);

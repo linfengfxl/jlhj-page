@@ -10,6 +10,14 @@
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td>
+            <RadioGroup v-model="queryForm.status" type="button" @on-change="query">
+              <Radio :label="2">通过</Radio>
+              <Radio :label="1">审核中</Radio>
+              <Radio :label="3">驳回</Radio>
+              <Radio :label="4">作废</Radio>
+            </RadioGroup>
+          </td>
+          <td>
             <Button @click="add" icon="plus">添加</Button>
           </td>
         </tr>
@@ -18,6 +26,11 @@
     <div class="page-searchbox">
       <table cellpadding="0" cellspacing="0">
         <tr>
+          <td>
+              <td>
+            <Input v-model="queryForm.machineOrderId" placeholder="单号" @keyup.enter.native="query"></Input>
+          </td>
+          </td>
           <td>
             <Input v-model="queryForm.keyword" placeholder="供应商、工程" @on-enter="query"/>
           </td>
@@ -67,7 +80,7 @@ export default {
               props: {
                 btns: [{
                   key: 'edit',
-
+                  disabled: row.status != 3
                 },
                 {
                   key: 'delete',
@@ -101,7 +114,7 @@ export default {
               },
               on: {
                 click: () => {
-                  this.$router.push({ path: '/machine/order/view?forward&id=' + row.machineOrderId });
+                    this.$router.push({ path: '/machine/order/view?forward&inst=' + row.instId }); 
                 }
               }
             }, text);
@@ -150,8 +163,10 @@ export default {
       queryParam: {},
       queryForm: {
         keyword: '',
+        machineOrderId:'',
         page: '',
-        pageSize: ''
+        pageSize: '',
+        status: 2,
       },
       selection: [],
       loading: 0
@@ -175,6 +190,7 @@ export default {
     reset: function () {
       // 清空条件
       this.queryForm.keyword = '';
+      this.queryForm.machineOrderId = ''; 
       this.query();
     },
     select: function (selection) {

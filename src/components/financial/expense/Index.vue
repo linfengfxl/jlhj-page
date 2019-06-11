@@ -151,7 +151,7 @@ export default {
           }
         },
         page.table.initDateColumn({
-          title: '单据日期',
+          title: '报销日期',
           key: 'billDate',
           align: 'center', 
         }),

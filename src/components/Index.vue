@@ -30,14 +30,17 @@ export default {
     }
   },
   mounted() {
-     this.loadMyWork();
+    
   },
   computed:{
      
   },
+  activated(){
+     this.load();
+  },
   methods: {
     load:function () {
-      
+      this.loadMyWork();
     },
     loadMyWork:function(){ 
       this.loading = 1;
