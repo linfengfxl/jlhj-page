@@ -151,7 +151,7 @@ export default {
     }
   },
   methods: {
-      instLoaded(proc){  
+    instLoaded(proc){  
       this.machineOrderId = proc.instance.businessKey;
       this.title = "机械结算单_" + this.machineOrderId;
       this.load();

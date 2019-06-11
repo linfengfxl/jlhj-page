@@ -10,8 +10,17 @@
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td>
+            <RadioGroup v-model="queryForm.status" type="button" @on-change="query">
+              <Radio :label="2">通过</Radio>
+              <Radio :label="1">审批中</Radio>
+              <Radio :label="3">驳回</Radio>
+              <Radio :label="4">作废</Radio>
+            </RadioGroup>
+          </td>
+          <td>
             <Button @click="add" icon="plus">添加</Button>
           </td>
+          <td class="page-tools" v-if="queryForm.status==0"></td>
         </tr>
       </table>
     </div>
@@ -28,13 +37,14 @@
           </td>
 
           <td>
-            <SelectProvider
+            <!--<SelectProvider
               v-model="queryForm.providerCode"
               :model="queryForm"
               :text="queryForm.providerName"
               @on-select="selProvider"
               placeholder="供应商名称"
-            />
+            />-->
+            <Input v-model="queryForm.providerName" placeholder="供应商名称"></Input>
           </td>
           <td>
             <Input
@@ -63,11 +73,10 @@
         </tr>
       </table>
     </div>
-    <Edit ref="edit" @on-save="query"></Edit>
   </ListPage>
 </template>
 <script>
-import Edit from "@/components/transport/order/Edit";
+//import Edit from "@/components/transport/order/Edit";
 import ListPage from "@/components/page/ListPage";
 import DataRowOperate from "@/components/commons/DataRowOperate";
 import SelectProject from "@/components/page/form/SelectProject"; // 工程
@@ -77,7 +86,6 @@ import floatObj from '@/assets/js/floatObj';
 
 export default {
   components: {
-    Edit,
     ListPage,
     DataRowOperate,
     SelectProject,
@@ -102,6 +110,7 @@ export default {
         {
           title: "操作",
           width: 120,
+          fixed: 'left',
           align: "center",
           render: (h, params) => {
             var row = params.row;
@@ -109,10 +118,8 @@ export default {
               props: {
                 btns: [
                   {
-                    key: "edit"
-                  },
-                  {
-                    key: "delete"
+                    key: "edit",
+                    disabled: row.status !== 3
                   }
                 ]
               },
@@ -131,9 +138,29 @@ export default {
         },
         {
           title: "单据编号",
+          fixed: 'left',
           key: "transportOrderId",
           width: 120,
-          align: "left"
+          align: "left",
+          render: (h, params) => {
+            var row = params.row;
+            var text = row.transportOrderId;
+            text = text;
+            return h(
+              "a",
+              {
+                props: {},
+                on: {
+                  click: () => {
+                    this.$router.push({
+                      path: "/transport/order/view?forward&inst=" + row.instId
+                    });
+                  }
+                }
+              },
+              text
+            );
+          }
         },
         {
           title: "所属部门",
@@ -166,7 +193,7 @@ export default {
           align: "center",
           render: (h, params) => {
             var row = params.row;
-            return h('span',floatObj.multiply(row.taxRate,100)+"%");
+            return h('span', floatObj.multiply(row.taxRate, 100) + "%");
           }
         },
         {
@@ -270,16 +297,18 @@ export default {
       total: 0,
       queryParam: {}, // creatTime生成的格式放入
       queryForm: {
+        status: 2,
         projectCode: "", // 工程名称ID
         transportOrderId: "", // 单据编号ID
         providerCode: "", // 供应商ID
+        providerName:"",
         createTime: [] // 时间格式转换成简单格式
       },
       // selection: [],
       loading: 0
     };
   },
-  mounted: function() {
+  mounted: function () {
     this.query();
   },
   computed: {},
@@ -317,7 +346,7 @@ export default {
         projectCode: "", // 工程名称ID
         projectName: "", // 工程名称name
         providerCode: "", // 供应商ID
-        providerName: "", // 工程名称Name
+        providerName: "", // 名称Name
         transportOrderId: "", // 单据编号ID
         createTime: [] // 时间
       });
@@ -326,10 +355,13 @@ export default {
     // select: function (selection) {
     //   this.selection = selection;
     // },
-    rowCommand: function(name, params) {
+    rowCommand: function (name, params) {
       if (name === "编辑") {
-        this.updateRole(params.row.transportOrderId);
-        return;
+        if (params.row) {
+          this.$router.push({
+            path: "/transport/order/start?forward&id=" + params.row.transportOrderId
+          });
+        }
       }
       if (name === "删除") {
         this.$Modal.confirm({
@@ -356,14 +388,14 @@ export default {
         });
       }
     },
-    selProvider() {},
-    goBack: function() {
+    selProvider() { },
+    goBack: function () {
       this.$router.go(-1);
     },
-    add: function() {
-      this.$refs.edit.open(0);
+    add: function () {
+      this.$router.push({ path: '/transport/order/start?forward' })
     },
-    updateRole: function(roleId) {
+    updateRole: function (roleId) {
       this.$refs.edit.open(roleId);
     }
   }

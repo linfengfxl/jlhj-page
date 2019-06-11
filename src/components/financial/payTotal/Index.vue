@@ -25,13 +25,14 @@
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td>
-            <SelectProvider
+            <!--<SelectProvider
               v-model="queryForm.providerCode"
               :model="queryForm"
               :text="queryForm.providerName"
               placeholder="供应商名称"
               style="width:240px"
-            />
+            />-->
+             <Input v-model="queryForm.providerName" placeholder="供应商名称"></Input>
           </td>
           <td>供应商类别</td>
           <td>
@@ -49,6 +50,8 @@
           <td>
             <Button @click="reset">重置</Button>
           </td>
+          <td>&nbsp;</td>
+          <td><Button @click="exportDown" type="info" icon="ios-download-outline">导出</Button></td>
         </tr>
       </table>
     </div> 
@@ -152,6 +155,9 @@ export default {
       this.$refs.page.query();
     },
     beforeLoad() {
+    },
+    exportDown(){
+      this.$refs.page.exportDown();
     },
     reset() {
       Object.assign(this.queryForm, {

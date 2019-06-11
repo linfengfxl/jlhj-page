@@ -123,6 +123,7 @@ export default {
       queryParam: {},
       queryForm: {
         keyword: '',
+        status:1
       },
       selected: [],
       loading: 0,
@@ -183,6 +184,7 @@ export default {
     reset: function () {
       Object.assign(this.queryForm, {
         keyword: '',
+        status:1
       });
 
       var pagebar = this.$refs.pagebar;

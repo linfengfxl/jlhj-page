@@ -12,16 +12,16 @@
         <th>
           <span>今日完成工程量</span>
         </th>
-        <th class="col-amount">
+        <th>
           <span>累计完成工程量</span>
         </th>
         <th>
           <span>累计完成工程比</span>
         </th>
-        <th class="col-amount">
+        <th>
           <span>起始桩号</span>
         </th>
-        <th class="col-amount">
+        <th>
           <span>左右幅</span>
         </th>
       </thead>
@@ -48,7 +48,7 @@
             {{item.place}}
             <!--  部位 -->
           </td>
-          <td>
+          <td class="col-amount">
             {{item.workloadPlan}}
             <!--  今日计划工程量 -->
           </td>
