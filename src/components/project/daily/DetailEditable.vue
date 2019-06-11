@@ -7,7 +7,9 @@
         <th>层次编码</th>
         <th>复核工程量</th>
         <th>单位</th>
-        <th>部位</th>
+        <th>
+          <span style="width:150px;">部位</span>
+        </th>
         <th>今日计划工程量</th>
         <th>
           <span>今日完成工程量</span>
@@ -118,7 +120,7 @@
           </td>
           <td>{{item.unit}}</td>
           <td>
-            <Input v-model="item.place" placeholder  :maxlength="100"/>
+            <Input v-model="item.place" placeholder :maxlength="100" style="width:180px;"/>
           </td>
           <td class="col-quantity">
             <InputNumber :max="999999" :min="0" v-model="item.workloadPlan"></InputNumber>
@@ -232,11 +234,9 @@ export default {
       var sel = this.$refs.selectWorkload;//引用该控件，赋值给变量对象
       sel.show({
         ok: (data) => {
+          console.log(data);
           if (data) {
             var that = this;
-            //this.$emit('input', data.projectCode);
-
-            this.$emit('on-select', data);
             data.map(args => {
               if (_.findIndex(that.list, { 'workloadId': args.workloadId }) >= 0) {
 

@@ -28,9 +28,9 @@
       <Loading :loading="loading">
         <div class="page-datatable">
           <i-table
+            ref="table"
             :row-class-name="rowClassName"
             :columns="columns"
-            @on-row-click="innerCheckRow(arguments[1])"
             @on-selection-change="select"
             :data="list"
           ></i-table>
@@ -236,20 +236,15 @@ export default {
       this.display = false;
     },
     onOK() {
-      // var select = null;
-      // this.list.map((item) => {
-      //   if (item._checked) {
-      //     select = item;
-      //   }
-      // });
-      // if (select == null) {
-      //   this.$Message.error('请选择');
-      //   return;
-      // }
+      var selectList = this.$refs.table.getSelection();
+      if (selectList.length == 0) {
+        this.$Message.error('请选择');
+        return;
+      }
       // this.display = false;
       // this.options.ok(select);
       this.display = false;
-      this.options.ok(this.selection);
+      this.options.ok(selectList);
     },
     onCancel() {
       this.display = false;

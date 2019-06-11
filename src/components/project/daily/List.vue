@@ -31,7 +31,7 @@
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td>
-            <Input v-model="queryForm.subProjectName" placeholder="名称" @on-enter="query"/>
+            <Input v-model="queryForm.keyword" placeholder="" @on-enter="query"/>
           </td>
           <td>
             <Button @click="query" type="primary" icon="ios-search">查询</Button>
@@ -162,7 +162,7 @@ export default {
     },
     reset: function () {
       // 清空条件
-      this.queryForm.subProjectName = '';
+      this.queryForm.keyword = '';
       this.query();
     },
     select: function (selection) {
