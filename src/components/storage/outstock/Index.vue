@@ -7,7 +7,7 @@
     :beforeLoad="beforeLoad"
   >
     <div class="page-title" slot="page-title">
-      <a @click="goPage('/storage/mgr')">物质库存</a> -&gt;出库单
+      出库单
     </div>
     <div class="page-searchbox">
       <table cellpadding="0" cellspacing="0">
