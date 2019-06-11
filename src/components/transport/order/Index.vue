@@ -37,13 +37,14 @@
           </td>
 
           <td>
-            <SelectProvider
+            <!--<SelectProvider
               v-model="queryForm.providerCode"
               :model="queryForm"
               :text="queryForm.providerName"
               @on-select="selProvider"
               placeholder="供应商名称"
-            />
+            />-->
+            <Input v-model="queryForm.providerName" placeholder="供应商名称"></Input>
           </td>
           <td>
             <Input
@@ -299,6 +300,7 @@ export default {
         projectCode: "", // 工程名称ID
         transportOrderId: "", // 单据编号ID
         providerCode: "", // 供应商ID
+        providerName:"",
         createTime: [] // 时间格式转换成简单格式
       },
       // selection: [],
@@ -343,7 +345,7 @@ export default {
         projectCode: "", // 工程名称ID
         projectName: "", // 工程名称name
         providerCode: "", // 供应商ID
-        providerName: "", // 工程名称Name
+        providerName: "", // 名称Name
         transportOrderId: "", // 单据编号ID
         createTime: [] // 时间
       });

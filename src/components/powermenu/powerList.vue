@@ -1,7 +1,7 @@
 <template>
-<div class="apiedit">
+<div class="powermenu">
     <div class="header">{{title}}</div>
-    <div class="apiedit-body">
+    <div class="powermenu-body">
       <div class="subtitle">基本信息</div>
       <table class="form" cellpadding="0" cellspacing="0">
          <tr>
@@ -361,20 +361,20 @@
 </script>
 
 <style type="text/css">
-  .apiedit{
+  .powermenu{
     height: 100%;
     overflow-y: auto; 
     padding-top: 42px;
   }
 
-  .apiedit-body{
+  .powermenu-body{
     height: 100%;
     width: 100%;
     overflow-y: auto; 
     padding:10px;
   }
 
-  .apiedit .header{
+  .powermenu .header{
     font-size: 14px; 
     color:green;
     position: absolute; 
@@ -387,21 +387,19 @@
     background-color: white;
     border-bottom: 1px solid #eeeeee;
   }
-  .apiedit .subtitle{
+  .powermenu .subtitle{
     padding: 4px;
     color: #20bfee;
     font-size: 12px;
   }
-  .apiedit .form{
-    width: 50%;
-  }
-  .apiedit .form td{
+     
+  .powermenu .form td{
     padding: 4px;
   }
-  .apiedit .tab td{
+  .powermenu .tab td{
     padding: 4px;
   }
-  .apiedit .label{
+  .powermenu .label{
     width: 100px;
     text-align: right;
     color:#999;
