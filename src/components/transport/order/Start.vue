@@ -63,7 +63,6 @@
                       v-model="formItem.taxRate"
                       :formatter="value => `${value}%`"
                       :parser="value => value.replace('%', '')"
-                      style="width:180px;"
                       readonly="readonly"
                       @on-change="onChangeAmount"
                     ></InputNumber>
@@ -71,11 +70,7 @@
                 </td>
                 <td>
                   <FormItem label="运输设备名称" prop="machineCode">
-                    <Select
-                      v-model="formItem.machineCode"
-                      style="width:180px;"
-                      placeholder="运输设备名称"
-                    >
+                    <Select v-model="formItem.machineCode" placeholder="运输设备名称">
                       <Option
                         v-for="item in machines"
                         :value="item.machineCode"
@@ -90,11 +85,9 @@
                 <td>
                   <FormItem label="运输时间" prop>
                     <Date-picker
-                      type="date"
+                      type="datetime"
                       placeholder="选择日期"
                       v-model="formItem.transportDate"
-                      format="yyyy-MM-dd"
-                      style="width:180px;"
                     ></Date-picker>
                   </FormItem>
                 </td>
@@ -104,21 +97,8 @@
                   </FormItem>
                 </td>
                 <td>
-                  <FormItem label="数量" prop>
-                    <InputNumber
-                      v-model="formItem.num"
-                      :min="0"
-                      style="width:180px;"
-                      @on-change="onChangeAmount"
-                    ></InputNumber>
-                  </FormItem>
-                </td>
-              </tr>
-
-              <tr>
-                <td>
                   <FormItem label="单位" prop>
-                    <Select v-model="formItem.unit" style="width:180px;" placeholder="类型">
+                    <Select v-model="formItem.unit" placeholder="类型">
                       <Option
                         v-for="item in $args.getArgGroup('unit')"
                         :value="item.argCode"
@@ -127,22 +107,23 @@
                     </Select>
                   </FormItem>
                 </td>
+              </tr>
+              <tr>
+                <td>
+                  <FormItem label="数量" prop>
+                    <InputNumber v-model="formItem.num" :min="0" @on-change="onChangeAmount"></InputNumber>
+                  </FormItem>
+                </td>
                 <td>
                   <FormItem label="里程数" prop>
-                    <Input-number
-                      v-model="formItem.milage"
-                      :min="1"
-                      style="width:180px;"
-                      @on-change="onChangeAmount"
-                    ></Input-number>
+                    <Input-number v-model="formItem.milage" :min="0" @on-change="onChangeAmount"></Input-number>
                   </FormItem>
                 </td>
                 <td>
                   <FormItem label="含税单价" prop>
                     <Input-number
                       v-model="formItem.taxUnitPrice"
-                      :min="1"
-                      style="width:180px;"
+                      :min="0"
                       @on-change="onChangeAmount"
                     ></Input-number>
                   </FormItem>
@@ -154,30 +135,19 @@
                   <FormItem label="扣款金额" prop>
                     <Input-number
                       v-model="formItem.deductAmount"
-                      :min="1"
-                      style="width:180px;"
+                      :min="0"
                       @on-change="onChangeAmount"
                     ></Input-number>
                   </FormItem>
                 </td>
                 <td>
                   <FormItem label="金额" prop>
-                    <Input-number
-                      v-model="formItem.amount"
-                      :min="1"
-                      style="width:180px;"
-                      readonly="readonly"
-                    ></Input-number>
+                    <Input-number v-model="formItem.amount" :min="0" readonly="readonly"></Input-number>
                   </FormItem>
                 </td>
                 <td>
                   <FormItem label="税额" prop>
-                    <Input-number
-                      v-model="formItem.tax"
-                      :min="1"
-                      style="width:180px;"
-                      readonly="readonly"
-                    ></Input-number>
+                    <Input-number v-model="formItem.tax" :min="0" readonly="readonly"></Input-number>
                   </FormItem>
                 </td>
               </tr>
@@ -185,12 +155,7 @@
               <tr>
                 <td>
                   <FormItem label="价税合计" prop>
-                    <Input-number
-                      v-model="formItem.totalPriceTax"
-                      :min="1"
-                      style="width:180px;"
-                      readonly="readonly"
-                    ></Input-number>
+                    <Input-number v-model="formItem.totalPriceTax" :min="0" readonly="readonly"></Input-number>
                   </FormItem>
                 </td>
                 <td>
@@ -215,18 +180,12 @@
               <tr>
                 <td>
                   <Form-item label="抵达时间" prop>
-                    <Date-picker
-                      type="date"
-                      placeholder="选择日期"
-                      v-model="formItem.arrivalTime"
-                      format="yyyy-MM-dd"
-                      style="width:180px;"
-                    ></Date-picker>
+                    <Date-picker type="datetime" placeholder="选择日期" v-model="formItem.arrivalTime"></Date-picker>
                   </Form-item>
                 </td>
                 <td>
                   <FormItem label="运输类别" prop>
-                    <Select v-model="formItem.transportType" style="width:180px">
+                    <Select v-model="formItem.transportType">
                       <Option
                         v-for="item in transportType"
                         :value="item.code"
@@ -420,6 +379,7 @@ export default {
       if (!form.transportDate) {
         form.transportDate = null;
       }
+      form.taxRate = this.formItem.taxRate1;
       // 提交
       this.loading = 1;
       var uri = '/api/engine/transport/order/add';
@@ -508,7 +468,11 @@ export default {
         this.formItem.tax = floatObj.multiply(floatObj.multiply(floatObj.multiply(this.formItem.num, this.formItem.milage), this.formItem.taxUnitPrice), this.formItem.taxRate1);
         if (this.formItem.deductAmount != null) {
           this.formItem.totalPriceTax = floatObj.subtract(floatObj.multiply(floatObj.multiply(this.formItem.num, this.formItem.milage), this.formItem.taxUnitPrice), this.formItem.deductAmount);
+        } else {
+          this.formItem.totalPriceTax = 0;
         }
+      } else {
+        this.formItem.totalPriceTax = 0;
       }
     },
     goBack() {

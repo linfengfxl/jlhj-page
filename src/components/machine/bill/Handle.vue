@@ -129,6 +129,7 @@ export default {
       loading: 0,
       instId:0, 
       machineBillCode: '',
+      title:'',
       pageFlag: 1,//1.新建 2.编辑 3.修订
       formItem: {
         machineBillCode: '',//单据编号
@@ -315,9 +316,8 @@ export default {
 
 <style type="text/css">
 .instock-edit.page {
-  width: 1000px;
-  /* margin: 0 auto; */
-  padding: 10px 20px;
+  width: 100%;
+  margin: 0 auto; 
   position: relative;
 }
 .instock-edit .subheader {

@@ -24,7 +24,7 @@
 
         <div style="height:10px;"></div>
         <Page ref="pagebar" :total="total" size="small" :page-size-opts="[10,20,30,50,100]"
-            @on-page-size-change="pageSizeChange" @on-change="pageChange" show-sizer placement="top" :transfer="true"></Page>
+            @on-page-size-change="pageSizeChange" @on-change="pageChange" show-sizer placement="top" :transfer="true" show-total show-elevator></Page> 
         <div style="height:10px;" v-if="$slots['page-datatable-detail']"></div>
         <slot name="page-datatable-detail"></slot>
       </div>

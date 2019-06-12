@@ -75,8 +75,7 @@
     </div>
   </ListPage>
 </template>
-<script>
-//import Edit from "@/components/transport/order/Edit";
+<script> 
 import ListPage from "@/components/page/ListPage";
 import DataRowOperate from "@/components/commons/DataRowOperate";
 import SelectProject from "@/components/page/form/SelectProject"; // 工程
@@ -177,7 +176,7 @@ export default {
         {
           title: "供应商名称",
           key: "providerName",
-          width: 100,
+          width: 140,
           align: "left"
         },
         {
@@ -189,7 +188,7 @@ export default {
         {
           title: "税率",
           key: "taxRate",
-          width: 60,
+          width: 90,
           align: "center",
           render: (h, params) => {
             var row = params.row;
@@ -201,14 +200,12 @@ export default {
           key: "machineName",
           width: 100,
           align: "left"
-        },
-        page.table.initDateColumn({
+        }, {
           title: "运输时间",
           key: "transportDate",
-          width: 120,
+          width: 140,
           align: "left"
-        }),
-        {
+        }, {
           title: "车牌号",
           key: "vehicleNum",
           width: 80,
@@ -274,12 +271,12 @@ export default {
           width: 100,
           align: "left"
         },
-        page.table.initDateColumn({
+        {
           title: "抵达时间",
           key: "arrivalTime",
-          width: 120,
+          width: 140,
           align: "left"
-        }),
+        },
         {
           title: "运输类别",
           key: "transportType",
