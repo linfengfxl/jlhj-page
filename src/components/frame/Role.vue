@@ -111,6 +111,33 @@
             key: 'createTime',
             align: 'center',
             width: 160,
+          },
+          {
+            title: '启用',
+            key: 'status',
+            align: 'center',
+            width: 160,
+            render:(h,params)=>{
+              var row = params.row;
+              return h('i-switch',{
+                props: {
+                    size: 'small',
+                    value:row.status == 1, 
+                  },
+                  on: {
+                    'on-change': (check) => {
+                      if(check){
+                        row.status=1;
+                        that.updateStatus(row);
+                      }else{
+                        row.status=2;
+                        that.updateStatus(row);
+                      }    
+                    }
+                  }
+              });
+            }
+             
           }
         ],
         list: [],
@@ -186,7 +213,7 @@
             title: '删除确认',
             content: '<p>删除后不能恢复，确定删除已选择的记录吗？</p>',
             onOk: () => {               
-              this.$http.post('/api/engine/role/delete?id=' + params.row.id, {}).then((res) => {
+              this.$http.post('/api/engine/role/delete?id=' + params.row.id, params.row).then((res) => {
                 if (res.data.code === 0) {
                   this.$Message.success("删除成功");
                   $.extend(this.queryForm, this.queryParam);
@@ -200,6 +227,24 @@
             }
           });
         }
+      },
+      //禁用启用
+      updateStatus(row){
+        this.$http.post('/api/engine/role/updateStatus', row).then((res) => {
+          if (res.data.code === 0) {
+            if(row.status==1){
+              this.$Message.success("启用成功");
+            }else{
+              this.$Message.success("禁用成功");
+            }    
+            $.extend(this.queryForm, this.queryParam);
+            this.query();
+          } else {
+            this.$Message.error(res.data.message)
+          }
+        }).catch((error) => {
+          this.$Message.error(error.toString())
+        });
       },
       goBack: function () {
         this.$router.go(-1);

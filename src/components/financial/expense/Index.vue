@@ -282,6 +282,7 @@ export default {
         projectId:'',
         projectName:'',
         catalog:'',
+        operatorName:'',
         legal:'',
         status: 2,  
         billDate: [page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())]
@@ -326,6 +327,7 @@ export default {
         projectId:'',
         projectName:'',
         catalog:'',
+        operatorName:'',
         legal:'',
         status: 2,  
         billDate: [page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())]

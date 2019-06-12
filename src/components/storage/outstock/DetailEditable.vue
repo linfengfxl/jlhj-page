@@ -11,7 +11,7 @@
           <span>数量</span>
         </th>
         <th class="col-price">
-          <span>含税单价(元)</span>
+          含税单价(元)
         </th>
         <th>
           <span>施工部位</span>
@@ -68,7 +68,7 @@
           <span>数量</span>
         </th>
         <th class="col-price">
-          <span>含税单价(元)</span>
+          含税单价(元)
         </th>
         <th>
           <span>施工部位</span>
