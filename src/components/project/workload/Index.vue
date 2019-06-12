@@ -66,18 +66,18 @@ export default {
         {
           title: '编码',
           key: 'projectCode',
-          width: 100,
+          width: 120,
         },
         {
           title: '名称',
-          key: 'name',
-          width: 150,
+          key: 'name', 
+          minWidth: 150
         },
         {
           title: '委托单位',
           key: 'customerCode',
           align: 'left',
-          minWidth: 150
+          width: 150
         },
         {
           title: '联系人',

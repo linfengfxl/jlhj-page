@@ -124,7 +124,7 @@ export default {
         }, {
           title: '供应商',
           key: 'providerName',
-          width: 160,
+          minwidth: 160,
         },
         page.table.initDateColumn({
           title: '结算时间',
@@ -152,10 +152,7 @@ export default {
           key: 'createTime',
           align: 'center',
           width: 160,
-        },
-        {
-          title: ' ',
-        }
+        } 
       ],
       list: [],
       total: 0,

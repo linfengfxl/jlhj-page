@@ -129,7 +129,7 @@ export default {
         }, {
           title: '供应商',
           key: 'providerName',
-          width: 160,
+          minwidth: 160,
         },
         {
           title: '机械名称',
@@ -151,9 +151,6 @@ export default {
           key: 'createTime',
           align: 'center',
           width: 160,
-        },
-        {
-          title: ' '
         }
       ],
       list: [],

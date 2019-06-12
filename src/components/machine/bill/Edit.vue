@@ -413,9 +413,7 @@ export default {
 
 <style type="text/css">
 .instock-edit.page {
-  width: 1000px;
-  /* margin: 0 auto; */
-  padding: 10px 20px;
+  width: 100%; 
   position: relative;
 }
 .instock-edit .subheader {

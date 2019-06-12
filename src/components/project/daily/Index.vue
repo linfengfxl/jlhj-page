@@ -50,19 +50,19 @@ export default {
               props: {
                 btns: [{
                   key: 'edit',
-                  text:'工程量填报'
-                },{
+                  text: '工程量填报'
+                }, {
                   key: 'logList',
-                  text:'日志列表'
+                  text: '日志列表'
                 }]
               },
               on: {
                 click: (key) => {
                   if (key == "edit") {
-                    this.$router.push({ path: '/project/daily/start?projectCode='+row.projectCode+'&name='+row.name})
+                    this.$router.push({ path: '/project/daily/start?projectCode=' + row.projectCode + '&name=' + row.name })
                   }
                   if (key == "logList") {
-                    this.$router.push({ path: '/project/daily/list?projectCode='+row.projectCode+'&name='+row.name})
+                    this.$router.push({ path: '/project/daily/list?projectCode=' + row.projectCode + '&name=' + row.name })
                   }
                 }
               }
@@ -72,18 +72,18 @@ export default {
         {
           title: '编码',
           key: 'projectCode',
-          width: 100,
+          width: 120,
         },
         {
           title: '名称',
           key: 'name',
-          width: 150,
+          minWidth: 150
         },
         {
           title: '委托单位',
           key: 'customerCode',
           align: 'left',
-          minWidth: 150
+          width: 150
         },
         {
           title: '联系人',
