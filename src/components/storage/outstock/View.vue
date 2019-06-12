@@ -1,16 +1,16 @@
 <template>
-  <ViewProcess ref="ViewProcess" :instId="instId" :title="title" @on-load="instLoaded" @on-submit="save">
+  <ViewProcess
+    ref="ViewProcess"
+    :instId="instId"
+    :title="title"
+    @on-load="instLoaded"
+    @on-submit="save"
+  >
     <div class="page instock-edit">
       <Loading :loading="loading">
         <div class="baseinfo">
           <div class="page-tools"></div>
-          <Form
-            ref="form"
-            class="page-form"
-            :model="formItem"
-            :rules="formRules"
-            :label-width="120"
-          >
+          <Form ref="form" class="page-form" :model="formItem" :label-width="120">
             <table cellspacing="0" cellpadding="0">
               <colgroup>
                 <col width="33%">
@@ -85,13 +85,6 @@
             :style="{display: formItem.deptId?'':'none'}"
           ></Editable>
         </div>
-        <!-- <table class="savebar" cellpadding="0" cellspacing="0">
-        <tr>
-          <td class="save" @click="save" v-if="pageFlag<=2">保存</td>
-          <td class="reset" @click="reset">重置</td>
-          <td></td>
-        </tr>
-        </table>-->
       </Loading>
     </div>
   </ViewProcess>
@@ -126,6 +119,7 @@ export default {
       loading: 0,
       stockBillId: '',
       instId: 0,
+      title: '',
       formItem: {
         stockBillId: '',//入库单号
         type: 2,//类型:1.出库, 2.入库

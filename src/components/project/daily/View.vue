@@ -1,5 +1,11 @@
 <template>
-<ViewProcess ref="ViewProcess" :instId="instId" :title="title" @on-load="instLoaded" @on-submit="save">
+  <ViewProcess
+    ref="ViewProcess"
+    :instId="instId"
+    :title="title"
+    @on-load="instLoaded"
+    @on-submit="save"
+  >
     <div class="page instock-edit">
       <Loading :loading="loading">
         <div class="baseinfo">
@@ -18,14 +24,10 @@
               </colgroup>
               <tr>
                 <td>
-                  <FormItem label="本日进行" prop="">
-                   {{formItem.dayWork}}
-                  </FormItem>
+                  <FormItem label="本日进行" prop>{{formItem.dayWork}}</FormItem>
                 </td>
                 <td>
-                  <FormItem label="明日计划" prop="">
-                    {{formItem.nextDayPlan}}
-                  </FormItem>
+                  <FormItem label="明日计划" prop>{{formItem.nextDayPlan}}</FormItem>
                 </td>
               </tr>
               <!-- <tr>
@@ -53,7 +55,7 @@
         </table>-->
       </Loading>
     </div>
-</ViewProcess>
+  </ViewProcess>
 </template>
 <script>
 import Loading from '@/components/loading';
@@ -84,11 +86,12 @@ export default {
   data() {
     return {
       loading: 0,
-      instId:0,
+      instId: 0,
       dailyId: '',
       projectCode: '',
       projectName: '',
       pageFlag: 1,//1.新建 2.编辑 3.修订
+      title: '',
       isEdit: 0,
       formItem: {
         dailyId: '',//日报编号
@@ -209,7 +212,7 @@ export default {
       form.proc = proc.formItem;
       // 提交
       this.loading = 1;
-      var uri = '/api/engine/project/daily/submit'; 
+      var uri = '/api/engine/project/daily/submit';
 
       this.$http.post(uri, form).then((res) => {
         this.loading = 0;
@@ -245,9 +248,8 @@ export default {
 
 <style type="text/css">
 .instock-edit.page {
-  width: 900px;
+  width: 100%;
   margin: 0 auto;
-  padding: 10px 20px;
   position: relative;
 }
 .instock-edit .subheader {

@@ -15,6 +15,8 @@ components.push({ component: 'storage/instock/Index', name: '', path: '/storage/
 components.push({ component: 'storage/instock/InStockEdit', name: '', path: '/storage/instock/start' })
 components.push({ component: 'storage/instock/Handle', name: '', path: '/storage/instock/handle' })
 components.push({ component: 'storage/instock/View', name: '', path: '/storage/instock/view' }) 
+components.push({ component: 'storage/instock/Sum', name: '', path: '/storage/instock/sum' }) 
+
 //出库单
 components.push({ component: 'storage/outstock/Index', name: '', path: '/storage/outstock' })
 components.push({ component: 'storage/outstock/OutStockEdit', name: '', path: '/storage/outstock/start' })

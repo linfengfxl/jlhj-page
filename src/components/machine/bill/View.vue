@@ -1,103 +1,95 @@
 <template>
-<ViewProcess ref="ViewProcess" :instId="instId" :title="title" @on-load="instLoaded" @on-submit="save">
-  <div class="page instock-edit"> 
-    <Loading :loading="loading">
-      <div class="baseinfo">
-        <div class="page-tools"></div>
-        <Form ref="form" class="page-form" :model="formItem" :rules="formRules" :label-width="120">
-          <table cellspacing="0" cellpadding="0">
-            <colgroup>
-              <col width="33%">
-              <col width="auto">
-              <col width="33%">
-            </colgroup>
-            <tr>
-              <td>
-                <FormItem  label="部门">
-                  {{formItem.deptName}}
-                </FormItem>
-              </td>
-              <td>
-                <FormItem label="作业日期">
-                {{formItem.billDate}}
-                </FormItem>
-              </td>
-              <td>
-                <FormItem prop="projectCode" label="工程名称">
-                 {{formItem.projectCode}}
-                </FormItem>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <FormItem prop="providerCode" label="供应商">
-                  {{formItem.providerName}}
-                </FormItem>
-              </td>
-              <td>
-                <FormItem prop label="供应商联系人">{{formItem.linkMan}}</FormItem>
-              </td>
-              <td>
-                <FormItem prop label="结算开始日期">
-                   {{formItem.startDate}}
-                </FormItem>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <FormItem prop label="结算结束日期">
-                {{formItem.endDate}}
-                </FormItem>
-              </td>
-              <td>
-                <FormItem prop label="金额合计">
-                  {{formItem.totalAmount}}
-                </FormItem>
-              </td>
-              <td>
-                <FormItem prop label="罚款">
-                 {{formItem.penalty}}
-                </FormItem>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <FormItem prop label="价税合计">
-                  {{formItem.totalPriceTax}}
-                </FormItem>
-              </td> 
-              <td>
-                <FormItem prop=" " label="备注">
-                 {{formItem.remark}}
-                </FormItem>
-              </td>
-            </tr>
-          </table>
-        </Form>
-      </div>
-      <div>
-        <div class="subheader">单据明细</div>
-        <Alert v-if="!formItem.deptId">请选择部门</Alert>
-        <Editable
-          ref="editable"
-          :list="list"
-          :editable="false"
-          :deptId="formItem.deptId"
-          @on-amount-change="onAmountChange"
-          :style="{display: formItem.deptId?'':'none'}"
-        ></Editable>
-      </div>
-      <!-- <table class="savebar" cellpadding="0" cellspacing="0">
+  <ViewProcess
+    ref="ViewProcess"
+    :instId="instId"
+    :title="title"
+    @on-load="instLoaded"
+    @on-submit="save"
+  >
+    <div class="page instock-edit">
+      <Loading :loading="loading">
+        <div class="baseinfo">
+          <div class="page-tools"></div>
+          <Form
+            ref="form"
+            class="page-form"
+            :model="formItem"
+            :rules="formRules"
+            :label-width="120"
+          >
+            <table cellspacing="0" cellpadding="0">
+              <colgroup>
+                <col width="33%">
+                <col width="auto">
+                <col width="33%">
+              </colgroup>
+              <tr>
+                <td>
+                  <FormItem label="部门">{{formItem.deptName}}</FormItem>
+                </td>
+                <td>
+                  <FormItem label="作业日期">{{formItem.billDate}}</FormItem>
+                </td>
+                <td>
+                  <FormItem prop="projectCode" label="工程名称">{{formItem.projectCode}}</FormItem>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <FormItem prop="providerCode" label="供应商">{{formItem.providerName}}</FormItem>
+                </td>
+                <td>
+                  <FormItem prop label="供应商联系人">{{formItem.linkMan}}</FormItem>
+                </td>
+                <td>
+                  <FormItem prop label="结算开始日期">{{formItem.startDate}}</FormItem>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <FormItem prop label="结算结束日期">{{formItem.endDate}}</FormItem>
+                </td>
+                <td>
+                  <FormItem prop label="金额合计">{{formItem.totalAmount}}</FormItem>
+                </td>
+                <td>
+                  <FormItem prop label="罚款">{{formItem.penalty}}</FormItem>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <FormItem prop label="价税合计">{{formItem.totalPriceTax}}</FormItem>
+                </td>
+                <td>
+                  <FormItem prop=" " label="备注">{{formItem.remark}}</FormItem>
+                </td>
+              </tr>
+            </table>
+          </Form>
+        </div>
+        <div>
+          <div class="subheader">单据明细</div>
+          <Alert v-if="!formItem.deptId">请选择部门</Alert>
+          <Editable
+            ref="editable"
+            :list="list"
+            :editable="false"
+            :deptId="formItem.deptId"
+            @on-amount-change="onAmountChange"
+            :style="{display: formItem.deptId?'':'none'}"
+          ></Editable>
+        </div>
+        <!-- <table class="savebar" cellpadding="0" cellspacing="0">
         <tr>
           <td class="save" @click="save" v-if="pageFlag<=2">保存</td>
           <td class="reset" @click="reset">重置</td>
           <td></td>
         </tr>
-      </table> -->
-    </Loading>
-    <SelProvider ref="selProvider"></SelProvider>
-  </div>
- </ViewProcess>
+        </table>-->
+      </Loading>
+      <SelProvider ref="selProvider"></SelProvider>
+    </div>
+  </ViewProcess>
 </template>
 <script>
 import Loading from '@/components/loading';
@@ -127,15 +119,16 @@ export default {
   data() {
     return {
       loading: 0,
-      instId:0, 
+      instId: 0,
       machineBillCode: '',
       pageFlag: 1,//1.新建 2.编辑 3.修订
+      title: '',
       formItem: {
         machineBillCode: '',//单据编号
         deptId: '',//所属部门
         projectCode: '',//工程代码
         projectName: '',//工程名   
-        billDate:'',//结算日期
+        billDate: '',//结算日期
 
         providerCode: '',//供应商名称
         linkMan: '',//供应商联系人
@@ -145,12 +138,12 @@ export default {
 
         startDate: '',//结算开始日期
         endDate: '',//结算结束日期 
-        totalAmount:'',//金额合计
+        totalAmount: '',//金额合计
         penalty: '',//罚款
         totalPriceTax: '',//价税合计
         remark: '',//备注 
       },
-      formRules: { 
+      formRules: {
 
       },
       list: [],
@@ -159,12 +152,12 @@ export default {
     }
   },
   mounted: function () {
-    this.instId = this.$route.query.inst;  
+    this.instId = this.$route.query.inst;
   },
-  computed: { 
+  computed: {
   },
   methods: {
-    instLoaded(proc){  
+    instLoaded(proc) {
       this.machineBillCode = proc.instance.businessKey;
       this.title = "机械租赁结算单_" + this.machineBillCode;
       this.load();
@@ -205,7 +198,7 @@ export default {
 
         startDate: '',//结算开始日期
         endDate: '',//结算结束日期 
-        totalAmount:'',//金额合计
+        totalAmount: '',//金额合计
         penalty: '',//罚款
         totalPriceTax: '',//价税合计
         remark: '',//备注 
@@ -222,28 +215,28 @@ export default {
       Object.assign(form, this.formItem);
       form.billDate = page.formatDate(form.billDate);
       form.startDate = page.formatDate(form.startDate);
-      form.endDate = page.formatDate(form.endDate); 
-      
+      form.endDate = page.formatDate(form.endDate);
+
       var pass = true;
       this.$refs.form.validate((valid) => {
         pass = valid;
-      }) 
+      })
       if (!pass) {
         this.$Message.error('验证未通过！');
         return;
-      } 
+      }
       form.detailList = [];
       // 明细
       for (var i = 0; i < this.list.length; i++) {
         var item = this.list[i];
-        var msg = '明细第 ' + (i + 1) + ' 行，';  
+        var msg = '明细第 ' + (i + 1) + ' 行，';
         form.detailList.push(item);
       }
-      
+
       form.proc = proc.formItem;
       // 提交
       this.loading = 1;
-      var uri = '/api/engine/machine/bill/submit'; 
+      var uri = '/api/engine/machine/bill/submit';
 
       this.$http.post(uri, form).then((res) => {
         this.loading = 0;
@@ -294,9 +287,8 @@ export default {
 
 <style type="text/css">
 .instock-edit.page {
-  width: 1000px;
-  /* margin: 0 auto; */
-  padding: 10px 20px;
+  width: 100%;
+  margin: 0 auto;
   position: relative;
 }
 .instock-edit .subheader {

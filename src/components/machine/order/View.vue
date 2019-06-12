@@ -1,87 +1,93 @@
 <template>
-<ViewProcess ref="ViewProcess" :instId="instId" :title="title" @on-load="instLoaded" @on-submit="save">
-  <div class="page instock-edit"> 
-    <Loading :loading="loading">
-      <div class="baseinfo">
-        <div class="page-tools"></div>
-        <Form ref="form" class="page-form" :model="formItem" :rules="formRules" :label-width="120">
-          <table cellspacing="0" cellpadding="0">
-            <colgroup>
-              <col width="33%">
-              <col width="auto">
-              <col width="33%">
-            </colgroup>
-            <tr>
-              <td>
-                <FormItem prop="deptId" label="部门">{{formItem.deptName}}</FormItem>
-              </td>
-              <td>
-                <FormItem prop="jobDate" label="作业日期">{{formItem.jobDate}}</FormItem>
-              </td>
-              <td>
-                <FormItem prop="projectCode" label="工程名称">{{formItem.projectName}}</FormItem>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <FormItem prop="providerCode" label="供应商">{{formItem.providerName}}</FormItem>
-              </td>
-              <td>
-                <FormItem prop label="供应商联系人">{{formItem.linkMan}}</FormItem>
-              </td>
-              <td>
-                <FormItem prop label="加班时长">{{formItem.overtime}}</FormItem>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <FormItem prop="machineName" label="机械名称">{{formItem.machineName}}</FormItem>
-              </td>
-              <td>
-                <FormItem prop label="租赁方式">{{$args.getArgText('lease_type', formItem.leaseType)}}</FormItem>
-              </td>
-              <td>
-                <FormItem prop label="加油数量">{{formItem.addFuel}}</FormItem>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <FormItem label="机械代码">{{formItem.machineCode}}</FormItem>
-              </td>
-              <td>
-                <FormItem prop label="机械型号">{{formItem.machineModel}}</FormItem>
-              </td>
-              <td>
-                <FormItem prop label=" 司机/操作手姓名">{{formItem.operator}}</FormItem>
-              </td>
-            </tr>
+  <ViewProcess
+    ref="ViewProcess"
+    :instId="instId"
+    :title="title"
+    @on-load="instLoaded"
+    @on-submit="save"
+  >
+    <div class="page instock-edit">
+      <Loading :loading="loading">
+        <div class="baseinfo">
+          <div class="page-tools"></div>
+          <Form ref="form" class="page-form" :model="formItem" :label-width="120">
+            <table cellspacing="0" cellpadding="0">
+              <colgroup>
+                <col width="33%">
+                <col width="auto">
+                <col width="33%">
+              </colgroup>
+              <tr>
+                <td>
+                  <FormItem prop="deptId" label="部门">{{formItem.deptName}}</FormItem>
+                </td>
+                <td>
+                  <FormItem prop="jobDate" label="作业日期">{{formItem.jobDate}}</FormItem>
+                </td>
+                <td>
+                  <FormItem prop="projectCode" label="工程名称">{{formItem.projectName}}</FormItem>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <FormItem prop="providerCode" label="供应商">{{formItem.providerName}}</FormItem>
+                </td>
+                <td>
+                  <FormItem prop label="供应商联系人">{{formItem.linkMan}}</FormItem>
+                </td>
+                <td>
+                  <FormItem prop label="加班时长">{{formItem.overtime}}</FormItem>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <FormItem prop="machineName" label="机械名称">{{formItem.machineName}}</FormItem>
+                </td>
+                <td>
+                  <FormItem prop label="租赁方式">{{$args.getArgText('lease_type', formItem.leaseType)}}</FormItem>
+                </td>
+                <td>
+                  <FormItem prop label="加油数量">{{formItem.addFuel}}</FormItem>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <FormItem label="机械代码">{{formItem.machineCode}}</FormItem>
+                </td>
+                <td>
+                  <FormItem prop label="机械型号">{{formItem.machineModel}}</FormItem>
+                </td>
+                <td>
+                  <FormItem prop label=" 司机/操作手姓名">{{formItem.operator}}</FormItem>
+                </td>
+              </tr>
 
-            <tr>
-              <td>
-                <FormItem prop label="司机/操作手电话">{{formItem.operatorTel}}</FormItem>
-              </td>
-              <td colspan="2">
-                <FormItem prop=" " label="备注">{{formItem.remark}}</FormItem>
-              </td>
-            </tr>
-          </table>
-        </Form>
-      </div>
-      <div>
-        <div class="subheader">单据明细</div>
-        <Alert v-if="!formItem.deptId">请选择部门</Alert>
-        <Editable
-          ref="editable"
-          :list="list"
-          :editable="false"
-          :deptId="formItem.deptId"
-          @on-amount-change="onAmountChange"
-          :style="{display: formItem.deptId?'':'none'}"
-        ></Editable>
-      </div>
-    </Loading>
-  </div>
-</ViewProcess>
+              <tr>
+                <td>
+                  <FormItem prop label="司机/操作手电话">{{formItem.operatorTel}}</FormItem>
+                </td>
+                <td colspan="2">
+                  <FormItem prop=" " label="备注">{{formItem.remark}}</FormItem>
+                </td>
+              </tr>
+            </table>
+          </Form>
+        </div>
+        <div>
+          <div class="subheader">单据明细</div>
+          <Alert v-if="!formItem.deptId">请选择部门</Alert>
+          <Editable
+            ref="editable"
+            :list="list"
+            :editable="false"
+            :deptId="formItem.deptId"
+            @on-amount-change="onAmountChange"
+            :style="{display: formItem.deptId?'':'none'}"
+          ></Editable>
+        </div>
+      </Loading>
+    </div>
+  </ViewProcess>
 </template>
 <script>
 import Loading from '@/components/loading';
@@ -108,12 +114,13 @@ export default {
     SelectProject,
     SelectMachine,
     SelectProvider,
-      ViewProcess,
+    ViewProcess,
   },
   data() {
     return {
       loading: 0,
-       instId:0, 
+      instId: 0,
+      title: '',
       machineOrderId: '',
       pageFlag: 1,//1.新建 2.编辑 3.修订
       formItem: {
@@ -142,16 +149,16 @@ export default {
       storage: []
     }
   },
-    mounted: function () {
-    this.instId = this.$route.query.inst;  
-  }, 
+  mounted: function () {
+    this.instId = this.$route.query.inst;
+  },
   computed: {
     pageTitle() {
       return '机械作业单 - 明細';
     }
   },
   methods: {
-     instLoaded(proc){  
+    instLoaded(proc) {
       this.machineOrderId = proc.instance.businessKey;
       this.title = "机械作业单_" + this.machineOrderId;
       this.load();
@@ -308,9 +315,8 @@ export default {
 
 <style type="text/css">
 .instock-edit.page {
-  width: 900px;
+  width: 100%;
   margin: 0 auto;
-  padding: 10px 20px;
   position: relative;
 }
 .instock-edit .subheader {
