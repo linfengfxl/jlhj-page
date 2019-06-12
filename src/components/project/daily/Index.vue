@@ -42,7 +42,7 @@ export default {
       columns: [
         {
           title: '操作',
-          width: 120,
+          width: 180,
           align: 'center',
           render: (h, params) => {
             var row = params.row;
@@ -51,11 +51,17 @@ export default {
                 btns: [{
                   key: 'edit',
                   text:'工程量填报'
+                },{
+                  key: 'logList',
+                  text:'日志列表'
                 }]
               },
               on: {
                 click: (key) => {
                   if (key == "edit") {
+                    this.$router.push({ path: '/project/daily/start?projectCode='+row.projectCode+'&name='+row.name})
+                  }
+                  if (key == "logList") {
                     this.$router.push({ path: '/project/daily/list?projectCode='+row.projectCode+'&name='+row.name})
                   }
                 }

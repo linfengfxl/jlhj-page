@@ -360,11 +360,7 @@ export default {
       this.formItem.totalAmount = val;
       this.computedTotalPriceTax();
     },
-    onImport() {
-      if (this.formItem == null || this.formItem.billDate == null || this.formItem.billDate == '') {//
-        this.$Message.error('请选择作业日期!');
-        return;
-      }
+    onImport() { 
       if (this.formItem == null || this.formItem.projectCode == null || this.formItem.projectCode == '') {//
         this.$Message.error('请选择工程!');
         return;
@@ -374,10 +370,9 @@ export default {
         return;
       }
       this.list = [];
-      var param = { page: 1, pageSize: 100 };
+      var param = { page: 1, pageSize: 100 ,status:2};
       param.projectCode = this.formItem.projectCode;
-      param.providerCode = this.formItem.providerCode;
-      param.jobDate = page.formatDate(this.formItem.billDate);
+      param.providerCode = this.formItem.providerCode; 
       if (this.formItem.machineBillCode != '') {
         param.machineBillCode = this.formItem.machineBillCode;
       } else {

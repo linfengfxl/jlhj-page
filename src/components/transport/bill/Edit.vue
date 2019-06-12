@@ -66,7 +66,10 @@
                   <FormItem prop label="供应商联系人">{{formItem.linkMan}}</FormItem>
                 </td>
                 <td>
-                  <FormItem prop="taxpayerType" label="纳税人类型">{{$args.getArgText('taxpayer_type', formItem.taxpayerType)}}</FormItem>
+                  <FormItem
+                    prop="taxpayerType"
+                    label="纳税人类型"
+                  >{{$args.getArgText('taxpayer_type', formItem.taxpayerType)}}</FormItem>
                 </td>
               </tr>
               <tr>
@@ -173,10 +176,10 @@ export default {
     StartProcess
   },
   props: {
-      api:{
-        type:String,
-        default:'/api/engine/transport/order/listAll'
-      },
+    api: {
+      type: String,
+      default: '/api/engine/transport/order/listAll'
+    },
   },
   data() {
     return {
@@ -239,7 +242,7 @@ export default {
       storage: []
     };
   },
-  mounted: function() {
+  mounted: function () {
     this.transportBillId = this.$route.query.id;
     if (this.transportBillId) {
       this.pageFlag = 2;
@@ -263,21 +266,21 @@ export default {
     load() {
       this.loading = 1;
       this.$http
-        .post("/api/engine/transport/bill/get?transportBillId="+this.transportBillId, {
+        .post("/api/engine/transport/bill/get?transportBillId=" + this.transportBillId, {
           transportBillId: this.transportBillId
         })
         .then(res => {
           this.loading = 0;
           if (res.data.code == 0) {
             if (res.data.data) {
-              res.data.data.taxRate=floatObj.multiply(res.data.data.taxRate,100);
+              res.data.data.taxRate = floatObj.multiply(res.data.data.taxRate, 100);
               this.oriItem = eval("(" + JSON.stringify(res.data.data) + ")");
               Object.assign(this.formItem, res.data.data);
               this.list = res.data.data.detailList;
-              this.list.map((item)=>{
-                item.transportDate=item.transportDate.length>=10?item.transportDate.substring(0,10):item.transportDate;
+              this.list.map((item) => {
+                item.transportDate = item.transportDate.length >= 10 ? item.transportDate.substring(0, 10) : item.transportDate;
               })
-              this.$nextTick(()=>{
+              this.$nextTick(() => {
                 this.list = res.data.data.detailList;
               })
             } else {
@@ -407,11 +410,11 @@ export default {
               "invoice_type",
               data.invoiceType
             ); //发票类型
-            this.formItem.taxRate = floatObj.multiply(data.taxRate,100); //税率
+            this.formItem.taxRate = floatObj.multiply(data.taxRate, 100); //税率
           }
         }
       });
-      this.list=[];
+      this.list = [];
     },
     onAmountChange(total) {
       this.formItem.amount = total.amountTotal;
@@ -421,10 +424,11 @@ export default {
     },
     // 对运输结算单进行新增前判断,通过后获取列表
     onImport() {
-      if (this.formItem.deptId == "") {
-        this.$Message.error("请选择部门");
-        return;
-      }
+      // if (this.formItem.deptId == "") {
+      //   this.$Message.error("请选择部门");
+      //   return;
+      // }
+
       if (this.formItem.projectCode == "") {
         this.$Message.error("请选择工程");
         return;
@@ -433,42 +437,46 @@ export default {
         this.$Message.error("请选择供应商");
         return;
       }
-      if (this.formItem.startDate == "") {
-        this.$Message.error("请选择开始日期");
-        return;
-      }
-      if (this.formItem.endDate == "") {
-        this.$Message.error("请选择结束日期");
-        return;
-      }
-      this.formItem.startDate = page.formatDate(this.formItem.startDate);
-      this.formItem.endDate = page.formatDate(this.formItem.endDate);
-        this.$http.post(this.api, this.formItem).then((res) => {
+      var param = {};
+      param.status=2;
+      param.projectCode = this.formItem.projectCode;
+      param.providerCode = this.formItem.providerCode;
+      // if (this.formItem.startDate == "") {
+      //   this.$Message.error("请选择开始日期");
+      //   return;
+      // }
+      // if (this.formItem.endDate == "") {
+      //   this.$Message.error("请选择结束日期");
+      //   return;
+      // }
+      // this.formItem.startDate = page.formatDate(this.formItem.startDate);
+      // this.formItem.endDate = page.formatDate(this.formItem.endDate);
+      this.$http.post(this.api, param).then((res) => {
+        this.loading = 0;
+        if (res.data.code === 0) {
           this.loading = 0;
-          if (res.data.code === 0) { 
-            this.loading = 0;
-            var data = res.data.data; 
-            this.list = data.rows;
-            this.list.map((item)=>{
-              item.transportDate=item.transportDate.length>=10?item.transportDate.substring(0,10):item.transportDate;
-            })
-            if(this.list.length==0){
-              this.$Message.error("抱歉，没有找到对应数据");
-            }else{
-              this.$Message.success("共查询"+this.list.length+"条数据"); 
-            }        
+          var data = res.data.data;
+          this.list = data.rows;
+          this.list.map((item) => {
+            item.transportDate = item.transportDate.length >= 10 ? item.transportDate.substring(0, 10) : item.transportDate;
+          })
+          if (this.list.length == 0) {
+            this.$Message.error("抱歉，没有找到对应数据");
           } else {
-            this.loading = 0;
-            this.list = [];
-            this.$Message.error(res.data.message);
+            this.$Message.success("共查询" + this.list.length + "条数据");
           }
-        }).catch((error) => {
+        } else {
           this.loading = 0;
-          this.$Message.error("请求失败，请重新发送")
-        });
+          this.list = [];
+          this.$Message.error(res.data.message);
+        }
+      }).catch((error) => {
+        this.loading = 0;
+        this.$Message.error("请求失败，请重新发送")
+      });
 
     },
-    onQueryChange(){
+    onQueryChange() {
       this.list = [];
     },
     reset() {

@@ -6,104 +6,106 @@
     @on-load="instLoaded"
     @on-submit="save"
   >
-    <div class="page">
-      <Loading :loading="loading">
-        <div class="page-form">
-          <Form :model="formItem" ref="form" :label-width="100" class="form-item">
-            <table cellspacing="0" cellpadding="0">
-              <colgroup>
-                <col width="33%">
-                <col width="auto">
-                <col width="33%">
-              </colgroup>
-              <tr>
-                <td>
-                  <FormItem  label="所属部门">{{formItem.deptName}}</FormItem>
-                </td>
-                <td>
-                  <FormItem  label="工程名称">{{formItem.projectName}}</FormItem>
-                </td>
-                <td>
-                  <FormItem  label="供应商名称">{{formItem.providerName}}</FormItem>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <FormItem label="供应商联系人" >{{formItem.linkMan}}</FormItem>
-                </td>
-                <td>
-                  <FormItem label="税率" >{{formItem.taxRate}}%</FormItem>
-                </td>
-                <td>
-                  <FormItem label="运输设备名称" >{{formItem.machineName}}</FormItem>
-                </td>
-              </tr>
+    <div class="page transport-order-hander-edit">
+      <div class="baseinfo">
+        <Loading :loading="loading">
+          <div class="page-form">
+            <Form :model="formItem" ref="form" :label-width="100" class="form-item">
+              <table cellspacing="0" cellpadding="0">
+                <colgroup>
+                  <col width="33%">
+                  <col width="auto">
+                  <col width="33%">
+                </colgroup>
+                <tr>
+                  <td>
+                    <FormItem label="所属部门">{{formItem.deptName}}</FormItem>
+                  </td>
+                  <td>
+                    <FormItem label="工程名称">{{formItem.projectName}}</FormItem>
+                  </td>
+                  <td>
+                    <FormItem label="供应商名称">{{formItem.providerName}}</FormItem>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <FormItem label="供应商联系人">{{formItem.linkMan}}</FormItem>
+                  </td>
+                  <td>
+                    <FormItem label="税率">{{formItem.taxRate}}%</FormItem>
+                  </td>
+                  <td>
+                    <FormItem label="运输设备名称">{{formItem.machineName}}</FormItem>
+                  </td>
+                </tr>
 
-              <tr>
-                <td>
-                  <FormItem label="运输时间" >{{formItem.transportDate}}</FormItem>
-                </td>
-                <td>
-                  <FormItem label="车牌号" >{{formItem.vehicleNum}}</FormItem>
-                </td>
-                <td>
-                  <FormItem label="数量" >{{formItem.num}}</FormItem>
-                </td>
-              </tr>
+                <tr>
+                  <td>
+                    <FormItem label="运输时间">{{formItem.transportDate}}</FormItem>
+                  </td>
+                  <td>
+                    <FormItem label="车牌号">{{formItem.vehicleNum}}</FormItem>
+                  </td>
+                  <td>
+                    <FormItem label="数量">{{formItem.num}}</FormItem>
+                  </td>
+                </tr>
 
-              <tr>
-                <td>
-                  <FormItem label="单位" >{{formItem.unit}}</FormItem>
-                </td>
-                <td>
-                  <FormItem label="里程数" >{{formItem.milage}}</FormItem>
-                </td>
-                <td>
-                  <FormItem label="含税单价">{{formItem.taxUnitPrice}}</FormItem>
-                </td>
-              </tr>
+                <tr>
+                  <td>
+                    <FormItem label="单位">{{formItem.unit}}</FormItem>
+                  </td>
+                  <td>
+                    <FormItem label="里程数">{{formItem.milage}}</FormItem>
+                  </td>
+                  <td>
+                    <FormItem label="含税单价">{{formItem.taxUnitPrice}}</FormItem>
+                  </td>
+                </tr>
 
-              <tr>
-                <td>
-                  <FormItem label="扣款金额">{{formItem.deductAmount}}</FormItem>
-                </td>
-                <td>
-                  <FormItem label="金额">{{formItem.amount}}</FormItem>
-                </td>
-                <td>
-                  <FormItem label="税额">{{formItem.tax}}</FormItem>
-                </td>
-              </tr>
+                <tr>
+                  <td>
+                    <FormItem label="扣款金额">{{formItem.deductAmount}}</FormItem>
+                  </td>
+                  <td>
+                    <FormItem label="金额">{{formItem.amount}}</FormItem>
+                  </td>
+                  <td>
+                    <FormItem label="税额">{{formItem.tax}}</FormItem>
+                  </td>
+                </tr>
 
-              <tr>
-                <td>
-                  <FormItem label="价税合计">{{formItem.totalPriceTax}}</FormItem>
-                </td>
-                <td>
-                  <FormItem label="运输起点">{{formItem.transportStart}}</FormItem>
-                </td>
-                <td>
-                  <FormItem label="运输终点">{{formItem.transportEnd}}</FormItem>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <Form-item label="抵达时间">{{formItem.arrivalTime}}</Form-item>
-                </td>
-                <td>
-                  <FormItem label="运输类别">{{formItem.transportType}}</FormItem>
-                </td>
-                <td></td>
-              </tr>
-              <tr>
-                <td colspan="3">
-                  <FormItem label="运输内容">{{formItem.transportContent}}</FormItem>
-                </td>
-              </tr>
-            </table>
-          </Form>
-        </div>
-      </Loading>
+                <tr>
+                  <td>
+                    <FormItem label="价税合计">{{formItem.totalPriceTax}}</FormItem>
+                  </td>
+                  <td>
+                    <FormItem label="运输起点">{{formItem.transportStart}}</FormItem>
+                  </td>
+                  <td>
+                    <FormItem label="运输终点">{{formItem.transportEnd}}</FormItem>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <Form-item label="抵达时间">{{formItem.arrivalTime}}</Form-item>
+                  </td>
+                  <td>
+                    <FormItem label="运输类别">{{formItem.transportType}}</FormItem>
+                  </td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td colspan="3">
+                    <FormItem label="运输内容">{{formItem.transportContent}}</FormItem>
+                  </td>
+                </tr>
+              </table>
+            </Form>
+          </div>
+        </Loading>
+      </div>
     </div>
     <div slot="footer"></div>
   </HandleProcess>
@@ -130,6 +132,7 @@ export default {
     return {
       pageFlag: 1,//1.新建 2.编辑 3.修订
       loading: 0,
+      title: '',
       //是否编辑 0 添加 1 编辑
       isEdit: 0,
       transportOrderId: '',
@@ -285,5 +288,73 @@ export default {
 <style type="text/css">
 .customeredit .width-1 {
   width: 160px;
+}
+
+.transport-order-hander-edit.page {
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+}
+.transport-order-hander-edit .subheader {
+  height: 34px;
+  line-height: 34px;
+  font-size: 14px;
+  border-bottom: 0px solid #efefef;
+  margin-bottom: 10px;
+  color: #20bfee;
+}
+.transport-order-hander-edit .baseinfo {
+}
+.transport-order-hander-edit .baseinfo .label {
+  width: 80px;
+  text-align: right;
+  padding-right: 8px;
+}
+.transport-order-hander-edit .baseinfo table {
+  width: 100%;
+}
+.transport-order-hander-edit .baseinfo table td {
+  height: 40px;
+  padding-right: 4px;
+}
+
+.transport-order-hander-edit .savebar {
+  margin-top: 10px;
+  height: 40px;
+  width: 100%;
+  border-collapse: collapse;
+}
+.transport-order-hander-edit .savebar td {
+  border: 1px solid #fefefe;
+  font-size: 14px;
+}
+.transport-order-hander-edit .savebar .save {
+  width: 120px;
+  border: 1px solid #20bfee;
+  background-color: #20bfee;
+  color: white;
+  text-align: center;
+  cursor: pointer;
+}
+.transport-order-hander-edit .savebar .reset {
+  width: 60px;
+  border: 1px solid #a1e7f8;
+  background-color: #a1e7f8;
+  color: white;
+  text-align: center;
+  cursor: pointer;
+}
+
+.selectinput {
+  cursor: pointer;
+}
+
+.transport-order-hander-edit .tooltip {
+  padding: 10px;
+  background-color: #fafafa;
+  border: 1px solid #efefef;
+  border-radius: 3px;
+  color: #666;
+  margin-top: 10px;
 }
 </style>

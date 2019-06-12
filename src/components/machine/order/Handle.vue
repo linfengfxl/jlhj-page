@@ -1,10 +1,10 @@
 <template>
  <HandleProcess ref="handleProcess" :instId="instId" :title="title" @on-load="instLoaded" @on-submit="save">
-  <div class="page instock-edit"> 
+  <div class="page machine-order-hander-edit"> 
     <Loading :loading="loading">
       <div class="baseinfo">
         <div class="page-tools"></div>
-        <Form ref="form" class="page-form" :model="formItem"  :label-width="120">
+        <Form ref="form" class="page-form" :model="formItem"  :label-width="100">
           <table cellspacing="0" cellpadding="0">
             <colgroup>
               <col width="33%">
@@ -74,8 +74,7 @@
           ref="editable"
           :list="list"
           :editable="false"
-          :deptId="formItem.deptId"
-          @on-amount-change="onAmountChange"
+          :deptId="formItem.deptId" 
           :style="{display: formItem.deptId?'':'none'}"
         ></Editable>
       </div>
@@ -116,6 +115,7 @@ export default {
       instId:0, 
       machineOrderId: '',
       pageFlag: 1,//1.新建 2.编辑 3.修订
+      title:'',
       formItem: {
         machineOrderId: '',//单据编号
         deptId: '',//所属部门
@@ -153,7 +153,7 @@ export default {
   methods: {
     instLoaded(proc){  
       this.machineOrderId = proc.instance.businessKey;
-      this.title = "机械结算单_" + this.machineOrderId;
+      this.title = "机械作业单_" + this.machineOrderId;
       this.load();
     },
     load() {
@@ -253,13 +253,12 @@ export default {
 </script>
 
 <style type="text/css">
-.instock-edit.page {
-  width: 900px;
-  margin: 0 auto;
-  padding: 10px 20px;
+.machine-order-hander-edit.page {
+  width: 100%;
+  margin: 0 auto; 
   position: relative;
 }
-.instock-edit .subheader {
+.machine-order-hander-edit .subheader {
   height: 34px;
   line-height: 34px;
   font-size: 14px;
@@ -267,32 +266,32 @@ export default {
   margin-bottom: 10px;
   color: #20bfee;
 }
-.instock-edit .baseinfo {
+.machine-order-hander-edit .baseinfo {
 }
-.instock-edit .baseinfo .label {
+.machine-order-hander-edit .baseinfo .label {
   width: 80px;
   text-align: right;
   padding-right: 8px;
 }
-.instock-edit .baseinfo table {
+.machine-order-hander-edit .baseinfo table {
   width: 100%;
 }
-.instock-edit .baseinfo table td {
+.machine-order-hander-edit .baseinfo table td {
   height: 40px;
   padding-right: 4px;
 }
 
-.instock-edit .savebar {
+.machine-order-hander-edit .savebar {
   margin-top: 10px;
   height: 40px;
   width: 100%;
   border-collapse: collapse;
 }
-.instock-edit .savebar td {
+.machine-order-hander-edit .savebar td {
   border: 1px solid #fefefe;
   font-size: 14px;
 }
-.instock-edit .savebar .save {
+.machine-order-hander-edit .savebar .save {
   width: 120px;
   border: 1px solid #20bfee;
   background-color: #20bfee;
@@ -300,7 +299,7 @@ export default {
   text-align: center;
   cursor: pointer;
 }
-.instock-edit .savebar .reset {
+.machine-order-hander-edit .savebar .reset {
   width: 60px;
   border: 1px solid #a1e7f8;
   background-color: #a1e7f8;
@@ -313,7 +312,7 @@ export default {
   cursor: pointer;
 }
 
-.instock-edit .tooltip {
+.machine-order-hander-edit .tooltip {
   padding: 10px;
   background-color: #fafafa;
   border: 1px solid #efefef;

@@ -200,14 +200,12 @@ export default {
           key: "machineName",
           width: 100,
           align: "left"
-        },
-        page.table.initDateColumn({
+        }, {
           title: "运输时间",
           key: "transportDate",
-          width: 120,
+          width: 140,
           align: "left"
-        }),
-        {
+        }, {
           title: "车牌号",
           key: "vehicleNum",
           width: 80,
