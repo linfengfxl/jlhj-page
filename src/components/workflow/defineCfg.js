@@ -24,7 +24,7 @@ cfg.forms = [
   {module:'3',title:'运输小票',startUrl:'/transport/order/start',handleUrl:'/transport/order/handle',viewUrl:'/transport/order/view',defineIds:[13]}, 
   {module:'3',title:'运输结算单',startUrl:'/transport/bill/start',handleUrl:'/transport/bill/handle',viewUrl:'/transport/bill/view',defineIds:[6]}, 
 
-  {module:'9',title:'施工日报',startUrl:'/project/daily/start',handleUrl:'/project/daily/handle',viewUrl:'/project/daily/view',defineIds:[11]}, 
+  {module:'9',title:'施工日报',startUrl:'/project/daily',handleUrl:'/project/daily/handle',viewUrl:'/project/daily/view',defineIds:[11]}, 
   //{title:'标题',startUrl:'',handleUrl:'',viewUrl:'',defineIds:[]},
 ]
 
