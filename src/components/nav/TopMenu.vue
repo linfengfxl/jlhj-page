@@ -15,7 +15,7 @@
       </div>
       <table slot="right" style="height: 100%;" cellspacing="0" cellpadding="0">
         <tr>
-          <td>
+          <td v-if="false">
             <div class="topbar-menu topbar-down-pop" target="#topbar-down-msgbox">
               <div class="topbar-menu-item">
                 <Badge :count="msgUnRead">
