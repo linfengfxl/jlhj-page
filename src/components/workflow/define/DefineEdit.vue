@@ -183,7 +183,8 @@ export default {
       } 
     },     
     close() {
-      this.show = false;
+      this.nodes = [];
+      this.show = false;      
     }
   }
 };

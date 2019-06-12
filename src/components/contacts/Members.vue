@@ -91,7 +91,15 @@
           key: 'email',
           align: 'center',
           width:120
-        }, 
+        },  
+        page.table.initMapColumn({
+          title: '登录',
+          key: 'isLogin',
+          data:{
+            '1':'已登录',
+            '0':'',
+          }
+        }), 
         page.table.initMapColumn({
             title: '状态',
             key: 'status',
