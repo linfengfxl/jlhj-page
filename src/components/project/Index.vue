@@ -101,7 +101,7 @@ export default {
         },
         {
           title: '委托单位',
-          key: 'customerCode',
+          key: 'customerName',
           align: 'left',
           minWidth: 150
         },

@@ -35,6 +35,8 @@ components.push({ component: 'project/daily/Edit', name: '', path: '/project/dai
 components.push({ component: 'project/daily/Handle', name: '', path: '/project/daily/handle' })
 components.push({ component: 'project/daily/View', name: '', path: '/project/daily/view' })
 components.push({ component: 'project/daily/List', name: '', path: '/project/daily/list' })
+//工程量统计
+components.push({ component: 'project/quantity/Index', name: '', path: '/project/quantity' })
 
 //机械作业单
 //机械作业单
