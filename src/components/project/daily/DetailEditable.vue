@@ -18,10 +18,10 @@
           <span>累计完成工程量</span>
         </th>
         <th>
-          <span>累计完成工程比</span>
+          <span>累计完成工程比(%)</span>
         </th>
         <th>
-          <span>起始桩号</span>
+          <span style="width:100px;">起始桩号</span>
         </th>
         <th>
           <span>左右幅</span>
@@ -31,7 +31,7 @@
         <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
           <td>{{index+1}}</td>
           <td>
-            {{item.projectCode}}
+            {{item.subProjectName}}
             <!--  分部分项工程名 -->
           </td>
           <td>
@@ -89,7 +89,7 @@
         <th>今日计划工程量</th>
         <th>今日完成工程量</th>
         <th>累计完成工程量</th>
-        <th>累计完成工程比</th>
+        <th>累计完成工程比(%)</th>
         <th>起始桩号</th>
         <th>左右幅</th>
       </thead>
@@ -135,7 +135,7 @@
             <InputNumber :max="999999" :min="0" v-model="item.actualPercent"></InputNumber>
           </td>
           <td>
-            <Input v-model="item.startPile" placeholder :maxlength="100"/>
+            <Input v-model="item.startPile" placeholder :maxlength="100" style="width:100px;"/>
           </td>
           <td>
             <RadioGroup v-model="item.leftRight">

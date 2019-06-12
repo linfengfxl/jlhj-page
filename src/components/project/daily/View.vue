@@ -10,13 +10,7 @@
       <Loading :loading="loading">
         <div class="baseinfo">
           <div class="page-tools"></div>
-          <Form
-            ref="form"
-            class="page-form"
-            :model="formItem"
-            :rules="formRules"
-            :label-width="120"
-          >
+          <Form ref="form" class="page-form" :model="formItem" :label-width="120">
             <table cellspacing="0" cellpadding="0">
               <colgroup>
                 <col width="50%">
@@ -97,16 +91,6 @@ export default {
         dailyId: '',//日报编号
         dayWork: '',//本日进行
         nextDayPlan: '',//明日计划   
-      },
-      formRules: {
-        dayWork: [
-          { required: true, whitespace: true, message: '不能为空', trigger: 'blur' },
-          { type: 'string', max: 200, message: '不能超过200个字', trigger: 'blur' }
-        ],
-        nextDayPlan: [
-          { required: true, whitespace: true, message: '不能为空', trigger: 'blur' },
-          { type: 'string', max: 200, message: '不能超过200个字', trigger: 'blur' }
-        ],
       },
       list: [],
       list2: [],

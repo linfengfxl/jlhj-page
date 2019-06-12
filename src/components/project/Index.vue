@@ -49,17 +49,6 @@ export default {
     return {
       tabName: '1',
       columns: [
-        /*
-        {
-          type: 'selection',
-          width: 50,
-          align: 'center',
-          render: function (h,params) {
-            if(params.row.roleId === 1){
-              params.row._disabled = true
-            }
-          }
-        },*/
         {
           title: '操作',
           width: 120,
@@ -92,12 +81,12 @@ export default {
         {
           title: '编码',
           key: 'projectCode',
-          width: 100,
+          width: 120,
         },
         {
           title: '名称',
           key: 'name',
-          width: 150,
+          minWidth: 150,
         },
         {
           title: '委托单位',

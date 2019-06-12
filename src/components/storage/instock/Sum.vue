@@ -2,7 +2,7 @@
   <ListPage
     ref="page"
     title="入库单汇总"
-    api="/api/engine/project/list"
+    api="/api/engine/storage/instock/summaryReport "
     :model="this"
     :beforeLoad="beforeLoad"
   >
@@ -10,7 +10,16 @@
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td>
-            <Input v-model="queryForm.keyword" placeholder="编码、名称" @on-enter="query"/>
+            <Input v-model="queryForm.keyword" placeholder="工程名称" @on-enter="query"/>
+          </td>
+             <td>
+            <Input v-model="queryForm.keyword" placeholder="项目（或仓库）" @on-enter="query"/>
+          </td>
+          <td>
+            <Input v-model="queryForm.keyword" placeholder="材料" @on-enter="query"/>
+          </td>
+          <td>
+            <Input v-model="queryForm.keyword" placeholder="日期" @on-enter="query"/>
           </td>
           <td>
             <Button @click="query" type="primary" icon="ios-search">查询</Button>
@@ -21,15 +30,12 @@
         </tr>
       </table>
     </div>
-    <Edit ref="edit" @on-save="query"></Edit>
   </ListPage>
 </template>
-<script>    
-import Edit from '@/components/project/Edit';
+<script>     
 import ListPage from '@/components/page/ListPage';
 export default {
   components: {
-    Edit,
     ListPage,
   },
   data() {
@@ -39,59 +45,59 @@ export default {
       columns: [
         {
           title: '工程名称',
-          key: 'projectCode',
+          key: 'projectName',
           width: 120,
         },
         {
           title: '仓库或部门',
-          key: 'name',
+          key: 'deptName',
           width: 150,
         },
         {
           title: '材料编号',
-          key: '',
+          key: 'materCode',
           align: 'left',
           minWidth: 100
         },
         {
           title: '材料名称',
-          key: '',
+          key: 'materName',
           align: 'center',
           width: 120,
         },
         {
           title: '规格型号',
-          key: '',
+          key: 'spec',
           align: 'center',
           width: 100,
         },
         {
           title: '计量单位',
-          key: '',
+          key: 'unit',
           align: 'center',
           width: 100,
         },
         {
           title: '数量',
-          key: '',
+          key: 'quantity',
           align: 'center',
           width: 100,
         },
         {
           title: '金额',
-          key: '',
+          key: 'amount',
           align: 'center',
           width: 100,
         },
         {
           title: '税额',
-          key: '',
+          key: 'tax',
           align: 'center',
           width: 100,
         },
         {
-          title: '价税合计',
-          key: '',
+          title: '价税合计',//含税单价
+          key: 'taxUnitPrice',
           align: 'center',
           width: 100,
         }
