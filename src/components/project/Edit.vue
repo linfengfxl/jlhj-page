@@ -36,7 +36,7 @@
               <Input v-model="formItem.customerBank" readonly="readonly"/>
             </FormItem>
             <FormItem label="联系人">
-              <Input v-model="formItem.linkMan" readonly="readonly"/>
+              <Input v-model="formItem.linkMan"/>
             </FormItem>
             <FormItem label="职称(职务)">
               <Input v-model="formItem.position" placeholder="不超过64个字符"/>
@@ -54,21 +54,24 @@
               </Radio-group>
             </FormItem>
             <FormItem label="投资额">
-              <Input v-model="formItem.investment" placeholder/>
+              <InputNumber
+                style="width:100%;"
+                :max="9999999999"              
+                :min="0"               
+                v-model="formItem.investment"
+              ></InputNumber>
             </FormItem>
             <FormItem label="投资性质">
-              <Input v-model="formItem.investmentType" placeholder="不超过64个字符"/>
+              <Select v-model="formItem.investmentType">
+                <Option v-for="item in investmentType" :value="item.code" :key="item.code">{{ item.text }}</Option>
+              </Select>
             </FormItem>
             <FormItem label="工程总规模" prop>
               <Input v-model="formItem.totalSize"/>
             </FormItem>
             <FormItem label="计量单位" prop>
-              <Select v-model="formItem.unit" style="width:150px" placeholder="类型">
-                <Option
-                  v-for="item in $args.getArgGroup('unit')"
-                  :value="item.argCode"
-                  :key="item.argCode"
-                >{{ item.argText }}</Option>
+              <Select v-model="formItem.unit" style="width:150px" placeholder="单位">
+                <Option v-for="item in unit" :value="item.code" :key="item.code">{{ item.text }}</Option>
               </Select>
             </FormItem>
 
@@ -116,9 +119,26 @@ export default {
         status: 1,// 工程状态:1.进行中, 2.结项
         investment: 0,// 投资额
         investmentType: '',// 投资性质
-        totalSize: 0,// 工程总规模
+        totalSize: '',// 工程总规模
         unit: '',// 计量单位 
       },
+      investmentType:[
+        {code:'国有投资',text:'国有投资'},
+        {code:'集体投资',text:'集体投资'},
+        {code:'社会投资',text:'社会投资'},
+        {code:'政府投资',text:'政府投资'},
+        {code:'其他',text:'其他'},
+      ],
+      unit:[
+        {code:'立方米',text:'立方米'},
+        {code:'平方米',text:'平方米'},
+        {code:'米',text:'米'},
+        {code:'千米',text:'千米'},
+        {code:'座',text:'座'},
+        {code:'项',text:'项'},
+        {code:'吨',text:'吨'},
+        {code:'其他',text:'其他'},
+      ],
       //验证
       ruleValidate: {
         projectCode: [
@@ -194,7 +214,7 @@ export default {
       this.show = true;
       this.$refs['form'].resetFields();
       this.checked = [];
-      if (id > 0) {
+      if (id) {
         this.isEdit = 1;
         this.formItem.id = id;
         this.get(id);
@@ -207,7 +227,7 @@ export default {
         this.formItem.status = 1;// 工程状态:1.进行中, 2.结项
         this.formItem.source = "委托";
         this.formItem.investment = 0;// 投资额
-        this.formItem.totalSize = 0;// 工程总规模
+        this.formItem.totalSize = '';// 工程总规模
       }
     },
     get(id) {
