@@ -97,7 +97,7 @@ export default {
             if(row.quantity!=null){
               return h('span', row.quantity);
             }else{
-              return h('span', 0);
+              return h('span', "");
             }   
           },
         },

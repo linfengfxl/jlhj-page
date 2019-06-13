@@ -5,6 +5,7 @@
         <th class="col-xh">序号</th>
         <th>分部分项工程名</th>
         <th>层次编码</th>
+        <th>设计工程量</th>
         <th>复核工程量</th>
         <th>单位</th>
         <th>
@@ -37,6 +38,10 @@
           <td>
             {{item.levelCode}}
             <!--  层次编码  -->
+          </td>
+          <td>
+            {{item.designWorkload}}
+            <!--  设计工程量  -->
           </td>
           <td>
             {{item.reviewWorkload}}
@@ -83,6 +88,7 @@
         <th class="col-xh">序号</th>
         <th>分部分项工程名</th>
         <th>层次编码</th>
+        <th>设计工作量</th>
         <th>复核工程量</th>
         <th>单位</th>
         <th>部位</th>
@@ -113,6 +119,10 @@
           <td>
             {{item.levelCode}}
             <!--  层次编码 -->
+          </td>
+          <td>
+            {{item.designWorkload}}
+            <!--  设计工程量  -->
           </td>
           <td>
             {{item.reviewWorkload}}

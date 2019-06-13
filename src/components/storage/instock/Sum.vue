@@ -1,7 +1,7 @@
 <template>
   <ListPage
     ref="page"
-    title="入库单汇总"
+    title="入库单汇总报表"
     api="/api/engine/storage/instock/summaryReport "
     :model="this"
     :beforeLoad="beforeLoad"
@@ -35,6 +35,8 @@
           <td>
             <Button @click="reset" type="default">重置</Button>
           </td>
+          <td>&nbsp;</td>
+          <td><Button @click="exportDown" type="info" icon="ios-download-outline">导出</Button></td>
         </tr>
       </table>
     </div>
@@ -152,6 +154,9 @@ export default {
     },
     query() {
       this.$refs.page.query();
+    },
+    exportDown(){
+      this.$refs.page.exportDown();
     },
     reset: function () {
       // 清空条件
