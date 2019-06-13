@@ -438,7 +438,7 @@ export default {
         return;
       }
       var param = {};
-      param.status=2;
+      param.status = 2;
       param.projectCode = this.formItem.projectCode;
       param.providerCode = this.formItem.providerCode;
       // if (this.formItem.startDate == "") {
@@ -458,7 +458,9 @@ export default {
           var data = res.data.data;
           this.list = data.rows;
           this.list.map((item) => {
-            item.transportDate = item.transportDate.length >= 10 ? item.transportDate.substring(0, 10) : item.transportDate;
+            if (item.transportDate != null) {
+              item.transportDate = item.transportDate.length >= 10 ? item.transportDate.substring(0, 10) : item.transportDate;
+            }
           })
           if (this.list.length == 0) {
             this.$Message.error("抱歉，没有找到对应数据");
