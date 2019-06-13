@@ -107,8 +107,9 @@ export default {
         },
         {
           title: '委托单位',
-          key: 'customerCode',
+          key: 'customerName',
           align: 'left',
+          width: 120,
         },
         {
           title: '联系人',

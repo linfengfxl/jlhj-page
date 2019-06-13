@@ -32,17 +32,47 @@
   import DataRowOperateBar from '@/components/commons/DataRowOperateBar';
   import Loading from '@/components/loading';
   import ArgEdit from './ArgEdit';
+  import DataRowOperate from '@/components/commons/DataRowOperate';
 
   export default {
     components: {
       DataRowOperateBar,
       Loading,
-      ArgEdit
+      ArgEdit,
+      DataRowOperate
     },
     data() {
       let that = this;
       return {
         columns: [ 
+          {
+            title: '操作',
+            width: 120,
+            align: 'center',
+            render: (h, params) => {
+              var row = params.row;             
+              return h(DataRowOperate, {
+                props: {
+                  btns: [{
+                    key: 'edit',                   
+                  },
+                  {
+                    key: 'delete',                   
+                  }]
+                },
+                on: {
+                  click: (key) => {
+                    if (key == "edit") {
+                      that.rowCommand("编辑", params)
+                    }
+                    if (key == "delete") {
+                      that.rowCommand("删除", params)
+                    }
+                  }
+                }
+              });
+            }
+          },
           {
             title: '编码',
             key: 'argCode',
@@ -63,7 +93,7 @@
             width: 100,
             align: 'center',
           },
-          {
+          /*{
             title: '操作',
             width: 100,
             align: 'center',
@@ -82,7 +112,7 @@
                 }
               });
             }
-          }
+          }*/
         ],
         list: [],
         total:0,
