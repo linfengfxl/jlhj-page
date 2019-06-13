@@ -37,6 +37,7 @@
 import Edit from '@/components/project/Edit';
 import ListPage from '@/components/page/ListPage';
 import DataRowOperate from '@/components/commons/DataRowOperate';
+import page from '@/assets/js/page';
 
 export default {
   components: {
@@ -84,10 +85,18 @@ export default {
           width: 120,
         },
         {
-          title: '名称',
+          title: '工程名称',
           key: 'name',
           minWidth: 150, 
         },
+        page.table.initMapColumn({
+          title: '状态',
+          key: 'status',
+          data: {
+            '1': '进行中',
+            '2': '结项',
+          }
+        }),
         {
           title: '委托单位',
           key: 'customerName',
@@ -158,7 +167,7 @@ export default {
           title: '删除确认',
           content: '<p>删除后不能恢复，确定删除已选择的记录吗？</p>',
           onOk: () => {
-            this.$http.post('/api/engine/project/delete?id=' + params.row.projectCode, {}).then((res) => {
+            this.$http.post('/api/engine/project/delete?id=' + params.row.projectCode, params.row).then((res) => {
               if (res.data.code === 0) {
                 this.$Message.success("删除成功");
                 $.extend(this.queryForm, this.queryParam);
