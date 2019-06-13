@@ -15,6 +15,12 @@
           <td>
             <Button @click="add" icon="plus">添加</Button>
           </td>
+          <td>
+            <UploadButton @on-upload="importExcel"></UploadButton>
+          </td>
+          <td>
+            <Button @click="exportDown" type="info" icon="ios-download-outline">导出</Button>
+          </td>
         </tr>
       </table>
     </div>
@@ -30,6 +36,8 @@
           <td>
             <Button @click="reset" type="default">重置</Button>
           </td>
+          <td>&nbsp;</td>
+          <td></td>
         </tr>
       </table>
     </div>
@@ -41,13 +49,15 @@ import Edit from '@/components/project/workload/workloadEdit';
 import ListPage from '@/components/page/ListPage';
 import DataRowOperate from '@/components/commons/DataRowOperate';
 import page from '@/assets/js/page';
+import UploadButton from '@/components/upload/UploadButton';
 
 export default {
   components: {
     Edit,
     ListPage,
     DataRowOperate,
-    page
+    page,
+    UploadButton
   },
   data() {
     let that = this;
@@ -193,6 +203,21 @@ export default {
     },
     updateRole: function (roleId) {
       this.$refs.edit.openEdit(roleId);
+    },
+    importExcel(fileId){
+      this.$http.post('/api/engine/project/workload/import', {projectCode:this.$route.query.projectCode,fileId:fileId}).then((res) => {
+        if (res.data.code === 0) {
+          this.$Message.success("导入成功, 添加:"+ res.data.data.add +" 条, 更新:" + res.data.data.update + " 条");
+          this.reset();
+        } else {
+          this.$Message.error(res.data.message)
+        }
+      }).catch((error) => {
+        this.$Message.error(error.toString())
+      });
+    },
+    exportDown(){
+      this.$refs.page.exportDown();
     },
   }
 }

@@ -42,7 +42,7 @@ export default {
   components: {
     Edit,
     ListPage,
-    DataRowOperate,
+    DataRowOperate, 
   },
   data() {
     let that = this;
@@ -182,6 +182,9 @@ export default {
     updateRole: function (roleId) {
       this.$refs.edit.open(roleId);
     },
+    importExcel(){
+
+    }
   }
 }
 
