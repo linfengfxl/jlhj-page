@@ -151,7 +151,7 @@ export default {
           title: '工程名称',
           key: 'projectName',
           align: 'left',
-          width: 120,
+          minWidth: 120,
         },
         {
           title: '申请人',
@@ -176,10 +176,7 @@ export default {
           key: 'createTime',
           align: 'center',
           width: 100,
-        }),
-        {
-          title: ' '
-        },
+        })
       ],
       columns1: [
         /* {

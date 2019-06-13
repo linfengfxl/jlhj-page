@@ -6,9 +6,7 @@
     @onCurrentRowChange="curRowChg"
     :beforeLoad="beforeLoad"
   >
-    <div class="page-title" slot="page-title">
-      入库单
-    </div>
+    <div class="page-title" slot="page-title">入库单</div>
     <div class="page-searchbox">
       <table cellpadding="0" cellspacing="0">
         <tr>
@@ -157,7 +155,7 @@ export default {
           title: '工程名称',
           key: 'projectName',
           align: 'left',
-          width: 120,
+          minWidth: 120,
         }, {
           title: '供应商',
           key: 'providerName',
@@ -186,20 +184,8 @@ export default {
           align: 'center',
           width: 100,
         }),
-        {
-          title: ' ',
-        },
       ],
       columns1: [
-        /* {
-           title:'#', 
-           fixed: 'left',
-           width:50,
-           align:'center',
-           render:(h,params)=>{
-             return h('span', params.index + 1);
-           }
-         },*/
         {
           title: '物料代码',
           key: 'materCode',

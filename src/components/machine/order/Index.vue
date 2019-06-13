@@ -125,11 +125,11 @@ export default {
         {
           title: '工程名称',
           key: 'projectName',
-          width: 120,
+          minwidth: 140,
         }, {
           title: '供应商',
           key: 'providerName',
-          minwidth: 160,
+          minwidth: 120,
         },
         {
           title: '机械名称',

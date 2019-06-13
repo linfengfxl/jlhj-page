@@ -32,7 +32,7 @@
                   <FormItem label="供应商联系人">{{formItem.linkMan}}</FormItem>
                 </td>
                 <td>
-                  <FormItem label="税率">{{formItem.taxRate}} %</FormItem>
+                  <FormItem label="税率">{{formItem.taxRate1}} %</FormItem>
                 </td>
                 <td>
                   <FormItem
@@ -140,6 +140,7 @@ export default {
         taxpayerType: '',//纳税人类型
         invoiceType: '',//发票类型
         taxRate: '',//税率 
+        taxRate1:'',
         inboundType: 1,//红蓝字:1.“蓝字”表示入库，2.“红字”表示退货
         operateDate: page.formatDate(new Date(), 'yyyy-MM-dd'),
         remark: '',
@@ -162,18 +163,7 @@ export default {
       this.stockBillId = proc.instance.businessKey;
       this.title = "入库单_" + this.stockBillId;
       this.load();
-    },
-    selProvider(data) {
-      if (data) {
-        this.formItem.providerName = data.providerName;
-        this.formItem.providerCode = data.providerCode;
-        this.formItem.linkMan = data.linkMan;//供应商联系人
-        this.formItem.linkPhone = data.linkPhone;//供应商联系电话
-        this.formItem.taxpayerType = data.taxpayerType;//纳税人类型
-        this.formItem.invoiceType = data.invoiceType;//发票类型
-        this.formItem.taxRate = data.taxRate;//税率 
-      }
-    },
+    }, 
     load() {
       this.loading = 1;
       this.$http.post("/api/engine/storage/instock/get", { stockBillId: this.stockBillId }).then((res) => {
@@ -182,6 +172,7 @@ export default {
           if (res.data.data) {
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
             Object.assign(this.formItem, res.data.data);
+            this.formItem.taxRate1= floatObj.multiply(this.formItem.taxRate, 100);
             this.list = res.data.data.detailList;
           } else {
             this.$Message.error('订单不存在！');

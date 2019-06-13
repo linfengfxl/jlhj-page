@@ -120,11 +120,11 @@ export default {
         {
           title: '工程名称',
           key: 'projectName',
-          width: 120,
+          minWidth: 140,
         }, {
           title: '供应商',
           key: 'providerName',
-          minwidth: 160,
+          minWidth: 120,
         },
         page.table.initDateColumn({
           title: '结算时间',
@@ -133,6 +133,7 @@ export default {
         page.table.initMapColumn({
           title: '状态',
           key: 'status',
+          width:60,
           data: {
             '0': '待提交',
             '1': '审核中',

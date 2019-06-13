@@ -24,14 +24,10 @@
               </colgroup>
               <tr>
                 <td>
-                  <FormItem label="本日进行" prop="">
-                   {{formItem.dayWork}}
-                  </FormItem>
+                  <FormItem label="本日进行" prop>{{formItem.dayWork}}</FormItem>
                 </td>
                 <td>
-                  <FormItem label="明日计划" prop="">
-                    {{formItem.nextDayPlan}}
-                  </FormItem>
+                  <FormItem label="明日计划" prop>{{formItem.nextDayPlan}}</FormItem>
                 </td>
               </tr>
               <!-- <tr>
@@ -90,8 +86,9 @@ export default {
   data() {
     return {
       loading: 0,
-      instId:0,
+      instId: 0,
       dailyId: '',
+      title: '',
       projectCode: '',
       projectName: '',
       pageFlag: 1,//1.新建 2.编辑 3.修订
@@ -215,7 +212,7 @@ export default {
       form.proc = proc.formItem;
       // 提交
       this.loading = 1;
-      var uri = '/api/engine/project/daily/submit'; 
+      var uri = '/api/engine/project/daily/submit';
 
       this.$http.post(uri, form).then((res) => {
         this.loading = 0;

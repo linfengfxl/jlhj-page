@@ -22,7 +22,7 @@
             <FormItem label="层级编码" prop="levelCode">
               <Input v-model="formItem.levelCode" :disabled="isEdit == 1" class="width-1"/>
             </FormItem>
-            <FormItem label="分步分项工程名称" prop="subProjectName">
+            <FormItem label="分部分项工程名称" prop="subProjectName">
               <Input v-model="formItem.subProjectName" placeholder="不超过64个字符"/>
             </FormItem>
             <FormItem label="设计工作量" prop="designWorkload">

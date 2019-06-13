@@ -31,7 +31,9 @@
             <Button @click="reset" type="default">重置</Button>
           </td>
           <td>&nbsp;</td>
-          <td><Button @click="exportDown" type="info" icon="ios-download-outline">导出</Button></td>
+          <td>
+            <Button @click="exportDown" type="info" icon="ios-download-outline">导出</Button>
+          </td>
         </tr>
       </table>
     </div>
@@ -41,7 +43,7 @@
 import ListPage from '@/components/page/ListPage';
 import DataRowOperate from '@/components/commons/DataRowOperate';
 import page from '@/assets/js/page';
-import floatObj from '@/assets/js/floatObj';　
+import floatObj from '@/assets/js/floatObj';
 
 export default {
   components: {
@@ -51,28 +53,34 @@ export default {
   data() {
     let that = this;
     return {
-      columns: [        
+      columns: [
+        {
+          title: '序号',
+          type: 'index',
+          width: 60,
+          align: 'center'
+        },
         {
           title: '工程名称',
           key: 'projectName',
-          width: 120,
+          minWidth: 120,
         },
         {
           title: '层级编码',
           key: 'levelCode',
-          width: 150,
+          width: 120,
         },
         {
-          title: '分步分项工程名称',
+          title: '分部分项工程名称',
           key: 'subProjectName',
           align: 'left',
-          minWidth: 150
+          width: 140
         },
         {
           title: '设计工程量',
           key: 'designWorkload',
           align: 'center',
-          width: 130,
+          width: 120,
         },
         {
           title: '复核工程量',
@@ -91,10 +99,10 @@ export default {
           title: '施工总量',
           key: 'quantity',
           align: 'center',
-          width: 160,
-          render:(h,params)=>{  
+          width: 120,
+          render: (h, params) => {
             var row = params.row;
-            if(row.quantity!=null){
+            if (row.quantity != null) {
               return h('span', row.quantity);
             }else{
               return h('span', "");
@@ -105,14 +113,14 @@ export default {
           title: '累计完成百分比',
           key: 'percent',
           align: 'center',
-          width: 160,
-          render:(h,params)=>{  
+          width: 140,
+          render: (h, params) => {
             var row = params.row;
-            if(row.designWorkload>0&&row.quantity!=null){
-              return h('span', floatObj.multiply(floatObj.divide(row.quantity, row.designWorkload),100)+"%");
-            }else{
+            if (row.designWorkload > 0 && row.quantity != null) {
+              return h('span', floatObj.multiply(floatObj.divide(row.quantity, row.designWorkload), 100) + "%");
+            } else {
               return h('span', "");
-            }   
+            }
           },
         }
       ],
@@ -146,13 +154,13 @@ export default {
     query() {
       this.$refs.page.query();
     },
-     exportDown(){
+    exportDown() {
       this.$refs.page.exportDown();
     },
     reset: function () {
       Object.assign(this.queryForm, {
-        projectName:'',
-        createTime:''
+        projectName: '',
+        createTime: ''
       });
       this.query();
     },
