@@ -68,7 +68,7 @@ export default {
       type: Boolean,
       default: true
     },
-    projectCode: {
+    projectCode: {//产品编号 选择框外面传入
       type: String,
       default: ''
     },
