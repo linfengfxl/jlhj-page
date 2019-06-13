@@ -123,9 +123,16 @@ export default {
         }, {
           title: '明日计划',
           key: 'nextDayPlan',
-        }, {
-          title: ' '
-        }
+        }, 
+        page.table.initMapColumn({
+          title: '来源',
+          key: 'source',
+          width: 80,
+          data: {
+            '1': 'PC端',
+            '2': 'APP',
+          },  
+        }),
       ],
       list: [],
       total: 0,

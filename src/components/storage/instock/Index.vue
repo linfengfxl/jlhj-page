@@ -178,6 +178,15 @@ export default {
           },
           width: 80,
         }),
+        page.table.initMapColumn({
+          title: '来源',
+          key: 'source',
+          width: 80,
+          data: {
+            '1': 'PC端',
+            '2': 'APP',
+          },  
+        }),
         page.table.initDateColumn({
           title: '创建日期',
           key: 'createTime',

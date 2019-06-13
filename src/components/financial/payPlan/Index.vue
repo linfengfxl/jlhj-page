@@ -23,7 +23,12 @@
           <td class="page-tools">
             <Button @click="add" v-power icon="plus">发起付款计划单</Button>&nbsp;
           </td>
-          <td class="page-tools" v-if="queryForm.status==0"></td>
+           <td class="page-tools">
+            <UploadButton @on-upload="importExcel"></UploadButton>
+          </td>
+          <td class="page-tools">
+            <Button @click="exportDown" type="info"  icon="ios-download-outline">导出</Button>
+          </td>
         </tr>
       </table>
     </div>
@@ -61,6 +66,7 @@ import ListPage from '@/components/page/ListPage';
 import ListPageDetail from '@/components/page/ListPageDetail';
 import DataRowOperate from '@/components/commons/DataRowOperate';
 import UploadBox from '@/components/upload/Index';
+import UploadButton from '@/components/upload/UploadButton';
 
 import page from '@/assets/js/page';
 
@@ -69,7 +75,8 @@ export default {
     ListPage, 
     DataRowOperate,
     ListPageDetail,
-    UploadBox
+    UploadBox,
+    UploadButton
   },
   data() {
     let that = this;
@@ -291,7 +298,22 @@ export default {
     },
     goPage(page) {
       this.$router.push({ path: page });
-    }
+    },
+    importExcel(fileId){
+      this.$http.post('/api/engine/financial/payPlan/import', {defineId:"4",fileId:fileId}).then((res) => {
+        if (res.data.code === 0) {
+          this.$Message.success("导入成功, 添加:"+ res.data.data +"条");
+          this.reset();
+        } else {
+          this.$Message.error(res.data.message)
+        }
+      }).catch((error) => {
+        this.$Message.error(error.toString())
+      });
+    },
+    exportDown(){
+      this.$refs.page.exportDown();
+    },
   }
 }
 

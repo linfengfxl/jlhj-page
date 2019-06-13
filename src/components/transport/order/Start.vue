@@ -372,10 +372,9 @@ export default {
       var form = {};
       Object.assign(form, this.formItem);
 
-      form.transportDate = page.formatDate(
-        this.formItem.transportDate
-      ); //运输日期
-      form.arrivalTime = page.formatDate(this.formItem.arrivalTime); //抵达时间
+      form.transportDate = page.formatDateTime(
+        this.formItem.transportDate); //运输日期
+      form.arrivalTime = page.formatDateTime(this.formItem.arrivalTime); //抵达时间
       if (!form.transportDate) {
         form.transportDate = null;
       }
