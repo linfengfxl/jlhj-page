@@ -282,7 +282,7 @@ export default {
       form.proc = proc.formItem;
       // 提交
       this.loading = 1;
-      var uri = '/api/engine/storage/instock/start';
+      var uri = '/api/engine/storage/instock/startPc';
       if (this.pageFlag == 2) {
         uri = '/api/engine/storage/instock/restart';
       }
