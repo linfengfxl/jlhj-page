@@ -103,23 +103,26 @@ export default {
         {
           type: 'selection',
           width: 60,
-          align: 'center'
+          align: 'center',
+          fixed: 'left',
         },
         {
           title: '层级编码',
           key: 'levelCode',
+          fixed: 'left',
           width: 100,
         },
         {
           title: '分部分项工程名称',
           key: 'subProjectName',
           width: 220,
+          fixed: 'left',
         },
         {
           title: '设计工作量',
           key: 'designWorkload',
           align: 'left',
-          minWidth: 150
+          minWidth: 120
         },
         {
           title: '复核工作量',
@@ -132,8 +135,15 @@ export default {
           key: 'unit',
           align: 'center',
           group: 'unit',
-          width: 100
-        })
+          width: 90
+        }),
+        {
+          title: '施工总量',
+          key: 'quantity',
+          align: 'center',
+          width: 100,
+        },
+
       ],
       display: false,
       list: [],
@@ -162,7 +172,7 @@ export default {
       this.queryParam.page = pagebar.currentPage;
       this.queryParam.pageSize = pagebar.currentPageSize;
       this.queryParam.projectCode = this.projectCode;
-      this.$http.post("/api/engine/project/workload/list", this.queryParam).then((res) => {
+      this.$http.post("/api/engine/project/workload/selectList", this.queryParam).then((res) => {
         this.loading = 0;
         if (res.data.code === 0) {
           this.loading = 0;

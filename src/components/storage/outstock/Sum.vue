@@ -113,7 +113,7 @@ export default {
           width: 100,
         },
         {
-          title: '价税合计',//含税单价
+          title: '价税合计',
           key: 'amount',
           align: 'center',
           width: 100,
