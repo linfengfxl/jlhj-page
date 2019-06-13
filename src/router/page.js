@@ -22,6 +22,7 @@ components.push({ component: 'storage/outstock/Index', name: '', path: '/storage
 components.push({ component: 'storage/outstock/OutStockEdit', name: '', path: '/storage/outstock/start' })
 components.push({ component: 'storage/outstock/Handle', name: '', path: '/storage/outstock/handle' })
 components.push({ component: 'storage/outstock/View', name: '', path: '/storage/outstock/view' })
+components.push({ component: 'storage/outstock/Sum', name: '', path: '/storage/outstock/sum' }) 
 //采购合同
 components.push({ component: 'storage/contract/Index', name: '', path: '/storage/contract' })
 components.push({ component: 'storage/contract/Edit', name: '', path: '/storage/contract/edit' })
