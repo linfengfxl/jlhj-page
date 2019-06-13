@@ -10,12 +10,7 @@
       <Loading :loading="loading">
         <div class="baseinfo">
           <div class="page-tools"></div>
-          <Form
-            ref="form"
-            class="page-form"
-            :model="formItem" 
-            :label-width="120"
-          >
+          <Form ref="form" class="page-form" :model="formItem" :label-width="120">
             <table cellspacing="0" cellpadding="0">
               <colgroup>
                 <col width="33%">
@@ -38,7 +33,7 @@
                   <FormItem label="供应商联系人">{{formItem.linkMan}}</FormItem>
                 </td>
                 <td>
-                  <FormItem label="税率">{{formItem.taxRate}} %</FormItem>
+                  <FormItem label="税率">{{formItem.taxRate1}} %</FormItem>
                 </td>
                 <td>
                   <FormItem
@@ -131,7 +126,7 @@ export default {
       loading: 0,
       stockBillId: '',
       instId: 0,
-      title:'',
+      title: '',
       formItem: {
         stockBillId: '',//入库单号
         type: 2,//类型:1.出库, 2.入库
@@ -146,6 +141,7 @@ export default {
         taxpayerType: '',//纳税人类型
         invoiceType: '',//发票类型
         taxRate: '',//税率 
+        taxRate1: '',
         inboundType: 1,//红蓝字:1.“蓝字”表示入库，2.“红字”表示退货
         operateDate: page.formatDate(new Date(), 'yyyy-MM-dd'),
         remark: '',
@@ -188,6 +184,7 @@ export default {
           if (res.data.data) {
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
             Object.assign(this.formItem, res.data.data);
+            this.formItem.taxRate1 = floatObj.multiply(this.formItem.taxRate, 100);
             this.list = res.data.data.detailList;
           } else {
             this.$Message.error('订单不存在！');
