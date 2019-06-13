@@ -111,7 +111,7 @@ export default {
           width: 100,
         },
         {
-          title: '分步分项工程名称',
+          title: '分部分项工程名称',
           key: 'subProjectName',
           width: 220,
         },

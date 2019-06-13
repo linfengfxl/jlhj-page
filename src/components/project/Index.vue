@@ -87,7 +87,7 @@ export default {
         {
           title: '工程名称',
           key: 'name',
-          minWidth: 150, 
+          minWidth: 150,
         },
         page.table.initMapColumn({
           title: '状态',
@@ -100,8 +100,8 @@ export default {
         {
           title: '委托单位',
           key: 'customerName',
-          align: 'left', 
-          width:150,
+          align: 'left',
+          width: 150,
         },
         {
           title: '联系人',
@@ -167,7 +167,7 @@ export default {
           title: '删除确认',
           content: '<p>删除后不能恢复，确定删除已选择的记录吗？</p>',
           onOk: () => {
-            this.$http.post('/api/engine/project/delete?id=' + params.row.projectCode, params.row).then((res) => {
+            this.$http.post('/api/engine/project/delete', { 'projectCode': params.row.projectCode }).then((res) => {
               if (res.data.code === 0) {
                 this.$Message.success("删除成功");
                 $.extend(this.queryForm, this.queryParam);

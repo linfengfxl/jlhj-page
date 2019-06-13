@@ -53,12 +53,20 @@ export default {
       tabName: '1',
       columns: [
         {
+          title: '序号',
+          type: 'index',
+          width: 60,
+          align: 'center'
+        },
+        {
           title: '工程名称',
           key: 'projectName',
+          minWidth: 120
         },
         {
           title: '仓库或部门',
           key: 'deptName',
+          width: 120
         },
         {
           title: '材料编号',
@@ -69,13 +77,13 @@ export default {
         {
           title: '材料名称',
           key: 'materName',
-          align: 'center',
+          align: 'left',
           width: 120,
         },
         {
           title: '规格型号',
           key: 'spec',
-          align: 'center',
+          align: 'left',
           width: 100,
         },
         {
