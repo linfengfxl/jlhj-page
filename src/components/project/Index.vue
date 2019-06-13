@@ -54,6 +54,7 @@ export default {
           title: '操作',
           width: 120,
           align: 'center',
+          fixed:'left',
           render: (h, params) => {
             var row = params.row;
             return h(DataRowOperate, {
@@ -82,16 +83,20 @@ export default {
         {
           title: '编码',
           key: 'projectCode',
-          width: 120,
+          width: 80,
+          fixed:'left',
         },
         {
           title: '工程名称',
-          key: 'name',
-          minWidth: 150,
+          key: 'name', 
+          width: 180, 
+          align: 'left',
+          fixed:'left',
         },
         page.table.initMapColumn({
           title: '状态',
-          key: 'status',
+          key: 'status', 
+          width: 60,
           data: {
             '1': '进行中',
             '2': '结项',
@@ -104,8 +109,62 @@ export default {
           width: 150,
         },
         {
+          title: '客户信用等级',
+          key: 'customerBank',
+          align: 'center',
+          width: 130,
+        },
+        {
+          title: '职称(职务)',
+          key: 'position',
+          align: 'center',
+          width: 130,
+        },
+        {
           title: '联系人',
           key: 'linkMan',
+          align: 'center',
+          width: 130,
+        },
+        {
+          title: '联系电话',
+          key: 'linkPhone',
+          align: 'center',
+          width: 130,
+        },
+        {
+          title: '邮箱',
+          key: 'email',
+          align: 'center',
+          width: 130,
+        },
+        {
+          title: '项目来源',
+          key: 'source',
+          align: 'center',
+          width: 130,
+        },
+        {
+          title: '投资额',
+          key: 'investment',
+          align: 'center',
+          width: 130,
+        },
+        {
+          title: '投资性质',
+          key: 'investmentType',
+          align: 'center',
+          width: 130,
+        },
+        {
+          title: '工程总规模',
+          key: 'totalSize',
+          align: 'center',
+          width: 130,
+        },
+        {
+          title: '计量单位',
+          key: 'unit',
           align: 'center',
           width: 130,
         },
