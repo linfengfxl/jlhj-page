@@ -14,11 +14,7 @@
         <table cellpadding="0" cellspacing="0">
           <tr>
             <td>
-              <Input
-                v-model="queryForm.keyword"
-                placeholder="编码、名称查询"
-                @keyup.enter.native="query"
-              ></Input>
+              <Input v-model="queryForm.keyword" placeholder="编码、名称查询" @keyup.enter.native="query"></Input>
             </td>
             <td>
               <Button @click="query" type="primary" icon="ios-search">查询</Button>
@@ -44,11 +40,14 @@
             ref="pagebar"
             :total="total"
             size="small"
+            :page-size-opts="[10,20,30,50,100]"
             @on-page-size-change="pageSizeChange"
             @on-change="pageChange"
             show-sizer
             placement="top"
-            :transfer="true"
+            :transfer="false"
+            show-total
+            show-elevator
           ></Page>
         </div>
       </Loading>
@@ -95,7 +94,7 @@ export default {
             });
           }
         },
-         {
+        {
           title: '编码',
           key: 'machineCode',
           width: 100,
@@ -119,7 +118,7 @@ export default {
           key: 'remark',
           align: 'left',
           minWidth: 150
-        } 
+        }
       ],
       display: false,
       list: [],

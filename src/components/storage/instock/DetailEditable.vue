@@ -7,19 +7,19 @@
         <th>材料名称</th>
         <th>规格型号</th>
         <th>单位</th>
-        <th class="col-quantity">
+        <th>
           <span>数量</span>
         </th>
-        <th class="col-amount">
+        <th>
           <span>含税单价(元)</span>
         </th>
-        <th class="col-amount">
+        <th>
           <span>单价(元)</span>
         </th>
-        <th class="col-amount">
+        <th>
           <span>金额(元)</span>
         </th>
-        <th class="col-amount">
+        <th>
           <span>税额(元)</span>
         </th>
       </thead>
