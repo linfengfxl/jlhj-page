@@ -39,17 +39,8 @@
           ></i-table>
 
           <div style="height:10px;"></div>
-
-          <Page
-            ref="pagebar"
-            :total="total"
-            size="small"
-            @on-page-size-change="pageSizeChange"
-            @on-change="pageChange"
-            show-sizer
-            placement="top"
-            :transfer="true"
-          ></Page>
+          <Page ref="pagebar" :total="total" size="small" :page-size-opts="[10,20,30,50,100]"
+            @on-page-size-change="pageSizeChange" @on-change="pageChange" show-sizer placement="top" :transfer="false" show-total show-elevator></Page>  
         </div>
       </Loading>
     </div>

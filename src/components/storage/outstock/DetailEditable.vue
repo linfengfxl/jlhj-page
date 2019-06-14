@@ -7,11 +7,11 @@
         <th>材料名称</th>
         <th>规格型号</th>
         <th>单位</th>
-        <th class="col-quantity">
+        <th>
           <span>数量</span>
         </th>
-        <th class="col-price">
-          含税单价(元)
+        <th>
+          <span>含税单价(元)</span>
         </th>
         <th>
           <span>施工部位</span>
@@ -47,12 +47,8 @@
             {{item.taxUnitPrice}}
             <!--  含税单价(元) -->
           </td>
-          <th>
-            <span> {{item.constructionSite}}</span>
-          </th>
-          <th>
-            <span> {{item.productName}}</span>
-          </th>
+          <td>{{item.constructionSite}}</td>
+          <td>{{item.productName}}</td>
         </tr>
       </tbody>
     </table>
@@ -67,9 +63,7 @@
         <th class="col-quantity">
           <span>数量</span>
         </th>
-        <th class="col-price">
-          含税单价(元)
-        </th>
+        <th class="col-price">含税单价(元)</th>
         <th>
           <span>施工部位</span>
         </th>
@@ -119,11 +113,11 @@
           </td>
           <td>
             <!-- 施工部位 -->
-              <Input v-model="item.constructionSite"  />
+            <Input v-model="item.constructionSite"/>
           </td>
           <td>
             <!-- 产成品名称 -->
-              <Input v-model="item.productName"  />
+            <Input v-model="item.productName"/>
           </td>
         </tr>
       </tbody>

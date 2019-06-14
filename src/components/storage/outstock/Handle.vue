@@ -278,7 +278,7 @@ export default {
 
 <style type="text/css">
 .instock-edit.page {
-  width: 900px;
+  width: 100%;
   /* margin: 0 auto; */
   padding: 10px 20px;
   position: relative;
