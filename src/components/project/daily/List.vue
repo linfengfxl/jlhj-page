@@ -31,7 +31,7 @@
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td>
-            <Input v-model="queryForm.keyword" placeholder="" @on-enter="query"/>
+            <Input v-model="queryForm.keyword" placeholder="本日工作、明日计划" @on-enter="query"/>
           </td>
           <td>
             <Button @click="query" type="primary" icon="ios-search">查询</Button>

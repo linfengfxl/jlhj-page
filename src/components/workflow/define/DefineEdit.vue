@@ -1,5 +1,5 @@
 <template>
-  <Modal v-model="show" title="设置审批层级" :closable="true" class="edit-user">
+  <Modal v-model="show" title="设置审批层级" :closable="true" :mask-closable="false" class="edit-user" width="600">
     <div class="page define-edit">
       <Loading :loading="loading">
         <div class="page-form">
@@ -15,9 +15,9 @@
             <FormItem label="审批层级" prop="nodes">
                <table class="nodestable" cellspacing="0" cellpadding="0">
                  <tr v-for="(item,index) in nodes">
-                   <td style="width: 40px;text-align: center;">{{index+1}}</td>
+                   <td style="width: 40px;text-align: center;">{{index+1}}</td> 
                    <td>
-                      <Select v-model="item.roleId" :filterable="true">
+                      <Select v-model="item.roleId" :filterable="true" :placeholder="item.roleName">
                         <Option v-for="item in roles" :value="item.roleId" :key="item.roleId">{{ item.roleName }}</Option>
                       </Select>
                    </td>
@@ -86,7 +86,7 @@ export default {
     initItem() {
       return {
         id: '',
-        nodes: "",
+        nodes: [],
         nodeNames:"",
         title: "",
         instTitle: "",
@@ -154,13 +154,16 @@ export default {
     },
     //添加或编辑弹窗
     open(item) {
+
+      item = JSON.parse(JSON.stringify(item));
+
       if(this.roles.length == 0){
         this.loadRoles();
       }
       this.$refs["form"].resetFields();       
       this.formItem = Object.assign(this.initItem(), item);
 
-      this.nodes = this.formItem.nodes.split(',').map(item=>{return {roleId:item}});
+      this.nodes = this.formItem.nodeArr;
 
       this.show = true;
       if (this.formItem.id > 0) {
@@ -170,10 +173,10 @@ export default {
       }
     },     
     addrow() {
-      this.nodes.push({roleId:''})
+      this.nodes.push({roleId:'',roleName:''})
     },
     insert(index) { 
-      this.nodes.splice(index, 0,{roleId:''});
+      this.nodes.splice(index, 0,{roleId:'',roleName:''});
     },
     remove(index) {
       if(this.nodes.length > 1){

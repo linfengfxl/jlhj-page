@@ -216,8 +216,7 @@
               this.$http.post('/api/engine/role/delete?id=' + params.row.id, params.row).then((res) => {
                 if (res.data.code === 0) {
                   this.$Message.success("删除成功");
-                  $.extend(this.queryForm, this.queryParam);
-                  this.query();
+                  this.$refs.page.load();
                 } else {
                   this.$Message.error(res.data.message)
                 }
@@ -237,8 +236,7 @@
             }else{
               this.$Message.success("禁用成功");
             }    
-            $.extend(this.queryForm, this.queryParam);
-            this.query();
+            this.$refs.page.load();
           } else {
             this.$Message.error(res.data.message)
           }

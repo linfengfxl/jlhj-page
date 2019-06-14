@@ -54,7 +54,7 @@
             ></InputNumber>
           </td>
           <td>
-             <Input v-model="item.desc" style="width: 300px"></Input> 
+             <Input v-model="item.describe" style="width: 300px"></Input> 
           </td>
         </tr>
       </tbody>
