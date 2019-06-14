@@ -40,6 +40,9 @@ components.push({ component: 'project/daily/List', name: '', path: '/project/dai
 //工程量统计
 components.push({ component: 'project/quantity/Index', name: '', path: '/project/quantity' })
 
+components.push({ component: 'project/folder/Index', name: '', path: '/project/folder' })
+components.push({ component: 'project/folder/Browse', name: '', path: '/project/folder/browse' })
+
 //机械作业单
 //机械作业单
 components.push({ component: 'machine/order/Index', name: '', path: '/machine/order' })
