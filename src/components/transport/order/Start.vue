@@ -159,24 +159,37 @@
                   </FormItem>
                 </td>
                 <td>
-                  <FormItem label="运输起点" prop="transportStart">
-                    <Input v-model="formItem.transportStart" placeholder="请填写运输起点"/>
+                  <FormItem label="运输起点">
+                    <!-- <Input v-model="formItem.transportStart" placeholder="请填写运输起点"/> -->
+                    <AutoComplete
+                      v-model="address1"
+                      :data="data1"
+                      @on-search="handleSearch1(1)"
+                      placeholder="请填写运输起点"
+                      style="width:200px"
+                    ></AutoComplete>
                   </FormItem>
                 </td>
                 <td>
-                  <FormItem label="运输终点" prop="transportEnd">
-                    <Input v-model="formItem.transportEnd" placeholder="请填写运输终点"/>
+                  <FormItem label="运输终点">
+                    <!-- <Input v-model="formItem.transportEnd" placeholder="请填写运输终点"/> -->
+                    <AutoComplete
+                      v-model="address2"
+                      :data="data2"
+                      @on-search="handleSearch1(2)"
+                      placeholder="请填写运输起点"
+                      style="width:200px"
+                    ></AutoComplete>
+                    <!-- <AutoComplete
+                      v-model="address2"
+                      :data="addressList"
+                      :filter-method="filterMethod"
+                      placeholder="请填写运输起点"
+                      style="width:200px"
+                    ></AutoComplete>-->
                   </FormItem>
                 </td>
               </tr>
-              <!--<FormItem label="运输日期" prop="transportDate">
-              <Date-picker
-                type="date"
-                placeholder="选择日期"
-                v-model="formItem.transportDate"
-                format="yyyy-MM-dd"
-              ></Date-picker>
-              </FormItem>-->
               <tr>
                 <td>
                   <Form-item label="抵达时间" prop>
@@ -241,6 +254,11 @@ export default {
   },
   data() {
     return {
+      address1: '',
+      address2: '',
+      data1: [],
+      data2: [],
+      addressList: [],
       pageFlag: 1,//1.新建 2.编辑 3.修订
       loading: 0,
       //是否编辑 0 添加 1 编辑
@@ -300,14 +318,6 @@ export default {
             trigger: "blur"
           }
         ],
-        transportStart: [
-          {
-            required: true,
-            whitespace: true,
-            message: "请填写运输起点",
-            trigger: "blur"
-          }
-        ],
         transportEnd: [
           {
             required: true,
@@ -345,6 +355,7 @@ export default {
     } else {
       this.pageFlag = 1;
     }
+    this.loadAddressList();
   },
   computed: {
     pageTitle() {
@@ -360,6 +371,62 @@ export default {
     }
   },
   methods: {
+    loadAddressList() {
+      var that = this;
+      var uri = '/api/engine/address/list';
+      this.$http.post(uri, {}).then((res) => {
+        this.loading = 0;
+        if (res.data.code == 0) {
+          var rows = res.data.data.rows;
+          for (let i = 0; i < rows.length; i++) {
+            that.data1.push(rows[i].name);
+            that.data2.push(rows[i].name);
+          }
+        } else {
+          this.$Message.error(res.data.message);
+        }
+      }).catch((error) => {
+        this.$Message.error("请求失败，请重新操作")
+      });
+    },
+    filterMethod(value, option) {
+      return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
+    },
+    handleSearch1(type) {
+      console.log(type);
+      var value = this.address1;
+      if (type == 2) {
+        value = this.address2;
+      }
+      var that = this;
+      // this.data1 = !value ? [] : [
+      //   value,
+      //   value + value,
+      //   value + value + value
+      // ];
+      this.loading = 1;
+      that.data1 = [];
+      that.data2 = [];
+      var uri = '/api/engine/address/list';
+      this.$http.post(uri, { 'keyword': value }).then((res) => {
+        this.loading = 0;
+        if (res.data.code == 0) {
+          var rows = res.data.data.rows;
+          for (let i = 0; i < rows.length; i++) {
+            if (type == 1) {
+              that.data1.push(rows[i].name);
+            }
+            if (type == 2) {
+              that.data2.push(rows[i].name);
+            }
+          }
+        } else {
+          this.$Message.error(res.data.message);
+        }
+      }).catch((error) => {
+        this.$Message.error("请求失败，请重新操作")
+      });
+    },
     save(proc) {
       var pass = true;
       this.$refs.form.validate((valid) => {
@@ -379,6 +446,8 @@ export default {
         form.transportDate = null;
       }
       form.taxRate = this.formItem.taxRate1;
+      form.transportStart = this.address1;
+      form.transportEnd = this.address2;
       // 提交
       this.loading = 1;
       var uri = '/api/engine/transport/order/add';
