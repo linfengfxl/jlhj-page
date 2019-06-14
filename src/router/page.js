@@ -9,6 +9,7 @@ components.push({ component: 'customer/Index', name: '', path: '/customer' })
 components.push({ component: 'material/Index', name: '', path: '/material' })
 //资源档案
 components.push({ component: 'machine/Index', name: '', path: '/machine' })
+components.push({ component: 'address/Index', name: '', path: '/address' })
 //物质库存 
 //入库单
 components.push({ component: 'storage/instock/Index', name: '', path: '/storage/instock' })
