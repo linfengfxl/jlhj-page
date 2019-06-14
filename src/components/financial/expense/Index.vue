@@ -231,7 +231,7 @@ export default {
           }
         },
         {
-          title: '描述',
+          title: '报销说明',
           key: 'describe',
           align: 'left',
           width: 100,

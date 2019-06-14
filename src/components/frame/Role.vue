@@ -22,6 +22,8 @@
           <td>
             <Button @click="reset"  type="default">重置</Button>
           </td>
+          <td>&nbsp;</td>
+          <td><Button @click="exportDown" type="info" icon="ios-download-outline">导出</Button></td>
         </tr>
       </table>
     </div>
@@ -216,8 +218,7 @@
               this.$http.post('/api/engine/role/delete?id=' + params.row.id, params.row).then((res) => {
                 if (res.data.code === 0) {
                   this.$Message.success("删除成功");
-                  $.extend(this.queryForm, this.queryParam);
-                  this.query();
+                  this.$refs.page.load();
                 } else {
                   this.$Message.error(res.data.message)
                 }
@@ -237,8 +238,7 @@
             }else{
               this.$Message.success("禁用成功");
             }    
-            $.extend(this.queryForm, this.queryParam);
-            this.query();
+            this.$refs.page.load();
           } else {
             this.$Message.error(res.data.message)
           }
@@ -249,6 +249,9 @@
       goBack: function () {
         this.$router.go(-1);
       },
+      exportDown(){
+        this.$refs.page.exportDown();
+      }, 
       addRole: function () {
         this.$refs.editRole.open(0);
       },

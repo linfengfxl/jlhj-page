@@ -17,88 +17,89 @@
                   <col width="auto">
                   <col width="33%">
                 </colgroup>
+                 <tr>
+                   <td>
+                    <FormItem label="运输类别" prop>{{formItem.transportType}}</FormItem>
+                  </td>
+                  <td>
+                    <FormItem prop label="所属部门">{{formItem.deptName}}</FormItem>
+                  </td>
+                  <td>
+                    <FormItem prop label="工程名称">{{formItem.projectName}}</FormItem>
+                  </td>
+                </tr>
                 <tr>
                   <td>
-                    <FormItem label="所属部门">{{formItem.deptName}}</FormItem>
+                    <FormItem prop label="供应商名称">{{formItem.providerName}}</FormItem>
                   </td>
                   <td>
-                    <FormItem label="工程名称">{{formItem.projectName}}</FormItem>
+                    <FormItem label="供应商联系人" prop>{{formItem.linkMan}}</FormItem>
                   </td>
                   <td>
-                    <FormItem label="供应商名称">{{formItem.providerName}}</FormItem>
+                    <FormItem label="税率" prop>{{formItem.taxRate}}%</FormItem>
                   </td>
                 </tr>
                 <tr>
                   <td>
-                    <FormItem label="供应商联系人">{{formItem.linkMan}}</FormItem>
+                    <FormItem label="运输设备名称" prop>{{formItem.machineName}}</FormItem>
                   </td>
                   <td>
-                    <FormItem label="税率">{{formItem.taxRate}}%</FormItem>
+                    <FormItem label="车牌号" prop>{{formItem.vehicleNum}}</FormItem>
                   </td>
                   <td>
-                    <FormItem label="运输设备名称">{{formItem.machineName}}</FormItem>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <FormItem label="运输时间">{{formItem.transportDate}}</FormItem>
-                  </td>
-                  <td>
-                    <FormItem label="车牌号">{{formItem.vehicleNum}}</FormItem>
-                  </td>
-                  <td>
-                    <FormItem label="数量">{{formItem.num}}</FormItem>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <FormItem label="单位">{{formItem.unit}}</FormItem>
-                  </td>
-                  <td>
-                    <FormItem label="里程数">{{formItem.milage}}</FormItem>
-                  </td>
-                  <td>
-                    <FormItem label="含税单价">{{formItem.taxUnitPrice}}</FormItem>
+                    <FormItem label="运输时间" prop>{{formItem.transportDate}}</FormItem>
                   </td>
                 </tr>
 
                 <tr>
                   <td>
-                    <FormItem label="扣款金额">{{formItem.deductAmount}}</FormItem>
+                    <FormItem label="数量" prop>{{formItem.num}}</FormItem>
                   </td>
                   <td>
-                    <FormItem label="金额">{{formItem.amount}}</FormItem>
+                    <FormItem label="单位" prop>{{formItem.unit}}</FormItem>
                   </td>
                   <td>
-                    <FormItem label="税额">{{formItem.tax}}</FormItem>
-                  </td>
+                    <FormItem label="里程数" prop>{{formItem.milage}}</FormItem>
+                  </td> 
                 </tr>
 
                 <tr>
-                  <td>
-                    <FormItem label="价税合计">{{formItem.totalPriceTax}}</FormItem>
+                   <td>
+                    <FormItem label="含税单价" prop>{{formItem.taxUnitPrice}}</FormItem>
                   </td>
                   <td>
-                    <FormItem label="运输起点">{{formItem.transportStart}}</FormItem>
+                    <FormItem label="扣款金额" prop>{{formItem.deductAmount}}</FormItem>
                   </td>
                   <td>
-                    <FormItem label="运输终点">{{formItem.transportEnd}}</FormItem>
+                    <FormItem label="金额" prop>{{formItem.amount}}</FormItem>
                   </td>
+                 
+                </tr>
+
+                <tr>
+                   <td>
+                    <FormItem label="税额" prop>{{formItem.tax}}</FormItem>
+                  </td>
+                  <td>
+                    <FormItem label="价税合计" prop>{{formItem.totalPriceTax}}</FormItem>
+                  </td>
+                  <td>
+                    <FormItem label="运输起点" prop>{{formItem.transportStart}}</FormItem>
+                  </td>
+                 
                 </tr>
                 <tr>
-                  <td>
-                    <Form-item label="抵达时间">{{formItem.arrivalTime}}</Form-item>
+                   <td>
+                    <FormItem label="运输终点" prop>{{formItem.transportEnd}}</FormItem>
                   </td>
                   <td>
-                    <FormItem label="运输类别">{{formItem.transportType}}</FormItem>
+                    <Form-item label="抵达时间" prop>{{formItem.arrivalTime}}</Form-item>
                   </td>
                   <td></td>
                 </tr>
-                <tr>
-                  <td colspan="3">
-                    <FormItem label="运输内容">{{formItem.transportContent}}</FormItem>
+                 <tr>
+                  <td colspan="3"> 
+                    <FormItem label="运输内容" prop>{{formItem.transportContent}}</FormItem>
                   </td>
                 </tr>
               </table>
