@@ -10,6 +10,7 @@ components.push({ component: 'frame/ChangePwd', name: 'frm.chgpwd', path: '/chgp
 components.push({ component: 'frame/AccountSet', name: 'frm.accset', path: '/accset' })
 components.push({ component: 'frame/Admin', name: 'frm.admin', path: '/admin' })
 components.push({ component: 'frame/Role', name: 'frm.role', path: '/role' })
+components.push({ component: 'frame/setting', name: '', path: '/setting' })
 components.push({ component: 'frame/RoleUser', name: '', path: '/roleuser' })
 components.push({ component: 'frame/LoginInfoChg', name: 'frm.loginInfoChg', path: '/myinfo' })
 
