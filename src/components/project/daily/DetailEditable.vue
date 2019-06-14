@@ -136,14 +136,15 @@
             <InputNumber :max="999999" :min="0" v-model="item.workloadPlan"></InputNumber>
           </td>
           <td class="col-quantity">
-            <InputNumber :max="999999" :min="0" v-model="item.workload"></InputNumber>
+            <InputNumber
+              :max="999999"
+              :min="0"
+              v-model="item.workload"
+              @on-change="computedWorkload(item)"
+            ></InputNumber>
           </td>
-          <td class="col-quantity">
-            <InputNumber :max="999999" :min="0" v-model="item.actualWorkload"></InputNumber>
-          </td>
-          <td class="col-quantity">
-            <InputNumber :max="999999" :min="0" v-model="item.actualPercent"></InputNumber>
-          </td>
+          <td class="col-amount">{{item.actualWorkload}}</td>
+          <td class="col-amount">{{item.actualPercent}}</td>
           <td>
             <Input v-model="item.startPile" placeholder :maxlength="100" style="width:100px;"/>
           </td>
@@ -253,6 +254,10 @@ export default {
               } else {
                 var item = this.listNewRow();
                 Object.assign(item, args);
+                item.quantity = args.quantity;//累计完成工程量  (初始值)
+                item.designWorkload = args.designWorkload;//设计工程量
+                item.actualWorkload = args.quantity;//累计完成工程量
+                item.actualPercent = floatObj.multiply(floatObj.divide(args.quantity, args.designWorkload), 100);//累计完成工程比  
                 that.list.push(item);
               }
             })
@@ -275,6 +280,11 @@ export default {
     },
     datePickerChange(item, args) {
       item.needDate = args[0];
+    },
+    computedWorkload(item) {
+      console.log(item.workload)
+      item.actualWorkload = floatObj.add(item.workload, item.quantity);//累计完成工程量  
+      item.actualPercent = floatObj.multiply(floatObj.divide(item.actualWorkload, item.designWorkload), 100);//累计完成工程比  
     },
   }
 }

@@ -46,11 +46,14 @@
             ref="pagebar"
             :total="total"
             size="small"
+            :page-size-opts="[10,20,30,50,100]"
             @on-page-size-change="pageSizeChange"
             @on-change="pageChange"
             show-sizer
             placement="top"
-            :transfer="true"
+            :transfer="false"
+            show-total
+            show-elevator
           ></Page>
         </div>
       </Loading>
@@ -166,7 +169,7 @@ export default {
   },
   computed: {},
   methods: {
-    load() { 
+    load() {
       if (this.model != null) {
         this.title = "选择作业单 " + this.model.projectName + " / " + this.model.providerName + " / " + page.formatDate(this.model.billDate);
       }

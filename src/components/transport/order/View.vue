@@ -18,83 +18,88 @@
                   <col width="33%">
                 </colgroup>
                 <tr>
+                   <td>
+                    <FormItem label="运输类别" prop>{{formItem.transportType}}</FormItem>
+                  </td>
                   <td>
                     <FormItem prop label="所属部门">{{formItem.deptName}}</FormItem>
                   </td>
                   <td>
                     <FormItem prop label="工程名称">{{formItem.projectName}}</FormItem>
                   </td>
+                </tr>
+                <tr>
                   <td>
                     <FormItem prop label="供应商名称">{{formItem.providerName}}</FormItem>
                   </td>
-                </tr>
-                <tr>
                   <td>
                     <FormItem label="供应商联系人" prop>{{formItem.linkMan}}</FormItem>
                   </td>
                   <td>
                     <FormItem label="税率" prop>{{formItem.taxRate}}%</FormItem>
                   </td>
-                  <td>
-                    <FormItem label="运输设备名称" prop>{{formItem.machineName}}</FormItem>
-                  </td>
                 </tr>
-
                 <tr>
                   <td>
-                    <FormItem label="运输时间" prop>{{formItem.transportDate}}</FormItem>
+                    <FormItem label="运输设备名称" prop>{{formItem.machineName}}</FormItem>
                   </td>
                   <td>
                     <FormItem label="车牌号" prop>{{formItem.vehicleNum}}</FormItem>
                   </td>
-                  <td>
-                    <FormItem label="数量" prop>{{formItem.num}}</FormItem>
+                   <td>
+                    <FormItem label="运输时间" prop>{{formItem.transportDate}}</FormItem>
                   </td>
                 </tr>
 
                 <tr>
+                  <td>
+                    <FormItem label="数量" prop>{{formItem.num}}</FormItem>
+                  </td>
                   <td>
                     <FormItem label="单位" prop>{{formItem.unit}}</FormItem>
                   </td>
                   <td>
                     <FormItem label="里程数" prop>{{formItem.milage}}</FormItem>
                   </td>
-                  <td>
-                    <FormItem label="含税单价" prop>{{formItem.taxUnitPrice}}</FormItem>
-                  </td>
+                 
                 </tr>
 
                 <tr>
+                   <td>
+                    <FormItem label="含税单价" prop>{{formItem.taxUnitPrice}}</FormItem>
+                  </td>
                   <td>
                     <FormItem label="扣款金额" prop>{{formItem.deductAmount}}</FormItem>
                   </td>
                   <td>
                     <FormItem label="金额" prop>{{formItem.amount}}</FormItem>
                   </td>
-                  <td>
-                    <FormItem label="税额" prop>{{formItem.tax}}</FormItem>
-                  </td>
+                 
                 </tr>
 
                 <tr>
+                   <td>
+                    <FormItem label="税额" prop>{{formItem.tax}}</FormItem>
+                  </td>
                   <td>
                     <FormItem label="价税合计" prop>{{formItem.totalPriceTax}}</FormItem>
                   </td>
                   <td>
                     <FormItem label="运输起点" prop>{{formItem.transportStart}}</FormItem>
                   </td>
-                  <td>
-                    <FormItem label="运输终点" prop>{{formItem.transportEnd}}</FormItem>
-                  </td>
+                 
                 </tr>
                 <tr>
+                   <td>
+                    <FormItem label="运输终点" prop>{{formItem.transportEnd}}</FormItem>
+                  </td>
                   <td>
                     <Form-item label="抵达时间" prop>{{formItem.arrivalTime}}</Form-item>
                   </td>
-                  <td>
-                    <FormItem label="运输类别" prop>{{formItem.transportType}}</FormItem>
-                  </td>
-                  <td>
+                  <td></td>
+                </tr>
+                 <tr>
+                  <td colspan="3"> 
                     <FormItem label="运输内容" prop>{{formItem.transportContent}}</FormItem>
                   </td>
                 </tr>

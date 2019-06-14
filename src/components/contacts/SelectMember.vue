@@ -13,11 +13,7 @@
         <table cellpadding="0" cellspacing="0">
           <tr>
             <td>
-              <Input
-                v-model="queryForm.keyword"
-                placeholder="姓名/手机号"
-                @keyup.enter.native="query"
-              ></Input>
+              <Input v-model="queryForm.keyword" placeholder="姓名/手机号" @keyup.enter.native="query"></Input>
             </td>
             <td>
               <Button @click="query" type="primary" icon="ios-search">查询</Button>
@@ -43,11 +39,14 @@
             ref="pagebar"
             :total="total"
             size="small"
+            :page-size-opts="[10,20,30,50,100]"
             @on-page-size-change="pageSizeChange"
             @on-change="pageChange"
             show-sizer
             placement="top"
-            :transfer="true"
+            :transfer="false"
+            show-total
+            show-elevator
           ></Page>
         </div>
       </Loading>
@@ -97,42 +96,42 @@ export default {
             });
           }
         },
-         {
+        {
           title: '用户名',
           key: 'loginName',
           align: 'center',
-          width:120
-        }, 
+          width: 120
+        },
         {
           title: '姓名',
           key: 'trueName',
           align: 'center',
-          width:120
-        }, 
+          width: 120
+        },
         {
           title: '岗位',
           key: 'roleName',
           align: 'left',
-          minWidth:100 
-        }, 
+          minWidth: 100
+        },
         {
           title: '部门',
           key: 'deptName',
           align: 'left',
-          minWidth:100 
-        }, 
+          minWidth: 100
+        },
         {
           title: '手机号',
           key: 'mobile',
           align: 'center',
-          width:120
-        }, 
+          width: 120
+        },
         {
           title: '邮箱',
           key: 'email',
           align: 'center',
-          width:120
-        },  
+          width: 120
+        },
         {
           title: '状态',
           key: 'status',

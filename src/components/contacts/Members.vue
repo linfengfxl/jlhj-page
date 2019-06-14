@@ -2,20 +2,31 @@
   <ListPage ref="page" title="" api="/api/engine/user/list" class="member"
   :model="this" :beforeLoad="beforeLoad" @on-load="totalCount=$refs.page.total">   
   <div class="page-searchbox" style="margin-top: 0px">
-    <table cellpadding="0" cellspacing="0" width="100%">
+    <table cellpadding="0" cellspacing="0">
       <tr>
-        <td width="140">
+        <td>
           <span class="member-count">全部成员<span style="color:#999;">（共{{totalCount}}人）</span></span>
         </td>
         <td>
           <Button  @click="addEmp" icon="plus">添加用户</Button> 
         </td>          
-        <td width="1%">
+      </tr>
+    </table>
+  </div> 
+  <div class="page-searchbox">
+    <table cellpadding="0" cellspacing="0">
+      <tr>
+        <td>
           <Input v-model="queryForm.keyword" placeholder="搜索姓名/手机号" style="width:150px" @on-enter="query" />
         </td>
-        <td width="1%">
+        <td>
           <Button icon="ios-search" type="primary" @click="query">查询</Button>
         </td>
+        <td>
+          <Button @click="reset" type="default">重置</Button>
+        </td>
+        <td>&nbsp;</td>
+        <td><Button @click="exportDown" type="info" icon="ios-download-outline">导出</Button></td>
       </tr>
     </table>
   </div> 
@@ -167,21 +178,13 @@
 
       },
       reset() {
-        Object.assign(this.queryForm,{
-          keyword: '',
-          industry:'',
-        });
+        this.queryForm.keyword='';
+
         this.query(); 
       },
-      reset(){
-        Object.assign(this.queryForm,{
-          status:-1,
-          keyword:'',
-          dimission: 2,
-          deptId: 1
-        });
-        this.query();
-      },   
+      exportDown(){
+        this.$refs.page.exportDown();
+      },  
       updateUser:function(row){
         if(row.id == 0){
           this.$Message.error("admin 不能修改");

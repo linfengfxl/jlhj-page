@@ -22,37 +22,15 @@
                   <FormItem label="出库仓库">{{formItem.deptName}}</FormItem>
                 </td>
                 <td>
+                  <FormItem label="领料员">{{formItem.operatorName}}</FormItem>
+                </td>
+                <td>
+                  <FormItem label="出库日期">{{formItem.operateDate}}</FormItem>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="3">
                   <FormItem label="工程名称">{{formItem.projectName}}</FormItem>
-                </td>
-                <td>
-                  <FormItem label="供应商">{{formItem.providerName}}</FormItem>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <FormItem label="供应商联系人">{{formItem.linkMan}}</FormItem>
-                </td>
-                <td>
-                  <FormItem label="税率">{{formItem.taxRate}} %</FormItem>
-                </td>
-                <td>
-                  <FormItem
-                    label="纳税人类型"
-                  >{{$args.getArgText('taxpayer_type', formItem.taxpayerType)}}</FormItem>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <FormItem
-                    prop
-                    label="发票类型"
-                  >{{$args.getArgText('invoice_type', formItem.invoiceType)}}</FormItem>
-                </td>
-                <td>
-                  <FormItem prop label="日期">{{formItem.operateDate}}</FormItem>
-                </td>
-                <td>
-                  <FormItem label="收料员">{{formItem.operatorName}}</FormItem>
                 </td>
               </tr>
               <tr>
@@ -66,7 +44,12 @@
                     </template>
                   </FormItem>
                 </td>
-                <td colspan="2">
+                <td>
+                  <FormItem
+                    label="出库类型"
+                  >{{$args.getArgText('provider_type', formItem.materialType)}}</FormItem>
+                </td>
+                <td>
                   <FormItem prop=" " label="备注">{{formItem.remark}}</FormItem>
                 </td>
               </tr>
@@ -285,9 +268,8 @@ export default {
 
 <style type="text/css">
 .instock-edit.page {
-  width: 900px;
+  width: 100%;
   /* margin: 0 auto; */
-  padding: 10px 20px;
   position: relative;
 }
 .instock-edit .subheader {

@@ -282,7 +282,7 @@ export default {
       form.proc = proc.formItem;
       // 提交
       this.loading = 1;
-      var uri = '/api/engine/storage/instock/start';
+      var uri = '/api/engine/storage/instock/startPc';
       if (this.pageFlag == 2) {
         uri = '/api/engine/storage/instock/restart';
       }
@@ -320,7 +320,7 @@ export default {
 
 <style type="text/css">
 .instock-edit.page {
-  width: 900px;
+  width: 100%;
   /* margin: 0 auto; */
   padding: 10px 20px;
   position: relative;

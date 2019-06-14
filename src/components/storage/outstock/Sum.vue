@@ -1,7 +1,7 @@
 <template>
   <ListPage
     ref="page"
-    title="入库单汇总报表"
+    title="出库单汇总报表"
     api="/api/engine/storage/instock/summaryReport "
     :model="this"
     :beforeLoad="beforeLoad"
@@ -123,7 +123,7 @@ export default {
       total: 0,
       queryParam: {},
       queryForm: {
-        type: 1,//入库
+        type: 2,//出库
         projectName: '',
         deptName: '',
         materName: '',

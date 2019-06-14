@@ -140,6 +140,15 @@ export default {
           title: '作业时间',
           key: 'jobDate',
         }),
+        page.table.initMapColumn({
+          title: '来源',
+          key: 'source',
+          width: 80,
+          data: {
+            '1': 'PC端',
+            '2': 'APP',
+          },  
+        }),
         {
           title: '创建人',
           key: 'creatorName',

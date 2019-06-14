@@ -31,7 +31,7 @@
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td>
-            <Input v-model="queryForm.keyword" placeholder="" @on-enter="query"/>
+            <Input v-model="queryForm.keyword" placeholder="本日工作、明日计划" @on-enter="query"/>
           </td>
           <td>
             <Button @click="query" type="primary" icon="ios-search">查询</Button>
@@ -123,9 +123,16 @@ export default {
         }, {
           title: '明日计划',
           key: 'nextDayPlan',
-        }, {
-          title: ' '
-        }
+        }, 
+        page.table.initMapColumn({
+          title: '来源',
+          key: 'source',
+          width: 80,
+          data: {
+            '1': 'PC端',
+            '2': 'APP',
+          },  
+        }),
       ],
       list: [],
       total: 0,
