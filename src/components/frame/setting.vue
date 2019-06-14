@@ -91,6 +91,14 @@ export default {
       this.formItem.value=this.ormItem.value;
     },
     save(){
+      var pass = true;
+      this.$refs.form.validate((valid) => {
+        pass = valid;
+      })
+      if (!pass) {
+        this.$Message.error('验证未通过！');
+        return;
+      }
       this.$http.post('/api/engine/setting/update', this.formItem).then((res) => {
         if (res.data.code === 0) {
             this.loading = 0;
