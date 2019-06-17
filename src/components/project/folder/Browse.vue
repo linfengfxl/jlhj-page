@@ -5,13 +5,13 @@
       <div class="header-left">
         <Button size="small" @click="goBack" icon="chevron-left" type="warning">返回</Button>
       </div>
-      <div class="header-right">
-         
+      <div class="header-right"> 
       </div>
     </div>  
     <div class="pfbrowse-container">
+      <Loading :loading="loading">
       <div class="pfbrowse-address wt-scroll">
-        <Icon type="folder" style="color:#ff9900;font-size: 18px;"></Icon>
+        <Icon type="folder" style="color:#999;font-size: 18px;"></Icon>
         <a @click="goRoot">项目</a>
         <template v-for="(item,index) in nav">
           <span class="separator">\</span>
@@ -20,21 +20,24 @@
       </div>
       <div class="pfbrowse-toolbar">
         <table cellpadding="0" cellspacing="0">
-          <tr>
+          <tr v-if="parentId==0"></tr>
+          <tr v-else>
             <td>
-              <UploadButton text="上传" @on-upload="doUpload" :disabled="parentId==0"></UploadButton>              
+              <UploadButton text="上传" @on-upload="doUpload"></UploadButton>              
             </td>
             <td>
-              <Button type="default" @click="createDir" :disabled="parentId==0">创建目录</Button>
+              <Button icon="plus" type="default" @click="createDir" v-power="'xmwjj.add'" >目录</Button>
+            </td>
+            <td></td><td></td>
+            <td>
+              <Button type="default" @click="move" v-power="'xmwjj.move'">移动 {{clipboard.length}}</Button>
             </td>
             <td>
-              <Button type="default" @click="move" :disabled="parentId==0">移动</Button>
+              <Button type="default" @click="paste" v-power="'xmwjj.move'" :disabled="clipboard.length==0">粘贴</Button>
             </td>
+            <td></td><td></td>
             <td>
-              <Button type="default" @click="paste" :disabled="parentId==0 || clipboard.length==0">粘贴 ({{clipboard.length}})</Button>
-            </td>
-            <td>
-              <Button type="default" @click="del" :disabled="parentId==0">删除</Button>
+              <Button type="default" @click="del" v-power="'xmwjj.delete'">删除</Button>
             </td>
           </tr>
         </table>
@@ -54,7 +57,7 @@
               <div class="file" v-if="item.fileType == 1">
                 <Icon type="folder"></Icon>
                 <a @click="clickFile(item)">{{item.fileName}}</a>
-                <a @click="rename(item)" style="margin-left: 20px;" class="extbtn" v-if="item.subType != 'gcjl' && item.subType != 'xmwj'">改名</a>
+                <a @click="rename(item)" style="margin-left: 20px;" class="extbtn" v-if="item.subType != 'gcjl' && item.subType != 'xmwj'" v-power="'xmwjj.add'">改名</a>
               </div>
               <!--文件-->
               <div class="file" v-else>
@@ -67,6 +70,7 @@
         </tbody>
       </table>
       <div style="height: 80px;"></div>
+      </Loading>
     </div>
     <div class="pfbrowse-footer">
       {{list.length}} 个对象
@@ -75,9 +79,11 @@
 </template>
 <script> 
   import UploadButton from "@/components/upload/UploadButton"
+  import Loading from '@/components/loading'
   export default {
     components: {
-      UploadButton
+      UploadButton,
+      Loading
     },
     props:{
 
