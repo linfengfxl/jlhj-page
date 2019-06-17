@@ -67,7 +67,7 @@ export default {
         },*/
         {
           title: '操作',
-          width: 90,
+          width: 60,
           align: 'center',
           fixed: 'left',
           render: (h, params) => {
@@ -120,7 +120,7 @@ export default {
         {
           title: '工程名称',
           key: 'projectName',
-          minWidth: 140,
+          minWidth: 240,
         }, {
           title: '供应商',
           key: 'providerName',

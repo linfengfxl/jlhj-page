@@ -188,14 +188,6 @@ export default {
       pageFlag: 1, //1.新建 2.编辑 3.修订
       formItem: this.getInitFormItem(),
       formRules: {
-        deptId: [
-          {
-            required: true,
-            whitespace: true,
-            message: "请选择部门",
-            trigger: "change"
-          }
-        ],
         billDate: [
           {
             required: true,
@@ -424,11 +416,6 @@ export default {
     },
     // 对运输结算单进行新增前判断,通过后获取列表
     onImport() {
-      // if (this.formItem.deptId == "") {
-      //   this.$Message.error("请选择部门");
-      //   return;
-      // }
-
       if (this.formItem.projectCode == "") {
         this.$Message.error("请选择工程");
         return;
@@ -449,22 +436,22 @@ export default {
       //   this.$Message.error("请选择结束日期");
       //   return;
       // }
-      // this.formItem.startDate = page.formatDate(this.formItem.startDate);
-      // this.formItem.endDate = page.formatDate(this.formItem.endDate);
+      param.startDate = page.formatDate(this.formItem.startDate);
+      param.endDate = page.formatDate(this.formItem.endDate);
       this.$http.post(this.api, param).then((res) => {
         this.loading = 0;
         if (res.data.code === 0) {
           this.loading = 0;
           var data = res.data.data;
           this.list = data.rows;
-          this.list.map((item) => {
-            if (item.transportDate != null) {
-              item.transportDate = item.transportDate.length >= 10 ? item.transportDate.substring(0, 10) : item.transportDate;
-            }
-          })
           if (this.list.length == 0) {
             this.$Message.error("抱歉，没有找到对应数据");
           } else {
+            this.list.map((item) => {
+              if (item.transportDate != null) {
+                item.transportDate = item.transportDate.length >= 10 ? item.transportDate.substring(0, 10) : item.transportDate;
+              }
+            })
             this.$Message.success("共查询" + this.list.length + "条数据");
           }
         } else {

@@ -95,7 +95,7 @@ import LayoutHor from '@/components/layout/LayoutHor';
 import Editable from './DetailEditable';
 import page from '@/assets/js/page';
 import floatObj from '@/assets/js/floatObj';
-import pagejs from '@/assets/js/page';
+import dateFormat from '@/assets/js/dateFormat';
 
 import SelStorage from '@/components/storage/input/SelStorage';
 
@@ -170,6 +170,7 @@ export default {
         if (res.data.code == 0) {
           if (res.data.data) {
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
+            res.data.data.jobDate=res.data.data.jobDate.length>=10?res.data.data.jobDate.substring(0,10):res.data.data.jobDate; 
             Object.assign(this.formItem, res.data.data);
             this.list = res.data.data.detailList;
             this.list.map(p => {

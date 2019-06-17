@@ -75,9 +75,9 @@
     computed: {
       title() {
         if (this.isEdit === 0) {
-          return "添加角色";
+          return "添加岗位";
         } else {
-          return "编辑角色";
+          return "编辑岗位";
         }
       },
     },

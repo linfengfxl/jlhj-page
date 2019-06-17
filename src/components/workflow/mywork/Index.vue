@@ -55,6 +55,7 @@
           {
             title: '流程名称',
             key: 'title',
+            minWidth:200,
             render: (h, params) => {
               var row = params.row;
               var text = row.title;
