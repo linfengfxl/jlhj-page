@@ -118,15 +118,14 @@
         </div>
         <div>
           <div class="subheader">单据明细</div>
-          <Alert v-if="!formItem.deptId">请选择部门</Alert>
           <Editable
             ref="editable"
             :list="list"
             :editable="true"
             :model="formItem"
             @on-amount-change="onAmountChange"
+            @on-pricetax-change="onPriceTaxChange"
             @on-import="onImport"
-            :style="{display: formItem.deptId?'':'none'}"
           ></Editable>
         </div>
       </Loading>
@@ -140,7 +139,6 @@ import LayoutHor from '@/components/layout/LayoutHor';
 import Editable from './DetailEditable';
 import page from '@/assets/js/page';
 import floatObj from '@/assets/js/floatObj';
-import pagejs from '@/assets/js/page';
 
 import SelStorage from '@/components/storage/input/SelStorage';
 import SelProvider from '@/components/provider/SelectProvider';
@@ -166,7 +164,8 @@ export default {
       pageFlag: 1,//1.新建 2.编辑 3.修订
       formItem: {
         machineBillCode: '',//单据编号
-        deptId: '',//所属部门
+        deptId: '',//所属部门ID
+        deptName: '',//所属部门
         projectCode: '',//工程代码
         projectName: '',//工程名   
         billDate: '',//结算日期
@@ -186,11 +185,8 @@ export default {
         remark: '',//备注 
       },
       formRules: {
-        deptId: [
-          { required: true, whitespace: true, message: '请选择部门', trigger: 'change' }
-        ],
         billDate: [
-          { required: true, message: '请选择作业日期', trigger: 'change', pattern: /.+/ }
+          { required: true, message: '请选择结算日期', trigger: 'change', pattern: /.+/ }
         ],
         projectCode: [
           { required: true, whitespace: true, message: '请选择工程', trigger: 'change' }
@@ -241,6 +237,9 @@ export default {
         if (res.data.code == 0) {
           if (res.data.data) {
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
+            res.data.data.billDate=res.data.data.billDate.length>=10?res.data.data.billDate.substring(0,10):res.data.data.billDate; 
+            res.data.data.startDate=res.data.data.startDate.length>=10?res.data.data.startDate.substring(0,10):res.data.data.startDate; 
+            res.data.data.endDate=res.data.data.endDate.length>=10?res.data.data.endDate.substring(0,10):res.data.data.endDate; 
             Object.assign(this.formItem, res.data.data);
             this.list = res.data.data.detailList;
           } else {
@@ -258,7 +257,7 @@ export default {
     initNew() {
       Object.assign(this.formItem, {
         machineBillCode: '',//单据编号
-        deptId: '',//所属部门
+        deptId: '',//所属部门ID
         deptName: '',//所属部门
         projectCode: '',//工程代码
         projectName: '',//工程名  
@@ -274,6 +273,7 @@ export default {
         totalAmount: 0,//金额合计
         penalty: 0,//罚款
         totalPriceTax: 0,//价税合计
+        totalPriceTax1: 0,//价税合计备用
         remark: '',//备注 
       });
       this.list = [];
@@ -354,11 +354,14 @@ export default {
       });
     },
     computedTotalPriceTax() {
-      this.formItem.totalPriceTax = floatObj.subtract(this.formItem.totalAmount, this.formItem.penalty);
+      this.formItem.totalPriceTax = floatObj.subtract(this.formItem.totalPriceTax1, this.formItem.penalty);
+    },
+    onPriceTaxChange(val) {
+      this.formItem.totalPriceTax1 = val;
+      this.computedTotalPriceTax();
     },
     onAmountChange(val) {
       this.formItem.totalAmount = val;
-      this.computedTotalPriceTax();
     },
     onImport() { 
       if (this.formItem == null || this.formItem.projectCode == null || this.formItem.projectCode == '') {//
@@ -370,7 +373,7 @@ export default {
         return;
       }
       this.list = [];
-      var param = { page: 1, pageSize: 100 ,status:2};
+      var param = { page: 1, pageSize: 10000 ,status:2};
       param.projectCode = this.formItem.projectCode;
       param.providerCode = this.formItem.providerCode; 
       if (this.formItem.machineBillCode != '') {
@@ -378,6 +381,8 @@ export default {
       } else {
         param.machineBillCode ="0";
       } 
+      param.timeStart = page.formatDate(this.formItem.startDate);
+      param.timeEnd = page.formatDate(this.formItem.endDate);
       this.$http.post('/api/engine/machine/order/list', param).then((res) => {
         this.loading = 0;
         if (res.data.code === 0 && res.data.data != null) {
@@ -385,9 +390,15 @@ export default {
           var total = res.data.data.total;
           if (total == 0) {
             this.$Message.error("抱歉，没有找到对应的数据！");
+          }else{
+            this.$emit('on-load-data', rows);
+            this.list = rows;
+            this.list.map((item) => {
+              if (item.jobDate != null) {
+                item.jobDate = item.jobDate.length >= 10 ? item.jobDate.substring(0, 10) : item.jobDate;
+              }
+            })
           }
-          this.$emit('on-load-data', rows);
-          this.list = rows;
         } else {
           this.$Message.error(res.data.message)
         }

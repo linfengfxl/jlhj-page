@@ -118,7 +118,7 @@
                   <Select v-model="formItem.status" style="width:150px" placeholder="类型">
                     <!--1.执行中 2.终止 3.已结算 4.解除 5关闭 -->
                     <Option value="1">执行中</Option>
-                    <Option value="1">终止</Option>
+                    <Option value="2">终止</Option>
                     <Option value="3">已结算</Option>
                     <Option value="4">解除</Option>
                     <Option value="5">关闭</Option>
@@ -138,7 +138,7 @@
             </tr>
             <tr>
               <td>
-                <FormItem label="风险款" prop>
+                <FormItem label="风险项" prop>
                   <Input type="textarea" :rows="2" v-model="formItem.riskItem"/>
                 </FormItem>
               </td>

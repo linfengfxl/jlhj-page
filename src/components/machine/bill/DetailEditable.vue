@@ -230,6 +230,7 @@ export default {
         this.curIndex = 0;
       }
       this.$emit('on-amount-change', this.sumAmount());
+      this.$emit('on-pricetax-change', this.sumPricetax());
     },
     datePickerChange(item, args) {
       item.needDate = args[0];
@@ -240,11 +241,19 @@ export default {
       item.tax = floatObj.multiply(floatObj.multiply(item.taibanPrice, item.taiban), this.model.taxRate);//税额 = 含税单价*作业台班*税率
       item.totalPriceTax = floatObj.multiply(item.taibanPrice, item.taiban);//价税合计 = 含税单价*作业台班
       this.$emit('on-amount-change', this.sumAmount());
+      this.$emit('on-pricetax-change', this.sumPricetax());
     },
     sumAmount() {
       var totals = 0;
       this.list.map((mater) => {
         totals = floatObj.add(totals, mater.amount);
+      });
+      return totals;
+    },
+    sumPricetax() {
+      var totals = 0;
+      this.list.map((mater) => {
+        totals = floatObj.add(totals, mater.totalPriceTax);
       });
       return totals;
     },

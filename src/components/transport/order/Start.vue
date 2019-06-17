@@ -23,7 +23,7 @@
               <tr>
                 <td>
                   <FormItem label="运输类别" prop="transportType">
-                    <Select v-model="formItem.transportType"  @on-change="onChangeAmount">
+                    <Select v-model="formItem.transportType" @on-change="onChangeAmount">
                       <Option
                         v-for="item in transportType"
                         :value="item.code"
@@ -50,7 +50,7 @@
                       :text="formItem.projectName"
                     />
                   </FormItem>
-                </td>        
+                </td>
               </tr>
               <tr>
                 <td>
@@ -82,7 +82,7 @@
                 </td>
               </tr>
               <tr>
-                 <td>
+                <td>
                   <FormItem label="运输设备名称" prop="machineCode">
                     <Select v-model="formItem.machineCode" placeholder="运输设备名称">
                       <Option
@@ -92,7 +92,7 @@
                       >{{ item.machineName }}</Option>
                     </Select>
                   </FormItem>
-                </td> 
+                </td>
                 <td>
                   <FormItem label="车牌号" prop="vehicleNum">
                     <Input v-model="formItem.vehicleNum" placeholder="车牌号不能为空"/>
@@ -123,12 +123,22 @@
                 </td>
                 <td>
                   <FormItem label="数量" prop>
-                    <InputNumber v-model="formItem.num" :min="0" @on-change="onChangeAmount" style="width:100%"></InputNumber>
+                    <InputNumber
+                      v-model="formItem.num"
+                      :min="0"
+                      @on-change="onChangeAmount"
+                      style="width:100%"
+                    ></InputNumber>
                   </FormItem>
                 </td>
                 <td>
                   <FormItem label="里程数" prop>
-                    <Input-number v-model="formItem.milage" :min="0" @on-change="onChangeAmount" style="width:100%"></Input-number>
+                    <Input-number
+                      v-model="formItem.milage"
+                      :min="0"
+                      @on-change="onChangeAmount"
+                      style="width:100%"
+                    ></Input-number>
                   </FormItem>
                 </td>
               </tr>
@@ -155,51 +165,77 @@
                 </td>
                 <td>
                   <FormItem label="金额" prop>
-                    <Input-number v-model="formItem.amount" :min="0" readonly="readonly" style="width:100%"></Input-number>
+                    <Input-number
+                      v-model="formItem.amount"
+                      :min="0"
+                      readonly="readonly"
+                      style="width:100%"
+                    ></Input-number>
                   </FormItem>
                 </td>
               </tr>
               <tr>
                 <td>
                   <FormItem label="税额" prop>
-                    <Input-number v-model="formItem.tax" :min="0" readonly="readonly" style="width:100%"></Input-number>
+                    <Input-number
+                      v-model="formItem.tax"
+                      :min="0"
+                      readonly="readonly"
+                      style="width:100%"
+                    ></Input-number>
                   </FormItem>
                 </td>
                 <td>
                   <FormItem label="价税合计" prop>
-                    <Input-number v-model="formItem.totalPriceTax" :min="0" readonly="readonly" style="width:100%"></Input-number>
-                  </FormItem>
-                </td>
-                <td>
-                  <FormItem label="运输起点" prop="transportStart">
-                    <Select v-model="formItem.transportStart" placeholder="运输起点">
-                      <Option
-                        v-for="item in $args.getArgGroup('transport_location')"
-                        :value="item.argText"
-                        :key="item.argText"
-                      >{{ item.argText }}</Option>
-                    </Select>
-                  </FormItem>
-                </td>
-              </tr>
-              <tr>
-                 <td>
-                  <FormItem label="运输终点" prop="transportEnd">
-                    <Select v-model="formItem.transportEnd" placeholder="运输终点" filterable>
-                      <Option
-                        v-for="item in $args.getArgGroup('transport_location')"
-                        :value="item.argText"
-                        :key="item.argText"
-                      >{{ item.argText }}</Option>
-                    </Select>
+                    <Input-number
+                      v-model="formItem.totalPriceTax"
+                      :min="0"
+                      readonly="readonly"
+                      style="width:100%"
+                    ></Input-number>
                   </FormItem>
                 </td>
                 <td>
                   <Form-item label="抵达时间" prop>
-                    <Date-picker type="datetime" placeholder="选择日期" v-model="formItem.arrivalTime" style="width:100%"></Date-picker>
+                    <Date-picker
+                      type="datetime"
+                      placeholder="选择日期"
+                      v-model="formItem.arrivalTime"
+                      style="width:100%"
+                    ></Date-picker>
                   </Form-item>
                 </td>
-                <td></td>
+              </tr>
+              <tr>
+                <td>
+                  <FormItem label="运输起点">
+                    <!-- <Input v-model="formItem.transportStart" placeholder="请填写运输起点"/> -->
+                    <AutoComplete
+                      v-model="address1"
+                      :data="data1"
+                      @on-search="handleSearch1(1)"
+                      placeholder="请填写运输起点"
+                    ></AutoComplete>
+                  </FormItem>
+                </td>
+                <td>
+                  <FormItem label="运输终点">
+                    <!-- <Input v-model="formItem.transportEnd" placeholder="请填写运输终点"/> -->
+                    <AutoComplete
+                      v-model="address2"
+                      :data="data2"
+                      @on-search="handleSearch1(2)"
+                      placeholder="请填写运输起点"
+                    ></AutoComplete>
+                    <!-- <AutoComplete
+                      v-model="address2"
+                      :data="addressList"
+                      :filter-method="filterMethod"
+                      placeholder="请填写运输起点"
+                      style="width:200px"
+                    ></AutoComplete>-->
+                  </FormItem>
+                </td>
               </tr>
               <tr>
                 <td colspan="3">
@@ -242,6 +278,11 @@ export default {
   },
   data() {
     return {
+      address1: '',
+      address2: '',
+      data1: [],
+      data2: [],
+      addressList: [],
       pageFlag: 1,//1.新建 2.编辑 3.修订
       loading: 0,
       //是否编辑 0 添加 1 编辑
@@ -252,7 +293,7 @@ export default {
       machines: [],
       //验证
       ruleValidate: {
-         transportType: [
+        transportType: [
           {
             required: true,
             whitespace: true,
@@ -309,14 +350,6 @@ export default {
             trigger: "blur"
           }
         ],
-        transportStart: [
-          {
-            required: true,
-            whitespace: true,
-            message: "请填写运输起点",
-            trigger: "blur"
-          }
-        ],
         transportEnd: [
           {
             required: true,
@@ -354,6 +387,7 @@ export default {
     } else {
       this.pageFlag = 1;
     }
+    this.loadAddressList();
   },
   computed: {
     pageTitle() {
@@ -369,6 +403,66 @@ export default {
     }
   },
   methods: {
+    loadAddressList() {
+      var that = this;
+      var uri = '/api/engine/address/list';
+      this.$http.post(uri, {}).then((res) => {
+        this.loading = 0;
+        if (res.data.code == 0) {
+          var rows = res.data.data.rows;
+          for (let i = 0; i < rows.length; i++) {
+            that.data1.push(rows[i].name);
+            that.data2.push(rows[i].name);
+          }
+        } else {
+          this.$Message.error(res.data.message);
+        }
+      }).catch((error) => {
+        this.$Message.error("请求失败，请重新操作")
+      });
+    },
+    filterMethod(value, option) {
+      return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
+    },
+    handleSearch1(type) {
+      console.log(type);
+      var value = this.address1;
+      if (type == 2) {
+        value = this.address2;
+      }
+      var that = this;
+      // this.data1 = !value ? [] : [
+      //   value,
+      //   value + value,
+      //   value + value + value
+      // ];
+      this.loading = 1;
+      if (type == 1) {
+        that.data1 = [];
+      }
+      if (type == 2) {
+        that.data2 = [];
+      }
+      var uri = '/api/engine/address/list';
+      this.$http.post(uri, { 'keyword': value }).then((res) => {
+        this.loading = 0;
+        if (res.data.code == 0) {
+          var rows = res.data.data.rows;
+          for (let i = 0; i < rows.length; i++) {
+            if (type == 1) {
+              that.data1.push(rows[i].name);
+            }
+            if (type == 2) {
+              that.data2.push(rows[i].name);
+            }
+          }
+        } else {
+          this.$Message.error(res.data.message);
+        }
+      }).catch((error) => {
+        this.$Message.error("请求失败，请重新操作")
+      });
+    },
     save(proc) {
       var pass = true;
       this.$refs.form.validate((valid) => {
@@ -380,11 +474,11 @@ export default {
       }
       var form = {};
       Object.assign(form, this.formItem);
-      if(form.transportType=="运材料"&&form.unit==""){
+      if (form.transportType == "运材料" && form.unit == "") {
         this.$Message.error('单位不能为空');
         return;
       }
-      if(form.transportType=="运材料"&&form.transportContent==""){
+      if (form.transportType == "运材料" && form.transportContent == "") {
         this.$Message.error('运输内容不能为空');
         return;
       }
@@ -399,6 +493,8 @@ export default {
         form.arrivalTime = null;
       }
       form.taxRate = this.formItem.taxRate1;
+      form.transportStart = this.address1;
+      form.transportEnd = this.address2;
       // 提交
       this.loading = 1;
       var uri = '/api/engine/transport/order/add';
@@ -481,28 +577,28 @@ export default {
       }
     },
     onChangeAmount() {
-      if(this.formItem.transportType!=""&&this.formItem.transportType!=null){
-        var milage=0;
-        if(this.formItem.transportType=="内倒"){
-          milage=1;
-        }else{
-          milage=this.formItem.milage;
+      if (this.formItem.transportType != "" && this.formItem.transportType != null) {
+        var milage = 0;
+        if (this.formItem.transportType == "内倒") {
+          milage = 1;
+        } else {
+          milage = this.formItem.milage;
         }
-          if (this.formItem.num != null && milage != null && this.formItem.taxUnitPrice != null && this.formItem.taxUnitPrice != null &&
+        if (this.formItem.num != null && milage != null && this.formItem.taxUnitPrice != null && this.formItem.taxUnitPrice != null &&
           this.formItem.taxRate != null) {
-            this.formItem.amount = floatObj.multiply(floatObj.multiply(floatObj.multiply(this.formItem.num, milage), this.formItem.taxUnitPrice), floatObj.subtract(1, this.formItem.taxRate1))
-            this.formItem.tax = floatObj.multiply(floatObj.multiply(floatObj.multiply(this.formItem.num, milage), this.formItem.taxUnitPrice), this.formItem.taxRate1);
-            if (this.formItem.deductAmount != null) {
-              this.formItem.totalPriceTax = floatObj.subtract(floatObj.multiply(floatObj.multiply(this.formItem.num, milage), this.formItem.taxUnitPrice), this.formItem.deductAmount);
-            } else {
-              this.formItem.totalPriceTax = 0;
-            }
+          this.formItem.amount = floatObj.multiply(floatObj.multiply(floatObj.multiply(this.formItem.num, milage), this.formItem.taxUnitPrice), floatObj.subtract(1, this.formItem.taxRate1))
+          this.formItem.tax = floatObj.multiply(floatObj.multiply(floatObj.multiply(this.formItem.num, milage), this.formItem.taxUnitPrice), this.formItem.taxRate1);
+          if (this.formItem.deductAmount != null) {
+            this.formItem.totalPriceTax = floatObj.subtract(floatObj.multiply(floatObj.multiply(this.formItem.num, milage), this.formItem.taxUnitPrice), this.formItem.deductAmount);
+          } else {
+            this.formItem.totalPriceTax = 0;
+          }
         } else {
           this.formItem.totalPriceTax = 0;
         }
-      }else{
+      } else {
         //this.$Message.error("请先选择运输类别");
-      }    
+      }
     },
     goBack() {
       this.$router.go(-1);

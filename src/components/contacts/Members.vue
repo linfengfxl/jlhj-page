@@ -108,14 +108,14 @@
           key: 'isLogin',
           data:{
             '1':'已登录',
-            '0':'',
+            '0':'未登录',
           }
         }), 
         page.table.initMapColumn({
             title: '状态',
             key: 'status',
             data:{
-              '1':'',
+              '1':'正常',
               '2':'禁用',
             }
           }), 

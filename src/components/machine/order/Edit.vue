@@ -14,7 +14,7 @@
             <tr>
               <td>
                 <FormItem prop="deptId" label="部门">
-                  <SelStorage v-model="formItem.deptId"></SelStorage>
+                  <SelStorage v-model="formItem.deptId" @on-select="selDept"></SelStorage>
                 </FormItem>
               </td>
               <td>
@@ -165,7 +165,8 @@ export default {
       pageFlag: 1,//1.新建 2.编辑 3.修订
       formItem: {
         machineOrderId: '',//单据编号
-        deptId: '',//所属部门
+        deptId: '',//所属部门ID
+        deptName: '',//所属部门
         projectCode: '',//工程代码
         projectName: '',//工程名
         machineCode: '',//机械代码
@@ -234,6 +235,7 @@ export default {
         if (res.data.code == 0) {
           if (res.data.data) {
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
+            res.data.data.jobDate=res.data.data.jobDate.length>=10?res.data.data.jobDate.substring(0,10):res.data.data.jobDate; 
             Object.assign(this.formItem, res.data.data);
             this.list = res.data.data.detailList;
             this.list.map(p => {
@@ -254,7 +256,8 @@ export default {
     initNew() {
       Object.assign(this.formItem, {
         machineOrderId: '',//单据编号
-        deptId: '',//所属部门
+        deptId: '',//所属部门ID
+        deptName: '',//所属部门
         projectCode: '',//工程代码
         projectName: '',//工程名
         machineCode: '',//机械代码
@@ -360,6 +363,9 @@ export default {
         this.formItem.leaseType = data.leaseType;
         this.formItem.machineModel = data.machineModel;
       }
+    },
+    selDept(row){
+      this.formItem.deptName=row.deptName;
     },
     onAmountChange(val) {
       this.formItem.amount = val;

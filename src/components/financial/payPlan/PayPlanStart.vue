@@ -102,7 +102,9 @@
               </td>
                <td>
                 <FormItem prop="contractPayType" label="合同付款方式"> 
-                  <Input v-model="formItem.contractPayType"/>
+                   <Select v-model="formItem.contractPayType">
+                    <Option v-for="item in $args.getArgGroup('pay_way')" :value="item.argCode" :key="item.argCode">{{ item.argText }}</Option>
+                  </Select>
                 </FormItem>
               </td>
             </tr>

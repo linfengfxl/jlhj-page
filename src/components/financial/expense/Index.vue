@@ -329,7 +329,7 @@ export default {
         catalog:'',
         operatorName:'',
         legal:'',
-        status: 2,  
+        status: 1,  
         billDate: [page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())]
       });
       this.query();

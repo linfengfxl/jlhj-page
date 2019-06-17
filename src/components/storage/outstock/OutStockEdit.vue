@@ -250,8 +250,12 @@ export default {
         detailList: []
       };
       Object.assign(form, this.formItem);
-      form.signDate = page.formatDate(form.signDate);
-
+      if(form.signDate){
+          form.signDate = page.formatDate(form.signDate);
+      }
+      if(form.operateDate){
+          form.operateDate = page.formatDate(form.operateDate);
+      }
       var pass = true;
       this.$refs.form.validate((valid) => {
         pass = valid;
@@ -276,6 +280,7 @@ export default {
             this.$Message.error(msg + '请录入含税单价');
             return;
           }
+          item.amount = floatObj.multiply(item.quantity, item.taxUnitPrice);//数量*含税单价 
           form.detailList.push(item);
         }
       }

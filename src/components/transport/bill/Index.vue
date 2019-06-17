@@ -70,6 +70,8 @@
           <td>
             <Button @click="reset" type="default">重置</Button>
           </td>
+          <td>&nbsp;</td>
+          <td><Button @click="exportDown" type="info" icon="ios-download-outline">导出</Button></td>
         </tr>
       </table>
     </div>
@@ -81,6 +83,7 @@ import DataRowOperate from "@/components/commons/DataRowOperate";
 import SelectProject from "@/components/page/form/SelectProject"; // 工程
 import SelectProvider from "@/components/page/form/SelectProvider"; //供应商
 import page from "@/assets/js/page";
+import floatObj from '@/assets/js/floatObj';
 
 export default {
   components: {
@@ -179,7 +182,7 @@ export default {
           align: "left"
         }),
         {
-          title: "供应商",
+          title: "供应商名称",
           key: "providerName",
           width: 160,
           align: "left"
@@ -200,7 +203,11 @@ export default {
           title: "税率",
           key: "taxRate",
           width: 80,
-          align: "center"
+          align: "center",
+          render: (h, params) => {
+            var row = params.row;
+            return h('span', floatObj.multiply(row.taxRate, 100) + "%");
+          }
         },
         {
           title: "发票类型",
@@ -291,6 +298,9 @@ export default {
           this.queryForm.createTime[1]
         );
       }
+    },
+    exportDown(){
+      this.$refs.page.exportDown();
     },
     reset() {
       // 清空条件

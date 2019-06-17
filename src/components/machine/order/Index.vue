@@ -34,6 +34,18 @@
           <td>
             <Input v-model="queryForm.keyword" placeholder="供应商、工程" @on-enter="query"/>
           </td>
+          <td>作业日期</td>
+          <td>
+            <DatePicker
+              type="daterange"
+              v-model="queryForm.jobDate"
+              split-panels
+              placeholder="选择日期"
+              style="width: 180px"
+              :clearable="true"
+              ::transfer="true"
+            ></DatePicker>
+          </td> 
           <td>
             <Button @click="query" type="primary" icon="ios-search">查询</Button>
           </td>
@@ -125,11 +137,11 @@ export default {
         {
           title: '工程名称',
           key: 'projectName',
-          minwidth: 140,
+          minWidth: 240,
         }, {
           title: '供应商',
           key: 'providerName',
-          minwidth: 120,
+          minWidth: 120,
         },
         {
           title: '机械名称',
@@ -171,6 +183,7 @@ export default {
         page: '',
         pageSize: '',
         status: 2,
+        jobDate:null
       },
       selection: [],
       loading: 0
@@ -186,15 +199,27 @@ export default {
       this.$router.push({ path: pages[index] });
     },
     beforeLoad() {
-
+      var queryParam = this.$refs.page.queryParam;
+      queryParam.timeStart = '';
+      queryParam.timeEnd = '';
+      delete queryParam.jobDate;
+      if (this.queryForm.jobDate.length > 0) {
+        queryParam.timeStart = page.formatDate(this.queryForm.jobDate[0]);
+      }
+      if (this.queryForm.jobDate.length > 1) {
+        queryParam.timeEnd = page.formatDate(this.queryForm.jobDate[1]);
+      }
     },
     query() {
       this.$refs.page.query();
     },
     reset: function () {
-      // 清空条件
-      this.queryForm.keyword = '';
-      this.queryForm.machineOrderId = ''; 
+       Object.assign(this.queryForm, {
+        keyword:'',
+        machineOrderId:'',
+        status:this.queryForm.status,  
+        jobDate: [page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())]
+      });
       this.query();
     },
     select: function (selection) {

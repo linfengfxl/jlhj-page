@@ -28,7 +28,7 @@
                   <FormItem label="部门">{{formItem.deptName}}</FormItem>
                 </td>
                 <td>
-                  <FormItem label="作业日期">{{formItem.billDate}}</FormItem>
+                  <FormItem label="结算日期">{{formItem.billDate}}</FormItem>
                 </td>
                 <td>
                   <FormItem prop="projectCode" label="工程名称">{{formItem.projectCode}}</FormItem>
@@ -69,14 +69,12 @@
         </div>
         <div>
           <div class="subheader">单据明细</div>
-          <Alert v-if="!formItem.deptId">请选择部门</Alert>
           <Editable
             ref="editable"
             :list="list"
             :editable="false"
             :deptId="formItem.deptId"
             @on-amount-change="onAmountChange"
-            :style="{display: formItem.deptId?'':'none'}"
           ></Editable>
         </div>
         <!-- <table class="savebar" cellpadding="0" cellspacing="0">
@@ -169,8 +167,16 @@ export default {
         if (res.data.code == 0) {
           if (res.data.data) {
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
+            res.data.data.billDate=res.data.data.billDate.length>=10?res.data.data.billDate.substring(0,10):res.data.data.billDate; 
+            res.data.data.startDate=res.data.data.startDate.length>=10?res.data.data.startDate.substring(0,10):res.data.data.startDate; 
+            res.data.data.endDate=res.data.data.endDate.length>=10?res.data.data.endDate.substring(0,10):res.data.data.endDate; 
             Object.assign(this.formItem, res.data.data);
             this.list = res.data.data.detailList;
+            this.list.map((item) => {
+              if (item.jobDate != null) {
+                item.jobDate = item.jobDate.length >= 10 ? item.jobDate.substring(0, 10) : item.jobDate;
+              }
+            })
           } else {
             this.$Message.error('订单不存在！');
             this.goBack();
