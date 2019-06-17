@@ -3,7 +3,7 @@
         :show-upload-list="false" 
         :action="action"
         :on-success="onUpload">
-      <Button icon="ios-cloud-upload-outline" size="small">{{Text}}</Button>
+      <Button icon="ios-cloud-upload-outline" :disabled="disabled">{{text}}</Button>
   </Upload>
 </template>
 <script>　
@@ -33,9 +33,13 @@
         type:String,
         default:''
       },
-      Text:{
+      text:{
         type:String,
         default:"导入"
+      },
+      disabled:{
+        type:Boolean,
+        default:false,
       }
     },
     watch:{
