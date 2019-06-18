@@ -9,7 +9,7 @@
     <div class="page-title" slot="page-title">劳务用工登记</div>
     <div class="page-searchbox">
       <table cellpadding="0" cellspacing="0">
-        <tr> 
+        <tr>
           <td class="page-tools">
             <Button @click="add" v-power icon="plus">登记</Button>&nbsp;
           </td>
@@ -19,10 +19,10 @@
     </div>
     <div class="page-searchbox">
       <table cellpadding="0" cellspacing="0">
-        <tr> 
+        <tr>
           <td>
             <Input v-model="queryForm.projectName" placeholder="工程名称" @keyup.enter.native="query"></Input>
-          </td>  
+          </td>
           <td>
             <DatePicker
               type="daterange"
@@ -55,6 +55,7 @@
 import ListPage from '@/components/page/ListPage';
 import ListPageDetail from '@/components/page/ListPageDetail';
 import DataRowOperate from '@/components/commons/DataRowOperate';
+import UploadBox from '@/components/upload/Index';
 
 import page from '@/assets/js/page';
 
@@ -62,7 +63,8 @@ export default {
   components: {
     ListPage,
     ListPageDetail,
-    DataRowOperate
+    DataRowOperate,
+    UploadBox,
   },
   data() {
     let that = this;
@@ -79,7 +81,7 @@ export default {
             return h(DataRowOperate, {
               props: {
                 btns: [{
-                  key: 'edit', 
+                  key: 'edit',
                 }]
               },
               on: {
@@ -94,30 +96,42 @@ export default {
               }
             });
           }
-        }, 
+        },
         page.table.initDateColumn({
           title: '日期',
           key: 'laborDate',
           align: 'center',
           width: 120,
-        }), 
+        }),
         {
           title: '工程名称',
           key: 'projectName',
           align: 'left',
-          minWidth: 120,
-        } 
+          width: 550,
+        }, {
+          title: '人员合计',
+          key: 'peopleNumber',
+          align: 'center',
+          width: 120,
+        }, {
+          title: '金额合计',
+          key: 'totalAmount',
+          align: 'right',
+          width: 120,
+        }, {
+          title: ' ', 
+        }
       ],
       columns1: [
         {
           title: '领工',
-          key: 'leader', 
+          key: 'leader',
           align: 'left',
           width: 120,
         },
         {
           title: '技工工作量',
-          key: 'skillWorkload', 
+          key: 'skillWorkload',
           align: 'left',
           width: 120,
         },
@@ -126,8 +140,8 @@ export default {
           key: 'skillWorkloadOvertime',
           align: 'left',
           width: 120,
-        }, 
-         {
+        },
+        {
           title: '力工工作量',
           key: 'strongWorkload',
           align: 'left',
@@ -149,10 +163,26 @@ export default {
           title: '备注',
           key: 'remark',
           align: 'left',
+          minWidth: 80,
+        },
+        {
+          title: '附件',
+          key: 'files',
+          align: 'center',
+          width: 200,
+          render: (h, params) => {
+            var row = params.row;
+            return h(UploadBox, {
+              props: {
+                value: row.files,
+                readonly: true
+              }
+            });
+          }
         }
       ],
-      queryForm: { 
-        projectName: '', 
+      queryForm: {
+        projectName: '',
         createTime: null,
       },
       loading: 0
@@ -162,7 +192,7 @@ export default {
     this.reset();
   },
   methods: {
-    query() { 
+    query() {
       this.$refs.page.query();
     },
     beforeLoad() {
@@ -178,16 +208,16 @@ export default {
       }
     },
     reset() {
-      Object.assign(this.queryForm, { 
-        projectName: '', 
+      Object.assign(this.queryForm, {
+        projectName: '',
         createTime: []//[page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())]
       });
       this.query();
     },
     curRowChg(row) {
-      if (row != null) { 
+      if (row != null) {
         this.curRow = row;
-        this.curRowId ="?projectCode="+ row.projectCode +"&laborDate="+ row.laborDate;
+        this.curRowId = "?projectCode=" + row.projectCode + "&laborDate=" + row.laborDate;
         this.$refs.detail.load(this.curRowId);
       } else {
         this.curRow = null;
@@ -199,8 +229,8 @@ export default {
       this.$router.push({ path: '/project/labor/edit?forward' })
     },
     edit(row) {
-      if (row) { 
-        this.$router.push({path: '/project/labor/edit?forward&projectCode=' + row.projectCode+'&laborDate='+ row.laborDate  })
+      if (row) {
+        this.$router.push({ path: '/project/labor/edit?forward&projectCode=' + row.projectCode + '&laborDate=' + row.laborDate })
       }
     },
     del(row) {
