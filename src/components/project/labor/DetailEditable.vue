@@ -9,6 +9,7 @@
           <th>力工工作量</th>
           <th>力工加班量</th>
           <th>金额</th>
+          <th>备注</th>
       </thead>
       <tbody>
         <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
@@ -19,6 +20,7 @@
           <td>{{item.strongWorkload}}</td>
           <td>{{item.strongWorkloadOvertime}}</td>
           <td>{{item.amount}}</td>
+          <th>{{item.remark}}</th>
         </tr>
       </tbody>
     </table>
@@ -32,6 +34,8 @@
           <th>力工工作量</th>
           <th>力工加班量</th>
           <th>金额</th>
+          <th>备注</th>
+          <th>附件</th>
       </thead>
       <tbody>
         <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
@@ -40,7 +44,9 @@
             <!--  序号 -->
           </td>
           <td class="col-select"> 
-              <Input v-model="item.leader"/> 
+              <div style="width:100px;">
+                 <Input v-model="item.leader"/> 
+              </div>
           </td>
           <td>
                <InputNumber :max="999999" :min="0" v-model="item.skillWorkload"></InputNumber>  <!--技工工作量  -->
@@ -54,7 +60,13 @@
           <td>
                <InputNumber :max="999999" :min="0" v-model="item.strongWorkloadOvertime"></InputNumber>  <!--力工加班量  -->
           </td>    
-          <td> <InputNumber :max="999999" :min="0" v-model="item.amount"></InputNumber></td><!--金额	--> 
+          <td> <InputNumber :max="999999" :min="0" v-model="item.amount"  @on-change="computedAmount(item)"></InputNumber></td><!--金额	--> 
+           <td> 
+              <div style="width:100px;"><Input v-model="item.remark"/></div>
+          </td>
+          <td>
+                  <UploadBox v-model="item.files" :readonly="false"></UploadBox>         
+          </td>
         </tr>
       </tbody>
     </table>
@@ -63,8 +75,10 @@
 <script>
 import Editable from '@/components/editable-table';
 import floatObj from '@/assets/js/floatObj';
+import UploadBox from '@/components/upload/Index';
 export default {
   components: {
+    UploadBox,
     Editable,
   },
   props: {
@@ -88,9 +102,9 @@ export default {
 
   },
   computed: {},
-  watch: {
+watch: {
     list(val, old) {
-
+      this.$emit('on-amount-change', this.sumAmount());
     }
   },
   methods: {
@@ -105,6 +119,8 @@ export default {
         strongWorkload: null,//力工工作量
         strongWorkloadOvertime: null,//力工工作加班量
         amount:null,//金额
+        remak:'',
+        files:'',
       };
       return def;
     },
@@ -121,6 +137,17 @@ export default {
       if (this.curIndex == -1) {
         this.curIndex = 0;
       }
+       this.$emit('on-amount-change', this.sumAmount());
+    }, 
+      computedAmount(item) { 
+      this.$emit('on-amount-change', this.sumAmount()); 
+    },
+     sumAmount() {
+      var totals = 0;
+      this.list.map((mater) => {
+        totals = floatObj.add(totals, mater.amount);
+      });
+      return totals;
     }, 
   }
 }

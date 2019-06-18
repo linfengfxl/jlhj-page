@@ -21,14 +21,14 @@
       <table cellpadding="0" cellspacing="0">
         <tr> 
           <td>
-            <Input v-model="queryForm.projectName" placeholder="工程名" @keyup.enter.native="query"></Input>
+            <Input v-model="queryForm.projectName" placeholder="工程名称" @keyup.enter.native="query"></Input>
           </td>  
           <td>
             <DatePicker
               type="daterange"
               v-model="queryForm.createTime"
               split-panels
-              placeholder="创建日期"
+              placeholder="日期"
               style="width: 180px"
               :clearable="true"
               ::transfer="true"

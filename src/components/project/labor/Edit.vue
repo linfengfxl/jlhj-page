@@ -39,16 +39,20 @@
                 </FormItem>
               </td>
             </tr>
+            <tr>
+              <td>
+                <FormItem label="人数合计">{{list.length}}</FormItem>
+              </td>
+              <td>
+                <FormItem label="金额合计">{{formItem.totalAmount}}</FormItem>
+              </td>
+            </tr>
           </table>
         </Form>
       </div>
       <div>
-        <div class="subheader">明细</div> 
-        <Editable
-          ref="editable"
-          :list="list"
-          :editable="true" 
-        ></Editable>
+        <div class="subheader">明细</div>
+        <Editable ref="editable" :list="list" :editable="true" @on-amount-change="onAmountChange"></Editable>
       </div>
       <table class="savebar" cellpadding="0" cellspacing="0">
         <tr>
@@ -66,7 +70,7 @@ import LayoutHor from '@/components/layout/LayoutHor';
 import Editable from './DetailEditable';
 import page from '@/assets/js/page';
 import floatObj from '@/assets/js/floatObj';
-import pagejs from '@/assets/js/page'; 
+import pagejs from '@/assets/js/page';
 
 import SelectProject from '@/components/page/form/SelectProject';
 
@@ -75,8 +79,8 @@ export default {
   components: {
     Loading,
     LayoutHor,
-    Editable, 
-    SelectProject, 
+    Editable,
+    SelectProject,
 
   },
   data() {
@@ -86,11 +90,13 @@ export default {
       pageFlag: 1,//1.新建 2.编辑 3.修订
       formItem: {
         laborId: '',//
-        laborDate:'',//
+        laborDate: '',//
         deptId: '',//所属部门
         projectCode: '',//工程代码
         projectName: '',//工程名 
         remark: '',//备注 
+        totalNumber: 0,
+        totalAmount: 0,
       },
       formRules: {
         projectCode: [
@@ -107,7 +113,7 @@ export default {
   },
   mounted: function () {
     this.formItem.projectCode = this.$route.query.projectCode;
-    this.formItem.laborDate= this.$route.query.laborDate;
+    this.formItem.laborDate = this.$route.query.laborDate;
     if (this.formItem.projectCode) {
       this.pageFlag = 2;
       this.load();
@@ -128,14 +134,14 @@ export default {
   },
   methods: {
     load() {
-      this.loading = 1; 
-      this.$http.post("/api/engine/project/labor/getByProjectList?projectCode="+ this.formItem.projectCode+"&laborDate="+this.formItem.laborDate).then((res) => {
+      this.loading = 1;
+      this.$http.post("/api/engine/project/labor/getByProjectList?projectCode=" + this.formItem.projectCode + "&laborDate=" + this.formItem.laborDate).then((res) => {
         this.loading = 0;
-        if (res.data.code == 0) { 
+        if (res.data.code == 0) {
           if (res.data.data) {
-            this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')'); 
-            Object.assign(this.formItem, res.data.data.detailList[0]); 
-            this.list = res.data.data.detailList; 
+            this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
+            Object.assign(this.formItem, res.data.data.detailList[0]);
+            this.list = res.data.data.detailList;
           } else {
             this.$Message.error('订单不存在！');
             this.goBack();
@@ -150,12 +156,12 @@ export default {
     },
     initNew() {
       Object.assign(this.formItem, {
-          laborId: '',//
-          laborDate:'',//
-          deptId: '',//所属部门
-          projectCode: '',//工程代码
-          projectName: '',//工程名 
-          remark: '',//备注 
+        laborId: '',//
+        laborDate: '',//
+        deptId: '',//所属部门
+        projectCode: '',//工程代码
+        projectName: '',//工程名 
+        remark: '',//备注 
       });
       this.list = [];
       this.list.push(this.$refs.editable.listNewRow());
@@ -196,22 +202,16 @@ export default {
         // if (item.taiban == 0) {
         //   this.$Message.error(msg + '请录入作业台班');
         //   return;
-        // }
-        // item['startTime'] = page.formatDateTime(item['startTime']);
-        // item['endTime'] = page.formatDateTime(item['endTime']);
+        // }  
         form.detailList.push(item);
-        // taiban = floatObj.add(item['taiban'], taiban);
-        // useTime = floatObj.add(item['useTime'], useTime);
-      } 
-      debugger;
-      console.log(form); 
+      }
+      console.log(form);
       // 提交
       this.loading = 1;
       var uri = '/api/engine/project/labor/add';
       if (this.pageFlag == 2) {
         uri = '/api/engine/project/labor/update';
       }
-
       this.$http.post(uri, form).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
@@ -224,7 +224,7 @@ export default {
         this.loading = 0;
         this.$Message.error("请求失败，请重新操作")
       });
-    }, 
+    },
     reset() {
       if (this.pageFlag == 1) {
         this.initNew();
@@ -235,6 +235,9 @@ export default {
     goBack() {
       this.$router.go(-1);
     },
+    onAmountChange(val) {
+      this.formItem.totalAmount = val;
+    },
   }
 }
 
@@ -242,9 +245,8 @@ export default {
 
 <style type="text/css">
 .labor-edit.page {
-  width: 800px;
+  width: 100%;
   margin: 0 auto;
-  padding: 10px 20px;
   position: relative;
 }
 .labor-edit .subheader {
@@ -263,7 +265,7 @@ export default {
   padding-right: 8px;
 }
 .labor-edit .baseinfo table {
-  width: 100%;
+  width: 800px;
 }
 .labor-edit .baseinfo table td {
   height: 40px;
