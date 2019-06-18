@@ -45,6 +45,10 @@ components.push({ component: 'project/quantity/Index', name: '', path: '/project
 components.push({ component: 'project/folder/Index', name: '', path: '/project/folder' })
 components.push({ component: 'project/folder/Browse', name: '', path: '/project/folder/browse' })
 
+//劳务用工
+components.push({ component: 'project/labor/Index', name: '', path: '/project/labor' })
+components.push({ component: 'project/labor/Edit', name: '', path: '/project/labor/edit' })
+
 //机械作业单
 //机械作业单
 components.push({ component: 'machine/order/Index', name: '', path: '/machine/order' })
