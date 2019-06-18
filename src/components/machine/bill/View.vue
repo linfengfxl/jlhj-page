@@ -31,7 +31,7 @@
                   <FormItem label="结算日期">{{formItem.billDate}}</FormItem>
                 </td>
                 <td>
-                  <FormItem prop="projectCode" label="工程名称">{{formItem.projectCode}}</FormItem>
+                  <FormItem prop="projectCode" label="工程名称">{{formItem.projectName}}</FormItem>
                 </td>
               </tr>
               <tr>

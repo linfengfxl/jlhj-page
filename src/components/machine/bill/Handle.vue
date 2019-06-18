@@ -24,7 +24,7 @@
               </td>
               <td>
                 <FormItem prop="projectCode" label="工程名称">
-                 {{formItem.projectCode}}
+                 {{formItem.projectName}}
                 </FormItem>
               </td>
             </tr>

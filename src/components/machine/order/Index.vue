@@ -52,6 +52,8 @@
           <td>
             <Button @click="reset" type="default">重置</Button>
           </td>
+          <td>&nbsp;</td>
+          <td><Button @click="exportDown" type="info" icon="ios-download-outline">导出</Button></td>
         </tr>
       </table>
     </div>
@@ -139,7 +141,7 @@ export default {
           key: 'projectName',
           minWidth: 240,
         }, {
-          title: '供应商',
+          title: '供应商名称',
           key: 'providerName',
           minWidth: 120,
         },
@@ -149,7 +151,7 @@ export default {
           width: 120,
         },
         page.table.initDateColumn({
-          title: '作业时间',
+          title: '作业日期',
           key: 'jobDate',
         }),
         page.table.initMapColumn({
@@ -213,6 +215,9 @@ export default {
     query() {
       this.$refs.page.query();
     },
+    exportDown(){
+      this.$refs.page.exportDown();
+    }, 
     reset: function () {
        Object.assign(this.queryForm, {
         keyword:'',

@@ -6,7 +6,7 @@
         <Button size="small" @click="goBack" icon="chevron-left" type="warning">返回</Button>
       </div>
       <div class="header-right">
-        <Button size="small" @click="print" icon="printer" type="info">打印</Button>
+        <Button size="small" @click="print" icon="printer" type="info" v-if="showPrint">打印</Button>
       </div>
     </div>  
     <div class="wfprocess-container">
@@ -98,7 +98,8 @@
           title:'流程实例',
           cur:0,
           nodeList:[]
-        }
+        },
+        showPrint:false
       }
     },
     mounted: function () {
@@ -137,6 +138,14 @@
               Object.assign(this.instance,data);              
               this.formItem.instId = data.id;
               this.$emit('on-load',this,this.instance);
+
+              var form = defineCfg.getFormByDefine(this.instance.defineId);
+              if(form && form.printUrl){ 
+                this.showPrint = true;
+              }else{
+                this.showPrint = false;
+              }
+
             }else{
               this.$Message.info("流程实例不存在！");
             }

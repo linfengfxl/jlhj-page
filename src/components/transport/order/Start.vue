@@ -213,7 +213,7 @@
                     <AutoComplete
                       v-model="address1"
                       :data="data1"
-                      @on-search="handleSearch1(1)"
+                      :filter-method="filterMethod"
                       placeholder="请填写运输起点"
                     ></AutoComplete>
                   </FormItem>
@@ -224,8 +224,8 @@
                     <AutoComplete
                       v-model="address2"
                       :data="data2"
-                      @on-search="handleSearch1(2)"
-                      placeholder="请填写运输起点"
+                      :filter-method="filterMethod"
+                      placeholder="请填写运输终点"
                     ></AutoComplete>
                     <!-- <AutoComplete
                       v-model="address2"
@@ -282,6 +282,7 @@ export default {
       address2: '',
       data1: [],
       data2: [],
+      select:'',
       addressList: [],
       pageFlag: 1,//1.新建 2.编辑 3.修订
       loading: 0,
@@ -380,6 +381,27 @@ export default {
       this.loading = 0;
       this.$Message.error(error.message);
     });
+    this.$http.post("/api/engine//transport/order/getRecentMachine", {}).then(res => {
+      this.loading = 0;
+      if (res.data.code === 0) {
+        if(res.data.data.rows.length>0){
+          var list=res.data.data.rows;
+          var count=0;
+          list.map((item)=>{
+            if(item.machineCode!=null&&item.machineName!=null&&count==0){
+              this.formItem.machineCode=item.machineCode;
+              this.formItem.machineName=item.machineName;
+              count++;
+            }
+          })   
+        }
+      } else {
+        this.$Message.error(res.data.message);
+      }
+    }).catch(error => {
+      this.loading = 0;
+      this.$Message.error(error.message);
+    });
 
     if (this.transportOrderId) {
       this.pageFlag = 2;
@@ -406,7 +428,7 @@ export default {
     loadAddressList() {
       var that = this;
       var uri = '/api/engine/address/list';
-      this.$http.post(uri, {}).then((res) => {
+      this.$http.post(uri, {pageSize:1000000}).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
           var rows = res.data.data.rows;
@@ -423,45 +445,6 @@ export default {
     },
     filterMethod(value, option) {
       return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
-    },
-    handleSearch1(type) {
-      console.log(type);
-      var value = this.address1;
-      if (type == 2) {
-        value = this.address2;
-      }
-      var that = this;
-      // this.data1 = !value ? [] : [
-      //   value,
-      //   value + value,
-      //   value + value + value
-      // ];
-      this.loading = 1;
-      if (type == 1) {
-        that.data1 = [];
-      }
-      if (type == 2) {
-        that.data2 = [];
-      }
-      var uri = '/api/engine/address/list';
-      this.$http.post(uri, { 'keyword': value }).then((res) => {
-        this.loading = 0;
-        if (res.data.code == 0) {
-          var rows = res.data.data.rows;
-          for (let i = 0; i < rows.length; i++) {
-            if (type == 1) {
-              that.data1.push(rows[i].name);
-            }
-            if (type == 2) {
-              that.data2.push(rows[i].name);
-            }
-          }
-        } else {
-          this.$Message.error(res.data.message);
-        }
-      }).catch((error) => {
-        this.$Message.error("请求失败，请重新操作")
-      });
     },
     save(proc) {
       var pass = true;
@@ -611,4 +594,6 @@ export default {
 .customeredit .width-1 {
   width: 160px;
 }
+.ivu-auto-complete{height: 200px;}
+
 </style>

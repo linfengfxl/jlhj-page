@@ -138,7 +138,7 @@ export default {
       if (this.isEdit) {
         return "编辑客户信息";
       } else {
-        return "新建客户信息";
+        return "添加客户信息";
       }
     },
   },

@@ -172,7 +172,10 @@
             width: 120,
             render:(h,params)=>{
               var row = params.row;
-              return h('span',null,[row.curUserName ,h('span',{style:'color:#999'},' ('+row.curNodeName+')')]);
+              if(row.curNodeName!=""){
+                return h('span',null,[row.curUserName ,h('span',{style:'color:#999'},' ('+row.curNodeName+')')]);
+              }
+              return h('span',null,[row.curUserName ,h('span',{style:'color:#999'},"")]);
             }
           },
           {
@@ -263,7 +266,10 @@
             width: 120,
             render:(h,params)=>{
               var row = params.row;
-              return h('span',null,[row.curUserName ,h('span',{style:'color:#999'},' ('+row.curNodeName+')')]);
+              if(row.curNodeName!=""){
+                return h('span',null,[row.curUserName ,h('span',{style:'color:#999'},' ('+row.curNodeName+')')]);
+              }
+              return h('span',null,[row.curUserName ,h('span',{style:'color:#999'},"")]);
             }
           },
           {

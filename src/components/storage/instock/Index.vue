@@ -60,6 +60,8 @@
           <td>
             <Button @click="reset">重置</Button>
           </td>
+          <td>&nbsp;</td>
+          <td><Button @click="exportDown" type="info" icon="ios-download-outline">导出</Button></td>
         </tr>
       </table>
     </div>
@@ -178,6 +180,27 @@ export default {
           },
           width: 80,
         }),
+        {
+          title: '红蓝字',
+          key: 'inboundType',
+          align: 'center',
+          width: 100,
+          render: (h, params) => {
+            var row = params.row;
+            if(row.inboundType==1){
+              return h('span', {
+                style: {
+                  color:'blue'
+                }
+              },"蓝字");
+            }
+            return h('span',{
+                style: {
+                  color:'red'
+                }
+              },"红字");
+          }
+        },
         page.table.initMapColumn({
           title: '来源',
           key: 'source',
@@ -327,6 +350,9 @@ export default {
           path: '/storage/instock/start?forward&id=' + row.stockBillId
         })
       }
+    },
+    exportDown(){
+      this.$refs.page.exportDown();
     },
     del(row) {
       this.$Modal.confirm({

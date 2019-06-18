@@ -1,5 +1,5 @@
 <template>
-  <Modal v-model="show" title="设置审批层级" :closable="true" :mask-closable="false" class="edit-user" width="600">
+  <Modal v-model="show" title="设置审批层级" :closable="true" :mask-closable="true" class="edit-user" width="600">
     <div class="page define-edit">
       <Loading :loading="loading">
         <div class="page-form">

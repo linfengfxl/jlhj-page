@@ -10,7 +10,7 @@
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td>
-            <Button @click="add" v-power icon="plus">新建</Button>
+            <Button @click="add" v-power icon="plus">添加</Button>
           </td>
         </tr>
       </table>
@@ -51,6 +51,7 @@ import Loading from '@/components/loading';
 import CustomerEdit from './CustomerEdit';
 import CustomerView from './CustomerView';
 import page from '@/assets/js/page';
+import DataRowOperate from '@/components/commons/DataRowOperate';
 
 export default {
   components: {
@@ -58,12 +59,54 @@ export default {
     Loading,
     CustomerEdit,
     CustomerView,
-    ListPage
+    ListPage,
+    DataRowOperate
   },
   data() {
     let that = this;
     return {
       columns: [
+        {
+          title: '操作',
+          width: 120,
+          align: 'center',
+          render: (h, params) => {
+            var row = params.row;             
+            return h(DataRowOperate, {
+              props: {
+                btns: [
+                {
+                  key: 'nomal',  
+                  text:row.status==1?"禁用":"启用"                 
+                },
+                {
+                  key: 'edit',                   
+                },
+                {
+                  key: 'delete',                   
+                },
+                ]
+              },
+              on: {
+                click: (key) => {
+                  if (key == "edit") {
+                    that.rowCommand("编辑", params)
+                  }
+                  if (key == "delete") {
+                    that.rowCommand("删除", params)
+                  }
+                  if (key == "nomal") {
+                    if(row.status==1){
+                      that.rowCommand("禁用", params)
+                    }else{
+                      that.rowCommand("启用", params)
+                    } 
+                  }
+                }
+              }
+            });
+          }
+        },
         {
           title: '客户代码',
           key: 'customerCode',
@@ -86,19 +129,19 @@ export default {
           }
         },
         page.table.customerNameColumn({
-
+          width:120
         }),
         {
           title: '联系人',
           key: 'linkMan',
-          width: 80,
+          minWidth:120,
           align: 'center',
         },
         {
           title: '联系电话',
           key: 'linkPhone',
-          width: 120,
           align: 'center',
+          minWidth:150
         },
         {
           title: '状态',
@@ -114,7 +157,7 @@ export default {
             return h('span', { class: 'status-' + status }, setButton);
           }
         },
-        {
+        /*{
           title: '操作',
           width: 80,
           align: 'center',
@@ -135,7 +178,7 @@ export default {
               }
             });
           }
-        }
+        }*/
       ],
       queryForm: {
         keyword: '',
