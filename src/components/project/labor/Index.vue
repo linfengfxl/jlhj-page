@@ -126,13 +126,13 @@ export default {
           key: 'skillWorkloadOvertime',
           align: 'left',
           width: 120,
-        },
-        page.table.initArgColumn({
+        }, 
+         {
           title: '力工工作量',
           key: 'strongWorkload',
-          align: 'center', 
-          width: 100
-        }),
+          align: 'left',
+          width: 120,
+        },
         {
           title: '力工加班量',
           key: 'strongWorkloadOvertime',
@@ -199,10 +199,8 @@ export default {
       this.$router.push({ path: '/project/labor/edit?forward' })
     },
     edit(row) {
-      if (row) {
-        return;
-        this.$router.push({
-          path: '/project/labor/edit?forward&projectCode=' + row.projectCode+'&'        })
+      if (row) { 
+        this.$router.push({path: '/project/labor/edit?forward&projectCode=' + row.projectCode+'&laborDate='+ row.laborDate  })
       }
     },
     del(row) {

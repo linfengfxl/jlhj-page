@@ -106,8 +106,9 @@ export default {
     }
   },
   mounted: function () {
-    this.laborId = this.$route.query.id;
-    if (this.laborId) {
+    this.formItem.projectCode = this.$route.query.projectCode;
+    this.formItem.laborDate= this.$route.query.laborDate;
+    if (this.formItem.projectCode) {
       this.pageFlag = 2;
       this.load();
     } else {
@@ -127,17 +128,14 @@ export default {
   },
   methods: {
     load() {
-      this.loading = 1;
-      this.$http.post("/api/engine/project/labor/get", { "laborId": this.laborId }).then((res) => {
+      this.loading = 1; 
+      this.$http.post("/api/engine/project/labor/getByProjectList?projectCode="+ this.formItem.projectCode+"&laborDate="+this.formItem.laborDate).then((res) => {
         this.loading = 0;
-        if (res.data.code == 0) {
+        if (res.data.code == 0) { 
           if (res.data.data) {
-            this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
-            Object.assign(this.formItem, res.data.data);
-            this.list = res.data.data.detailList;
-            this.list.map(p => {
-              p.times = [p.startTime, p.endTime];
-            });
+            this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')'); 
+            Object.assign(this.formItem, res.data.data.detailList[0]); 
+            this.list = res.data.data.detailList; 
           } else {
             this.$Message.error('订单不存在！');
             this.goBack();

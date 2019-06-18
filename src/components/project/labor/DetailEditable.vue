@@ -52,7 +52,7 @@
                <InputNumber :max="999999" :min="0" v-model="item.strongWorkload"></InputNumber>  <!--力工工作量  -->
           </td> 
           <td>
-               <InputNumber :max="999999" :min="0" v-model="item.strongWrkloadOvertime"></InputNumber>  <!--力工加班量  -->
+               <InputNumber :max="999999" :min="0" v-model="item.strongWorkloadOvertime"></InputNumber>  <!--力工加班量  -->
           </td>    
           <td> <InputNumber :max="999999" :min="0" v-model="item.amount"></InputNumber></td><!--金额	--> 
         </tr>
@@ -103,7 +103,7 @@ export default {
         skillWorkload: null,//技工工作量
         skillWorkloadOvertime:null,//技工加班量
         strongWorkload: null,//力工工作量
-        strongWrkloadOvertime: null,//力工工作加班量
+        strongWorkloadOvertime: null,//力工工作加班量
         amount:null,//金额
       };
       return def;
