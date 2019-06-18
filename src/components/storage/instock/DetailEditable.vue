@@ -127,6 +127,7 @@
               :min="0"
               v-model="item.taxUnitPrice"
               @on-change="computedAmount(item)"
+              disabled ="$user.hasPower('wdsx.rkdxgjg')"
             ></InputNumber>
           </td>
           <td class="col-amount">
