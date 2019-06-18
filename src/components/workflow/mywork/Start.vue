@@ -5,9 +5,9 @@
       <template v-for="group in list">
         <div style="clear: both;"></div>
         <div class="wfstart-box-header">{{group.title}}</div>
-        <div class="wfstart-box-item" v-for="item in group.forms" @click="goPage(item)">
+        <div class="wfstart-box-item" v-for="item in group.forms" @click="goPage(item)"  v-if="$user.hasPower('fq.'+item.key)">
           <Icon type="paper-airplane icon"></Icon>
-          {{item.title}}
+          {{item.title}} 
         </div>
       </template>      
     </div>
