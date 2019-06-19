@@ -99,19 +99,7 @@ export default {
           key: 'quantity',
           align: 'center',
           width: 100,
-        },
-        {
-          title: '金额',
-          key: 'notTaxAmount',
-          align: 'center',
-          width: 100,
-        },
-        {
-          title: '税额',
-          key: 'tax',
-          align: 'center',
-          width: 100,
-        },
+        }, 
         {
           title: '价税合计',
           key: 'amount',

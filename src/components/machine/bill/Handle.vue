@@ -268,8 +268,7 @@ export default {
         //     return;
         //   }
         //   form.detailList.push(item);
-        // }
-
+        // } 
         form.detailList.push(item);
       }
 

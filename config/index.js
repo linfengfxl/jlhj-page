@@ -30,8 +30,8 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
         '/corp': { 
-          target: 'http://192.168.2.30:50286', 
-          //target: 'http://localhost:8086', 
+          //target: 'http://192.168.2.30:50286', 
+          target: 'http://192.168.1.60:8086', 
           changeOrigin: false
         } 
     },
