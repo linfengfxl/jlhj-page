@@ -89,9 +89,9 @@
           <Editable
             ref="editable"
             :list="list"
-            :editable="true"
+            :editable="true" 
+            :editprice="true"
             :model="formItem"
-            @on-amount-change="onAmountChange"
             :style="{display: formItem.deptId?'':'none'}"
           ></Editable>
         </div>
@@ -276,10 +276,10 @@ export default {
             this.$Message.error(msg + '请录入数量');
             return;
           }
-          if (item.taxUnitPrice == '') {
-            this.$Message.error(msg + '请录入含税单价');
-            return;
-          }
+          // if (item.taxUnitPrice == '') {
+          //   this.$Message.error(msg + '请录入含税单价');
+          //   return;
+          // }
           item.amount = floatObj.multiply(item.quantity, item.taxUnitPrice);//数量*含税单价 
           form.detailList.push(item);
         }
@@ -304,10 +304,7 @@ export default {
         this.loading = 0;
         this.$Message.error("请求失败，请重新操作")
       });
-    },
-    onAmountChange(val) {
-      this.formItem.amount = val;
-    },
+    }, 
     reset() {
       if (this.pageFlag == 1) {
         this.initNew();

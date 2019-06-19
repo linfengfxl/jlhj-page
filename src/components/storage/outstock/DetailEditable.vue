@@ -1,5 +1,5 @@
 <template>
-  <Editable @add="add" @remove="remove" :editable="editable" :model="model">
+  <Editable @add="add" @remove="remove" :editable="editable" :editprice="editprice" :model="model">
     <table cellspacing="0" cellpadding="0" v-if="!editable">
       <thead>
         <th class="col-xh">序号</th>
@@ -44,8 +44,17 @@
             <!--  数量 -->
           </td>
           <td class="col-price">
-            {{item.taxUnitPrice}}
             <!--  含税单价(元) -->
+            <template v-if="editprice">
+              <InputNumber
+                :max="999999"
+                :min="0"
+                v-model="item.taxUnitPrice"
+                v-if="$user.hasPower('wdsx.ckdxgjg')"
+              ></InputNumber>
+              <InputNumber disabled v-model="item.taxUnitPrice" v-else></InputNumber>
+            </template>
+            <template v-else>{{item.taxUnitPrice}}</template>
           </td>
           <td>{{item.constructionSite}}</td>
           <td>{{item.productName}}</td>
@@ -95,12 +104,7 @@
           </td>
           <td class="col-quantity">
             <!--  数量 -->
-            <InputNumber
-              :max="999999"
-              :min="0"
-              v-model="item.quantity"
-              @on-change="computedAmount(item)"
-            ></InputNumber>
+            <InputNumber :max="999999" :min="0" v-model="item.quantity"></InputNumber>
           </td>
           <td class="col-price">
             <!--  含税单价(元) -->
@@ -108,9 +112,9 @@
               :max="999999"
               :min="0"
               v-model="item.taxUnitPrice"
-              @on-change="computedAmount(item)"
-              disabled ="$user.hasPower('wdsx.ckdxgjg')"
+              v-if="$user.hasPower('wdsx.ckdxgjg')"
             ></InputNumber>
+            <InputNumber disabled v-model="item.taxUnitPrice" v-else></InputNumber>
           </td>
           <td>
             <!-- 施工部位 -->
@@ -152,6 +156,10 @@ export default {
       default: null
     },
     editable: {
+      type: Boolean,
+      default: false
+    },
+    editprice: {
       type: Boolean,
       default: false
     },
@@ -215,21 +223,7 @@ export default {
     datePickerChange(item, args) {
       item.needDate = args[0];
     },
-    computedAmount(item) {
-      return;
-      var taxRate = floatObj.multiply(0.01, this.model.taxRate);
-      item.amount = floatObj.multiply(item.taxUnitPrice, item.quantity);//数量*含税单价  
-      item.unitPrice = floatObj.multiply(item.quantity, floatObj.subtract(1, taxRate));//含税单价*(1-税率)
-      item.tax = floatObj.multiply(item.amount, taxRate);//数量*含税单价*税率
-      this.$emit('on-amount-change', this.sumAmount());
-    },
-    sumAmount() {
-      var totals = 0;
-      this.list.map((mater) => {
-        totals = floatObj.add(totals, mater.amount);
-      });
-      return totals;
-    },
+
     selMater(row) {
       var selmaterial = this.$refs.selmaterial;
       selmaterial.show({
@@ -242,7 +236,6 @@ export default {
           row.materName = data.materName;
           row.spec = data.spec;
           row.unit = data.unit;
-          this.computedAmount(row);
         }
       });
     },
