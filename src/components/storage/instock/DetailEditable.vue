@@ -1,5 +1,5 @@
 <template>
-  <Editable @add="add" @remove="remove" :editable="editable" :model="model">
+  <Editable @add="add" @remove="remove" :editable="editable" :editprice="editprice" :model="model">
     <table cellspacing="0" cellpadding="0" v-if="!editable">
       <thead>
         <th class="col-xh">序号</th>
@@ -47,7 +47,19 @@
             <!--  数量 -->
           </td>
           <td class="col-price">
-            {{item.taxUnitPrice}}
+            <!-- {{item.taxUnitPrice}} -->
+            <!--  含税单价(元) -->
+            <template v-if="editprice">
+              <InputNumber
+                :max="999999"
+                :min="0"
+                v-model="item.taxUnitPrice"
+                @on-change="computedAmount(item)"
+                v-if="$user.hasPower('wdsx.rkdxgjg')"
+              ></InputNumber>
+              <InputNumber disabled v-model="item.taxUnitPrice" v-else></InputNumber>
+            </template>
+            <template v-else>{{item.taxUnitPrice}}</template>
             <!--  含税单价(元) -->
           </td>
           <td class="col-amount">
@@ -127,8 +139,9 @@
               :min="0"
               v-model="item.taxUnitPrice"
               @on-change="computedAmount(item)"
-              disabled ="$user.hasPower('wdsx.rkdxgjg')"
+              v-if="$user.hasPower('wdsx.rkdxgjg')"
             ></InputNumber>
+            <InputNumber disabled v-model="item.taxUnitPrice" v-else></InputNumber>
           </td>
           <td class="col-amount">
             <!--  单价(元) -->
@@ -174,6 +187,10 @@ export default {
       default: null
     },
     editable: {
+      type: Boolean,
+      default: false
+    },
+    editprice: {
       type: Boolean,
       default: false
     },
@@ -237,7 +254,8 @@ export default {
     datePickerChange(item, args) {
       item.needDate = args[0];
     },
-    computedAmount(item) { 
+    computedAmount(item) {
+      debugger;
       item.amount = floatObj.multiply(item.quantity, item.taxUnitPrice);//数量*含税单价   
       item.unitPrice = floatObj.multiply(item.taxUnitPrice, floatObj.subtract(1, this.model.taxRate));//含税单价*(1-税率)
       item.tax = floatObj.multiply(item.amount, this.model.taxRate);//数量*含税单价*税率

@@ -43,13 +43,10 @@
               </tr>
               <tr>
                 <td>
-                  <FormItem
-                    prop
-                    label="发票类型"
-                  >{{$args.getArgText('invoice_type', formItem.invoiceType)}}</FormItem>
+                  <FormItem label="发票类型">{{$args.getArgText('invoice_type', formItem.invoiceType)}}</FormItem>
                 </td>
                 <td>
-                  <FormItem prop label="日期">{{formItem.operateDate}}</FormItem>
+                  <FormItem label="日期">{{formItem.operateDate}}</FormItem>
                 </td>
                 <td>
                   <FormItem label="收料员">{{formItem.operatorName}}</FormItem>
@@ -57,7 +54,7 @@
               </tr>
               <tr>
                 <td>
-                  <FormItem prop label="红蓝字">
+                  <FormItem label="红蓝字">
                     <template v-if="formItem.inboundType==1">
                       <span style="color:blue;">蓝字</span>
                     </template>
@@ -67,7 +64,7 @@
                   </FormItem>
                 </td>
                 <td colspan="2">
-                  <FormItem prop=" " label="备注">{{formItem.remark}}</FormItem>
+                  <FormItem label="备注">{{formItem.remark}}</FormItem>
                 </td>
               </tr>
             </table>
@@ -80,7 +77,9 @@
             ref="editable"
             :list="list"
             :editable="false"
+            :editprice="true"
             :deptId="formItem.deptId"
+            :model="formItem"
             @on-amount-change="onAmountChange"
             :style="{display: formItem.deptId?'':'none'}"
           ></Editable>
@@ -249,18 +248,17 @@ export default {
             this.$Message.error(msg + '请录入数量');
             return;
           }
-          if (item.taxUnitPrice == '') {
-            this.$Message.error(msg + '请录入含税单价');
-            return;
-          }
+          // if (item.taxUnitPrice == '') {
+          //   this.$Message.error(msg + '请录入含税单价');
+          //   return;
+          // }
           form.detailList.push(item);
         }
       }
       form.proc = proc.formItem;
       // 提交
       this.loading = 1;
-      var uri = '/api/engine/storage/instock/submit';
-
+      var uri = '/api/engine/storage/instock/submit'; 
       this.$http.post(uri, form).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {

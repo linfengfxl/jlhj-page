@@ -1,5 +1,5 @@
 <template>
-  <Editable @add="add" @remove="remove" :editable="editable" :model="model">
+  <Editable @add="add" @remove="remove" :editable="editable" :editprice="editprice" :model="model">
     <table cellspacing="0" cellpadding="0" v-if="!editable">
       <thead>
         <th class="col-xh">序号</th>
@@ -11,7 +11,7 @@
         <th>租赁方式</th>
         <th>作业用时</th>
         <th>作业台班</th>
-        <th>含税单价</th>
+        <th>含税单价(元)</th>
         <th>结算金额</th>
         <th>税额</th>
         <th>价税合计</th>
@@ -55,8 +55,18 @@
             {{item.taiban}}
           </td>
           <td class="col-price">
-            <!--  含税单价(元) -->
-            {{item.taibanPrice}}
+            <!--  含税单价(元) --> 
+            <template v-if="editprice">
+              <InputNumber
+                :max="999999"
+                :min="0"
+                v-model="item.taibanPrice" 
+                @on-change="computedAmount(item)"
+                v-if="$user.hasPower('wdsx.jxzljsdxgjg')"
+              ></InputNumber>
+              <InputNumber disabled v-model="item.taibanPrice" v-else></InputNumber>
+            </template>
+            <template v-else>{{item.taibanPrice}}</template>
           </td>
           <td class="col-amount">
             <!--  结算金额  -->
@@ -85,7 +95,7 @@
         <th>租赁方式</th>
         <th>作业用时</th>
         <th>作业台班</th>
-        <th>含税单价</th>
+        <th>含税单价(元)</th>
         <th>结算金额</th>
         <th>税额</th>
         <th>价税合计</th>
@@ -128,14 +138,16 @@
             <!--  作业台班 -->
             {{item.taiban}}
           </td>
-          <td class="col-price">
-            <!--  含税单价(元) -->
+          <td class="col-price">  
+             <!--  含税单价(元) -->
             <InputNumber
-              :max="999999999"
+              :max="999999"
               :min="0"
               v-model="item.taibanPrice"
               @on-change="computedAmount(item)"
+              v-if="$user.hasPower('wdsx.jxzljsdxgjg')"
             ></InputNumber>
+            <InputNumber disabled v-model="item.taibanPrice" v-else></InputNumber>
           </td>
           <td class="col-amount">
             <!--  结算金额  -->
@@ -176,6 +188,10 @@ export default {
       default: null
     },
     editable: {
+      type: Boolean,
+      default: false
+    },
+    editprice: {
       type: Boolean,
       default: false
     },
@@ -236,6 +252,7 @@ export default {
       item.needDate = args[0];
     },
     computedAmount(item) {
+      debugger
       var taxSub = floatObj.subtract(1, this.model.taxRate);
       item.amount = floatObj.multiply(item.taibanPrice, floatObj.multiply(item.taiban, taxSub), 2);//結算金額= 含税单价*作业台班*(1-税率)
       item.tax = floatObj.multiply(floatObj.multiply(item.taibanPrice, item.taiban), this.model.taxRate);//税额 = 含税单价*作业台班*税率

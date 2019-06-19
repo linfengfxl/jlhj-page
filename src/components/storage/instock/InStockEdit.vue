@@ -102,6 +102,7 @@
             ref="editable"
             :list="list"
             :editable="true"
+            :editprice="true"
             :model="formItem"
             @on-amount-change="onAmountChange"
             :style="{display: formItem.deptId?'':'none'}"
@@ -293,10 +294,10 @@ export default {
             this.$Message.error(msg + '请录入数量');
             return;
           }
-          if (item.taxUnitPrice == '') {
-            this.$Message.error(msg + '请录入含税单价');
-            return;
-          }
+          // if (item.taxUnitPrice == '') {
+          //   this.$Message.error(msg + '请录入含税单价');
+          //   return;
+          // }
           form.detailList.push(item);
         }
       }

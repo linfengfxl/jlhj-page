@@ -276,9 +276,7 @@ export default {
         totalPriceTax1: 0,//价税合计备用
         remark: '',//备注 
       });
-      this.list = [];
-      // this.list.push(this.$refs.editable.listNewRow());
-      // this.list.push(this.$refs.editable.listNewRow());
+      this.list = []; 
     },
     save(proc) {
       var form = {
@@ -308,10 +306,10 @@ export default {
         //   this.$Message.error(msg + '作业单选择有误');
         //   return;
         // }
-        if (item.taibanPrice == null || item.taibanPrice == '') {
-          this.$Message.error(msg + '请录入含税单价');
-          return;
-        }
+        // if (item.taibanPrice == null || item.taibanPrice == '') {
+        //   this.$Message.error(msg + '请录入含税单价');
+        //   return;
+        // }
         form.detailList.push(item);
       }
 
