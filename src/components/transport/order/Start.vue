@@ -381,7 +381,7 @@ export default {
       this.loading = 0;
       this.$Message.error(error.message);
     });
-    this.$http.post("/api/engine//transport/order/getRecentMachine", {}).then(res => {
+    this.$http.post("/api/engine/transport/order/getRecentMachine", {}).then(res => {
       this.loading = 0;
       if (res.data.code === 0) {
         if(res.data.data.rows.length>0){

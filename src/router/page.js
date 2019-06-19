@@ -97,6 +97,14 @@ components.push({ component: 'financial/reserve/ReserveView', name: '', path: '/
 //应付账款汇总
 components.push({ component: 'financial/payTotal/Index', name: '', path: '/financial/paytotal' })
 
+//合同登记
+components.push({ component: 'financial/contract/Index', name: '', path: '/financial/contract' })
+//合同收款登记
+components.push({ component: 'financial/contractReceipt/Index', name: '', path: '/financial/contractReceipt' })
+//发票收票登记
+components.push({ component: 'financial/invoice/Index', name: '', path: '/financial/invoice' })
+
+
  
 
 
