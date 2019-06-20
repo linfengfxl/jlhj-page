@@ -65,10 +65,27 @@
 
                 <tr>
                    <td>
-                    <FormItem label="含税单价" prop>{{formItem.taxUnitPrice}}</FormItem>
+                      <FormItem label="含税单价" prop>
+                    <Input-number
+                      v-model="formItem.taxUnitPrice"
+                      :min="0"
+                      @on-change="onChangeAmount" 
+                      v-if="$user.hasPower('wdsx.ysxpxgjg')"
+                    ></Input-number>
+                      <InputNumber disabled v-model="formItem.taxUnitPrice" v-else></InputNumber> 
+                  </FormItem>
+                   
                   </td>
-                  <td>
-                    <FormItem label="扣款金额" prop>{{formItem.deductAmount}}</FormItem>
+                  <td> 
+                    <FormItem label="扣款金额" prop>
+                    <Input-number
+                      v-model="formItem.deductAmount"
+                      :min="0"
+                      @on-change="onChangeAmount" 
+                      v-if="$user.hasPower('wdsx.ysxpxgjg')"
+                    ></Input-number>
+                      <InputNumber disabled v-model="formItem.deductAmount" v-else></InputNumber>
+                    </FormItem>
                   </td>
                   <td>
                     <FormItem label="金额" prop>{{formItem.amount}}</FormItem>
@@ -251,6 +268,7 @@ export default {
           this.loading = 0;
           if (res.data.code === 0) {
             Object.assign(this.formItem, res.data.data);
+            this.formItem.taxRate1 = this.formItem.taxRate;//税率不带%
             this.formItem.taxRate = floatObj.multiply(this.formItem.taxRate, 100);
           } else {
             this.$Message.error(res.data.message);
@@ -269,14 +287,28 @@ export default {
         this.onChangeAmount();
       }
     },
-    onChangeAmount() {
-      if (this.formItem.num != null && this.formItem.milage != null && this.formItem.taxUnitPrice != null && this.formItem.taxUnitPrice != null &&
-        this.formItem.taxRate != null) {
-        this.formItem.amount = floatObj.multiply(floatObj.multiply(floatObj.multiply(this.formItem.num, this.formItem.milage), this.formItem.taxUnitPrice), floatObj.subtract(1, this.formItem.taxRate1))
-        this.formItem.tax = floatObj.multiply(floatObj.multiply(floatObj.multiply(this.formItem.num, this.formItem.milage), this.formItem.taxUnitPrice), this.formItem.taxRate1);
-        if (this.formItem.deductAmount != null) {
-          this.formItem.totalPriceTax = floatObj.subtract(floatObj.multiply(floatObj.multiply(this.formItem.num, this.formItem.milage), this.formItem.taxUnitPrice), this.formItem.deductAmount);
+    onChangeAmount() {  
+      if (this.formItem.transportType != "" && this.formItem.transportType != null) {
+        var milage = 0;
+        if (this.formItem.transportType == "内倒") {
+          milage = 1;
+        } else {
+          milage = this.formItem.milage;
         }
+        if (this.formItem.num != null && milage != null && this.formItem.taxUnitPrice != null && this.formItem.taxUnitPrice != null &&
+          this.formItem.taxRate != null) {
+          this.formItem.amount = floatObj.multiply(floatObj.multiply(floatObj.multiply(this.formItem.num, milage), this.formItem.taxUnitPrice), floatObj.subtract(1, this.formItem.taxRate1))
+          this.formItem.tax = floatObj.multiply(floatObj.multiply(floatObj.multiply(this.formItem.num, milage), this.formItem.taxUnitPrice), this.formItem.taxRate1);
+          if (this.formItem.deductAmount != null) {
+            this.formItem.totalPriceTax = floatObj.subtract(floatObj.multiply(floatObj.multiply(this.formItem.num, milage), this.formItem.taxUnitPrice), this.formItem.deductAmount);
+          } else {
+            this.formItem.totalPriceTax = 0;
+          }
+        } else {
+          this.formItem.totalPriceTax = 0;
+        }
+      } else {
+        //this.$Message.error("请先选择运输类别");
       }
     },
     goBack() {

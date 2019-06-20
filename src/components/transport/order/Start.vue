@@ -150,8 +150,7 @@
                       style="width:100%"
                       v-if="$user.hasPower('wdsx.ysxpxgjg')"
                     ></Input-number>
-                      <InputNumber disabled v-model="formItem.taxUnitPrice" v-else></InputNumber>
-      
+                    <InputNumber disabled v-model="formItem.taxUnitPrice" v-else></InputNumber>
                   </FormItem>
                 </td>
                 <td>
@@ -163,7 +162,7 @@
                       style="width:100%"
                       v-if="$user.hasPower('wdsx.ysxpxgjg')"
                     ></Input-number>
-                      <InputNumber disabled v-model="formItem.deductAmount" v-else></InputNumber>
+                    <InputNumber disabled v-model="formItem.deductAmount" v-else></InputNumber>
                   </FormItem>
                 </td>
                 <td>
@@ -186,6 +185,19 @@
                       style="width:100%"
                     ></Date-picker>
                   </Form-item>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="3">
+                  <FormItem label="运输内容" prop="transportContent">
+                    <Input
+                      type="textarea"
+                      :autonsize="{minRows: 2, maxRows: 5}"
+                      placeholder="请输入..."
+                      v-model="formItem.transportContent"
+                      class="width-2"
+                    />
+                  </FormItem>
                 </td>
               </tr>
               <tr>
@@ -216,19 +228,6 @@
                       placeholder="请填写运输起点"
                       style="width:200px"
                     ></AutoComplete>-->
-                  </FormItem>
-                </td>
-              </tr>
-              <tr>
-                <td colspan="3">
-                  <FormItem label="运输内容" prop="transportContent">
-                    <Input
-                      type="textarea"
-                      :autonsize="{minRows: 2, maxRows: 5}"
-                      placeholder="请输入..."
-                      v-model="formItem.transportContent"
-                      class="width-2"
-                    />
                   </FormItem>
                 </td>
               </tr>
