@@ -64,9 +64,7 @@
                   </FormItem>
                 </td>
                 <td>
-                  <FormItem label="供应商联系人" prop="linkMan">
-                    <Input v-model="formItem.linkMan" placeholder readonly="readonly"/>
-                  </FormItem>
+                  <FormItem label="供应商联系人" prop="linkMan">{{formItem.linkMan}}</FormItem>
                 </td>
                 <td>
                   <FormItem label="税率" prop>
@@ -150,7 +148,10 @@
                       :min="0"
                       @on-change="onChangeAmount"
                       style="width:100%"
+                      v-if="$user.hasPower('wdsx.ysxpxgjg')"
                     ></Input-number>
+                      <InputNumber disabled v-model="formItem.taxUnitPrice" v-else></InputNumber>
+      
                   </FormItem>
                 </td>
                 <td>
@@ -160,40 +161,21 @@
                       :min="0"
                       @on-change="onChangeAmount"
                       style="width:100%"
+                      v-if="$user.hasPower('wdsx.ysxpxgjg')"
                     ></Input-number>
+                      <InputNumber disabled v-model="formItem.deductAmount" v-else></InputNumber>
                   </FormItem>
                 </td>
                 <td>
-                  <FormItem label="金额" prop>
-                    <Input-number
-                      v-model="formItem.amount"
-                      :min="0"
-                      readonly="readonly"
-                      style="width:100%"
-                    ></Input-number>
-                  </FormItem>
+                  <FormItem label="金额" prop>{{formItem.amount}}</FormItem>
                 </td>
               </tr>
               <tr>
                 <td>
-                  <FormItem label="税额" prop>
-                    <Input-number
-                      v-model="formItem.tax"
-                      :min="0"
-                      readonly="readonly"
-                      style="width:100%"
-                    ></Input-number>
-                  </FormItem>
+                  <FormItem label="税额" prop>{{formItem.tax}}%</FormItem>
                 </td>
                 <td>
-                  <FormItem label="价税合计" prop>
-                    <Input-number
-                      v-model="formItem.totalPriceTax"
-                      :min="0"
-                      readonly="readonly"
-                      style="width:100%"
-                    ></Input-number>
-                  </FormItem>
+                  <FormItem label="价税合计" prop>{{formItem.totalPriceTax}}</FormItem>
                 </td>
                 <td>
                   <Form-item label="抵达时间" prop>
@@ -282,7 +264,7 @@ export default {
       address2: '',
       data1: [],
       data2: [],
-      select:'',
+      select: '',
       addressList: [],
       pageFlag: 1,//1.新建 2.编辑 3.修订
       loading: 0,
@@ -384,16 +366,16 @@ export default {
     this.$http.post("/api/engine/transport/order/getRecentMachine", {}).then(res => {
       this.loading = 0;
       if (res.data.code === 0) {
-        if(res.data.data.rows.length>0){
-          var list=res.data.data.rows;
-          var count=0;
-          list.map((item)=>{
-            if(item.machineCode!=null&&item.machineName!=null&&count==0){
-              this.formItem.machineCode=item.machineCode;
-              this.formItem.machineName=item.machineName;
+        if (res.data.data.rows.length > 0) {
+          var list = res.data.data.rows;
+          var count = 0;
+          list.map((item) => {
+            if (item.machineCode != null && item.machineName != null && count == 0) {
+              this.formItem.machineCode = item.machineCode;
+              this.formItem.machineName = item.machineName;
               count++;
             }
-          })   
+          })
         }
       } else {
         this.$Message.error(res.data.message);
@@ -428,7 +410,7 @@ export default {
     loadAddressList() {
       var that = this;
       var uri = '/api/engine/address/list';
-      this.$http.post(uri, {pageSize:1000000}).then((res) => {
+      this.$http.post(uri, { pageSize: 1000000 }).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
           var rows = res.data.data.rows;
@@ -594,6 +576,7 @@ export default {
 .customeredit .width-1 {
   width: 160px;
 }
-.ivu-auto-complete{height: 200px;}
-
+.ivu-auto-complete {
+  height: 200px;
+}
 </style>

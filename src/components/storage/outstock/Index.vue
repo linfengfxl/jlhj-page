@@ -19,7 +19,7 @@
             </RadioGroup>
           </td>
           <td class="page-tools">
-            <Button @click="add" v-power icon="plus">出库单</Button>&nbsp;
+            <Button @click="add"  v-power="'fq.clckd'" icon="plus">出库单</Button>&nbsp;
           </td>
           <td class="page-tools" v-if="queryForm.status==0"></td>
         </tr>
