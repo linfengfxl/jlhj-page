@@ -55,7 +55,7 @@
             </td>
           </tr>          
           <tr>
-            <td class="label">评  论</td>
+            <td class="label">意 见</td>
             <td><Input v-model="formItem.comment" type="textarea" :rows="2" placeholder="" style="width:90%"></Input></td>
           </tr>
           <tr>
