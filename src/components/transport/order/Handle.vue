@@ -72,7 +72,7 @@
                       @on-change="onChangeAmount" 
                       v-if="$user.hasPower('wdsx.ysxpxgjg')"
                     ></Input-number>
-                      <InputNumber disabled v-model="formItem.taxUnitPrice" v-else></InputNumber> 
+                      <template v-else>{{formItem.taxUnitPrice}}</template> 
                   </FormItem>
                    
                   </td>
@@ -84,7 +84,7 @@
                       @on-change="onChangeAmount" 
                       v-if="$user.hasPower('wdsx.ysxpxgjg')"
                     ></Input-number>
-                      <InputNumber disabled v-model="formItem.deductAmount" v-else></InputNumber>
+                      <template v-else>{{formItem.deductAmount}}</template>
                     </FormItem>
                   </td>
                   <td>

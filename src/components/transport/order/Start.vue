@@ -171,7 +171,7 @@
               </tr>
               <tr>
                 <td>
-                  <FormItem label="税额" prop>{{formItem.tax}}%</FormItem>
+                  <FormItem label="税额" prop>{{formItem.tax}}</FormItem>
                 </td>
                 <td>
                   <FormItem label="价税合计" prop>{{formItem.totalPriceTax}}</FormItem>

@@ -1,53 +1,76 @@
 <template>
-<StartProcess ref="startProcess" defineId="11" :title="pageTitle" @on-submit="save">
-  <div class="page instock-edit"> 
-    <Loading :loading="loading">
-      <div class="baseinfo">
-        <div class="page-tools"></div>
-        <Form ref="form" class="page-form" :model="formItem" :rules="formRules" :label-width="120">
-          <table cellspacing="0" cellpadding="0">
-            <colgroup>
-              <col width="50%">
-              <col width="50%">
-            </colgroup>
-            <tr>
-              <td>
-                <FormItem label="本日进行" prop="dayWork">
-                  <Input type="textarea" :rows="2" v-model="formItem.dayWork"/>
-                </FormItem>
-              </td>
-              <td>
-                <FormItem label="明日计划" prop="nextDayPlan">
-                  <Input type="textarea" :rows="2" v-model="formItem.nextDayPlan"/>
-                </FormItem>
-              </td>
-            </tr>
-            <!-- <tr>
+  <StartProcess ref="startProcess" defineId="11" :title="pageTitle" @on-submit="save">
+    <div class="page instock-edit">
+      <Loading :loading="loading">
+        <div class="baseinfo">
+          <div class="page-tools"></div>
+          <Form
+            ref="form"
+            class="page-form"
+            :model="formItem"
+            :rules="formRules"
+            :label-width="120"
+          >
+            <table cellspacing="0" cellpadding="0">
+              <colgroup>
+                <col width="50%">
+                <col width="50%">
+              </colgroup>
+              <tr>
+                <td>
+                  <FormItem label="本日进行" prop="dayWork">
+                    <Input type="textarea" :rows="2" v-model="formItem.dayWork"/>
+                  </FormItem>
+                </td>
+                <td>
+                  <FormItem label="明日计划" prop="nextDayPlan">
+                    <Input type="textarea" :rows="2" v-model="formItem.nextDayPlan"/>
+                  </FormItem>
+                </td>
+              </tr>
+              <!-- <tr>
               <td colspan="2">
                 <FormItem label="班前教育" prop></FormItem>
               </td>
-            </tr>-->
-          </table>
-        </Form>
-      </div>
-      <div>
-        <div class="subheader">完成工作项</div>
-        <Editable ref="editable" :list="list" :editable="true" :projectCode="projectCode"></Editable>
-      </div>
-      <!-- <div>
+              </tr>-->
+            </table>
+          </Form>
+        </div>
+        <div>
+          <div class="subheader">完成工作项</div>
+          <Editable ref="editable" :list="list" :editable="true" :projectCode="projectCode"></Editable>
+          <!-- <Tabs type="card">
+            <TabPane label="劳务用工" name="name1">
+              <ListPageDetail
+                ref="detail"
+                slot="page-datatable-detail"
+                api="/api/engine/project/labor/getByProjectList"
+                :columns="columns1"
+              ></ListPageDetail>
+            </TabPane>
+            <TabPane label="入库单" name="name2"></TabPane>
+            <TabPane label="机械作业单" name="name3"></TabPane>
+            <TabPane label="运输小票" name="name4"></TabPane>
+          </Tabs> -->
+          
+          <!-- 当日的 劳务用工、入库单 、
+      机械作业单、
+          运输小票-->
+        </div>
+        <!-- <div>
         <div class="subheader">劳务用工登记</div>
         <Editable2 ref="editable" :list="list2" :editable="true" ></Editable2>
-      </div>-->
-      <!-- <table class="savebar" cellpadding="0" cellspacing="0">
+        </div>-->
+        <!-- <table class="savebar" cellpadding="0" cellspacing="0">
         <tr>
           <td class="save" @click="save" v-if="pageFlag<=2">保存</td>
           <td class="reset" @click="reset">重置</td>
           <td></td>
         </tr>
-      </table> -->
-    </Loading>
-  </div>
-</StartProcess>
+        </table>-->
+      </Loading>
+    </div>
+  </StartProcess>
 </template>
 <script>
 import Loading from '@/components/loading';
@@ -61,6 +84,7 @@ import SelectProject from '@/components/page/form/SelectProject';//工程名称
 import SelectMember from '@/components/page/form/SelectMember';//收料员
 import SelectProvider from '@/components/page/form/SelectProvider';//供应商
 import pagejs from '@/assets/js/page';
+import ListPageDetail from '@/components/page/ListPageDetail';
 
 import StartProcess from '@/components/workflow/process/Start';
 
@@ -69,6 +93,7 @@ export default {
     Loading,
     LayoutHor,
     Editable,
+    ListPageDetail,
     //Editable2,
     SelStorage,
     SelectProject,
@@ -102,7 +127,66 @@ export default {
       list: [],
       list2: [],
       oriItem: {},
-      storage: []
+      storage: [],
+      columns1: [
+        {
+          title: '领工',
+          key: 'leader',
+          align: 'left',
+          width: 120,
+        },
+        {
+          title: '技工工作量',
+          key: 'skillWorkload',
+          align: 'left',
+          width: 120,
+        },
+        {
+          title: '技工加班量',
+          key: 'skillWorkloadOvertime',
+          align: 'left',
+          width: 120,
+        },
+        {
+          title: '力工工作量',
+          key: 'strongWorkload',
+          align: 'left',
+          width: 120,
+        },
+        {
+          title: '力工加班量',
+          key: 'strongWorkloadOvertime',
+          align: 'left',
+          width: 120,
+        },
+        {
+          title: '金额',
+          key: 'amount',
+          align: 'left',
+          width: 120,
+        },
+        {
+          title: '备注',
+          key: 'remark',
+          align: 'left',
+          minWidth: 80,
+        },
+        {
+          title: '附件',
+          key: 'files',
+          align: 'center',
+          width: 200,
+          render: (h, params) => {
+            var row = params.row;
+            return h(UploadBox, {
+              props: {
+                value: row.files,
+                readonly: true
+              }
+            });
+          }
+        }
+      ],
     }
   },
 
@@ -117,7 +201,9 @@ export default {
     } else {
       this.pageFlag = 1;
       this.initNew();
-    }
+    }  
+
+    //this.$refs.detail.load("?projectCode=" + this.formItem.projectCode + "&laborDate=2019-06-21");
   },
   computed: {
     pageTitle() {

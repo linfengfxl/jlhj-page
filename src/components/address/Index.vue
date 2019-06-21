@@ -90,7 +90,7 @@ export default {
           }
         },
         {
-          title: 'id',
+          title: '编码',
           key: 'id',
           width: 100,
         },
