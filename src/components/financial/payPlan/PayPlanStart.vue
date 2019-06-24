@@ -1,7 +1,5 @@
 <template>
-  <StartProcess ref="startProcess" defineId="4" :title="pageTitle" @on-submit="save">
-    <div class="page payPlan-edit">     
-    <Loading :loading="loading">
+  <StartProcess ref="startProcess" defineId="4" :title="pageTitle" :loading="loading" @on-submit="save">
       <div class="baseinfo"> 
         <div class="subheader">
           单据表头
@@ -147,8 +145,6 @@
         </Form>
       </div>
        <SelProvider ref="selProvider" :transfer="false"></SelProvider>      
-    </Loading>
-  </div>
 </StartProcess>  
 </template>
 <script>

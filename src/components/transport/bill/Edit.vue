@@ -1,7 +1,5 @@
 <template>
-  <StartProcess ref="startProcess" defineId="6" :title="pageTitle" @on-submit="save">
-    <div class="page page-bill page-bill-max">
-      <Loading :loading="loading">
+  <StartProcess ref="startProcess" defineId="6" :title="pageTitle" @on-submit="save" :loading="loading">
         <div class="baseinfo">
           <div class="page-tools"></div>
           <Form
@@ -146,9 +144,7 @@
             @on-amount-change="onAmountChange"
           ></Editable>
         </div>
-      </Loading>
       <SelProvider ref="selProvider"></SelProvider>
-    </div>
   </StartProcess>
 </template>
 <script>

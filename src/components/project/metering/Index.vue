@@ -1,64 +1,20 @@
 <template>
   <ListPage
     ref="page"
-    api="/api/engine/financial/expense/list"
+    api="/api/engine/project/metering/summary"
     :model="this"
     @onCurrentRowChange="curRowChg"
     :beforeLoad="beforeLoad"
   >
     <div class="page-title" slot="page-title">
-      报销单
+      工程计量汇总表
     </div>
     <div class="page-searchbox">
       <table cellpadding="0" cellspacing="0">
         <tr>
-          <td>
-            <RadioGroup v-model="queryForm.status" type="button" @on-change="query">
-              <Radio :label="2">通过</Radio>
-              <Radio :label="1">审批中</Radio>
-              <Radio :label="3">驳回</Radio>
-              <Radio :label="4">作废</Radio>
-            </RadioGroup>
-          </td>
-          <td class="page-tools">
-            <Button @click="add" v-power icon="plus">报销单</Button>&nbsp;
-          </td>
-          <td class="page-tools" v-if="queryForm.status==0"></td>
-        </tr>
-      </table>
-    </div>
-    <div class="page-searchbox">
-      <table cellpadding="0" cellspacing="0">
-        <tr>
-          <td>
-            <Input v-model="queryForm.billId" placeholder="报销单号" @keyup.enter.native="query"></Input>
-          </td>
-          <td>
-            <Select v-model="queryForm.catalog" style="width:100px;" placeholder="报销分类">
-              <Option v-for="item in catalog" :value="item.code" :key="item.code">{{ item.text }}</Option>
-            </Select>
-          </td>
-          <td>
-            <SelectProject v-model="queryForm.projectId" :model="queryForm" :text="queryForm.projectName" textProp="projectName" placeholder="工程名称" />
-          </td>
-          <td><Input v-model="queryForm.operatorName" placeholder="经办人"/></td>
-          <td>
-            <Select v-model="queryForm.legal" style="width:100px;" placeholder="法律主体">
-              <Option v-for="item in $args.getArgGroup('legal')" :value="item.argCode" :key="item.argCode">{{ item.argCode }}</Option>
-            </Select>
-          </td>
-          <td>报销日期</td>
-          <td>
-            <DatePicker
-              type="daterange"
-              v-model="queryForm.billDate"
-              split-panels
-              placeholder="报销日期"
-              style="width: 180px"
-              :clearable="true"
-              ::transfer="true"
-            ></DatePicker>
-          </td>          
+         <td>
+            <Input v-model="queryForm.projectName"  placeholder="工程名称" @on-enter="query"/>
+          </td> 
           <td>
             <Button @click="query" type="primary" icon="ios-search">查询</Button>
           </td>
@@ -102,163 +58,31 @@ export default {
       curRow: null,
       columns: [ 
         {
-          title: '操作',
-          width: 80,
-          align: 'center',
-          fixed: 'left', 
-          render: (h, params) => {
-            var row = params.row;             
-            return h(DataRowOperate, {
-              props: {
-                btns: [{
-                  key: 'edit',                   
-                  disabled: row.status != 3
-                }]
-              },
-              on: {
-                click: (key) => {
-                  if (key == "edit") {
-                    this.edit(row);
-                  }
-                  if (key == "delete") {
-                    this.del(row);
-                  }
-                }
-              }
-            });
-          }
-        },
-        {
-          title: '报销单号',
-          key: 'billId',
-          width: 140,
-          align: 'center',
-          fixed: 'left',
-          render:(h,params)=>{
-            var row = params.row;
-            var text = row.billId;
-            text = text;
-            return h('a',{
-              props:{
-
-              },
-              on:{
-                click:()=>{
-                  this.$router.push({path:'/financial/expense/view?forward&inst='+row.instId});
-                }
-              }
-            },text);
-          }
-        },
-        page.table.initDateColumn({
-          title: '报销日期',
-          key: 'billDate',
-          align: 'center', 
-        }),
-        {
-          title: '分类',
-          key: 'catalog',
-          align: 'center',
+          title: '序号',
           width: 100,
+          type:'index',
+          align: 'center',
+        },
+        {
+          title: '工程编号',
+          key: 'projectCode',
+          align: 'left',
+          width: 150,
         },
         {
           title: '工程名称',
           key: 'projectName',
           align: 'left',
           width: 150,
-        },
-        {
-          title: '金额',
-          key: 'amount',
-          align: 'center',
-          width: 100,
-        },
-        {
-          title: '银行户名',
-          key: 'bankAccName',
-          align: 'left',
-          width: 150,
-        },
-        {
-          title: '开户银行',
-          key: 'bankOpen',
-          align: 'left',
-          width: 150,
-        },
-        {
-          title: '开户账号',
-          key: 'bankAccount',
-          align: 'left',
-          width: 150,
-        },
-        {
-          title: '经办人',
-          key: 'operatorName',
-          align: 'center',
-          width: 100,
-        },
-        {
-          title: '部门',
-          key: 'deptName',
-          align: 'center',
-          width: 100,
-        },
-        {
-          title: '支付方式',
-          key: 'payWay',
-          align: 'center',
-          width: 100,
-        },
-        {
-          title: '法律主体',
-          key: 'legal',
-          align: 'center',
-          width: 100,
-        },
-        {
-          title: '附件',
-          key: 'files',
-          align: 'center',
-          width: 200,
-          render:(h,params)=>{
-            var row = params.row;
-            return h(UploadBox,{
-              props:{
-                value:row.files,
-                readonly:true
-              }
-            });
-          }
-        },
-        {
-          title: '报销说明',
-          key: 'describe',
-          align: 'left',
-          width: 100,
-        },
-
-        page.table.initMapColumn({
-          title: '状态',
-          key: 'status',
-          data: {
-            '0': '待提交',
-            '1': '审核中',
-            '2': '通过',
-            '3': '驳回',
-          }
-        }),
-        {
-          title: '创建人',
-          key: 'creatorName',
-          align: 'center',
-          width: 100,
-        },
-        page.table.initDateColumn({
-          title: '创建日期',
-          key: 'createTime',
-        }),
+        }
       ],
       columns1: [ 
+        {
+          title: '序号',
+          width: 100,
+          type:'index',
+          align: 'center',
+        },
         {
           title: '费用科目',
           key: 'feeTypeName',           

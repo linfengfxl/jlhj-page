@@ -5,10 +5,9 @@
     :title="title"
     @on-load="instLoaded"
     @on-submit="save"
+    :loading="loading"
   >
-    <div class="page transport-order-hander-edit">
       <div class="baseinfo">
-        <Loading :loading="loading">
           <div class="page-form">
             <Form :model="formItem" ref="form" :label-width="100" class="form-item">
               <table cellspacing="0" cellpadding="0">
@@ -122,8 +121,6 @@
               </table>
             </Form>
           </div>
-        </Loading>
-      </div>
     </div>
     <div slot="footer"></div>
   </HandleProcess>

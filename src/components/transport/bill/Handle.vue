@@ -5,9 +5,8 @@
     :title="title"
     @on-load="instLoaded"
     @on-submit="save"
+    :loading="loading"
   >
-    <div class="page instock-edit">
-      <Loading :loading="loading">
         <div class="baseinfo">
           <div class="page-tools"></div>
           <Form
@@ -115,9 +114,7 @@
           <td></td>
         </tr>
         </table>-->
-      </Loading>
       <SelProvider ref="selProvider"></SelProvider>
-    </div>
   </HandleProcess>
 </template>
 <script>

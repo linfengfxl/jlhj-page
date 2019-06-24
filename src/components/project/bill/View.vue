@@ -1,7 +1,5 @@
 <template>
-  <ViewProcess ref="ViewProcess" :instId="instId" :title="title" @on-load="instLoaded" @on-submit="save">
-    <div class="page expense-edit">     
-    <Loading :loading="loading">
+  <ViewProcess ref="ViewProcess" :instId="instId" :title="title" :loading="loading" @on-load="instLoaded" @on-submit="save">
       <div class="baseinfo"> 
         <div class="subheader">
           单据表头
@@ -66,8 +64,6 @@
             @on-amount-change="onAmountChange"
           ></Editable>
       </div>       
-    </Loading>
-  </div>
 </ViewProcess>  
 </template>
 <script>
@@ -96,7 +92,7 @@ export default {
   },
   data() {
     return {
-      title:'成本分析表',
+      title:'工程结算表',
       loading: 0,
       instId:0,
       formItem: {
@@ -224,42 +220,5 @@ export default {
 </script>
 
 <style type="text/css">
-.expense-edit.page {
-  position: relative;
-}
-.expense-edit .subheader {
-  height: 34px;
-  line-height: 34px;
-  font-size: 14px;
-  border-bottom: 0px solid #efefef;
-  margin-bottom: 10px;
-  color: #20bfee;
-}
-.expense-edit .baseinfo {
-}
-.expense-edit .baseinfo .label {
-  width: 80px;
-  text-align: right;
-  padding-right: 8px;
-}
-.expense-edit .baseinfo table {
-  width: 100%;
-}
-.expense-edit .baseinfo table td {
-  height: 40px;
-  padding-right: 4px;
-} 
 
-.selectinput {
-  cursor: pointer;
-}
-
-.expense-edit .tooltip {
-  padding: 10px;
-  background-color: #fafafa;
-  border: 1px solid #efefef;
-  border-radius: 3px;
-  color: #666;
-  margin-top: 10px;
-}
 </style>

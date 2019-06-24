@@ -1,7 +1,5 @@
 <template>
-  <StartProcess ref="startProcess" defineId="16" :title="pageTitle" @on-submit="save">
-    <div class="page instock-edit">
-      <Loading :loading="loading">
+  <StartProcess ref="startProcess" defineId="16" :loading="loading" :title="pageTitle" @on-submit="save">
         <div class="baseinfo">
           <div class="page-tools"></div>
           <Form
@@ -81,8 +79,6 @@
             @on-amount-change="onAmountChange"
           ></Editable>
         </div>
-      </Loading>
-    </div>
   </StartProcess>
 </template>
 <script>

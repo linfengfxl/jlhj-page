@@ -154,12 +154,6 @@ export default {
           align: "left"
         },
         {
-          title: "金额",
-          key: "totalAmount",
-          width: 100,
-          align: "center"
-        },
-        {
           title: "费用",
           key: "fee",
           width: 100,

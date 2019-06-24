@@ -1,7 +1,5 @@
 <template>
-  <StartProcess ref="startProcess" defineId="13" :title="pageTitle" @on-submit="save">
-    <div class="page page-bill">
-      <Loading :loading="loading">
+  <StartProcess ref="startProcess" defineId="13" :loading="loading" :title="pageTitle" @on-submit="save">
         <div class="page-form">
           <Form
             :model="formItem"
@@ -234,8 +232,6 @@
             </table>
           </Form>
         </div>
-      </Loading>
-    </div>
     <div slot="footer"></div>
   </StartProcess>
 </template>

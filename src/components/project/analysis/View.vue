@@ -1,7 +1,5 @@
 <template>
-  <ViewProcess ref="ViewProcess" :instId="instId" :title="title" @on-load="instLoaded" @on-submit="save">
-    <div class="page page-bill page-bill-max">     
-    <Loading :loading="loading">
+  <ViewProcess ref="ViewProcess" :instId="instId" :title="title" max="1" :loading="loading" @on-load="instLoaded" @on-submit="save">
       <div class="baseinfo"> 
         <div class="subheader">
           单据表头
@@ -110,8 +108,6 @@
             @on-amount-change="onAmountChange"
           ></Editable>
       </div>       
-    </Loading>
-  </div>
 </ViewProcess>  
 </template>
 <script>

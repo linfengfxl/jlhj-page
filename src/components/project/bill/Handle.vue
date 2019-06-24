@@ -1,7 +1,5 @@
 <template>
-  <HandleProcess ref="handleProcess" :instId="instId" :title="title" @on-load="instLoaded" @on-submit="save">
-    <div class="page expense-edit">     
-    <Loading :loading="loading">
+  <HandleProcess ref="handleProcess" :instId="instId" :title="title" :loading="loading" @on-load="instLoaded" @on-submit="save">
       <div class="baseinfo"> 
         <div class="subheader">
           单据表头
@@ -66,8 +64,6 @@
             @on-amount-change="onAmountChange"
           ></Editable>
       </div>       
-    </Loading>
-  </div>
 </HandleProcess>  
 </template>
 <script>
@@ -95,7 +91,7 @@ export default {
   },
   data() {
     return {
-      title:'成本分析表',
+      title:'工程结算表',
       loading: 0,
       instId:0,       
       analysisId:'',
