@@ -1,5 +1,5 @@
 <template>
-  <div class="page labor-edit">
+  <div class="page page-bill page-bill-max">
     <div class="page-bar">
       <LayoutHor>
         <div slot="left">
@@ -243,72 +243,5 @@ export default {
 
 </script>
 
-<style type="text/css">
-.labor-edit.page {
-  width: 100%;
-  margin: 0 auto;
-  position: relative;
-}
-.labor-edit .subheader {
-  height: 34px;
-  line-height: 34px;
-  font-size: 14px;
-  border-bottom: 0px solid #efefef;
-  margin-bottom: 10px;
-  color: #20bfee;
-}
-.labor-edit .baseinfo {
-}
-.labor-edit .baseinfo .label {
-  width: 80px;
-  text-align: right;
-  padding-right: 8px;
-}
-.labor-edit .baseinfo table {
-  width: 800px;
-}
-.labor-edit .baseinfo table td {
-  height: 40px;
-  padding-right: 4px;
-}
-
-.labor-edit .savebar {
-  margin-top: 10px;
-  height: 40px;
-  width: 100%;
-  border-collapse: collapse;
-}
-.labor-edit .savebar td {
-  border: 1px solid #fefefe;
-  font-size: 14px;
-}
-.labor-edit .savebar .save {
-  width: 120px;
-  border: 1px solid #20bfee;
-  background-color: #20bfee;
-  color: white;
-  text-align: center;
-  cursor: pointer;
-}
-.labor-edit .savebar .reset {
-  width: 60px;
-  border: 1px solid #a1e7f8;
-  background-color: #a1e7f8;
-  color: white;
-  text-align: center;
-  cursor: pointer;
-}
-
-.selectinput {
-  cursor: pointer;
-}
-
-.labor-edit .tooltip {
-  padding: 10px;
-  background-color: #fafafa;
-  border: 1px solid #efefef;
-  border-radius: 3px;
-  color: #666;
-  margin-top: 10px;
-}
+<style type="text/css"> 
 </style>
