@@ -138,7 +138,7 @@ export default {
         {
           title: "工程名称",
           key: "projectName",
-          width: 120,
+          minWidth: 200,
           align: "left"
         },
         page.table.initDateColumn({

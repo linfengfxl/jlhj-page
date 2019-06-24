@@ -193,9 +193,7 @@
     overflow-y: auto;
     overflow-x: auto;
   }  
-  .wfprocess-bill{
-    max-width: 1000px;
-    min-width: 600px;
+  .wfprocess-bill{ 
     margin: 0px auto;
     padding:10px;
   }

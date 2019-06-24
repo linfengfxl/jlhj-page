@@ -116,7 +116,7 @@ export default {
   methods: {
     instLoaded(proc){ 
       this.projectBillCode = proc.instance.businessKey;
-      this.title = "成本分析表_" + this.projectBillCode;
+      this.title = "工程结算表_" + this.projectBillCode;
       this.load();
     },
     load() {

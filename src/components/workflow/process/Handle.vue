@@ -272,9 +272,7 @@
     overflow-x: auto;
     text-align: left;
   }  
-  .wfprocess-bill{
-    min-width: 600px;
-    max-width: 1000px;
+  .wfprocess-bill{ 
     margin: 0px auto;
     padding:10px;
   }

@@ -155,4 +155,9 @@
   .editable-table-container th.col-w5 > span{
     width: 200px;display: inline-block;
   }
+
+
+  .page-bill-max .editable-table-container{
+    overflow-x: inherit;
+  }
 </style>

@@ -115,8 +115,12 @@
 /*单据页面（编辑、查看）*/
 .page-bill{
   width: 900px;margin: 0 auto;
-  padding: 10px 0px;
+  /*padding: 10px 0px;*/
+  padding: 10px;
   position: relative;
+}
+.page-bill-max{
+  width: 100%;
 }
 .page-bill .subheader{
   height: 34px;line-height: 34px;
@@ -127,6 +131,7 @@
 }
 .page-bill .baseinfo{
    font-size: 12px;
+   width: 900px;
 }
 .page-bill .baseinfo .label{
   width: 80px;text-align: right;

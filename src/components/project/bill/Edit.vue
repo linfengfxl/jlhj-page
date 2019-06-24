@@ -29,7 +29,7 @@
                   </FormItem>
                 </td>
                  <td>
-                  <FormItem prop label="工程队伍">
+                  <FormItem prop="projectTeam" label="工程队伍">
                     <Input v-model="formItem.projectTeam"/>
                   </FormItem>
                 </td>
@@ -120,6 +120,14 @@ export default {
             message: "请选择工程",
             trigger: "change"
           }
+        ],
+        projectTeam: [
+          {
+            required: true,
+            whitespace: true,
+            message: "工程队伍不能为空",
+            trigger: "change"
+          }
         ]
       },
       list: [],
@@ -203,6 +211,10 @@ export default {
         var msg = "明细第 " + (i + 1) + " 行，";
         if (item.levelCode == ''||item.levelCode == null) {
           this.$Message.error(msg + '层级编码不能为空');
+          return;
+        }
+        if(item.settlePrice==''||item.settlePrice==null||item.settlePrice==0){
+          this.$Message.error(msg + '结算价格不能为空');
           return;
         }
         form.detailList.push(item);
