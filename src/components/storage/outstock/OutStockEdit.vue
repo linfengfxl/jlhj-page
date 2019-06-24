@@ -1,6 +1,6 @@
 <template>
   <StartProcess ref="startProcess" defineId="3" :title="pageTitle" @on-submit="save">
-    <div class="page instock-edit">
+    <div class="page page-bill">
       <Loading :loading="loading">
         <div class="baseinfo">
           <div class="page-tools"></div>
@@ -74,7 +74,7 @@
                 </td>
               </tr>
               <tr>
-                <td colspan="2">
+                <td colspan="3">
                   <FormItem prop=" " label="备注">
                     <Input type="textarea" :rows="2" v-model="formItem.remark"/>
                   </FormItem>
@@ -318,75 +318,4 @@ export default {
   }
 }
 
-</script>
-
-<style type="text/css">
-.instock-edit.page {
-  width: 100%;
-  /* margin: 0 auto; */
-  padding: 10px 20px;
-  position: relative;
-}
-.instock-edit .subheader {
-  height: 34px;
-  line-height: 34px;
-  font-size: 14px;
-  border-bottom: 0px solid #efefef;
-  margin-bottom: 10px;
-  color: #20bfee;
-}
-.instock-edit .baseinfo {
-}
-.instock-edit .baseinfo .label {
-  width: 80px;
-  text-align: right;
-  padding-right: 8px;
-}
-.instock-edit .baseinfo table {
-  width: 100%;
-}
-.instock-edit .baseinfo table td {
-  height: 40px;
-  padding-right: 4px;
-}
-
-.instock-edit .savebar {
-  margin-top: 10px;
-  height: 40px;
-  width: 100%;
-  border-collapse: collapse;
-}
-.instock-edit .savebar td {
-  border: 1px solid #fefefe;
-  font-size: 14px;
-}
-.instock-edit .savebar .save {
-  width: 120px;
-  border: 1px solid #20bfee;
-  background-color: #20bfee;
-  color: white;
-  text-align: center;
-  cursor: pointer;
-}
-.instock-edit .savebar .reset {
-  width: 60px;
-  border: 1px solid #a1e7f8;
-  background-color: #a1e7f8;
-  color: white;
-  text-align: center;
-  cursor: pointer;
-}
-
-.selectinput {
-  cursor: pointer;
-}
-
-.instock-edit .tooltip {
-  padding: 10px;
-  background-color: #fafafa;
-  border: 1px solid #efefef;
-  border-radius: 3px;
-  color: #666;
-  margin-top: 10px;
-}
-</style>
+</script> 

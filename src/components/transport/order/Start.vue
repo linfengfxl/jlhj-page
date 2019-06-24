@@ -1,6 +1,6 @@
 <template>
   <StartProcess ref="startProcess" defineId="13" :title="pageTitle" @on-submit="save">
-    <div class="page">
+    <div class="page page-bill">
       <Loading :loading="loading">
         <div class="page-form">
           <Form
