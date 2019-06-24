@@ -1,8 +1,6 @@
 <template>
-  <HandleProcess ref="handleProcess" :instId="instId" :title="title" @on-load="instLoaded" @on-submit="save">
-    <div class="page expense-edit">     
-    <Loading :loading="loading">
-      <div class="baseinfo"> 
+  <HandleProcess ref="handleProcess" :instId="instId" :title="title" :loading="loading" @on-load="instLoaded" @on-submit="save">
+    <div class="baseinfo"> 
         <div class="subheader">
           单据表头
         </div>
@@ -101,10 +99,8 @@
           :editable="false"
           @on-amount-change="onAmountChange"           
         ></Editable>
-      </div>       
-    </Loading>
-  </div>
-</HandleProcess>  
+      </div>   
+  </HandleProcess>  
 </template>
 <script>
 import Loading from '@/components/loading';

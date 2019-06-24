@@ -1,124 +1,118 @@
 <template>
-  <StartProcess ref="startProcess" :defineId="defineId" :title="pageTitle" @on-submit="save">
-    <div class="page expense-edit">     
-    <Loading :loading="loading">
-      <div class="baseinfo"> 
-        <div class="subheader">
-          单据表头
-        </div>
-        <Form ref="form" class="page-form" :model="formItem" :rules="formRules" :label-width="120">
-          <table cellspacing="0" cellpadding="0">
-            <colgroup>
-              <col width="33%">
-              <col width="auto">
-              <col width="33%">
-            </colgroup>
-            <tr>
-              <td>
-                <FormItem prop="catalog" label="报销分类"> 
-                  <Select v-model="formItem.catalog">
-                    <Option v-for="item in catalog" :value="item.code" :key="item.code">{{ item.text }}</Option>
-                  </Select>
-                </FormItem>
-              </td>
-              <td>
-                <FormItem prop="projectId" label="工程名称"> 
-                  <SelectProject v-model="formItem.projectId" :model="formItem" :text="formItem.projectName" />
-                </FormItem>
-              </td>
-              <td>
-                <FormItem prop="billDate" label="报销日期">
-                   <DatePicker type="date" placeholder="" v-model="formItem.billDate" format="yyyy-MM-dd" ></DatePicker>
-                </FormItem>
-              </td>
-            </tr>
-            <tr> 
-              <td>
-                <FormItem prop="bankOpen" label="开户银行">
-                  <Input v-model="formItem.bankOpen"/>
-                </FormItem>
-              </td>
-              <td>
-                <FormItem prop="bankAccName" label="银行户名">
-                  <Input v-model="formItem.bankAccName"/>
-                </FormItem>
-              </td>
-              <td>
-                <FormItem prop="bankAccount" label="银行账号">
-                  <Input v-model="formItem.bankAccount"/>
-                </FormItem>
-              </td>              
-            </tr> 
-            <tr>
-               <td>
-                <FormItem prop="payWay" label="付款方式">
-                  <Select v-model="formItem.payWay">
-                    <Option v-for="item in $args.getArgGroup('pay_way')" :value="item.argCode" :key="item.argCode">{{ item.argText }}</Option>
-                  </Select>
-                </FormItem>
-              </td>
-              <td>
-                <FormItem prop="legal" label="法律主体">
-                  <Select v-model="formItem.legal">
-                    <Option v-for="item in $args.getArgGroup('legal')" :value="item.argCode" :key="item.argCode">{{ item.argText }}</Option>
-                  </Select>
-                </FormItem> 
-              </td>
-              <td>
-                 <FormItem prop="amount" label="报销金额">
-                  <Input
-                    v-model="formItem.amount"
-                    placeholder
-                    class="width-1"
-                    readonly="readonly"
-                  />
-                </FormItem>
-              </td>
-            </tr>
-             <tr> 
-              <td>
-                <FormItem prop="operatorName" label="经办人">
-                  <Input v-model="formItem.operatorName"/>
-                </FormItem>
-              </td>
-              <td>
-                <FormItem prop="deptId" label="经办人部门">
-                  <SelectDept v-model="formItem.deptId" :model="formItem" :text="formItem.deptName" />
-                </FormItem>
-              </td>  
-            </tr> 
-            <tr>
-              <td colspan="3">
-                <FormItem prop="files" label="附件">
-                  <UploadBox v-model="formItem.files" :readonly="false"></UploadBox>
-                </FormItem>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="3">
-                <FormItem prop="describe" label="报销说明">
-                  <Input type="textarea" v-model="formItem.describe" :rows="3" />
-                </FormItem>
-              </td>
-            </tr>
-          </table>
-        </Form>
+  <StartProcess ref="startProcess" :defineId="defineId" :loading="loading" :title="pageTitle" @on-submit="save"> 
+    <div class="baseinfo"> 
+      <div class="subheader">
+        单据表头
       </div>
-      <div>
-        <div class="subheader">单据明细</div>         
-        <Editable
-          ref="editable"
-          :list="list"
-          :editable="true"           
-          @on-amount-change="onAmountChange"           
-        ></Editable>
-      </div>       
-    </Loading>
-  </div>
+      <Form ref="form" class="page-form" :model="formItem" :rules="formRules" :label-width="120">
+        <table cellspacing="0" cellpadding="0">
+          <colgroup>
+            <col width="33%">
+            <col width="auto">
+            <col width="33%">
+          </colgroup>
+          <tr>
+            <td>
+              <FormItem prop="catalog" label="报销分类"> 
+                <Select v-model="formItem.catalog">
+                  <Option v-for="item in catalog" :value="item.code" :key="item.code">{{ item.text }}</Option>
+                </Select>
+              </FormItem>
+            </td>
+            <td>
+              <FormItem prop="projectId" label="工程名称"> 
+                <SelectProject v-model="formItem.projectId" :model="formItem" :text="formItem.projectName" />
+              </FormItem>
+            </td>
+            <td>
+              <FormItem prop="billDate" label="报销日期">
+                 <DatePicker type="date" placeholder="" v-model="formItem.billDate" format="yyyy-MM-dd" ></DatePicker>
+              </FormItem>
+            </td>
+          </tr>
+          <tr> 
+            <td>
+              <FormItem prop="bankOpen" label="开户银行">
+                <Input v-model="formItem.bankOpen"/>
+              </FormItem>
+            </td>
+            <td>
+              <FormItem prop="bankAccName" label="银行户名">
+                <Input v-model="formItem.bankAccName"/>
+              </FormItem>
+            </td>
+            <td>
+              <FormItem prop="bankAccount" label="银行账号">
+                <Input v-model="formItem.bankAccount"/>
+              </FormItem>
+            </td>              
+          </tr> 
+          <tr>
+             <td>
+              <FormItem prop="payWay" label="付款方式">
+                <Select v-model="formItem.payWay">
+                  <Option v-for="item in $args.getArgGroup('pay_way')" :value="item.argCode" :key="item.argCode">{{ item.argText }}</Option>
+                </Select>
+              </FormItem>
+            </td>
+            <td>
+              <FormItem prop="legal" label="法律主体">
+                <Select v-model="formItem.legal">
+                  <Option v-for="item in $args.getArgGroup('legal')" :value="item.argCode" :key="item.argCode">{{ item.argText }}</Option>
+                </Select>
+              </FormItem> 
+            </td>
+            <td>
+               <FormItem prop="amount" label="报销金额">
+                <Input
+                  v-model="formItem.amount"
+                  placeholder
+                  class="width-1"
+                  readonly="readonly"
+                />
+              </FormItem>
+            </td>
+          </tr>
+           <tr> 
+            <td>
+              <FormItem prop="operatorName" label="经办人">
+                <Input v-model="formItem.operatorName"/>
+              </FormItem>
+            </td>
+            <td>
+              <FormItem prop="deptId" label="经办人部门">
+                <SelectDept v-model="formItem.deptId" :model="formItem" :text="formItem.deptName" />
+              </FormItem>
+            </td>  
+          </tr> 
+          <tr>
+            <td colspan="3">
+              <FormItem prop="files" label="附件">
+                <UploadBox v-model="formItem.files" :readonly="false"></UploadBox>
+              </FormItem>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="3">
+              <FormItem prop="describe" label="报销说明">
+                <Input type="textarea" v-model="formItem.describe" :rows="3" />
+              </FormItem>
+            </td>
+          </tr>
+        </table>
+      </Form>
+    </div>
+
+    <div class="subheader">单据明细</div>         
+    <Editable
+      ref="editable"
+      :list="list"
+      :editable="true"           
+      @on-amount-change="onAmountChange"           
+    ></Editable> 
 </StartProcess>  
 </template>
 <script> 
-import Loading from '@/components/loading';
 import LayoutHor from '@/components/layout/LayoutHor';
 import Editable from './DetailEditable';
 import page from '@/assets/js/page';
@@ -132,8 +126,7 @@ import SelectDept from '@/components/page/form/SelectDept';
 import StartProcess from '@/components/workflow/process/Start';
 
 export default {
-  components: {
-    Loading,
+  components: { 
     LayoutHor,
     Editable,     
     UploadBox,
@@ -358,71 +351,3 @@ export default {
 }
 
 </script>
-
-<style type="text/css">
-.expense-edit.page {
-  position: relative;
-}
-.expense-edit .subheader {
-  height: 34px;
-  line-height: 34px;
-  font-size: 14px;
-  border-bottom: 0px solid #efefef;
-  margin-bottom: 10px;
-  color: #20bfee;
-}
-.expense-edit .baseinfo {
-}
-.expense-edit .baseinfo .label {
-  width: 80px;
-  text-align: right;
-  padding-right: 8px;
-}
-.expense-edit .baseinfo table {
-  width: 100%;
-}
-.expense-edit .baseinfo table td {
-  height: 40px;
-  padding-right: 4px;
-}
-
-.expense-edit .savebar {
-  margin-top: 10px;
-  height: 40px;
-  width: 100%;
-  border-collapse: collapse;
-}
-.expense-edit .savebar td {
-  border: 1px solid #fefefe;
-  font-size: 14px;
-}
-.expense-edit .savebar .save {
-  width: 120px;
-  border: 1px solid #20bfee;
-  background-color: #20bfee;
-  color: white;
-  text-align: center;
-  cursor: pointer;
-}
-.expense-edit .savebar .reset {
-  width: 60px;
-  border: 1px solid #a1e7f8;
-  background-color: #a1e7f8;
-  color: white;
-  text-align: center;
-  cursor: pointer;
-}
-
-.selectinput {
-  cursor: pointer;
-}
-
-.expense-edit .tooltip {
-  padding: 10px;
-  background-color: #fafafa;
-  border: 1px solid #efefef;
-  border-radius: 3px;
-  color: #666;
-  margin-top: 10px;
-}
-</style>

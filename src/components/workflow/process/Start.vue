@@ -7,8 +7,10 @@
       </div>      
     </div>    
     <div class="wfprocess-container">
-      <div class="wfprocess-bill">
-        <slot></slot>
+      <div :class="{'page':1,'page-bill':1,'page-bill-max':max}">
+        <Loading :loading="loading">
+          <slot></slot>
+        </Loading>
       </div>
     </div>   
     <div class="wfprocess-footer">       
@@ -45,10 +47,10 @@
   </div>
 </template>
 <script>
-
+  import Loading from '@/components/loading';
   export default {
     components: { 
-      
+      Loading
     },
     props:{
       title: {
@@ -58,11 +60,19 @@
       defineId:{
         type:[Number,String],
         default:0
+      },
+      loading:{
+        type:[Number,String],
+        default:0
+      },
+      max:{
+        type:[Number,String,Boolean],
+        default:false
       }
     },
     data() {       
       return {
-        loading:0, 
+        innerLoading:0, 
         nextNodes:[],
         users:[],
         formItem:{
@@ -102,9 +112,9 @@
 
         this.formItem.defineId = define;
 
-        this.loading = 1;
+        this.innerLoading = 1;
         this.$http.get('/api/engine/workflow/define/get?id=' + define).then((res) => {
-          this.loading = 0;
+          this.innerLoading = 0;
           if (res.data.code === 0) {
             var data = res.data.data;
             if(data){ 
@@ -121,7 +131,7 @@
             this.$Message.error(res.data.message);
           }
         }).catch((error) => {
-          this.loading = 0;
+          this.innerLoading = 0;
           this.$Message.error(error.toString())
         })
       }, 
@@ -130,7 +140,7 @@
         this.formItem.nextUser = ''; 
         this.users = [];
         this.$http.get('/api/engine/workflow/loadUsers?roleId='+roleId).then((res) => {
-          this.loading = 0;
+          this.innerLoading = 0;
           if (res.data.code === 0) {
             var data = res.data.data;
             this.users = data;
@@ -192,10 +202,6 @@
     position: relative;
     overflow-y: auto;
     overflow-x: auto;
-  }  
-  .wfprocess-bill{ 
-    margin: 0px auto;
-    padding:10px;
   }
 
   .wfprocess.wfprocess-start{

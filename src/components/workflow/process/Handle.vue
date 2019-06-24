@@ -7,10 +7,12 @@
       </div>      
     </div>  
     <div class="wfprocess-container">
-      <div class="wfprocess-bill">
-        <slot></slot>
-        <AuditLogs :instId="instId"></AuditLogs>
-      </div> 
+      <div :class="{'page':1,'page-bill':1,'page-bill-max':max}">
+        <Loading :loading="loading">
+          <slot></slot>
+          <AuditLogs :instId="instId"></AuditLogs>
+        </Loading>
+      </div>
     </div>
     <div class="wfprocess-footer">
         <div class="wfprocess-footer-body">
@@ -74,10 +76,12 @@
 <script>
   import SelMember from '@/components/page/form/SelectMember'
   import AuditLogs from './AuditLogs'
+  import Loading from '@/components/loading';
   export default {
     components: { 
       SelMember,
-      AuditLogs
+      AuditLogs,
+      Loading
     },
     props:{
       title: {
@@ -87,11 +91,19 @@
       instId:{
         type:[Number,String],
         default:0
+      },
+      loading:{
+        type:[Number,String],
+        default:0
+      },
+      max:{
+        type:[Number,String,Boolean],
+        default:false
       }
     },
     data() {       
       return {
-        loading:0, 
+        innerLoading:0, 
         nextNodes:[],
         users:[],
         formItem:{
@@ -133,9 +145,9 @@
           nodeList:[]
         } 
 
-        this.loading = 1;
+        this.innerLoading = 1;
         this.$http.get('/api/engine/workflow/instance/get?id='+id).then((res) => {
-          this.loading = 0;
+          this.innerLoading = 0;
           if (res.data.code === 0) {
             var data = res.data.data;
             if(data){
@@ -166,7 +178,7 @@
             this.$Message.error(res.data.message);
           }
         }).catch((error) => {
-          this.loading = 0;
+          this.innerLoading = 0;
           this.$Message.error(error.toString())
         })
       },
@@ -187,7 +199,7 @@
         this.formItem.nextUser = ''; 
         this.users = [];
         this.$http.get('/api/engine/workflow/loadUsers?roleId='+roleId).then((res) => {
-          this.loading = 0;
+          this.innerLoading = 0;
           if (res.data.code === 0) {
             var data = res.data.data;
             this.users = data;

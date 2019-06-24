@@ -105,22 +105,23 @@
   margin-bottom: 14px;
 } 
 .page-form.page-form-view.ivu-form .ivu-form-item-label{
-  color:#999;
+  color: #999;  
 }
 .page-form.page-form-view.ivu-form .ivu-form-item-content{
   color:#444
 }
 
-
 /*单据页面（编辑、查看）*/
 .page-bill{
-  width: 900px;margin: 0 auto;
-  /*padding: 10px 0px;*/
+  max-width: 1000px;
+  min-width: 800px;
+  margin: 0 auto;
   padding: 10px;
   position: relative;
 }
 .page-bill-max{
   width: 100%;
+  max-width:inherit;
 }
 .page-bill .subheader{
   height: 34px;line-height: 34px;
@@ -130,15 +131,16 @@
   color:#20bfee;
 }
 .page-bill .baseinfo{
-   font-size: 12px;
-   width: 900px;
+  font-size: 12px;   
+  max-width: 1000px;
+  min-width: 800px;
 }
 .page-bill .baseinfo .label{
   width: 80px;text-align: right;
   color:#999;
 }
 .page-bill .baseinfo .ivu-form-item-label{
-  color:#999;
+   
 }
 .page-bill .baseinfo table{
   width: 100%;

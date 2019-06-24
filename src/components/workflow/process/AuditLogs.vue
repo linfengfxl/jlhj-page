@@ -70,15 +70,14 @@ export default {
 </script>
 
 <style type="text/css">
-  .wfprocess-bill .wflogs{
-    padding: 10px;
+  .page-bill .wflogs{    
   }
 
-  .wfprocess-bill .wflogs-table{
+  .page-bill .wflogs-table{
     border-collapse:collapse;
   }
 
-  .wfprocess-bill .wflogs-table td,.wfprocess-bill .wflogs-table th{
+  .page-bill .wflogs-table td,.page-bill .wflogs-table th{
     height: 40px;
     border: 1px solid #dedede;
     text-align: center;
@@ -86,10 +85,11 @@ export default {
     white-space: nowrap;
   }
 
-  .wfprocess-bill .wflogs-table th{
+  .page-bill .wflogs-table th{
     background-color: #efefef;
   }
-  .wfprocess-bill .wflogs-title{
+  .page-bill .wflogs-title{
+    margin-top: 10px;
     height: 34px;
     line-height: 34px;
     font-size: 14px;

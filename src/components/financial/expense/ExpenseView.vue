@@ -1,7 +1,5 @@
 <template>
-  <ViewProcess ref="ViewProcess" :instId="instId" :title="title" @on-load="instLoaded" @on-submit="save">
-    <div class="page expense-edit">     
-    <Loading :loading="loading">
+  <ViewProcess ref="ViewProcess" :instId="instId" :title="title" :loading="loading" @on-load="instLoaded" @on-submit="save">     
       <div class="baseinfo"> 
         <div class="subheader">
           单据表头
@@ -101,13 +99,10 @@
           :editable="false"
           @on-amount-change="onAmountChange"           
         ></Editable>
-      </div>       
-    </Loading>
-  </div>
+      </div>
 </ViewProcess>  
 </template>
-<script>
-import Loading from '@/components/loading';
+<script> 
 import LayoutHor from '@/components/layout/LayoutHor';
 import Editable from './DetailEditable';
 import page from '@/assets/js/page';
@@ -121,8 +116,7 @@ import SelectDept from '@/components/page/form/SelectDept';
 import ViewProcess from '@/components/workflow/process/View';
 
 export default {
-  components: {
-    Loading,
+  components: { 
     LayoutHor,
     Editable,     
     UploadBox,
