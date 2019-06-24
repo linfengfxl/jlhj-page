@@ -1,5 +1,5 @@
 <template>
-  <div class="wfprocess">
+  <div class="wfprocess wfprocess-start">
     <div class="wfprocess-header">       
       发起审批 - {{title}}
       <div class="header-left">
@@ -191,14 +191,19 @@
     overflow:hidden;
     position: relative;
     overflow-y: auto;
-    overflow-x: hidden;
+    overflow-x: auto;
   }  
   .wfprocess-bill{
     max-width: 1000px;
     min-width: 600px;
     margin: 0px auto;
-    padding:15px 10px 195px 15px;
+    padding:10px;
   }
+
+  .wfprocess.wfprocess-start{
+    padding-bottom: 136px;
+  }
+
   .wfprocess-footer{
     height: auto;
     width: 100%;
