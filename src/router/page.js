@@ -41,7 +41,17 @@ components.push({ component: 'project/daily/View', name: '', path: '/project/dai
 components.push({ component: 'project/daily/List', name: '', path: '/project/daily/list' })
 //工程量统计
 components.push({ component: 'project/quantity/Index', name: '', path: '/project/quantity' })
-
+//成本分析表
+components.push({ component: 'project/analysis/Index', name: '', path: '/project/analysis' })
+components.push({ component: 'project/analysis/Edit', name: '', path: '/project/analysis/start' })
+components.push({ component: 'project/analysis/Handle', name: '', path: '/project/analysis/handle' }) 
+components.push({ component: 'project/analysis/View', name: '', path: '/project/analysis/view' })
+//工程结算表
+components.push({ component: 'project/bill/Index', name: '', path: '/project/bill' })
+components.push({ component: 'project/bill/Edit', name: '', path: '/project/bill/start' })
+components.push({ component: 'project/bill/Handle', name: '', path: '/project/bill/handle' }) 
+components.push({ component: 'project/bill/View', name: '', path: '/project/bill/view' })
+//项目文件
 components.push({ component: 'project/folder/Index', name: '', path: '/project/folder' })
 components.push({ component: 'project/folder/Browse', name: '', path: '/project/folder/browse' })
 
@@ -119,6 +129,8 @@ components.push({ component: 'transport/bill/Edit', name: '', path: '/transport/
 components.push({ component: 'transport/bill/Handle', name: '', path: '/transport/bill/handle' })
 components.push({ component: 'transport/bill/View', name: '', path: '/transport/bill/view' })
 
+// 系统日志
+components.push({ component: 'logger/Index', name: '', path: '/logger' })
 // //2.销售合同 -->
 // //客户
 // components.push({ component: 'customer/Index', name: '', path: '/customer' })

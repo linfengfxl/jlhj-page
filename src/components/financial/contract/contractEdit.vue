@@ -133,7 +133,7 @@
     },
     computed: {
       title() {
-        if (this.isEdit === 0) {
+        if (!this.isEdit) {
           return "添加合同信息";
         } else {
           return "编辑合同信息";
@@ -183,7 +183,19 @@
       open(arg) {
         this.show = true; 
         this.$refs['argForm'].resetFields(); 
-        this.oriItem={};
+        this.oriItem={
+          contractId: '',
+          contractName:'',
+          customerCode:'',
+          customerName: '',
+          signDate: '',
+          validStartDate: '',
+          validEndDate: '',
+          contractType:'',
+          amount:0,
+          paySubject:'',
+          status: ''
+        };
         if (arg.contractId) {
           this.oriItem = $.extend({
             contractId: '',

@@ -25,6 +25,8 @@
           <td>
             <Button @click="reset"  type="default">重置</Button>
           </td>
+          <td>&nbsp;</td>
+          <td><Button @click="exportDown" type="info" icon="ios-download-outline">导出</Button></td>
         </tr>
       </table>
     </div>
@@ -213,6 +215,9 @@
             }
           });
         }
+      },
+      exportDown(){
+        this.$refs.page.exportDown();
       },
       goBack: function () {
         this.$router.go(-1);

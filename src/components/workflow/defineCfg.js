@@ -24,6 +24,8 @@ cfg.forms = [
   {module:'3',key:'ysjsd',title:'运输结算单',startUrl:'/transport/bill/start',handleUrl:'/transport/bill/handle',viewUrl:'/transport/bill/view',defineIds:[6]}, 
 
   {module:'9',key:'sgrb',title:'施工日报',startUrl:'/project/daily',handleUrl:'/project/daily/handle',viewUrl:'/project/daily/view',defineIds:[11]}, 
+  {module:'9',key:'cbfxb',title:'成本分析表',startUrl:'/project/analysis',handleUrl:'/project/analysis/handle',viewUrl:'/project/analysis/view',defineIds:[15]},
+  {module:'9',key:'gcjsb',title:'工程结算表',startUrl:'/project/bill',handleUrl:'/project/bill/handle',viewUrl:'/project/bill/view',defineIds:[16]},
   //{title:'标题',startUrl:'',handleUrl:'',viewUrl:'',defineIds:[]},
 ]
 
