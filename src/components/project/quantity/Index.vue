@@ -63,22 +63,17 @@ export default {
         {
           title: '工程名称',
           key: 'projectName',
-          minWidth: 150,
-          align: 'left',
+          minWidth: 120,
         },
         {
           title: '层级编码',
           key: 'levelCode',
           width: 120,
-          align: 'left',
         },
         {
           title: '分部分项工程名称',
           key: 'subProjectName',
           align: 'left',
-<<<<<<< HEAD
-          minWidth: 200
-=======
           minWidth: 140
         },
         page.table.initArgColumn({
@@ -125,7 +120,6 @@ export default {
           key: 'subProjectName',
           align: 'left',
           minWidth: 140
->>>>>>> c0666c6109b7656c7a188817c1ea5ba3eceb1185
         },
         {
           title: '设计工程量',
