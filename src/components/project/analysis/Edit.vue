@@ -53,18 +53,18 @@
                       ></InputNumber>
                   </FormItem>
                 </td> 
-                <td>
+                <td v-if="$user.hasPower('wdsx.cbfxbszkj')">
                   <FormItem prop label="工程造价合计">
                     <Input v-model="formItem.totalProjectAmount" readonly="readonly" placeholder="自动计算"/>
                   </FormItem>
                 </td>
-                <td>
+                <td  v-if="$user.hasPower('wdsx.cbfxbszkj')">
                   <FormItem prop label="成本合价合计">
                     <Input v-model="formItem.totalCostAmount" readonly="readonly" placeholder="自动计算"/>
                   </FormItem>
                 </td>
               </tr>
-              <tr> 
+              <tr  v-if="$user.hasPower('wdsx.cbfxbszkj')"> 
                 <td>
                   <FormItem prop label="材料成本合计">
                     <Input v-model="formItem.totalMaterialAmount" readonly="readonly" placeholder="自动计算"/>
@@ -81,7 +81,7 @@
                   </FormItem>
                 </td>
               </tr>
-              <tr> 
+              <tr  v-if="$user.hasPower('wdsx.cbfxbszkj')"> 
                 <td>
                   <FormItem prop label="材料成本占比"> 
                     <Input v-model="formItem.materialPercent" readonly="readonly" placeholder="自动计算"/>

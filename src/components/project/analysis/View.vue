@@ -35,17 +35,17 @@
                   </FormItem>
                 </td> 
                 <td>
-                  <FormItem prop label="工程造价合计">
+                  <FormItem prop label="工程造价合计" v-if="$user.hasPower('wdsx.cbfxbszkj')" >
                     {{formItem.totalProjectAmount}}
                   </FormItem>
                 </td>
                  <td>
-                  <FormItem prop label="成本合价合计">
+                  <FormItem prop label="成本合价合计" v-if="$user.hasPower('wdsx.cbfxbszkj')" >
                     {{formItem.totalCostAmount}}
                   </FormItem>
                 </td>
               </tr>
-              <tr>
+              <tr v-if="$user.hasPower('wdsx.cbfxbszkj')" >
                 <td>
                   <FormItem prop label="材料成本合计">
                     {{formItem.totalMaterialAmount}}
@@ -62,7 +62,7 @@
                   </FormItem>
                 </td>
               </tr>
-              <tr>   
+              <tr v-if="$user.hasPower('wdsx.cbfxbszkj')" >   
                 <td>
                   <FormItem prop label="材料成本占比"> 
                     {{formItem.materialPercent}}

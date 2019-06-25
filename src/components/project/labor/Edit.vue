@@ -1,5 +1,5 @@
 <template>
-  <div class="page page-bill page-bill-max">
+  <div class="page">
     <div class="page-bar">
       <LayoutHor>
         <div slot="left">

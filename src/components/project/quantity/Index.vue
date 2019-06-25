@@ -64,19 +64,70 @@ export default {
           title: '工程名称',
           key: 'projectName',
           minWidth: 120,
+<<<<<<< HEAD
           align: 'left',
+=======
+>>>>>>> 131b0d7299342b004919836a522515b2aefe90ba
         },
         {
           title: '层级编码',
           key: 'levelCode',
           width: 120,
-          align: 'left',
         },
         {
           title: '分部分项工程名称',
           key: 'subProjectName',
           align: 'left',
+<<<<<<< HEAD
           minWidth: 200
+=======
+          minWidth: 140
+        },
+        page.table.initArgColumn({
+          title: '单位',
+          key: 'unit',
+          align: 'center',
+          group: 'unit',
+          width: 100
+        }),
+        {
+          title: '施工总量',
+          key: 'quantity',
+          align: 'center',
+          width: 120,
+          render: (h, params) => {
+            var row = params.row;
+            if (row.quantity != null) {
+              return h('span', row.quantity);
+            } else {
+              return h('span', "");
+            }
+          },
+        }
+      ],
+      columns1: [
+        {
+          title: '序号',
+          type: 'index',
+          width: 60,
+          align: 'center'
+        },
+        {
+          title: '工程名称',
+          key: 'projectName',
+          minWidth: 120,
+        },
+        {
+          title: '层级编码',
+          key: 'levelCode',
+          width: 120,
+        },
+        {
+          title: '分部分项工程名称',
+          key: 'subProjectName',
+          align: 'left',
+          minWidth: 140
+>>>>>>> 131b0d7299342b004919836a522515b2aefe90ba
         },
         {
           title: '设计工程量',

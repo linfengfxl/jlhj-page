@@ -5,7 +5,7 @@
         <th class="col-xh">序号</th>
         <th>层级编码</th>
         <th>分部分项工程名称</th>
-        <th>工程数量</th>
+        <th v-if="$user.hasPower('wdsx.cbfxbszkj')" >工程数量</th>
         <th>单位</th>
         <th>材料费</th>
         <th>人工费</th>
@@ -13,11 +13,11 @@
         <th>合计</th>
         <th>财审价</th>
         <th>差价</th>
-        <th>工程造价</th>
-        <th>成本合价</th>
-        <th>材料成本</th>
-        <th>人工成本</th>
-        <th>机械成本</th>
+        <th v-if="$user.hasPower('wdsx.cbfxbszkj')">工程造价</th>
+        <th v-if="$user.hasPower('wdsx.cbfxbszkj')">成本合价</th>
+        <th v-if="$user.hasPower('wdsx.cbfxbszkj')">材料成本</th>
+        <th v-if="$user.hasPower('wdsx.cbfxbszkj')">人工成本</th>
+        <th v-if="$user.hasPower('wdsx.cbfxbszkj')">机械成本</th>
         <th>备注</th>
       </thead>
       <tbody>
@@ -32,7 +32,8 @@
           <td>
             {{item.subProjectName}}
           </td>
-          <td>
+          <td v-if="$user.hasPower('wdsx.cbfxbszkj')" >
+            <!-- 工程数量 -->
             {{item.workload}}
           </td>
           <td>
@@ -56,19 +57,20 @@
           <td class="col-price">
             {{item.differPrice}}
           </td>
-          <td class="col-amount">
+          <td v-if="$user.hasPower('wdsx.cbfxbszkj')" class="col-amount">
+            <!-- 工程造价 -->
             {{item.projectAmount}}
           </td>
-          <td class="col-amount">
+          <td v-if="$user.hasPower('wdsx.cbfxbszkj')" class="col-amount">
             {{item.costAmount}}
           </td>
-          <td class="col-amount">
+          <td v-if="$user.hasPower('wdsx.cbfxbszkj')" class="col-amount">
             {{item.materialAmount}}
           </td>
-          <td class="col-amount">
+          <td v-if="$user.hasPower('wdsx.cbfxbszkj')" class="col-amount">
             {{item.laborAmount}}
           </td>
-          <td class="col-amount">
+          <td v-if="$user.hasPower('wdsx.cbfxbszkj')" class="col-amount">
             {{item.machineAmount}}
           </td>
           <td>
@@ -83,7 +85,7 @@
         <th class="col-xh">序号</th>
         <th>层级编码</th>
         <th>分部分项工程名称</th>
-        <th>工程数量</th>
+        <th v-if="$user.hasPower('wdsx.cbfxbszkj')" >工程数量</th>
         <th>单位</th>
         <th>材料费</th>
         <th>人工费</th>
@@ -91,11 +93,11 @@
         <th>合计</th>
         <th>财审价</th>
         <th>差价</th>
-        <th>工程造价</th>
-        <th>成本合价</th>
-        <th>材料成本</th>
-        <th>人工成本</th>
-        <th>机械成本</th>
+        <th v-if="$user.hasPower('wdsx.cbfxbszkj')">工程造价</th>
+        <th v-if="$user.hasPower('wdsx.cbfxbszkj')">成本合价</th>
+        <th v-if="$user.hasPower('wdsx.cbfxbszkj')">材料成本</th>
+        <th v-if="$user.hasPower('wdsx.cbfxbszkj')">人工成本</th>
+        <th v-if="$user.hasPower('wdsx.cbfxbszkj')">机械成本</th>
         <th>备注</th>
       </thead>
       <tbody>
@@ -110,7 +112,8 @@
           <td>
             <Input v-model="item.subProjectName" style="width: 100px;"></Input> 
           </td>
-          <td>
+          <td v-if="$user.hasPower('wdsx.cbfxbszkj')" >
+            <!-- 工程数量 -->
             <InputNumber
               style="width:100px;"
               :max="9999999999"              
@@ -164,19 +167,19 @@
           <td class="col-price">
             {{item.differPrice}}
           </td>
-          <td class="col-amount">
+          <td v-if="$user.hasPower('wdsx.cbfxbszkj')" class="col-amount">
             {{item.projectAmount}}
           </td>
-          <td class="col-amount">
+          <td v-if="$user.hasPower('wdsx.cbfxbszkj')" class="col-amount">
             {{item.costAmount}}
           </td>
-          <td class="col-amount">
+          <td v-if="$user.hasPower('wdsx.cbfxbszkj')" class="col-amount">
             {{item.materialAmount}}
           </td>
-          <td class="col-amount">
+          <td v-if="$user.hasPower('wdsx.cbfxbszkj')" class="col-amount">
             {{item.laborAmount}}
           </td>
-          <td class="col-amount">
+          <td v-if="$user.hasPower('wdsx.cbfxbszkj')" class="col-amount">
             {{item.machineAmount}}
           </td>
           <td>

@@ -27,15 +27,11 @@
     <div class="page-searchbox">
       <table cellpadding="0" cellspacing="0">
         <tr>
-         <td>
-            <Input v-model="queryForm.projectName"  placeholder="工程名称" @on-enter="query"/>
-          </td> 
           <td>
-            <Input
-              v-model="queryForm.analysisId"
-              placeholder="单据编号"
-              @keyup.enter.native="query"
-            ></Input>
+            <Input v-model="queryForm.projectName" placeholder="工程名称" @on-enter="query"/>
+          </td>
+          <td>
+            <Input v-model="queryForm.analysisId" placeholder="单据编号" @keyup.enter.native="query"></Input>
           </td>
           <td>
             <DatePicker
@@ -55,7 +51,9 @@
             <Button @click="reset" type="default">重置</Button>
           </td>
           <td>&nbsp;</td>
-          <td><Button @click="exportDown" type="info" icon="ios-download-outline">导出</Button></td>
+          <td>
+            <Button @click="exportDown" type="info" icon="ios-download-outline">导出</Button>
+          </td>
         </tr>
       </table>
     </div>
@@ -158,6 +156,117 @@ export default {
           key: "fee",
           width: 100,
           align: "center"
+        }, 
+        {
+          title: "计算",
+          key: "calcPeople",
+          width: 80,
+          align: "center"
+        },
+        {
+          title: "复核",
+          key: "reviewPeople",
+          width: 80,
+          align: "center"
+        },
+        {
+          title: "审核",
+          key: "auditPeople",
+          width: 80,
+          align: "center"
+        },
+        {
+          title: '创建人',
+          key: 'creatorName',
+          align: 'center',
+          width: 100,
+        },
+        {
+          title: '创建时间',
+          key: 'createTime',
+          align: 'center',
+          width: 160,
+        },
+      ],
+      columns1: [
+        {
+          title: "操作",
+          width: 90,
+          fixed: 'left',
+          align: "center",
+          render: (h, params) => {
+            var row = params.row;
+            return h(DataRowOperate, {
+              props: {
+                btns: [
+                  {
+                    key: "edit",
+                    disabled: row.status !== 3
+                  }
+                ]
+              },
+              on: {
+                click: key => {
+                  if (key == "edit") {
+                    this.rowCommand("编辑", params);
+                  }
+                  if (key == "delete") {
+                    this.rowCommand("删除", params);
+                  }
+                }
+              }
+            });
+          }
+        },
+        {
+          title: "单据编号",
+          key: "analysisId",
+          width: 140,
+          fixed: 'left',
+          align: "center",
+          render: (h, params) => {
+            var row = params.row;
+            var text = row.analysisId;
+            text = text;
+            return h(
+              "a",
+              {
+                props: {},
+                on: {
+                  click: () => {
+                    this.$router.push({
+                      path: "/project/analysis/view?forward&inst=" + row.instId
+                    });
+                  }
+                }
+              },
+              text
+            );
+          }
+        },
+        {
+          title: "工程名称",
+          key: "projectName",
+          minWidth: 200,
+          align: "left"
+        },
+        page.table.initDateColumn({
+          title: "日期",
+          width: 120,
+          key: "analysisDate",
+          align: "left"
+        }),
+        {
+          title: "成本分析表名称",
+          key: "analysisName",
+          width: 160,
+          align: "left"
+        },
+        {
+          title: "费用",
+          key: "fee",
+          width: 100,
+          align: "center"
         },
         {
           title: "工程造价合计",
@@ -182,7 +291,7 @@ export default {
           key: "totalLaborAmount",
           width: 100,
           align: "center"
-        },{
+        }, {
           title: "机械成本合计",
           key: "totalMachineAmount",
           width: 100,
@@ -229,7 +338,7 @@ export default {
           key: 'creatorName',
           align: 'center',
           width: 100,
-        }, 
+        },
         {
           title: '创建时间',
           key: 'createTime',
@@ -250,6 +359,9 @@ export default {
     };
   },
   mounted: function () {
+    if (this.$user.hasPower('wdsx.cbfxbszkj')) {
+      this.columns = this.columns1;
+    }
     this.query();
   },
   computed: {},
@@ -277,7 +389,7 @@ export default {
         );
       }
     },
-    exportDown(){
+    exportDown() {
       this.$refs.page.exportDown();
     },
     reset() {
