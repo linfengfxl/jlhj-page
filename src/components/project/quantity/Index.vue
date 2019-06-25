@@ -63,69 +63,20 @@ export default {
         {
           title: '工程名称',
           key: 'projectName',
-          minWidth: 150,
-          align: 'left',
-        },
-        {
-          title: '层级编码',
-          key: 'levelCode',
-          width: 120,
-          align: 'left',
-        },
-        {
-          title: '分部分项工程名称',
-          key: 'subProjectName',
-          align: 'left',
-<<<<<<< HEAD
-          minWidth: 200
-=======
-          minWidth: 140
-        },
-        page.table.initArgColumn({
-          title: '单位',
-          key: 'unit',
-          align: 'center',
-          group: 'unit',
-          width: 100
-        }),
-        {
-          title: '施工总量',
-          key: 'quantity',
-          align: 'center',
-          width: 120,
-          render: (h, params) => {
-            var row = params.row;
-            if (row.quantity != null) {
-              return h('span', row.quantity);
-            } else {
-              return h('span', "");
-            }
-          },
-        }
-      ],
-      columns1: [
-        {
-          title: '序号',
-          type: 'index',
-          width: 60,
-          align: 'center'
-        },
-        {
-          title: '工程名称',
-          key: 'projectName',
           minWidth: 120,
+          align: 'left',
         },
         {
           title: '层级编码',
           key: 'levelCode',
           width: 120,
+          align: 'left',
         },
         {
           title: '分部分项工程名称',
           key: 'subProjectName',
           align: 'left',
-          minWidth: 140
->>>>>>> c0666c6109b7656c7a188817c1ea5ba3eceb1185
+          minWidth: 200
         },
         {
           title: '设计工程量',
@@ -155,9 +106,9 @@ export default {
             var row = params.row;
             if (row.quantity != null) {
               return h('span', row.quantity);
-            } else {
+            }else{
               return h('span', "");
-            }
+            }   
           },
         },
         {
@@ -186,9 +137,6 @@ export default {
     }
   },
   mounted: function () {
-    if (this.$user.hasPower('wdsx.gcltjszkj')) {//工程量统计设计工程量、复核工程量、累计完成比 可见
-      this.columns = this.columns1;
-    }
     this.query();
   },
   computed: {},
