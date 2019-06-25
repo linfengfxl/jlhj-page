@@ -181,6 +181,9 @@ export default {
     }
   },
   mounted: function () {
+    if (this.$user.hasPower('wdsx.gcltjszkj')) {
+      this.columns = this.columns1;
+    }
     this.query();
   },
   computed: {},
