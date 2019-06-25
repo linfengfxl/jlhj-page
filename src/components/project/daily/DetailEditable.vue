@@ -5,8 +5,8 @@
         <th class="col-xh">序号</th>
         <th>分部分项工程名</th>
         <th>层次编码</th>
-        <th>设计工程量</th>
-        <th>复核工程量</th>
+        <th v-if="$user.hasPower('wdsx.sgrbtbkj')">设计工程量</th>
+        <th v-if="$user.hasPower('wdsx.sgrbtbkj')">复核工程量</th>
         <th>单位</th>
         <th>
           <span style="width:150px;">部位</span>
@@ -39,11 +39,11 @@
             {{item.levelCode}}
             <!--  层次编码  -->
           </td>
-          <td>
+          <td v-if="$user.hasPower('wdsx.sgrbtbkj')">
             {{item.designWorkload}}
             <!--  设计工程量  -->
           </td>
-          <td>
+          <td v-if="$user.hasPower('wdsx.sgrbtbkj')">
             {{item.reviewWorkload}}
             <!--  复核工程量  -->
           </td>
@@ -88,8 +88,8 @@
         <th class="col-xh">序号</th>
         <th>分部分项工程名</th>
         <th>层次编码</th>
-        <th>设计工作量</th>
-        <th>复核工程量</th>
+        <th v-if="$user.hasPower('wdsx.sgrbtbkj')">设计工作量</th>
+        <th v-if="$user.hasPower('wdsx.sgrbtbkj')">复核工程量</th>
         <th>单位</th>
         <th>部位</th>
         <th>今日计划工程量</th>
@@ -120,11 +120,11 @@
             {{item.levelCode}}
             <!--  层次编码 -->
           </td>
-          <td>
+          <td v-if="$user.hasPower('wdsx.sgrbtbkj')">
             {{item.designWorkload}}
             <!--  设计工程量  -->
           </td>
-          <td>
+          <td v-if="$user.hasPower('wdsx.sgrbtbkj')">
             {{item.reviewWorkload}}
             <!--  复核工程量 -->
           </td>

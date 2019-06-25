@@ -10,7 +10,7 @@
         <th>
           <span>数量</span>
         </th>
-        <th>
+        <th  v-if="$user.hasPower('wdsx.ckdxgjg')">
           <span>含税单价(元)</span>
         </th>
         <th>
@@ -43,16 +43,14 @@
             {{item.quantity}}
             <!--  数量 -->
           </td>
-          <td class="col-price">
+          <td class="col-price"  v-if="$user.hasPower('wdsx.ckdxgjg')">
             <!--  含税单价(元) -->
             <template v-if="editprice">
               <InputNumber
                 :max="999999"
                 :min="0"
-                v-model="item.taxUnitPrice"
-                v-if="$user.hasPower('wdsx.ckdxgjg')"
-              ></InputNumber>
-              <InputNumber disabled v-model="item.taxUnitPrice" v-else></InputNumber>
+                v-model="item.taxUnitPrice" 
+              ></InputNumber> 
             </template>
             <template v-else>{{item.taxUnitPrice}}</template>
           </td>
@@ -72,7 +70,7 @@
         <th class="col-quantity">
           <span>数量</span>
         </th>
-        <th class="col-price">含税单价(元)</th>
+        <th class="col-price"  v-if="$user.hasPower('wdsx.ckdxgjg')">含税单价(元)</th>
         <th>
           <span>施工部位</span>
         </th>
@@ -106,15 +104,13 @@
             <!--  数量 -->
             <InputNumber :max="999999" :min="0" v-model="item.quantity"></InputNumber>
           </td>
-          <td class="col-price">
+          <td class="col-price" v-if="$user.hasPower('wdsx.ckdxgjg')">
             <!--  含税单价(元) -->
             <InputNumber
               :max="999999"
               :min="0"
-              v-model="item.taxUnitPrice"
-              v-if="$user.hasPower('wdsx.ckdxgjg')"
-            ></InputNumber>
-            <InputNumber disabled v-model="item.taxUnitPrice" v-else></InputNumber>
+              v-model="item.taxUnitPrice" 
+            ></InputNumber> 
           </td>
           <td>
             <!-- 施工部位 -->
