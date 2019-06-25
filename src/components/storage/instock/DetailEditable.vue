@@ -10,16 +10,16 @@
         <th>
           <span>数量</span>
         </th>
-        <th>
+        <th  v-if="$user.hasPower('wdsx.rkdxgjg')">
           <span>含税单价(元)</span>
         </th>
-        <th>
+        <th  v-if="$user.hasPower('wdsx.rkdxgjg')">
           <span>单价(元)</span>
         </th>
-        <th>
+        <th  v-if="$user.hasPower('wdsx.rkdxgjg')">
           <span>金额(元)</span>
         </th>
-        <th>
+        <th  v-if="$user.hasPower('wdsx.rkdxgjg')">
           <span>税额(元)</span>
         </th>
       </thead>
@@ -46,7 +46,7 @@
             {{item.quantity}}
             <!--  数量 -->
           </td>
-          <td class="col-price">
+          <td class="col-price" v-if="$user.hasPower('wdsx.rkdxgjg')">
             <!-- {{item.taxUnitPrice}} -->
             <!--  含税单价(元) -->
             <template v-if="editprice">
@@ -54,23 +54,21 @@
                 :max="999999"
                 :min="0"
                 v-model="item.taxUnitPrice"
-                @on-change="computedAmount(item)"
-                v-if="$user.hasPower('wdsx.rkdxgjg')"
-              ></InputNumber>
-              <InputNumber disabled v-model="item.taxUnitPrice" v-else></InputNumber>
+                @on-change="computedAmount(item)" 
+              ></InputNumber> 
             </template>
             <template v-else>{{item.taxUnitPrice}}</template>
             <!--  含税单价(元) -->
           </td>
-          <td class="col-amount">
+          <td class="col-amount"  v-if="$user.hasPower('wdsx.rkdxgjg')">
             {{item.unitPrice}}
             <!--  单价(元) -->
           </td>
-          <td class="col-amount">
+          <td class="col-amount"  v-if="$user.hasPower('wdsx.rkdxgjg')">
             {{item.amount}}
             <!--  金额(元) -->
           </td>
-          <td class="col-amount">
+          <td class="col-amount"  v-if="$user.hasPower('wdsx.rkdxgjg')">
             {{item.tax}}
             <!--  税额(元) -->
           </td>
@@ -88,16 +86,16 @@
         <th class="col-quantity">
           <span>数量</span>
         </th>
-        <th class="col-price">
+        <th class="col-price"  v-if="$user.hasPower('wdsx.rkdxgjg')">
           <span>含税单价(元)</span>
         </th>
-        <th class="col-price">
+        <th class="col-price"  v-if="$user.hasPower('wdsx.rkdxgjg')">
           <span>单价(元)</span>
         </th>
-        <th class="col-amount">
+        <th class="col-amount"  v-if="$user.hasPower('wdsx.rkdxgjg')">
           <span>金额(元)</span>
         </th>
-        <th class="col-amount">
+        <th class="col-amount"  v-if="$user.hasPower('wdsx.rkdxgjg')">
           <span>税额(元)</span>
         </th>
       </thead>
@@ -132,26 +130,24 @@
               @on-change="computedAmount(item)"
             ></InputNumber>
           </td>
-          <td class="col-price">
+          <td class="col-price"  v-if="$user.hasPower('wdsx.rkdxgjg')">
             <!--  含税单价(元) -->
             <InputNumber
               :max="999999"
               :min="0"
               v-model="item.taxUnitPrice"
-              @on-change="computedAmount(item)"
-              v-if="$user.hasPower('wdsx.rkdxgjg')"
-            ></InputNumber>
-            <InputNumber disabled v-model="item.taxUnitPrice" v-else></InputNumber>
+              @on-change="computedAmount(item)" 
+            ></InputNumber> 
           </td>
-          <td class="col-amount">
+          <td class="col-amount"  v-if="$user.hasPower('wdsx.rkdxgjg')">
             <!--  单价(元) -->
             {{item.unitPrice}}
           </td>
-          <td class="col-amount">
+          <td class="col-amount"  v-if="$user.hasPower('wdsx.rkdxgjg')">
             <!--  金额(元) -->
             {{item.amount}}
           </td>
-          <td class="col-amount">
+          <td class="col-amount"  v-if="$user.hasPower('wdsx.rkdxgjg')">
             <!--  税额(元) -->
             {{item.tax}}
           </td>

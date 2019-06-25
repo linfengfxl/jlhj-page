@@ -1,7 +1,5 @@
 <template>
-  <StartProcess ref="startProcess" defineId="11" :title="pageTitle" @on-submit="save">
-    <div class="page page-bill page-bill-max">
-      <Loading :loading="loading">
+  <StartProcess ref="startProcess" defineId="11" :title="pageTitle" :max="1" :loading="loading" @on-submit="save"> 
         <div class="baseinfo">
           <div class="page-tools"></div>
           <Form
@@ -79,9 +77,7 @@
           <td class="reset" @click="reset">重置</td>
           <td></td>
         </tr>
-        </table>-->
-      </Loading>
-    </div>
+        </table>--> 
   </StartProcess>
 </template>
 <script>

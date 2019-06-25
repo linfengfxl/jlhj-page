@@ -3,51 +3,38 @@
     ref="ViewProcess"
     :instId="instId"
     :title="title"
+    :loading="loading"
+    :max="1"
     @on-load="instLoaded"
     @on-submit="save"
   >
-    <div class="page instock-edit">
-      <Loading :loading="loading">
-        <div class="baseinfo">
-          <div class="page-tools"></div>
-          <Form ref="form" class="page-form" :model="formItem" :label-width="120">
-            <table cellspacing="0" cellpadding="0">
-              <colgroup>
-                <col width="50%">
-                <col width="50%">
-              </colgroup>
-              <tr>
-                <td>
-                  <FormItem label="本日进行" prop>{{formItem.dayWork}}</FormItem>
-                </td>
-                <td>
-                  <FormItem label="明日计划" prop>{{formItem.nextDayPlan}}</FormItem>
-                </td>
-              </tr>
-              <!-- <tr>
+    <div class="baseinfo">
+      <div class="page-tools"></div>
+      <Form ref="form" class="page-form" :model="formItem" :label-width="120">
+        <table cellspacing="0" cellpadding="0">
+          <colgroup>
+            <col width="50%">
+            <col width="50%">
+          </colgroup>
+          <tr>
+            <td>
+              <FormItem label="本日进行" prop>{{formItem.dayWork}}</FormItem>
+            </td>
+            <td>
+              <FormItem label="明日计划" prop>{{formItem.nextDayPlan}}</FormItem>
+            </td>
+          </tr>
+          <!-- <tr>
               <td colspan="2">
                 <FormItem label="班前教育" prop></FormItem>
               </td>
-              </tr>-->
-            </table>
-          </Form>
-        </div>
-        <div>
-          <div class="subheader">完成工作项</div>
-          <Editable ref="editable" :list="list" :editable="false" :projectCode="projectCode"></Editable>
-        </div>
-        <!-- <div>
-        <div class="subheader">劳务用工登记</div>
-        <Editable2 ref="editable" :list="list2" :editable="true" ></Editable2>
-        </div>-->
-        <!-- <table class="savebar" cellpadding="0" cellspacing="0">
-        <tr>
-          <td class="save" @click="save" v-if="pageFlag<=2">保存</td>
-          <td class="reset" @click="reset">重置</td>
-          <td></td>
-        </tr>
-        </table>-->
-      </Loading>
+          </tr>-->
+        </table>
+      </Form>
+    </div>
+    <div>
+      <div class="subheader">完成工作项</div>
+      <Editable ref="editable" :list="list" :editable="false" :projectCode="projectCode"></Editable>
     </div>
   </ViewProcess>
 </template>
@@ -55,7 +42,6 @@
 import Loading from '@/components/loading';
 import LayoutHor from '@/components/layout/LayoutHor';
 import Editable from './DetailEditable';
-//import Editable2 from './DetailEditable2';
 import page from '@/assets/js/page';
 import floatObj from '@/assets/js/floatObj';
 import SelStorage from '@/components/storage/input/SelStorage';//仓库部门
@@ -70,7 +56,6 @@ export default {
     Loading,
     LayoutHor,
     Editable,
-    //Editable2,
     SelStorage,
     SelectProject,
     SelectMember,
