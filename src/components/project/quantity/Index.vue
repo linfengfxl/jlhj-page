@@ -64,10 +64,7 @@ export default {
           title: '工程名称',
           key: 'projectName',
           minWidth: 120,
-<<<<<<< HEAD
           align: 'left',
-=======
->>>>>>> 131b0d7299342b004919836a522515b2aefe90ba
         },
         {
           title: '层级编码',
@@ -78,10 +75,7 @@ export default {
           title: '分部分项工程名称',
           key: 'subProjectName',
           align: 'left',
-<<<<<<< HEAD
           minWidth: 200
-=======
-          minWidth: 140
         },
         page.table.initArgColumn({
           title: '单位',
@@ -127,7 +121,6 @@ export default {
           key: 'subProjectName',
           align: 'left',
           minWidth: 140
->>>>>>> 131b0d7299342b004919836a522515b2aefe90ba
         },
         {
           title: '设计工程量',
