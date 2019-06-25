@@ -63,18 +63,20 @@ export default {
         {
           title: '工程名称',
           key: 'projectName',
-          minWidth: 120,
+          minWidth: 150,
+          align: 'left',
         },
         {
           title: '层级编码',
           key: 'levelCode',
           width: 120,
+          align: 'left',
         },
         {
           title: '分部分项工程名称',
           key: 'subProjectName',
           align: 'left',
-          width: 140
+          minWidth: 200
         },
         {
           title: '设计工程量',

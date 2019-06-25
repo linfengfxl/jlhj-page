@@ -1,5 +1,5 @@
 <template>
-  <ViewProcess ref="ViewProcess" :instId="instId" :title="title" max="1" :loading="loading" @on-load="instLoaded" @on-submit="save">
+  <ViewProcess ref="ViewProcess" :instId="instId" :title="title" :max="1" :loading="loading" @on-load="instLoaded" @on-submit="save">
       <div class="baseinfo"> 
         <div class="subheader">
           单据表头

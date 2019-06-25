@@ -6,6 +6,7 @@
     @on-load="instLoaded"
     @on-submit="save"
     :loading="loading"
+    :max="1"
   >
         <div class="baseinfo">
           <div class="page-tools"></div>

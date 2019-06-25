@@ -65,14 +65,14 @@
             <!--  序号 -->
           </td>
           <td>
-            <Input v-model="item.levelCode" style="width: 100px;"></Input> 
+            <Input v-model="item.levelCode" style="width: 90px;"></Input> 
           </td>
           <td>
             <Input v-model="item.subProjectName" style="width: 150px;"></Input> 
           </td>
           <td>
             <InputNumber
-              style="width:100px;"
+              style="width:80px;"
               :max="9999999999"              
               :min="0"               
               v-model="item.workload"
@@ -80,11 +80,11 @@
             ></InputNumber>
           </td>
           <td>
-            <Input v-model="item.unit" style="width: 100px;" @on-change="computedAmount(index)"></Input> 
+            <Input v-model="item.unit" style="width: 80px;" @on-change="computedAmount(index)"></Input> 
           </td>
           <td class="col-price">
             <InputNumber
-              style="width:100px;"
+              style="width:80px;"
               :max="9999999999"              
               :min="0"               
               v-model="item.settlePrice"
@@ -92,13 +92,13 @@
             ></InputNumber>
           </td>
           <td>
-            <Input v-model="item.priceUnit" style="width: 100px;"></Input> 
+            <Input v-model="item.priceUnit" style="width: 80px;"></Input> 
           </td>
           <td class="col-price">
             {{item.amount}}
           </td>
           <td>
-            <Input v-model="item.remark" style="width: 150px;"></Input> 
+            <Input v-model="item.remark" style="width: 120px;"></Input> 
           </td>
         </tr>
       </tbody>

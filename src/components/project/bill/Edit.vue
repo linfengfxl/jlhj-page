@@ -7,7 +7,7 @@
             class="page-form"
             :model="formItem"
             :rules="formRules"
-            :label-width="120"
+            :label-width="100"
           >
             <table cellspacing="0" cellpadding="0">
               <colgroup>

@@ -29,7 +29,7 @@
     <ListPageDetail
       ref="detail"
       slot="page-datatable-detail"
-      api="/api/engine/financial/expense/getDetailList?billId="
+      api=""
       listBind=""
       :columns="columns1"
     ></ListPageDetail>
@@ -73,52 +73,42 @@ export default {
           title: '工程名称',
           key: 'projectName',
           align: 'left',
+          minWidth: 150,
+        },
+        {
+          title: '拨付合计',
+          key: 'total',
+          align: 'left',
           width: 150,
+          render: (h, params) => {
+            var row = params.row;
+            return h('span',row.total>0?row.total:'');
+          }
         }
       ],
       columns1: [ 
         {
-          title: '序号',
-          width: 100,
-          type:'index',
+          title: '拨付次数',
+          width: 200,
           align: 'center',
+          render: (h, params) => {
+            return h('span','第'+(params.index+1)+'次拨付');
+          }
         },
         {
-          title: '费用科目',
-          key: 'feeTypeName',           
+          title: '拨付金额',
+          key: 'receiptAmount',           
           align: 'left',
-          width: 150,
+          minWidth: 150,
         },
-        {
-          title: '金额',
-          key: 'amount',
-          align: 'center',
-          width: 100,
-        },
-        {
-          title: '描述',
-          key: 'describe',
-          align: 'left',
-        },
+        page.table.initDateColumn({
+          title: "拨付日期",
+          key: "receiptDate",
+        }),
       ],
       queryForm: { 
-        billId:'',
-        projectId:'',
         projectName:'',
-        catalog:'',
-        operatorName:'',
-        legal:'',
-        status: 2,  
-        billDate: [page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())]
       },
-      catalog:[
-        {code:'生产类',text:'生产类'},
-        {code:'行政类',text:'行政类'},
-        {code:'财务类',text:'财务类'},
-        {code:'伙食类',text:'伙食类'},
-        {code:'业务招待费',text:'业务招待费'},
-        {code:'其他类',text:'其他类'}
-      ],
       loading: 0
     }
   },
@@ -127,34 +117,13 @@ export default {
   },
   methods: {
     query() {
-      //   if (!this.queryForm.storageId) {
-      //     this.$Message.error('请选择仓库');
-      //     return;
-      //   }
       this.$refs.page.query();
     },
     beforeLoad() {
-      var queryParam = this.$refs.page.queryParam;
-      queryParam.billDateStart = '';
-      queryParam.billDateEnd = '';
-      delete queryParam.billDate;
-      if (this.queryForm.billDate.length > 0) {
-        queryParam.billDateStart = page.formatDate(this.queryForm.billDate[0]);
-      }
-      if (this.queryForm.billDate.length > 1) {
-        queryParam.billDateEnd = page.formatDate(this.queryForm.billDate[1]);
-      }
     },
     reset() {
       Object.assign(this.queryForm, {
-        billId:'',
-        projectId:'',
         projectName:'',
-        catalog:'',
-        operatorName:'',
-        legal:'',
-        status: 2,  
-        billDate: [page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())]
       });
       this.query();
     },
@@ -162,80 +131,15 @@ export default {
       if(row != null) {
         this.curRow = row;
         this.curRowId = row.billId;
-        this.$refs.detail.load(this.curRowId);
+        this.$refs.detail.list=row.detailList;
       } else {
         this.curRow = null;
         this.curRowId = null;
         this.$refs.detail.clear();
       }
     },
-    add() {
-      this.$router.push({ path: '/financial/expense/start?forward'})
-    },
-    edit(row) {
-      this.$router.push({
-        path: '/financial/expense/start?forward&id=' + row.billId
-      })
-    },
     exportDown(){
       this.$refs.page.exportDown();
-    },
-    sendAudit() {
-      var selection = this.$refs.page.getSelection();
-      if (selection.length == 0) {
-        this.$Message.error('请选择要操作的数据行');
-        return;
-      }
-      var start = 0;
-      var handle = () => {
-        if (start >= selection.length) {
-          return;
-        }
-        var item = selection[start];
-        this.$http.post('/api/stock/bill/submit?stockBillId=' + item.stockBillId, {}).then((res) => {
-          if (res.data.code === 0) {
-            this.$Message.info("第 " + (start + 1) + " 条操作成功");
-            start++;
-            if (start < selection.length) {
-              handle();
-            } else {
-              this.$refs.page.load();
-            }
-          } else {
-            this.$Message.error(res.data.message)
-            this.$refs.page.load();
-          }
-        }).catch((error) => {
-          this.loading = 0;
-          this.$Message.error(error.toString())
-        });
-      }
-      handle();
-    },
-    del(row) {
-      this.$Modal.confirm({
-        title: '删除确认',
-        content: '<p>删除后不能恢复，确定删除已选择的记录吗？</p>',
-        onOk: () => {
-          if (row) {
-            this.loading = 1;
-            this.$http.post('/api/engine/storage/instock/delete', {
-              stockBillId: row.stockBillId,
-            }).then((res) => {
-              this.loading = 0;
-              if (res.data.code === 0) {
-                this.$Message.success("删除成功");
-                this.$refs.page.query();
-              } else {
-                this.$Message.error(res.data.message)
-              }
-            }).catch((error) => {
-              this.loading = 0;
-              this.$Message.error(error.toString())
-            });
-          }
-        }
-      });
     },
     goPage(page) {
       this.$router.push({ path: page });

@@ -1,5 +1,5 @@
 <template>
-  <StartProcess ref="startProcess" defineId="6" :title="pageTitle" @on-submit="save" :loading="loading">
+  <StartProcess ref="startProcess" defineId="6" :title="pageTitle" @on-submit="save" :max="1" :loading="loading">
         <div class="baseinfo">
           <div class="page-tools"></div>
           <Form
