@@ -17,6 +17,7 @@
         </Loading>
       </div>
     </div>
+    <Comment :instId="instId"></Comment>
     <div class="wfprocess-footer">
         <div class="wfprocess-footer-body">
         <table cellpadding="0" cellspacing="0" style="width: 100%">
@@ -70,11 +71,14 @@
 <script>
   import defineCfg from '@/components/workflow/defineCfg'
   import AuditLogs from './AuditLogs'
-  import Loading from '@/components/loading';
+  import Comment from './Comment'
+  import Loading from '@/components/loading'
 
   export default {
     components: { 
-      AuditLogs,Loading
+      AuditLogs,
+      Loading,
+      Comment
     },
     props:{
       title: {
