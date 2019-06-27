@@ -27,6 +27,10 @@ components.push({ component: 'storage/outstock/Sum', name: '', path: '/storage/o
 //采购合同
 components.push({ component: 'storage/contract/Index', name: '', path: '/storage/contract' })
 components.push({ component: 'storage/contract/Edit', name: '', path: '/storage/contract/edit' })
+//低值耗材结算单
+components.push({ component: 'storage/low/Index', name: '', path: '/storage/low' })
+components.push({ component: 'storage/low/Edit', name: '', path: '/storage/low/edit' })
+components.push({ component: 'storage/low/View', name: '', path: '/storage/low/view' })
 //施工管理
 //工程登记
 components.push({ component: 'project/Index', name: '', path: '/project' })
@@ -72,6 +76,10 @@ components.push({ component: 'machine/bill/Index', name: '', path: '/machine/bil
 components.push({ component: 'machine/bill/Edit', name: '', path: '/machine/bill/start' })
 components.push({ component: 'machine/bill/Handle', name: '', path: '/machine/bill/handle' }) 
 components.push({ component: 'machine/bill/View', name: '', path: '/machine/bill/view' }) 
+//机械租赁合同
+components.push({ component: 'machine/contract/Index', name: '', path: '/machine/contract' })
+components.push({ component: 'machine/contract/Edit', name: '', path: '/machine/contract/edit' })
+components.push({ component: 'machine/contract/View', name: '', path: '/machine/contract/view' })
 
 // workflow
 components.push({ component: 'workflow/define/Index', name: '', path: '/workflow/define' })
