@@ -1,83 +1,82 @@
 <template>
-  <StartProcess ref="startProcess" defineId="11" :title="pageTitle" :max="1" :loading="loading" @on-submit="save"> 
-        <div class="baseinfo">
-          <div class="page-tools"></div>
-          <Form
-            ref="form"
-            class="page-form"
-            :model="formItem"
-            :rules="formRules"
-            :label-width="120"
-          >
-            <table cellspacing="0" cellpadding="0">
-              <colgroup>
-                <col width="50%">
-                <col width="50%">
-              </colgroup>
-              <tr>
-                <td>
-                  <FormItem label="本日进行" prop="dayWork">
-                    <Input type="textarea" :rows="2" v-model="formItem.dayWork"/>
-                  </FormItem>
-                </td>
-                <td>
-                  <FormItem label="明日计划" prop="nextDayPlan">
-                    <Input type="textarea" :rows="2" v-model="formItem.nextDayPlan"/>
-                  </FormItem>
-                </td>
-              </tr>
-              <!-- <tr>
+  <StartProcess
+    ref="startProcess"
+    defineId="11"
+    :title="pageTitle"
+    :max="1"
+    :loading="loading"
+    @on-submit="save"
+  >
+    <div class="baseinfo">
+      <div class="page-tools"></div>
+      <Form ref="form" class="page-form" :model="formItem" :rules="formRules" :label-width="120">
+        <table cellspacing="0" cellpadding="0">
+          <colgroup>
+            <col width="50%">
+            <col width="50%">
+          </colgroup>
+          <tr>
+            <td>
+              <FormItem label="本日进行" prop="dayWork">
+                <Input type="textarea" :rows="2" v-model="formItem.dayWork"/>
+              </FormItem>
+            </td>
+            <td>
+              <FormItem label="明日计划" prop="nextDayPlan">
+                <Input type="textarea" :rows="2" v-model="formItem.nextDayPlan"/>
+              </FormItem>
+            </td>
+          </tr>
+          <!-- <tr>
               <td colspan="2">
                 <FormItem label="班前教育" prop></FormItem>
               </td>
-              </tr>-->
-            </table>
-          </Form>
-        </div>
-        <div>
-          <div class="subheader">完成工作项</div>
-          <Editable ref="editable" :list="list" :editable="true" :projectCode="projectCode"></Editable>
-          <div style="height:30px;"></div>
-          <Col
-            span="12"
-            class="demo-tabs-style1"
-            style="background: #e3e8ee;padding:2px;width:100%;margin-bottom: 150px;"
-          >
-            <Tabs type="card">
-              <TabPane label="劳务用工" name="name1">
-                <div class="page-datatable">
-                  <i-table :columns="columns1" :data="lwygList"></i-table>
-                </div>
-              </TabPane>
-              <TabPane label="入库单" name="name2">
-                <div class="page-datatable">
-                  <i-table :columns="columns2" :data="rkdList"></i-table>
-                </div>
-              </TabPane>
-              <TabPane label="机械作业单" name="name3">
-                <div class="page-datatable">
-                  <i-table :columns="columns3" :data="jxzydList"></i-table>
-                </div>
-              </TabPane>
-              <TabPane label="运输小票" name="name4">
-                <div class="page-datatable">
-                  <i-table :columns="columns4" :data="ysxpList"></i-table>
-                </div>
-              </TabPane>
-            </Tabs>
-          </Col>
-        </div>
-        <!-- 当日的 劳务用工、入库单 、
+          </tr>-->
+        </table>
+      </Form>
+    </div>
+    <div>
+      <div class="subheader">完成工作项</div>
+      <Editable ref="editable" :list="list" :editable="true" :projectCode="projectCode"></Editable>
+      <div
+        class="demo-tabs-style1"
+        style="background: #e3e8ee;padding:2px;width:100%; margin-top:30px;"
+      >
+        <Tabs type="card">
+          <TabPane label="劳务用工" name="name1">
+            <div class="page-datatable">
+              <i-table :columns="columns1" :data="lwygList"></i-table>
+            </div>
+          </TabPane>
+          <TabPane label="入库单" name="name2">
+            <div class="page-datatable">
+              <i-table :columns="columns2" :data="rkdList"></i-table>
+            </div>
+          </TabPane>
+          <TabPane label="机械作业单" name="name3">
+            <div class="page-datatable">
+              <i-table :columns="columns3" :data="jxzydList"></i-table>
+            </div>
+          </TabPane>
+          <TabPane label="运输小票" name="name4">
+            <div class="page-datatable">
+              <i-table :columns="columns4" :data="ysxpList"></i-table>
+            </div>
+          </TabPane>
+        </Tabs>
+      </div>
+    </div>
+    <!-- 当日的 劳务用工、入库单 、
       机械作业单、
-        运输小票-->
+    运输小票-->
 
-        <!-- <table class="savebar" cellpadding="0" cellspacing="0">
+    <!-- <table class="savebar" cellpadding="0" cellspacing="0">
         <tr>
           <td class="save" @click="save" v-if="pageFlag<=2">保存</td>
           <td class="reset" @click="reset">重置</td>
           <td></td>
         </tr>
-        </table>--> 
+    </table>-->
   </StartProcess>
 </template>
 <script>
@@ -650,7 +649,7 @@ export default {
       })
     },
     loadysxpList: function () {
-      var param = { projectCode: this.formItem.projectCode, createTimeStart: this.nowDate, createTimeEnd: this.nowDate, pageSize: 9999 };
+      var param = { projectCode: this.formItem.projectCode, createTimeStart: this.nowDate, createTimeEnd: this.nowDate, pageSize: 9999, status: 2 };
       this.$http.post("/api/engine/transport/order/list", param).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
@@ -765,74 +764,6 @@ export default {
 </script>
 
 <style type="text/css">
-.instock-edit.page {
-  width: 100%;
-  margin: 0 auto;
-  position: relative;
-}
-.instock-edit .subheader {
-  height: 34px;
-  line-height: 34px;
-  font-size: 14px;
-  border-bottom: 0px solid #efefef;
-  margin-bottom: 10px;
-  color: #20bfee;
-}
-.instock-edit .baseinfo {
-}
-.instock-edit .baseinfo .label {
-  width: 80px;
-  text-align: right;
-  padding-right: 8px;
-}
-.instock-edit .baseinfo table {
-  width: 100%;
-}
-.instock-edit .baseinfo table td {
-  height: 40px;
-  padding-right: 4px;
-}
-
-.instock-edit .savebar {
-  margin-top: 10px;
-  height: 40px;
-  width: 100%;
-  border-collapse: collapse;
-}
-.instock-edit .savebar td {
-  border: 1px solid #fefefe;
-  font-size: 14px;
-}
-.instock-edit .savebar .save {
-  width: 120px;
-  border: 1px solid #20bfee;
-  background-color: #20bfee;
-  color: white;
-  text-align: center;
-  cursor: pointer;
-}
-.instock-edit .savebar .reset {
-  width: 60px;
-  border: 1px solid #a1e7f8;
-  background-color: #a1e7f8;
-  color: white;
-  text-align: center;
-  cursor: pointer;
-}
-
-.selectinput {
-  cursor: pointer;
-}
-
-.instock-edit .tooltip {
-  padding: 10px;
-  background-color: #fafafa;
-  border: 1px solid #efefef;
-  border-radius: 3px;
-  color: #666;
-  margin-top: 10px;
-}
-
 .demo-tabs-style1 > .ivu-tabs-card > .ivu-tabs-content {
   height: auto;
   margin-top: -16px;

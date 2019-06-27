@@ -57,8 +57,6 @@
           <td>
             <Button @click="reset" type="default">重置</Button>
           </td>
-          <td>&nbsp;</td>
-          <td><Button @click="exportDown" type="info" icon="ios-download-outline">导出</Button></td>
         </tr>
       </table>
     </div>
@@ -96,6 +94,10 @@ export default {
                   {
                     key: "edit",
                     disabled: row.status !== 3
+                  },
+                   {
+                    key: "export",
+                    text:"导出"
                   }
                 ]
               },
@@ -104,8 +106,8 @@ export default {
                   if (key == "edit") {
                     this.rowCommand("编辑", params);
                   }
-                  if (key == "delete") {
-                    this.rowCommand("删除", params);
+                  if (key == "export") {
+                    this.exportDown(row);
                   }
                 }
               }
@@ -280,6 +282,24 @@ export default {
           }
         });
       }
+    },
+    //导出
+    exportDown(row){
+      this.loading = 1;         
+      this.$http.post('/api/engine/project/bill/get', Object.assign({},row,{_action:'export'})).then((res) => {
+        this.loading = 0;
+        if (res.data.code === 0) { 
+          this.loading = 0;
+          var data = res.data.data;
+          window.open(this.$http.defaults.baseURL + '/api/file/download?fileId=' + data);
+        } else {
+          this.loading = 0;             
+          this.$Message.error(res.data.message);
+        }
+      }).catch((error) => {
+        this.loading = 0;
+        this.$Message.error("请求失败，请重新发送")
+      });
     },
     goBack: function () {
       this.$router.go(-1);
