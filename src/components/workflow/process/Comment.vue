@@ -17,7 +17,7 @@
       <div class="row">
         <Input v-model="comment" type="textarea" :rows="4" placeholder="评论"></Input>
         <div style="margin-top: 10px;">
-          <Button type="primary" @click="btnSave" :loading="loading==1">确定</Button>
+          <Button type="primary" @click="btnSave" :loading="loading==1" :disabled="!notEmpty">确定</Button>
         </div>
       </div>
     </div>    
@@ -45,7 +45,11 @@ export default {
   mounted: function () { 
     this.load();
   },
-  computed: {},
+  computed: {
+    notEmpty(){
+      return this.comment != '';
+    }
+  },
   watch: {
     instId(val, old) {
       if(val){
