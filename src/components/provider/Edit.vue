@@ -91,6 +91,9 @@
                 format="yyyy-MM-dd"
               ></Date-picker>
             </FormItem>
+            <FormItem label="是否常用" prop>
+              <i-switch v-model="formItem.commonUse" :true-value="1" :false-value="0"></i-switch>
+            </FormItem>
             <FormItem label="是否停用" prop>
               <i-switch v-model="formItem.status" :true-value="2" :false-value="1"></i-switch>
             </FormItem>
@@ -154,6 +157,7 @@ export default {
         developTime: '',//发展日期',
         disableTime: '',//停用日期',
         status: '',//状态（1 正常 2 禁用） 
+        commonUse:'',//是否常用(0.否 1.是)
       },
       //验证
       ruleValidate: {
