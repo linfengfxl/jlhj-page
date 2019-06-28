@@ -125,10 +125,10 @@ export default {
   computed: {
     pageTitle() {
       if (this.pageFlag == 1) {
-        return '劳务用工登记 - 创建';
+        return '期初库存 - 创建';
       }
       if (this.pageFlag == 2) {
-        return '劳务用工登记 - 编辑';
+        return '期初库存 - 编辑';
       }
     }
   },
