@@ -1,5 +1,5 @@
 <template>
-  <div class="page page-bill page-bill-max">
+  <div class="page page-bill">
     <div class="page-bar">
       <LayoutHor>
         <div slot="left">
@@ -20,39 +20,29 @@
             </colgroup>
             <tr>
               <td>
-                <FormItem prop="laborDate" label="日期">
-                  <Date-picker
-                    type="date"
-                    placeholder="选择日期"
-                    v-model="formItem.laborDate"
-                    format="yyyy-MM-dd"
-                  ></Date-picker>
+                <FormItem prop="deptId" label="仓库">
+                  <SelStorage v-model="formItem.deptId" :model="formItem"></SelStorage>
                 </FormItem>
               </td>
               <td>
-                <FormItem prop="projectCode" label="工程名称">
-                  <SelectProject
-                    v-model="formItem.projectCode"
-                    :model="formItem"
-                    :text="formItem.projectName"
-                  />
+                <FormItem prop="year" label="年度">
+                  <Date-picker type="year" placeholder="选择日期" v-model="formItem.year"></Date-picker>
                 </FormItem>
               </td>
-            </tr>
-            <tr>
-              <td>
-                <FormItem label="人数合计">{{list.length}}</FormItem>
-              </td>
-              <td>
-                <FormItem label="金额合计">{{formItem.totalAmount}}</FormItem>
-              </td>
+              <td></td>
             </tr>
           </table>
         </Form>
       </div>
       <div>
-        <div class="subheader">明细</div>
-        <Editable ref="editable" :list="list" :editable="true" @on-amount-change="onAmountChange"></Editable>
+        <div class="subheader">单据明细</div>
+        <Alert v-if="!formItem.deptId">请选择仓库</Alert>
+        <Editable
+          ref="editable"
+          :list="list"
+          :editable="true"
+          :style="{display: formItem.deptId?'':'none'}"
+        ></Editable>
       </div>
       <table class="savebar" cellpadding="0" cellspacing="0">
         <tr>
@@ -67,43 +57,36 @@
 <script>
 import Loading from '@/components/loading';
 import LayoutHor from '@/components/layout/LayoutHor';
+import SelStorage from '@/components/storage/input/SelStorage';//仓库部门
 import Editable from './DetailEditable';
 import page from '@/assets/js/page';
 import floatObj from '@/assets/js/floatObj';
 import pagejs from '@/assets/js/page';
-
-import SelectProject from '@/components/page/form/SelectProject';
-
 
 export default {
   components: {
     Loading,
     LayoutHor,
     Editable,
-    SelectProject,
+    SelStorage,
 
   },
   data() {
     return {
       loading: 0,
-      laborId: '',
+      inventoryCode: '',
       pageFlag: 1,//1.新建 2.编辑 3.修订
       formItem: {
-        laborId: '',//
-        laborDate: '',//
-        deptId: '',//所属部门
-        projectCode: '',//工程代码
-        projectName: '',//工程名 
-        remark: '',//备注 
-        totalNumber: 0,
-        totalAmount: 0,
+        inventoryCode: '',// 
+        deptId: '',//所属部门 
+        year: '',
       },
       formRules: {
-        projectCode: [
-          { required: true, whitespace: true, message: '请选择工程', trigger: 'change' }
+        deptId: [
+          { required: true, whitespace: true, message: '请选择仓库', trigger: 'change' }
         ],
-        laborDate: [
-          { required: true, message: '请选择日期', trigger: 'change', pattern: /.+/ }
+        year: [
+          { required: true, message: '请选择年度', trigger: 'change', pattern: /.+/ }
         ],
       },
       list: [],
@@ -111,10 +94,9 @@ export default {
       storage: []
     }
   },
-  mounted: function () {
-    this.formItem.projectCode = this.$route.query.projectCode;
-    this.formItem.laborDate = this.$route.query.laborDate;
-    if (this.formItem.projectCode) {
+  mounted: function () { 
+    this.formItem.inventoryCode = this.$route.query.inventoryCode;
+    if (this.formItem.inventoryCode) {
       this.pageFlag = 2;
       this.load();
     } else {
@@ -135,7 +117,8 @@ export default {
   methods: {
     load() {
       this.loading = 1;
-      this.$http.post("/api/engine/project/labor/getByProjectList?projectCode=" + this.formItem.projectCode + "&laborDate=" + this.formItem.laborDate).then((res) => {
+      
+       this.$http.post("/api/engine/material/inventory/getInventoryCodeByList?inventoryCode=" + this.formItem.inventoryCode).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
           if (res.data.data) {
@@ -153,27 +136,25 @@ export default {
         this.loading = 0;
         this.$Message.error("操作失败！")
       });
+
     },
     initNew() {
       Object.assign(this.formItem, {
-        laborId: '',//
-        laborDate: '',//
-        deptId: '',//所属部门
-        projectCode: '',//工程代码
-        projectName: '',//工程名 
+        inventoryCode: '',//
+        year: '',//
+        deptId: '',//所属部门 
         remark: '',//备注 
       });
       this.list = [];
       this.list.push(this.$refs.editable.listNewRow());
       this.list.push(this.$refs.editable.listNewRow());
     },
-    save(proc) {
+    save() {
       var form = {
         detailList: []
-      };
-
+      }; 
       Object.assign(form, this.formItem);
-      form.laborDate = page.formatDate(form.laborDate);
+      form.year = page.formatDateYear(form.year);
 
       var pass = true;
       this.$refs.form.validate((valid) => {
@@ -186,31 +167,23 @@ export default {
       }
 
       form.detailList = [];
-      var taiban = 0, useTime = 0;
       // 明细
       for (var i = 0; i < this.list.length; i++) {
         var item = this.list[i];
         var msg = '明细第 ' + (i + 1) + ' 行，';
-        // if (item.startTime == '') {
-        //   this.$Message.error(msg + '请选择时间');
-        //   return;
-        // }
-        // if (item.endTime == '') {
-        //   this.$Message.error(msg + '请选择时间');
-        //   return;
-        // }
-        // if (item.taiban == 0) {
-        //   this.$Message.error(msg + '请录入作业台班');
-        //   return;
-        // }  
-        form.detailList.push(item);
-      }
-      console.log(form);
+        if (item.materCode != '') {
+          if (item.quantity == 0) {
+            this.$Message.error(msg + '请录入数量');
+            return;
+          } 
+          form.detailList.push(item);
+        }
+      } 
       // 提交
       this.loading = 1;
-      var uri = '/api/engine/project/labor/add';
+      var uri = '/api/engine/material/inventory/add';
       if (this.pageFlag == 2) {
-        uri = '/api/engine/project/labor/update';
+        uri = '/api/engine/material/inventory/update';
       }
       this.$http.post(uri, form).then((res) => {
         this.loading = 0;
@@ -235,13 +208,10 @@ export default {
     goBack() {
       this.$router.go(-1);
     },
-    onAmountChange(val) {
-      this.formItem.totalAmount = val;
-    },
   }
 }
 
 </script>
 
-<style type="text/css"> 
+<style type="text/css">
 </style>

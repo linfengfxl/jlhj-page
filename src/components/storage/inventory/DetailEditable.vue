@@ -1,26 +1,39 @@
 <template>
-  <Editable @add="add" @remove="remove" :editable="editable">
+  <Editable @add="add" @remove="remove" :editable="editable" :editprice="editprice" :model="model">
     <table cellspacing="0" cellpadding="0" v-if="!editable">
       <thead>
         <th class="col-xh">序号</th>
-        <th>领工</th>
-        <th>技工人数</th>
-        <th>技工加班（h）</th>
-        <th>力工人数</th>
-        <th>力工加班（h）</th>
-        <th>金额</th>
-        <th>备注</th>
+        <th>材料编码</th>
+        <th>材料名称</th>
+        <th>规格型号</th>
+        <th>单位</th>
+        <th>
+          <span>数量</span>
+        </th> 
       </thead>
       <tbody>
         <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
-          <td :class="{'col-xh':true,'cur':index==curIndex}">{{index+1}}</td>
-          <td>{{item.leader}}</td>
-          <td>{{item.skillWorkload}}</td>
-          <td>{{item.skillWorkloadOvertime}}</td>
-          <td>{{item.strongWorkload}}</td>
-          <td>{{item.strongWorkloadOvertime}}</td>
-          <td>{{item.amount}}</td>
-          <th>{{item.remark}}</th>
+          <td>{{index+1}}</td>
+          <td>
+            {{item.materCode}}
+            <!--  材料编码 -->
+          </td>
+          <td>
+            {{item.materName}}
+            <!--  材料名称 -->
+          </td>
+          <td>
+            {{item.spec}}
+            <!--  规格型号 -->
+          </td>
+          <td>
+            {{$args.getArgText('unit',item.unit)}}
+            <!--  单位 -->
+          </td>
+          <td class="col-quantity">
+            {{item.quantity}}
+            <!--  数量 -->
+          </td> 
         </tr>
       </tbody>
     </table>
@@ -28,14 +41,13 @@
     <table cellspacing="0" cellpadding="0" v-else>
       <thead>
         <th class="col-xh">序号</th>
-        <th>领工</th>
-        <th>技工人数</th>
-        <th>技工加班（h）</th>
-        <th>力工人数</th>
-        <th>力工加班（h）</th>
-        <th>金额</th>
-        <th>备注</th>
-        <th>附件</th>
+        <th>材料编码</th>
+        <th>材料名称</th>
+        <th>规格型号</th>
+        <th>单位</th>
+        <th class="col-quantity">
+          <span>数量</span>
+        </th> 
       </thead>
       <tbody>
         <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
@@ -43,56 +55,44 @@
             {{index+1}}
             <!--  序号 -->
           </td>
-          <td class="col-select">
-            <div style="width:100px;">
-              <Input v-model="item.leader"/>
-            </div>
+          <td class="col-select" @click="editable && !isImport &&  selMater(item)">
+            <span>{{item.materCode}}</span>
+            <!--  材料编码 -->
           </td>
           <td>
-            <InputNumber :max="999999" :min="0" v-model="item.skillWorkload"></InputNumber>
-            <!--技工人数  -->
+            {{item.materName}}
+            <!--  材料名称 -->
           </td>
           <td>
-            <InputNumber :max="999999" :min="0" v-model="item.skillWorkloadOvertime"></InputNumber>
-            <!--技工加班量  -->
+            {{item.spec}}
+            <!--  规格型号 -->
           </td>
           <td>
-            <InputNumber :max="999999" :min="0" v-model="item.strongWorkload"></InputNumber>
-            <!--力工人数  -->
+            {{$args.getArgText('unit',item.unit)}}
+            <!--  单位 -->
           </td>
-          <td>
-            <InputNumber :max="999999" :min="0" v-model="item.strongWorkloadOvertime"></InputNumber>
-            <!--力工加班量  -->
-          </td>
-          <td>
+          <td class="col-quantity">
+            <!--  数量 -->
             <InputNumber
               :max="999999"
               :min="0"
-              v-model="item.amount"
-              @on-change="computedAmount(item)"
+              v-model="item.quantity" 
             ></InputNumber>
-          </td>
-          <!--金额	-->
-          <td>
-            <div style="width:100px;">
-              <Input v-model="item.remark"/>
-            </div>
-          </td>
-          <td>
-            <UploadBox v-model="item.files" :readonly="false"></UploadBox>
-          </td>
+          </td> 
         </tr>
       </tbody>
     </table>
+    <!-- 选择材料 -->
+    <SelectMaterial ref="selmaterial" :transfer="true"></SelectMaterial>
   </Editable>
 </template>
 <script>
 import Editable from '@/components/editable-table';
 import floatObj from '@/assets/js/floatObj';
-import UploadBox from '@/components/upload/Index';
+import SelectMaterial from '@/components/material/selmaterial'
 export default {
   components: {
-    UploadBox,
+    SelectMaterial,
     Editable,
   },
   props: {
@@ -102,7 +102,23 @@ export default {
         var arr = [];
       }
     },
+    storageId: {
+      type: String,
+      default: ''
+    },
+    model: {
+      type: Object,
+      default: null
+    },
     editable: {
+      type: Boolean,
+      default: false
+    },
+    editprice: {
+      type: Boolean,
+      default: false
+    },
+    isImport: {  // 是否为导入的数据，导入的数据不能添加行，部分字段不能编辑
       type: Boolean,
       default: false
     }
@@ -117,9 +133,7 @@ export default {
   },
   computed: {},
   watch: {
-    list(val, old) {
-      this.$emit('on-amount-change', this.sumAmount());
-    }
+   
   },
   methods: {
     load() {
@@ -128,18 +142,25 @@ export default {
     listNewRow() {
       var def = {
         id: 0,
-        skillWorkload: null,//技工人数
-        skillWorkloadOvertime: null,//技工加班量
-        strongWorkload: null,//力工人数
-        strongWorkloadOvertime: null,//力工工作加班量
-        amount: null,//金额
-        remak: '',
-        files: '',
+        type: 1,//入库
+        materCode: '',//材料编号
+        materName: '',//材料名称
+        spec: '',//规格型号
+        unit: '',//单位
+        quantity: 0,//数量
+        unitPrice: 0,//单价
+        taxUnitPrice: 0,//含税单价
+        tax: 0,//税额
+        amount: 0,//金额
+        constructionSite: '',//施工部位
+        productName: ''//产成品名称
       };
       return def;
     },
     add() {
-      this.list.push(this.listNewRow());
+      if (!this.isImport) {
+        this.list.push(this.listNewRow());
+      }
     },
     remove() {
       if (this.list.length > this.curIndex) {
@@ -151,17 +172,21 @@ export default {
       if (this.curIndex == -1) {
         this.curIndex = 0;
       }
-      this.$emit('on-amount-change', this.sumAmount());
-    },
-    computedAmount(item) {
-      this.$emit('on-amount-change', this.sumAmount());
-    },
-    sumAmount() {
-      var totals = 0;
-      this.list.map((mater) => {
-        totals = floatObj.add(totals, mater.amount);
+    },  
+    selMater(row) {
+      var selmaterial = this.$refs.selmaterial;
+      selmaterial.show({
+        ok: (data) => {
+          if (_.findIndex(this.list, { 'materCode': data.materCode }) >= 0) {
+            this.$Message.error('物料已存在!');
+            return;
+          }
+          row.materCode = data.materCode;
+          row.materName = data.materName;
+          row.spec = data.spec;
+          row.unit = data.unit; 
+        }
       });
-      return totals;
     },
   }
 }

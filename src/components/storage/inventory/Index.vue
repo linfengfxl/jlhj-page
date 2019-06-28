@@ -1,7 +1,7 @@
 <template>
   <ListPage
     ref="page"
-    api="/api/engine/project/labor/list"
+    api="/api/engine/material/inventory/list"
     :model="this"
     @onCurrentRowChange="curRowChg"
     :beforeLoad="beforeLoad"
@@ -21,9 +21,9 @@
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td>
-            <Input v-model="queryForm.projectName" placeholder="工程名称" @keyup.enter.native="query"></Input>
+            <Input v-model="queryForm.deptName" placeholder="仓库名称" @keyup.enter.native="query"></Input>
           </td>
-          <td>
+          <!-- <td>
             <DatePicker
               type="daterange"
               v-model="queryForm.createTime"
@@ -33,7 +33,7 @@
               :clearable="true"
               ::transfer="true"
             ></DatePicker>
-          </td>
+          </td> -->
           <td>
             <Button @click="query" type="primary" icon="ios-search">查询</Button>
           </td>
@@ -46,7 +46,7 @@
     <ListPageDetail
       ref="detail"
       slot="page-datatable-detail"
-      api="/api/engine/project/labor/getByProjectList"
+      api="/api/engine/material/inventory/getInventoryCodeByList"
       :columns="columns1"
     ></ListPageDetail>
   </ListPage>
@@ -96,18 +96,18 @@ export default {
           }
         }, {
           title: '单号',
-          key: 'laborDate',
+          key: 'inventoryCode',
           align: 'center',
-          width: 120,
+          width: 200,
         },
         {
           title: '年度',
-          key: 'projectName',
+          key: 'year',
           align: 'left',
           width: 550,
         }, {
           title: '仓库',
-          key: 'peopleNumber',
+          key: 'deptName',
           align: 'center',
           width: 120,
         }, {
@@ -116,37 +116,43 @@ export default {
       ],
       columns1: [
         {
-          title: '材料编码',
-          key: 'leader',
+          title: '物料代码',
+          key: 'materCode',
+          fixed: 'left',
           align: 'left',
           width: 120,
         },
         {
-          title: '材料名称',
-          key: 'skillWorkload',
+          title: '物料名称',
+          key: 'materName',
+          fixed: 'left',
           align: 'left',
+          width: 120,
         },
         {
           title: '规格型号',
-          key: 'skillWorkloadOvertime',
+          key: 'spec',
           align: 'left',
           width: 120,
         },
-        {
-          title: '计量单位',
-          key: 'strongWorkload',
-          align: 'left',
-          width: 120,
-        },
+        page.table.initArgColumn({
+          title: '单位',
+          key: 'unit',
+          align: 'center',
+          group: 'unit',
+          width: 100
+        }),
         {
           title: '数量',
-          key: 'strongWorkloadOvertime',
+          key: 'quantity',
           align: 'left',
           width: 120,
-        }
+        }, {
+          title: ' ',
+        },
       ],
       queryForm: {
-        projectName: '',
+        deptName: '',
         createTime: null,
       },
       loading: 0
@@ -173,7 +179,7 @@ export default {
     },
     reset() {
       Object.assign(this.queryForm, {
-        projectName: '',
+        deptName: '',
         createTime: []//[page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())]
       });
       this.query();
@@ -181,7 +187,7 @@ export default {
     curRowChg(row) {
       if (row != null) {
         this.curRow = row;
-        this.curRowId = "?projectCode=" + row.projectCode + "&laborDate=" + row.laborDate;
+        this.curRowId = "?inventoryCode=" + row.inventoryCode;
         this.$refs.detail.load(this.curRowId);
       } else {
         this.curRow = null;
@@ -190,41 +196,12 @@ export default {
       }
     },
     add() {
-      this.$Message.success('开发中！');
-      return;
       this.$router.push({ path: '/storage/inventory/edit' })
     },
     edit(row) {
-      this.$Message.success('开发中！');
-      return;
       if (row) {
         this.$router.push({ path: '/storage/inventory/edit?forward&inventoryCode=' + row.inventoryCode })
       }
-    },
-    del(row) {
-      this.$Modal.confirm({
-        title: '删除确认',
-        content: '<p>删除后不能恢复，确定删除已选择的记录吗？</p>',
-        onOk: () => {
-          if (row) {
-            this.loading = 1;
-            this.$http.post('/api/engine/storage/instock/delete', {
-              stockBillId: row.stockBillId,
-            }).then((res) => {
-              this.loading = 0;
-              if (res.data.code === 0) {
-                this.$Message.success("删除成功");
-                this.$refs.page.query();
-              } else {
-                this.$Message.error(res.data.message)
-              }
-            }).catch((error) => {
-              this.loading = 0;
-              this.$Message.error(error.toString())
-            });
-          }
-        }
-      });
     },
     goPage(page) {
       this.$router.push({ path: page });
