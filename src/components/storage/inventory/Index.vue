@@ -6,7 +6,7 @@
     @onCurrentRowChange="curRowChg"
     :beforeLoad="beforeLoad"
   >
-    <div class="page-title" slot="page-title">劳务用工登记</div>
+    <div class="page-title" slot="page-title">期初库存</div>
     <div class="page-searchbox">
       <table cellpadding="0" cellspacing="0">
         <tr>
@@ -119,7 +119,7 @@ export default {
           align: 'right',
           width: 120,
         }, {
-          title: ' ', 
+          title: ' ',
         }
       ],
       columns1: [
@@ -226,11 +226,11 @@ export default {
       }
     },
     add() {
-      this.$router.push({ path: '/project/labor/edit?forward' })
+      this.$router.push({ path: '/storage/inventory/edit' })
     },
     edit(row) {
       if (row) {
-        this.$router.push({ path: '/project/labor/edit?forward&projectCode=' + row.projectCode + '&laborDate=' + row.laborDate })
+        this.$router.push({ path: '/storage/inventory/edit?forward&inventoryCode=' + row.inventoryCode })
       }
     },
     del(row) {

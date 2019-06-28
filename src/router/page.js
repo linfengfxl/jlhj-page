@@ -27,6 +27,14 @@ components.push({ component: 'storage/outstock/Sum', name: '', path: '/storage/o
 //采购合同
 components.push({ component: 'storage/contract/Index', name: '', path: '/storage/contract' })
 components.push({ component: 'storage/contract/Edit', name: '', path: '/storage/contract/edit' })
+
+//期初库存
+components.push({ component: 'storage/inventory/Index', name: '', path: '/storage/inventory' })
+components.push({ component: 'storage/inventory/Edit', name: '', path: '/storage/inventory/edit' })
+components.push({ component: 'storage/inventory/Handle', name: '', path: '/storage/inventory/handle' })
+components.push({ component: 'storage/inventory/View', name: '', path: '/storage/inventory/view' })  
+
+
 //施工管理
 //工程登记
 components.push({ component: 'project/Index', name: '', path: '/project' })
@@ -61,6 +69,7 @@ components.push({ component: 'project/folder/Browse', name: '', path: '/project/
 components.push({ component: 'project/labor/Index', name: '', path: '/project/labor' })
 components.push({ component: 'project/labor/Edit', name: '', path: '/project/labor/edit' })
 
+components.push({ component: 'project/labourCost', name: '', path: '/project/labourcost' })
 //机械作业单
 //机械作业单
 components.push({ component: 'machine/order/Index', name: '', path: '/machine/order' })
