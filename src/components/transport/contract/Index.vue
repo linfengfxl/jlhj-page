@@ -1,13 +1,13 @@
 <template>
   <ListPage
     ref="page"
-    api="/api/engine/machine/contract/list"
+    api="/api/engine/transport/contract/list"
     :model="this"
     @onCurrentRowChange="curRowChg"
     :beforeLoad="beforeLoad"
   >
     <div class="page-title" slot="page-title">
-      机械租赁合同
+      运输合同
     </div>
     <div class="page-searchbox">
       <table cellpadding="0" cellspacing="0">
@@ -23,13 +23,16 @@
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td>
-            <Input v-model="queryForm.machineContractId" placeholder="合同编号" @keyup.enter.native="query"></Input>
+            <Input v-model="queryForm.transportContractId" placeholder="合同编号" @keyup.enter.native="query"></Input>
           </td>
           <td>
             <Input v-model="queryForm.contractName" placeholder="合同名称" @keyup.enter.native="query"></Input>
           </td>
           <td>
-            <Input v-model="queryForm.projectName" placeholder="工程名" @keyup.enter.native="query"></Input>
+            <Input v-model="queryForm.projectName" placeholder="工程名称" @keyup.enter.native="query"></Input>
+          </td>
+          <td>
+            <Input v-model="queryForm.providerName" placeholder="供应商名称" @keyup.enter.native="query"></Input>
           </td>
           <td>
             <DatePicker
@@ -54,7 +57,7 @@
     <ListPageDetail
       ref="detail"
       slot="page-datatable-detail"
-      api="/api/engine/machine/contract/getDetailList?machineContractId="
+      api="/api/engine/transport/contract/getDetailList?transportContractId="
       :columns="columns1"
     ></ListPageDetail>
   </ListPage>
@@ -112,7 +115,7 @@ export default {
         },
         {
           title: '合同编号',
-          key: 'machineContractId',
+          key: 'transportContractId',
           width: 140,
           fixed: 'left',
           render:(h,params)=>{
@@ -123,10 +126,10 @@ export default {
               },
               on:{
                 click:()=>{
-                  this.$router.push({path:'/machine/contract/view?id=' + row.machineContractId});
+                  this.$router.push({path:'/transport/contract/view?id=' + row.transportContractId});
                 }
               }
-            },row.machineContractId);
+            },row.transportContractId);
           }
         },
         {
@@ -198,6 +201,12 @@ export default {
           }
         },
         {
+          title: '合同金额',
+          key: 'amount',
+          align: 'left',
+          minWidth: 120,
+        },
+        {
           title: '租赁方式',
           key: 'leaseType',
           align: 'left',
@@ -243,47 +252,67 @@ export default {
       ],
       columns1: [
         {
-          title: '机械代码',
-          key: 'machineCode',
+          title: '运输类别',
+          key: 'transportType',
           align: 'left',
           width: 120,
         },
         {
-          title: '机械名称',
-          key: 'machineName',
+          title: '工程名称',
+          key: 'projectName',
+          align: 'left',
+          minWidth: 120,
+        },
+        {
+          title: '材料名称',
+          key: 'materName',
           align: 'left',
           minWidth: 120,
         },
         {
           title: '规格型号',
-          key: 'machineModel',
+          key: 'spec',
+          align: 'left',
+          width: 120,
+        },
+        {
+          title: '运输起点',
+          key: 'transportStart',
+          align: 'left',
+          width: 150,
+        },
+        {
+          title: '运输终点',
+          key: 'transportEnd',
+          align: 'left',
+          width: 150,
+        },
+        {
+          title: '运输距离',
+          key: 'milage',
           align: 'left',
           width: 120,
         },
         page.table.initArgColumn({
-          title: '单位',
+          title: '计量单位',
           key: 'unit',
           align: 'center',
           group: 'unit',
           width: 100
         }),
         {
-          title: '数量',
-          key: 'taxUnitPrice',
+          title: '单价',
+          key: 'unitPrice',
           align: 'left',
           width: 120,
         },
-        {
-          title: '进场时间',
-          key: 'entryTime',
-          align: 'left',
-          width: 150,
-        },
+        
       ],
       queryForm: {
-        machineContractId: '',
+        transportContractId: '',
         contractName: '',
         projectName: '',
+        providerName: '',
         createTime: [],
       },
       loading: 0
@@ -310,9 +339,10 @@ export default {
     },
     reset() {
       Object.assign(this.queryForm, {
-        machineContractId: '',
+        transportContractId: '',
         contractName: '',
         projectName: '',
+        providerName: '',
         createTime: [],
       });
       this.query();
@@ -320,7 +350,7 @@ export default {
     curRowChg(row) {
       if (row != null) {
         this.curRow = row;
-        this.curRowId = row.machineContractId;
+        this.curRowId = row.transportContractId;
         this.$refs.detail.load(this.curRowId);
       } else {
         this.curRow = null;
@@ -329,12 +359,12 @@ export default {
       }
     },
     add() {
-      this.$router.push({ path: '/machine/contract/edit' })
+      this.$router.push({ path: '/transport/contract/edit' })
     },
     edit(row) {
       if (row) {
         this.$router.push({
-          path: '/machine/contract/edit?id=' + row.machineContractId
+          path: '/transport/contract/edit?id=' + row.transportContractId
         })
       }
     },
@@ -345,8 +375,8 @@ export default {
         onOk: () => {
           if (row) {
             this.loading = 1;
-            this.$http.post('/api/engine/machine/contract/delete', {
-              machineContractId: row.machineContractId,
+            this.$http.post('/api/engine/transport/contract/delete', {
+              transportContractId: row.transportContractId,
             }).then((res) => {
               this.loading = 0;
               if (res.data.code === 0) {

@@ -1,5 +1,5 @@
 <template>
-  <div class="page instock-edit">
+  <div class="page page-bill">
     <div class="page-bar">
       <LayoutHor>
         <div slot="left">
@@ -41,7 +41,7 @@
             </tr>
             <tr>
               <td>
-                <FormItem label="签订日期" prop>
+                <FormItem label="签订日期" prop="signDate">
                   <Date-picker
                     type="date"
                     placeholder="选择日期"
@@ -221,6 +221,9 @@ export default {
         ],
         signNum: [
           {type: 'number', required: true, whitespace: true, message: '不能为空', trigger: 'blur' },
+        ],
+        signDate: [
+          {type: 'date', required: true, whitespace: true, message: '签订日期不能为空', trigger: 'change' },
         ],
         amount: [
           {type: 'number', required: true, whitespace: true, message: '不能为空', trigger: 'blur' },

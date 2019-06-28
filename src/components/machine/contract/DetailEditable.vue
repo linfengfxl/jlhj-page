@@ -67,11 +67,11 @@
           </td>
           <td class="col-select" @click="editable && !isImport &&  selMachine(item)">
             <span>{{item.machineCode}}</span>
-            <!--  材料编码 -->
+            <!--  机械编码 -->
           </td>
           <td>
             {{item.machineName}}
-            <!--  材料名称 -->
+            <!--  机械名称 -->
           </td>
           <td>
             {{item.machineModel}}

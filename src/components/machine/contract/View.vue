@@ -1,5 +1,5 @@
 <template>
-  <div class="page instock-edit">
+  <div class="page page-bill">
     <div class="page-bar">
       <LayoutHor>
         <div slot="left">
@@ -167,7 +167,7 @@ export default {
         providerCode: '',//供应商
         providerName: '',//供应商名称
         linkMan: '',//供应商联系人
-        payWy: '',//付款方式:从字典中选择
+        payWay: '',//付款方式:从字典中选择
         prepayment: 0,//  预付款
         warranty: 0,//    质保金
         taxRate: '',//    税率
@@ -223,6 +223,9 @@ export default {
         if (res.data.code == 0) {
           if (res.data.data) {
             console.log(res.data.data);
+            if(res.data.data.signDate!=null){
+              res.data.data.signDate = res.data.data.signDate.length>=10?res.data.data.signDate.substring(0,10):res.data.data.signDate;  
+            }
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
             Object.assign(this.formItem, res.data.data);
             this.formItem.statusToString = this.status[this.formItem.status];
@@ -251,7 +254,7 @@ export default {
         providerCode: '',//供应商
         providerName: '',//供应商名称
         linkMan: '',//供应商联系人
-        payWy: '',//付款方式:从字典中选择
+        payWay: '',//付款方式:从字典中选择
         prepayment: 0,//  预付款
         warranty: 0,//    质保金
         taxRate: '',//    税率

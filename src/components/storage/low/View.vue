@@ -1,5 +1,5 @@
 <template>
-  <div class="page instock-edit">
+  <div class="page page-bill">
     <div class="page-bar">
       <LayoutHor>
         <div slot="left">

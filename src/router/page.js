@@ -138,6 +138,10 @@ components.push({ component: 'transport/bill/Index', name: '', path: '/transport
 components.push({ component: 'transport/bill/Edit', name: '', path: '/transport/bill/start' })
 components.push({ component: 'transport/bill/Handle', name: '', path: '/transport/bill/handle' })
 components.push({ component: 'transport/bill/View', name: '', path: '/transport/bill/view' })
+//运输合同
+components.push({ component: 'transport/contract/Index', name: '', path: '/transport/contract' })
+components.push({ component: 'transport/contract/Edit', name: '', path: '/transport/contract/edit' })
+components.push({ component: 'transport/contract/View', name: '', path: '/transport/contract/view' })
 
 // 系统日志
 components.push({ component: 'logger/Index', name: '', path: '/logger' })

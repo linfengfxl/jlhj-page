@@ -1,5 +1,5 @@
 <template>
-  <div class="page instock-edit">
+  <div class="page page-bill">
     <div class="page-bar">
       <LayoutHor>
         <div slot="left">
@@ -133,7 +133,7 @@
                 </FormItem>
               </td>
               <td>
-                <FormItem label="合同状态" prop>
+                <FormItem label="合同状态" prop="status">
                   <Select v-model="formItem.status" style="width:100%" placeholder="类型">
                     <!--1.执行中 2.终止 3.已结算 4.解除 5关闭 -->
                     <Option v-for="item in status" :value="item.code" :key="item.code">{{ item.text }}</Option>
@@ -212,7 +212,7 @@ export default {
         providerCode: '',//供应商
         providerName: '',//供应商名称
         linkMan: '',//供应商联系人
-        payWy: '',//付款方式:从字典中选择
+        payWay: '',//付款方式:从字典中选择
         prepayment: 0,//	预付款
         warranty: 0,//		质保金
         taxRate: 0,//		税率
@@ -222,15 +222,15 @@ export default {
         contractPoint: '',//		合同要点
         specialTerms: '',//		专项条款
         riskItem: '',//		风险项 
-        status: 1,//	合同状态 1.执行中 2.终止 3.已结算 4.解除 5关闭  
+        status: null,//	合同状态 1.执行中 2.终止 3.已结算 4.解除 5关闭  
       },
       formRules: {
         machineContractId: [
-          { required: true, whitespace: true, message: '编码不能为空', trigger: 'blur' },
+          { required: true, whitespace: true, message: '合同编号不能为空', trigger: 'blur' },
           { type: 'string', max: 50, message: '不能超过50个字', trigger: 'blur' }
         ],
         contractName: [
-          { required: true, whitespace: true, message: '名称不能为空', trigger: 'blur' },
+          { required: true, whitespace: true, message: '合同名称不能为空', trigger: 'blur' },
           { type: 'string', max: 50, message: '不能超过50个字', trigger: 'blur' }
         ],
         projectCode: [
@@ -241,6 +241,9 @@ export default {
         ],
         signDate: [
           {type: 'date', required: true, whitespace: true, message: '签订日期不能为空', trigger: 'change' },
+        ],
+        status: [
+          {type: 'number', required: true, whitespace: true, message: '合同状态不能为空', trigger: 'change' },
         ]
       },
       list: [],
@@ -323,7 +326,7 @@ export default {
         providerCode: '',//供应商
         providerName: '',//供应商名称
         linkMan: '',//供应商联系人
-        payWy: '',//付款方式:从字典中选择
+        payWay: '',//付款方式:从字典中选择
         prepayment: 0,//  预付款
         warranty: 0,//    质保金
         taxRate: 0,//    税率
@@ -333,7 +336,7 @@ export default {
         contractPoint: '',//    合同要点
         specialTerms: '',//   专项条款
         riskItem: '',//   风险项 
-        status: '1',//  合同状态 1.执行中 2.终止 3.已结算 4.解除 5关闭  
+        status: null,//  合同状态 1.执行中 2.终止 3.已结算 4.解除 5关闭  
       });
       this.list = [];
       this.list.push(this.$refs.editable.listNewRow());
