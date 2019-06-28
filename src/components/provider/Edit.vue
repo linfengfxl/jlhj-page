@@ -157,7 +157,7 @@ export default {
         developTime: '',//发展日期',
         disableTime: '',//停用日期',
         status: '',//状态（1 正常 2 禁用） 
-        commonUse:'',//是否常用(0.否 1.是)
+        commonUse:0,//是否常用(0.否 1.是)
       },
       //验证
       ruleValidate: {
@@ -237,6 +237,7 @@ export default {
         }
         this.formItem['taxRate'] = 0;
         this.formItem['taxRate1'] = 0;
+        this.formItem['commonUse']=0;
       }
     },
     get(id) {

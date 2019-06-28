@@ -122,7 +122,7 @@ export default {
           width: 120,
         },
         {
-          title: '技工工作量',
+          title: '技工人数',
           key: 'skillWorkload',
           align: 'left',
           width: 120,
@@ -134,7 +134,7 @@ export default {
           width: 120,
         },
         {
-          title: '力工工作量',
+          title: '力工人数',
           key: 'strongWorkload',
           align: 'left',
           width: 120,

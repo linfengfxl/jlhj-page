@@ -173,10 +173,8 @@ export default {
 
   },
   computed: {},
-  watch: {
-    list(val, old) {
-      this.$emit('on-amount-change', this.sumAmount());
-    }
+  watch: { 
+    
   },
   methods: {
     load() {

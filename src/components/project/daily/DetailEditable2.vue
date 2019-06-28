@@ -4,9 +4,9 @@
       <thead>
         <th class="col-xh">序号</th>
         <th>领工</th>
-        <th>技工工作量</th>
+        <th>技工人数</th>
         <th>技工加班量</th>
-        <th>力工工作量</th>
+        <th>力工人数</th>
         <th>力工加班量</th>
         <th>备注</th>
       </thead>
@@ -46,9 +46,9 @@
       <thead>
         <th class="col-xh">序号</th>
         <th>领工</th>
-        <th>技工工作量</th>
+        <th>技工人数</th>
         <th>技工加班量</th>
-        <th>力工工作量</th>
+        <th>力工人数</th>
         <th>力工加班量</th>
         <th>备注</th>
       </thead>

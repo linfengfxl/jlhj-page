@@ -31,6 +31,8 @@ module.exports = {
     proxyTable: {
         '/corp': { 
           target: 'http://192.168.2.30:50286', 
+          //target: 'http://192.168.1.60:8086', 
+          //target: 'http://localhost:8086', 
           //target: 'http://192.168.1.52:8086', 
           changeOrigin: false
         } 

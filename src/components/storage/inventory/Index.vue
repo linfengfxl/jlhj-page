@@ -6,12 +6,12 @@
     @onCurrentRowChange="curRowChg"
     :beforeLoad="beforeLoad"
   >
-    <div class="page-title" slot="page-title">劳务用工登记</div>
+    <div class="page-title" slot="page-title">期初库存</div>
     <div class="page-searchbox">
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td class="page-tools">
-            <Button @click="add" v-power icon="plus">登记</Button>&nbsp;
+            <Button @click="add" v-power icon="plus">添加</Button>&nbsp;
           </td>
           <td class="page-tools" v-if="queryForm.status==0"></td>
         </tr>
@@ -55,7 +55,6 @@
 import ListPage from '@/components/page/ListPage';
 import ListPageDetail from '@/components/page/ListPageDetail';
 import DataRowOperate from '@/components/commons/DataRowOperate';
-import UploadBox from '@/components/upload/Index';
 
 import page from '@/assets/js/page';
 
@@ -64,7 +63,6 @@ export default {
     ListPage,
     ListPageDetail,
     DataRowOperate,
-    UploadBox,
   },
   data() {
     let that = this;
@@ -96,89 +94,55 @@ export default {
               }
             });
           }
-        },
-        page.table.initDateColumn({
-          title: '日期',
+        }, {
+          title: '单号',
           key: 'laborDate',
           align: 'center',
           width: 120,
-        }),
+        },
         {
-          title: '工程名称',
+          title: '年度',
           key: 'projectName',
           align: 'left',
           width: 550,
         }, {
-          title: '人员合计',
+          title: '仓库',
           key: 'peopleNumber',
           align: 'center',
           width: 120,
         }, {
-          title: '金额合计',
-          key: 'totalAmount',
-          align: 'right',
-          width: 120,
-        }, {
-          title: ' ', 
+          title: ' ',
         }
       ],
       columns1: [
         {
-          title: '领工',
+          title: '材料编码',
           key: 'leader',
           align: 'left',
           width: 120,
         },
         {
-          title: '技工人数',
+          title: '材料名称',
           key: 'skillWorkload',
           align: 'left',
-          width: 120,
         },
         {
-          title: '技工加班量',
+          title: '规格型号',
           key: 'skillWorkloadOvertime',
           align: 'left',
           width: 120,
         },
         {
-          title: '力工人数',
+          title: '计量单位',
           key: 'strongWorkload',
           align: 'left',
           width: 120,
         },
         {
-          title: '力工加班量',
+          title: '数量',
           key: 'strongWorkloadOvertime',
           align: 'left',
           width: 120,
-        },
-        {
-          title: '金额',
-          key: 'amount',
-          align: 'left',
-          width: 120,
-        },
-        {
-          title: '备注',
-          key: 'remark',
-          align: 'left',
-          minWidth: 80,
-        },
-        {
-          title: '附件',
-          key: 'files',
-          align: 'center',
-          width: 200,
-          render: (h, params) => {
-            var row = params.row;
-            return h(UploadBox, {
-              props: {
-                value: row.files,
-                readonly: true
-              }
-            });
-          }
         }
       ],
       queryForm: {
@@ -226,11 +190,15 @@ export default {
       }
     },
     add() {
-      this.$router.push({ path: '/project/labor/edit?forward' })
+      this.$Message.success('开发中！');
+      return;
+      this.$router.push({ path: '/storage/inventory/edit' })
     },
     edit(row) {
+      this.$Message.success('开发中！');
+      return;
       if (row) {
-        this.$router.push({ path: '/project/labor/edit?forward&projectCode=' + row.projectCode + '&laborDate=' + row.laborDate })
+        this.$router.push({ path: '/storage/inventory/edit?forward&inventoryCode=' + row.inventoryCode })
       }
     },
     del(row) {
