@@ -18,9 +18,9 @@ cfg.forms = [
   {module:'1',key:'jxzyd',title:'机械作业单',startUrl:'/machine/order/start',handleUrl:'/machine/order/handle',viewUrl:'/machine/order/view',defineIds:[12]},  
   {module:'1',key:'jxzljsd',title:'机械租赁结算单',startUrl:'/machine/bill/start',handleUrl:'/machine/bill/handle',viewUrl:'/machine/bill/view',defineIds:[5]},   
   
-  {module:'2',key:'clrkd',title:'材料入库单',startUrl:'/storage/instock/start',handleUrl:'/storage/instock/handle',viewUrl:'/storage/instock/view',defineIds:[2,14]},
+  {module:'2',key:'clrkd',title:'材料入库单',startUrl:'/storage/instock/start',handleUrl:'/storage/instock/handle',viewUrl:'/storage/instock/view',printUrl:'bill/rk/',defineIds:[2,14]},
   {module:'2',key:'clckd',title:'材料出库单',startUrl:'/storage/outstock/start',handleUrl:'/storage/outstock/handle',viewUrl:'/storage/outstock/view',defineIds:[3]},
-  {module:'3',key:'ysxp',title:'运输小票',startUrl:'/transport/order/start',handleUrl:'/transport/order/handle',viewUrl:'/transport/order/view',defineIds:[13]}, 
+  {module:'3',key:'ysxp',title:'运输小票',startUrl:'/transport/order/start',handleUrl:'/transport/order/handle',viewUrl:'/transport/order/view',printUrl:'bill/ysxp/',defineIds:[13]}, 
   {module:'3',key:'ysjsd',title:'运输结算单',startUrl:'/transport/bill/start',handleUrl:'/transport/bill/handle',viewUrl:'/transport/bill/view',defineIds:[6]}, 
 
   {module:'9',key:'sgrb',title:'施工日报',startUrl:'/project/daily',handleUrl:'/project/daily/handle',viewUrl:'/project/daily/view',defineIds:[11]}, 

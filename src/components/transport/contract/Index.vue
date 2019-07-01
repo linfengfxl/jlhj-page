@@ -136,13 +136,13 @@ export default {
           title: '合同名称',
           key: 'contractName',
           align: 'left',
-          width: 120,
+          minWidth: 150,
         },
         {
           title: '工程名称',
           key: 'projectName',
           align: 'left',
-          width: 140,
+          minWidth: 200,
         },
         page.table.initDateColumn({
           title: '签订日期',
@@ -160,7 +160,7 @@ export default {
           title: '供应商名称',
           key: 'providerName',
           align: 'left',
-          minWidth: 120,
+          minWidth: 200,
         },
         {
           title: '供应商联系人',
