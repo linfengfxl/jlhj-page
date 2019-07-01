@@ -23,11 +23,14 @@
           <td class="page-tools">
             <Button @click="add" v-power icon="plus">发起付款计划单</Button>&nbsp;
           </td>
-           <td class="page-tools">
+          <td class="page-tools">
             <UploadButton @on-upload="importExcel"></UploadButton>
           </td>
           <td class="page-tools">
             <Button @click="exportDown" type="info"  icon="ios-download-outline">导出</Button>
+          </td>
+          <td class="page-tools">
+            <Button @click="exportDownModel" type="info"  icon="ios-download-outline">下载模板</Button>
           </td>
         </tr>
       </table>
@@ -302,7 +305,7 @@ export default {
     importExcel(fileId){
       this.$http.post('/api/engine/financial/payPlan/import', {defineId:"4",fileId:fileId}).then((res) => {
         if (res.data.code === 0) {
-          this.$Message.success("导入成功, 添加:"+ res.data.data +"条");
+          this.$Message.success("导入成功, 添加:"+ res.data.data +"条数据");
           this.reset();
         } else {
           this.$Message.error(res.data.message)
@@ -313,6 +316,23 @@ export default {
     },
     exportDown(){
       this.$refs.page.exportDown();
+    },
+    exportDownModel(){
+      this.loading = 1;         
+      this.$http.post('/api/engine/financial/payPlan/list', {_action:'exportModel'}).then((res) => {
+        this.loading = 0;
+        if (res.data.code === 0) { 
+          this.loading = 0;
+          var data = res.data.data;
+          window.open(this.$http.defaults.baseURL + '/api/file/download?fileId=' + data);
+        } else {
+          this.loading = 0;             
+          this.$Message.error(res.data.message);
+        }
+      }).catch((error) => {
+        this.loading = 0;
+        this.$Message.error("请求失败，请重新发送")
+      });
     },
   }
 }

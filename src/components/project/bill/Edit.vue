@@ -127,18 +127,24 @@ export default {
         ]
       },
       list: [],
+      ExcelList: [],
+      fileId:'',//导入文件id
       projectBillCode:'',
       oriItem: {},
     };
   },
   mounted: function () {
     this.projectBillCode = this.$route.query.id;
+    this.fileId = this.$route.query.fileId;
     if (this.projectBillCode) {
       this.pageFlag = 2;
       this.load();
     } else {
       this.pageFlag = 1;
       this.initNew();
+      if(this.fileId){
+        this.importExcel(this.fileId);
+      }
     }
   },
   computed: {
@@ -307,7 +313,45 @@ export default {
     },
     goBack() {
       this.$router.go(-1);
-    }
+    },
+    //导入excel
+    importExcel(fileId){
+      this.$http.post('/api/engine/project/bill/import', {fileId:fileId}).then((res) => {
+        if (res.data.code === 0) {
+          this.ExcelList=res.data.data;
+          //主表
+          this.formItem.projectCode=this.ExcelList[0][0];
+          this.formItem.projectName=this.ExcelList[0][1];
+          this.formItem.projectTeam=this.ExcelList[1][0];
+          this.formItem.calcPeople=this.ExcelList[this.ExcelList.length-1][1];
+          this.formItem.reviewPeople=this.ExcelList[this.ExcelList.length-1][3];
+          this.formItem.auditPeople=this.ExcelList[this.ExcelList.length-1][5];
+          this.formItem.billDate=this.ExcelList[this.ExcelList.length-1][7];
+          this.formItem.totalAmount=this.ExcelList[this.ExcelList.length-2][6];
+          //明细
+          var obj={}
+          for(var i=3;i<this.ExcelList.length-2;i++){
+            if(this.ExcelList[i][0]!=''){
+              obj = {
+                levelCode: this.ExcelList[i][0], 
+                subProjectName: this.ExcelList[i][1], 
+                workload: parseInt(this.ExcelList[i][2]), 
+                unit: this.ExcelList[i][3], 
+                settlePrice: parseInt(this.ExcelList[i][4]), 
+                priceUnit: this.ExcelList[i][5], 
+                amount: parseInt(this.ExcelList[i][6]), 
+                remark: this.ExcelList[i][7], 
+              };
+              this.list.push(obj);
+            }
+          }
+        } else {
+          this.$Message.error(res.data.message)
+        }
+      }).catch((error) => {
+        this.$Message.error(error.toString())
+      });
+    },
   }
 };
 </script>
