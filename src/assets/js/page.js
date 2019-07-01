@@ -14,6 +14,13 @@ page.formatDateTime = function(val) {
   return val;
 }
 
+page.formatDateYear = function(val) {
+  if(val != null &&　typeof(val) == 'object'){
+    return dateFormat(val,'yyyy');
+  } 
+  return val;
+}
+
 
 page.table = {};
 page.$args = Vue.prototype.$args;

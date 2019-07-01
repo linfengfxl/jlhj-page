@@ -1,17 +1,19 @@
 <template>
   <ListPage
     ref="page"
-    api="/api/engine/project/labor/list"
+    api="/api/engine/material/low/list"
     :model="this"
     @onCurrentRowChange="curRowChg"
     :beforeLoad="beforeLoad"
   >
-    <div class="page-title" slot="page-title">劳务用工登记</div>
+    <div class="page-title" slot="page-title">
+      低值耗材结算单
+    </div>
     <div class="page-searchbox">
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td class="page-tools">
-            <Button @click="add" v-power icon="plus">登记</Button>&nbsp;
+            <Button @click="add" v-power icon="plus">添加</Button>&nbsp;
           </td>
           <td class="page-tools" v-if="queryForm.status==0"></td>
         </tr>
@@ -21,14 +23,20 @@
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td>
+            <Input v-model="queryForm.materialLowId" placeholder="单据编号" @keyup.enter.native="query"></Input>
+          </td>
+          <td>
             <Input v-model="queryForm.projectName" placeholder="工程名称" @keyup.enter.native="query"></Input>
+          </td>
+          <td>
+            <Input v-model="queryForm.providerName" placeholder="供应商名称" @keyup.enter.native="query"></Input>
           </td>
           <td>
             <DatePicker
               type="daterange"
-              v-model="queryForm.createTime"
+              v-model="queryForm.billDate"
               split-panels
-              placeholder="日期"
+              placeholder="结算日期"
               style="width: 180px"
               :clearable="true"
               ::transfer="true"
@@ -46,7 +54,7 @@
     <ListPageDetail
       ref="detail"
       slot="page-datatable-detail"
-      api="/api/engine/project/labor/getByProjectList"
+      api="/api/engine/material/low/getDetailList?materialLowId="
       :columns="columns1"
     ></ListPageDetail>
   </ListPage>
@@ -55,7 +63,6 @@
 import ListPage from '@/components/page/ListPage';
 import ListPageDetail from '@/components/page/ListPageDetail';
 import DataRowOperate from '@/components/commons/DataRowOperate';
-import UploadBox from '@/components/upload/Index';
 
 import page from '@/assets/js/page';
 
@@ -63,8 +70,7 @@ export default {
   components: {
     ListPage,
     ListPageDetail,
-    DataRowOperate,
-    UploadBox,
+    DataRowOperate
   },
   data() {
     let that = this;
@@ -82,6 +88,12 @@ export default {
               props: {
                 btns: [{
                   key: 'edit',
+                  //power: 'ckgl.rk.edit',
+                  //disabled: row.status != 0
+                }, {
+                  key: 'delete',
+                  //power: 'ckgl.rk.edit',
+                  //disabled: row.status != 0
                 }]
               },
               on: {
@@ -97,59 +109,84 @@ export default {
             });
           }
         },
-        page.table.initDateColumn({
-          title: '日期',
-          key: 'laborDate',
-          align: 'center',
-          width: 120,
-        }),
+        {
+          title: '单据编号',
+          key: 'materialLowId',
+          width: 140,
+          fixed: 'left',
+          render:(h,params)=>{
+            var row = params.row;
+            return h('a',{
+              props:{
+
+              },
+              on:{
+                click:()=>{
+                  this.$router.push({path:'/storage/low/view?id=' + row.materialLowId});
+                }
+              }
+            },row.materialLowId);
+          }
+        },
         {
           title: '工程名称',
           key: 'projectName',
           align: 'left',
-          width: 550,
-        }, {
-          title: '人员合计',
-          key: 'peopleNumber',
+          width: 140,
+        },
+        page.table.initDateColumn({
+          title: '结算日期',
+          key: 'billDate',
+          width: 100,
           align: 'center',
-          width: 120,
-        }, {
+        }),
+        {
+          title: '部门',
+          key: 'deptName',
+          align: 'left',
+          minWidth: 120,
+        },
+        {
+          title: '供应商名称',
+          key: 'providerName',
+          align: 'left',
+          minWidth: 120,
+        },
+        {
+          title: '供应商联系人',
+          key: 'linkMan',
+          align: 'left',
+          minWidth: 120,
+        },
+        {
           title: '金额合计',
           key: 'totalAmount',
-          align: 'right',
-          width: 120,
-        }, {
-          title: ' ', 
-        }
+          align: 'left',
+          minWidth: 120,
+        },
+        {
+          title: '备注',
+          key: 'remark',
+          align: 'left',
+          minWidth: 150,
+        },
+        {
+          title: '创建人',
+          key: 'creatorName',
+          align: 'center',
+          width: 100,
+        },
+        page.table.initDateColumn({
+          title: '创建日期',
+          key: 'createTime',
+          align: 'center',
+          width: 100,
+        }),
       ],
       columns1: [
         {
-          title: '领工',
-          key: 'leader',
-          align: 'left',
-          width: 120,
-        },
-        {
-          title: '技工人数',
-          key: 'skillWorkload',
-          align: 'left',
-          width: 120,
-        },
-        {
-          title: '技工加班量',
-          key: 'skillWorkloadOvertime',
-          align: 'left',
-          width: 120,
-        },
-        {
-          title: '力工人数',
-          key: 'strongWorkload',
-          align: 'left',
-          width: 120,
-        },
-        {
-          title: '力工加班量',
-          key: 'strongWorkloadOvertime',
+          title: '费用类型',
+          key: 'feeType',
           align: 'left',
           width: 120,
         },
@@ -157,33 +194,14 @@ export default {
           title: '金额',
           key: 'amount',
           align: 'left',
-          width: 120,
-        },
-        {
-          title: '备注',
-          key: 'remark',
-          align: 'left',
-          minWidth: 80,
-        },
-        {
-          title: '附件',
-          key: 'files',
-          align: 'center',
-          width: 200,
-          render: (h, params) => {
-            var row = params.row;
-            return h(UploadBox, {
-              props: {
-                value: row.files,
-                readonly: true
-              }
-            });
-          }
+          minWidth: 120,
         }
       ],
       queryForm: {
+        materialLowId: '',
         projectName: '',
-        createTime: null,
+        providerName:'',
+        billDate: [],
       },
       loading: 0
     }
@@ -197,27 +215,29 @@ export default {
     },
     beforeLoad() {
       var queryParam = this.$refs.page.queryParam;
-      queryParam.createTimeStart = '';
-      queryParam.createTimeEnd = '';
+      queryParam.billDateStart = '';
+      queryParam.billDateEnd = '';
       delete queryParam.createTime;
-      if (this.queryForm.createTime.length > 0) {
-        queryParam.createTimeStart = page.formatDate(this.queryForm.createTime[0]);
+      if (this.queryForm.billDate.length > 0) {
+        queryParam.billDateStart = page.formatDate(this.queryForm.billDate[0]);
       }
-      if (this.queryForm.createTime.length > 1) {
-        queryParam.createTimeEnd = page.formatDate(this.queryForm.createTime[1]);
+      if (this.queryForm.billDate.length > 1) {
+        queryParam.billDateEnd = page.formatDate(this.queryForm.billDate[1]);
       }
     },
     reset() {
       Object.assign(this.queryForm, {
+        materialLowId: '',
         projectName: '',
-        createTime: []//[page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())]
+        providerName:'',
+        billDate: [],
       });
       this.query();
     },
     curRowChg(row) {
       if (row != null) {
         this.curRow = row;
-        this.curRowId = "?projectCode=" + row.projectCode + "&laborDate=" + row.laborDate;
+        this.curRowId = row.materialLowId;
         this.$refs.detail.load(this.curRowId);
       } else {
         this.curRow = null;
@@ -226,11 +246,13 @@ export default {
       }
     },
     add() {
-      this.$router.push({ path: '/project/labor/edit?forward' })
+      this.$router.push({ path: '/storage/low/edit' })
     },
     edit(row) {
       if (row) {
-        this.$router.push({ path: '/project/labor/edit?forward&projectCode=' + row.projectCode + '&laborDate=' + row.laborDate })
+        this.$router.push({
+          path: '/storage/low/edit?id=' + row.materialLowId
+        })
       }
     },
     del(row) {
@@ -240,8 +262,8 @@ export default {
         onOk: () => {
           if (row) {
             this.loading = 1;
-            this.$http.post('/api/engine/storage/instock/delete', {
-              stockBillId: row.stockBillId,
+            this.$http.post('/api/engine/material/low/delete', {
+              materialLowId: row.materialLowId,
             }).then((res) => {
               this.loading = 0;
               if (res.data.code === 0) {

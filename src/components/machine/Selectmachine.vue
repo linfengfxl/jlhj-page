@@ -105,6 +105,11 @@ export default {
           width: 150,
         },
         {
+          title: '规格型号',
+          key: 'machineModel',
+          width: 150,
+        },
+        {
           title: '租赁类型',
           key: 'leaseType',
           width: 150,

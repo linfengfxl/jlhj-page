@@ -50,7 +50,7 @@
           </td>
           <td>
             <InputNumber :max="999999" :min="0" v-model="item.skillWorkload"></InputNumber>
-            <!--技工工作量  -->
+            <!--技工人数  -->
           </td>
           <td>
             <InputNumber :max="999999" :min="0" v-model="item.skillWorkloadOvertime"></InputNumber>
@@ -58,7 +58,7 @@
           </td>
           <td>
             <InputNumber :max="999999" :min="0" v-model="item.strongWorkload"></InputNumber>
-            <!--力工工作量  -->
+            <!--力工人数  -->
           </td>
           <td>
             <InputNumber :max="999999" :min="0" v-model="item.strongWorkloadOvertime"></InputNumber>
@@ -128,9 +128,9 @@ export default {
     listNewRow() {
       var def = {
         id: 0,
-        skillWorkload: null,//技工工作量
+        skillWorkload: null,//技工人数
         skillWorkloadOvertime: null,//技工加班量
-        strongWorkload: null,//力工工作量
+        strongWorkload: null,//力工人数
         strongWorkloadOvertime: null,//力工工作加班量
         amount: null,//金额
         remak: '',

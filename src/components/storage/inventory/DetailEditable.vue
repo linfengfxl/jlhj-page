@@ -9,16 +9,7 @@
         <th>单位</th>
         <th>
           <span>数量</span>
-        </th>
-        <th  v-if="$user.hasPower('wdsx.ckdxgjg')">
-          <span>含税单价(元)</span>
-        </th>
-        <th>
-          <span>施工部位</span>
-        </th>
-        <th>
-          <span>产成品名称</span>
-        </th>
+        </th> 
       </thead>
       <tbody>
         <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
@@ -42,20 +33,7 @@
           <td class="col-quantity">
             {{item.quantity}}
             <!--  数量 -->
-          </td>
-          <td class="col-price"  v-if="$user.hasPower('wdsx.ckdxgjg')">
-            <!--  含税单价(元) -->
-            <template v-if="editprice">
-              <InputNumber
-                :max="999999"
-                :min="0"
-                v-model="item.taxUnitPrice" 
-              ></InputNumber> 
-            </template>
-            <template v-else>{{item.taxUnitPrice}}</template>
-          </td>
-          <td>{{item.constructionSite}}</td>
-          <td>{{item.productName}}</td>
+          </td> 
         </tr>
       </tbody>
     </table>
@@ -69,14 +47,7 @@
         <th>单位</th>
         <th class="col-quantity">
           <span>数量</span>
-        </th>
-        <th class="col-price"  v-if="$user.hasPower('wdsx.ckdxgjg')">含税单价(元)</th>
-        <th>
-          <span>施工部位</span>
-        </th>
-        <th>
-          <span>产成品名称</span>
-        </th>
+        </th> 
       </thead>
       <tbody>
         <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
@@ -102,24 +73,12 @@
           </td>
           <td class="col-quantity">
             <!--  数量 -->
-            <InputNumber :max="999999" :min="0" v-model="item.quantity"></InputNumber>
-          </td>
-          <td class="col-price" v-if="$user.hasPower('wdsx.ckdxgjg')">
-            <!--  含税单价(元) -->
             <InputNumber
               :max="999999"
               :min="0"
-              v-model="item.taxUnitPrice" 
-            ></InputNumber> 
-          </td>
-          <td>
-            <!-- 施工部位 -->
-            <Input v-model="item.constructionSite"/>
-          </td>
-          <td>
-            <!-- 产成品名称 -->
-            <Input v-model="item.productName"/>
-          </td>
+              v-model="item.quantity" 
+            ></InputNumber>
+          </td> 
         </tr>
       </tbody>
     </table>
@@ -173,8 +132,8 @@ export default {
 
   },
   computed: {},
-  watch: { 
-    
+  watch: {
+   
   },
   methods: {
     load() {
@@ -183,7 +142,7 @@ export default {
     listNewRow() {
       var def = {
         id: 0,
-        type: 2,//出库
+        type: 1,//入库
         materCode: '',//材料编号
         materName: '',//材料名称
         spec: '',//规格型号
@@ -213,11 +172,7 @@ export default {
       if (this.curIndex == -1) {
         this.curIndex = 0;
       }
-    },
-    datePickerChange(item, args) {
-      item.needDate = args[0];
-    },
-
+    },  
     selMater(row) {
       var selmaterial = this.$refs.selmaterial;
       selmaterial.show({
@@ -229,7 +184,7 @@ export default {
           row.materCode = data.materCode;
           row.materName = data.materName;
           row.spec = data.spec;
-          row.unit = data.unit;
+          row.unit = data.unit; 
         }
       });
     },
