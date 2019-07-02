@@ -189,7 +189,7 @@ export default {
       this.$http.post('/api/engine/machine/type/list', {status:1}).then((res) => {
         if (res.data.code === 0) {
           this.loading = 0;
-          Object.assign(this.machineModels, res.data.data.rows);
+          this.machineModels=res.data.data.rows;
         } else {
           this.loading = 0;
           this.$Message.error(res.data.message)
