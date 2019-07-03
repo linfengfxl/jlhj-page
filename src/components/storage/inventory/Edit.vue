@@ -43,7 +43,7 @@
         </Form>
       </div>
       <div>
-        <div class="subheader">单据明细</div> 
+        <div class="subheader">单据明细</div>
         <UploadButton v-if="formItem.deptId" @on-upload="importExcel"></UploadButton>
         <div style="height:5px;"></div>
         <Alert v-if="!formItem.deptId">请选择仓库</Alert>
@@ -103,7 +103,7 @@ export default {
         year: [
           { required: true, message: '请选择年度', trigger: 'change', pattern: /.+/ }
         ],
-        projectCode : [
+        projectCode: [
           { required: true, message: '请选择工程名称', trigger: 'change', pattern: /.+/ }
         ],
       },
@@ -140,9 +140,9 @@ export default {
         this.loading = 0;
         if (res.data.code == 0) {
           if (res.data.data) {
-            this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')'); 
+            this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
             console.log(res.data.data);
-            Object.assign(this.formItem, res.data.data.detailList[0]); 
+            Object.assign(this.formItem, res.data.data.detailList[0]);
             this.list = res.data.data.detailList;
           } else {
             this.$Message.error('订单不存在！');
@@ -168,7 +168,10 @@ export default {
               materName: item["材料名称"],
               spec: item["规格型号"],
               unit: item["单位"],
-              quantity: 0//数量
+              quantity: item["数量"]//数量
+            }
+            if (_.findIndex(that.list, { 'materCode': it.materCode }) >= 0) {
+              continue;
             }
             that.list.push(it);
           }

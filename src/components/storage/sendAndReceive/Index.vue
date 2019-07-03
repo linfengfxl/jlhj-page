@@ -45,6 +45,7 @@
 import Edit from '@/components/project/Edit';
 import ListPage from '@/components/page/ListPage';
 import DataRowOperate from '@/components/commons/DataRowOperate';
+import page from '@/assets/js/page';
 
 export default {
   components: {
@@ -123,6 +124,8 @@ export default {
         deptName: '',
         projectName: '',
         materName: '',
+        year: '',
+        createTime: [],
         page: '',
         pageSize: ''
       },
@@ -136,14 +139,30 @@ export default {
   computed: {},
   methods: {
     beforeLoad() {
-
+      var queryParam = this.$refs.page.queryParam;
+      queryParam.createTimeStart = '';
+      queryParam.createTimeEnd = '';
+      delete queryParam.createTime;
+      if (this.queryForm.createTime.length > 0) {
+        queryParam.createTimeStart = page.formatDate(this.queryForm.createTime[0]);
+        queryParam.year = page.formatDateYear(this.queryForm.createTime[0]);
+      }
+      if (this.queryForm.createTime.length > 1) {
+        queryParam.createTimeEnd = page.formatDate(this.queryForm.createTime[1]);
+      }
     },
     query() {
       this.$refs.page.query();
     },
     reset: function () {
       // 清空条件
-      this.queryForm.keyword = '';
+      Object.assign(this.queryForm, {
+        projectName: '',
+        deptName: '',
+        materName: '',
+        year: '',
+        createTime: []//[page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())]
+      });
       this.query();
     },
     select: function (selection) {
