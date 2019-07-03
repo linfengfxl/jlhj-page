@@ -46,6 +46,7 @@ import Edit from '@/components/project/Edit';
 import ListPage from '@/components/page/ListPage';
 import DataRowOperate from '@/components/commons/DataRowOperate';
 import page from '@/assets/js/page';
+import floatObj from '@/assets/js/floatObj';
 
 export default {
   components: {
@@ -115,6 +116,11 @@ export default {
           key: '',
           align: 'center',
           width: 100,
+          render: (h, params) => {
+            var row = params.row;
+            //subtract
+            return h('span',floatObj.subtract(floatObj.add(row["期初数量"], row["收入数量"]),row["发出数量"]) );
+          }
         }
       ],
       list: [],
