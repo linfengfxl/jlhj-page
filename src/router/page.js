@@ -155,6 +155,12 @@ components.push({ component: 'transport/contract/View', name: '', path: '/transp
 
 // 系统日志
 components.push({ component: 'logger/Index', name: '', path: '/logger' })
+
+//分包管理
+//分包需求计划
+components.push({ component: 'sub/plan/Index', name: '', path: '/sub/plan' })
+components.push({ component: 'sub/plan/Edit', name: '', path: '/sub/plan/edit' })
+components.push({ component: 'sub/plan/View', name: '', path: '/sub/plan/view' })
 // //2.销售合同 -->
 // //客户
 // components.push({ component: 'customer/Index', name: '', path: '/customer' })
