@@ -35,6 +35,7 @@ components.push({ component: 'storage/inventory/Edit', name: '', path: '/storage
 components.push({ component: 'storage/inventory/Handle', name: '', path: '/storage/inventory/handle' })
 components.push({ component: 'storage/inventory/View', name: '', path: '/storage/inventory/view' })  
 
+components.push({ component: 'storage/sendAndReceive/Index', name: '', path: '/storage/sendAndReceive' })
 
 //低值耗材结算单
 components.push({ component: 'storage/low/Index', name: '', path: '/storage/low' })

@@ -33,7 +33,7 @@
               :clearable="true"
               ::transfer="true"
             ></DatePicker>
-          </td> -->
+          </td>-->
           <td>
             <Button @click="query" type="primary" icon="ios-search">查询</Button>
           </td>
@@ -104,28 +104,28 @@ export default {
           title: '年度',
           key: 'year',
           align: 'left',
-          width: 550,
+          width: 150,
         }, {
           title: '仓库',
           key: 'deptName',
-          align: 'center',
-          width: 120,
+          align: 'left',
+          width: 220,
         }, {
-          title: ' ',
+          title: '工程名称',
+          key: 'projectName',
+          align: 'left',
         }
       ],
       columns1: [
         {
           title: '物料代码',
           key: 'materCode',
-          fixed: 'left',
           align: 'left',
           width: 120,
         },
         {
           title: '物料名称',
           key: 'materName',
-          fixed: 'left',
           align: 'left',
           width: 120,
         },

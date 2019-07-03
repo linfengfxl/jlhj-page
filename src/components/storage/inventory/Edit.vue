@@ -14,9 +14,9 @@
         <Form ref="form" class="page-form" :model="formItem" :rules="formRules" :label-width="120">
           <table cellspacing="0" cellpadding="0">
             <colgroup>
-              <col width="33%">
-              <col width="auto">
-              <col width="33%">
+              <col width="33%" />
+              <col width="auto" />
+              <col width="33%" />
             </colgroup>
             <tr>
               <td>
@@ -29,13 +29,23 @@
                   <Date-picker type="year" placeholder="选择日期" v-model="formItem.year"></Date-picker>
                 </FormItem>
               </td>
-              <td></td>
+              <td>
+                <FormItem prop="projectCode" label="工程名称">
+                  <SelectProject
+                    v-model="formItem.projectCode"
+                    :model="formItem"
+                    :text="formItem.projectName"
+                  />
+                </FormItem>
+              </td>
             </tr>
           </table>
         </Form>
       </div>
       <div>
         <div class="subheader">单据明细</div>
+        <UploadButton v-if="formItem.deptId" @on-upload="importExcel"></UploadButton>
+        <div style="height:5px;"></div>
         <Alert v-if="!formItem.deptId">请选择仓库</Alert>
         <Editable
           ref="editable"
@@ -58,10 +68,12 @@
 import Loading from '@/components/loading';
 import LayoutHor from '@/components/layout/LayoutHor';
 import SelStorage from '@/components/storage/input/SelStorage';//仓库部门
+import SelectProject from "@/components/page/form/SelectProject";
 import Editable from './DetailEditable';
 import page from '@/assets/js/page';
 import floatObj from '@/assets/js/floatObj';
 import pagejs from '@/assets/js/page';
+import UploadButton from '@/components/upload/UploadButton';
 
 export default {
   components: {
@@ -69,7 +81,8 @@ export default {
     LayoutHor,
     Editable,
     SelStorage,
-
+    SelectProject,
+    UploadButton
   },
   data() {
     return {
@@ -80,6 +93,8 @@ export default {
         inventoryCode: '',// 
         deptId: '',//所属部门 
         year: '',
+        projectCode: '',
+        projectName: ''
       },
       formRules: {
         deptId: [
@@ -88,13 +103,16 @@ export default {
         year: [
           { required: true, message: '请选择年度', trigger: 'change', pattern: /.+/ }
         ],
+        projectCode: [
+          { required: true, message: '请选择工程名称', trigger: 'change', pattern: /.+/ }
+        ],
       },
       list: [],
       oriItem: {},
       storage: []
     }
   },
-  mounted: function () { 
+  mounted: function () {
     this.formItem.inventoryCode = this.$route.query.inventoryCode;
     if (this.formItem.inventoryCode) {
       this.pageFlag = 2;
@@ -117,12 +135,13 @@ export default {
   methods: {
     load() {
       this.loading = 1;
-      
-       this.$http.post("/api/engine/material/inventory/getInventoryCodeByList?inventoryCode=" + this.formItem.inventoryCode).then((res) => {
+
+      this.$http.post("/api/engine/material/inventory/getInventoryCodeByList?inventoryCode=" + this.formItem.inventoryCode).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
           if (res.data.data) {
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
+            console.log(res.data.data);
             Object.assign(this.formItem, res.data.data.detailList[0]);
             this.list = res.data.data.detailList;
           } else {
@@ -138,6 +157,33 @@ export default {
       });
 
     },
+    importExcel(fileId) {
+      var that = this;
+      this.$http.post('/api/engine/material/inventory/import', { fileId: fileId }).then((res) => {
+        if (res.data.code === 0) {
+          for (var i = 0; i < res.data.data.length; i++) {
+            var item = res.data.data[i];
+            var it = {
+              materCode: item["材料编码"],
+              materName: item["材料名称"],
+              spec: item["规格型号"],
+              unit: item["单位"],
+              quantity: item["数量"]//数量
+            }
+            if (_.findIndex(that.list, { 'materCode': it.materCode }) >= 0) {
+              continue;
+            }
+            that.list.push(it);
+          }
+          this.$Message.success("导入成功, 添加:" + res.data.data.length + "条");
+
+        } else {
+          this.$Message.error(res.data.message)
+        }
+      }).catch((error) => {
+        this.$Message.error(error.toString())
+      });
+    },
     initNew() {
       Object.assign(this.formItem, {
         inventoryCode: '',//
@@ -152,7 +198,7 @@ export default {
     save() {
       var form = {
         detailList: []
-      }; 
+      };
       Object.assign(form, this.formItem);
       form.year = page.formatDateYear(form.year);
 
@@ -175,10 +221,10 @@ export default {
           if (item.quantity == 0) {
             this.$Message.error(msg + '请录入数量');
             return;
-          } 
+          }
           form.detailList.push(item);
         }
-      } 
+      }
       // 提交
       this.loading = 1;
       var uri = '/api/engine/material/inventory/add';
