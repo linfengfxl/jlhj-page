@@ -1,8 +1,8 @@
 <template>
   <ListPage
     ref="page"
-    title="机械"
-    api="/api/engine/machine/list"
+    title="机械类别"
+    api="/api/engine/machine/type/list"
     :model="this"
     :beforeLoad="beforeLoad"
   >
@@ -19,17 +19,13 @@
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td>
-            <Input v-model="queryForm.keyword" placeholder="名称" @on-enter="query"/>
+            <Input v-model="queryForm.keyword" placeholder="编码/名称" @on-enter="query"/>
           </td>
           <td>
             <Button @click="query" type="primary" icon="ios-search">查询</Button>
           </td>          
           <td>
             <Button @click="reset" type="default">重置</Button>
-          </td>
-          <td width="40"></td>
-          <td>
-            <Button @click="printQr" type="info" icon="printer" >打印二维码</Button>
           </td>
         </tr>
       </table>
@@ -38,10 +34,10 @@
   </ListPage>
 </template>
 <script>    
-import Edit from '@/components/machine/Edit';
+import Edit from '@/components/machine/type/Edit';
 import ListPage from '@/components/page/ListPage';
 import DataRowOperate from '@/components/commons/DataRowOperate';
-
+import page from '@/assets/js/page';
 export default {
   components: {
     Edit,
@@ -94,47 +90,38 @@ export default {
           }
         },
         {
-          title: '编码',
-          key: 'machineCode',
-          width: 100,
-        },
-        {
-          title: '名称',
-          key: 'machineName',
-          width: 150,
-        },
-        {
-          title: '型号',
+          title: '型号编码',
           key: 'machineModel',
           width: 150,
         },
         {
-          title: '租赁类型',
-          key: 'leaseType',
+          title: '型号名称',
+          key: 'materName',
+          minWidth: 150,
+        },
+        {
+          title: '规格',
+          key: 'spec',
+          width: 150,
+        },
+        {
+          title: '计量单位',
+          key: 'unit',
           width: 150,
           render: (h, params) => {
             var row = params.row;
-            return h('label', this.$args.getArgText('lease_type', row.leaseType));
+            return h('label', this.$args.getArgText('unit', row.unit));
           }
         },
-        {
-          title: '备注',
-          key: 'remark',
-          align: 'left',
-          minWidth: 150
-        },
-        {
-          title: '创建人',
-          key: 'creatorName',
-          align: 'center',
-          width: 100,
-        },
-        {
-          title: '创建时间',
-          key: 'createTime',
-          align: 'center',
-          width: 160,
-        }
+        page.table.initMapColumn({
+          title: '状态',
+          key: 'status',
+          width:60,
+          data: {
+            '1': '正常',
+            '2': '失效',
+          }
+        }),
       ],
       list: [],
       total: 0,
@@ -153,10 +140,6 @@ export default {
   },
   computed: {},
   methods: {
-    goTab(index) {
-      var pages = ['/admin', '/machine'];
-      this.$router.push({ path: pages[index] });
-    },
     beforeLoad() {
 
     },
@@ -173,7 +156,7 @@ export default {
     },
     rowCommand: function (name, params) {
       if (name === '编辑') {
-        this.updateItem(params.row.machineCode);
+        this.updateItem(params.row.id);
         return;
       }
       if (name === '删除') {
@@ -181,7 +164,7 @@ export default {
           title: '删除确认',
           content: '<p>删除后不能恢复，确定删除已选择的记录吗？</p>',
           onOk: () => {
-            this.$http.post('/api/engine/machine/delete?id=' + params.row.id, {}).then((res) => {
+            this.$http.post('/api/engine/machine/type/delete?id=' + params.row.id, {id:params.row.id}).then((res) => {
               if (res.data.code === 0) {
                 this.$Message.success("删除成功");
                 $.extend(this.queryForm, this.queryParam);
@@ -204,9 +187,6 @@ export default {
     },
     updateItem: function (code) {
       this.$refs.edit.open(code);
-    },
-    printQr(){
-      window.open('./machine/print?keyword=' + encodeURI(this.$refs.page.queryParam.keyword));
     },
   }
 }
