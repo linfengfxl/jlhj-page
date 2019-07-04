@@ -118,8 +118,8 @@ export default {
           width: 100,
           render: (h, params) => {
             var row = params.row;
-            //subtract
-            return h('span',floatObj.subtract(floatObj.add(row["期初数量"], row["收入数量"]),row["发出数量"]) );
+            //subtract 
+            return h('span', floatObj.subtract(floatObj.add(row["期初数量"], row["收入数量"]), row["发出数量"], 0));
           }
         }
       ],

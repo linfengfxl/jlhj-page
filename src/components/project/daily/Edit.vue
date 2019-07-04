@@ -12,55 +12,82 @@
       <Form ref="form" class="page-form" :model="formItem" :rules="formRules" :label-width="120">
         <table cellspacing="0" cellpadding="0">
           <colgroup>
-            <col width="50%">
-            <col width="50%">
+            <col width="50%" />
+            <col width="50%" />
           </colgroup>
           <tr>
             <td>
               <FormItem label="本日进行" prop="dayWork">
-                <Input type="textarea" :rows="2" v-model="formItem.dayWork"/>
+                <Input type="textarea" :rows="2" v-model="formItem.dayWork" />
               </FormItem>
             </td>
             <td>
               <FormItem label="明日计划" prop="nextDayPlan">
-                <Input type="textarea" :rows="2" v-model="formItem.nextDayPlan"/>
+                <Input type="textarea" :rows="2" v-model="formItem.nextDayPlan" />
               </FormItem>
             </td>
           </tr>
-          <!-- <tr>
-              <td colspan="2">
-                <FormItem label="班前教育" prop></FormItem>
-              </td>
-          </tr>-->
+          <tr>
+            <td>
+              <FormItem label="技工人数" prop>
+                <InputNumber :max="999999" :min="0" v-model="formItem.skillWorkload"></InputNumber>
+              </FormItem>
+            </td>
+            <td>
+              <FormItem label="力工人数" prop>
+                <InputNumber :max="999999" :min="0" v-model="formItem.strongWorkload"></InputNumber>
+              </FormItem>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <FormItem label="工作内容" prop>
+                <Input type="textarea" :rows="1" v-model="formItem.remark" />
+              </FormItem>
+            </td>
+          </tr>
         </table>
       </Form>
     </div>
+    <div class="subheader">完成工作项</div>
+    <Editable ref="editable" :list="list" :editable="true" :projectCode="projectCode"></Editable>
     <div>
-      <div class="subheader">完成工作项</div>
-      <Editable ref="editable" :list="list" :editable="true" :projectCode="projectCode"></Editable>
       <div
         class="demo-tabs-style1"
         style="background: #e3e8ee;padding:2px;width:100%; margin-top:30px;"
       >
         <Tabs type="card">
-          <TabPane label="劳务用工" name="name1">
-            <div class="page-datatable">
-              <i-table :columns="columns1" :data="lwygList"></i-table>
-            </div>
-          </TabPane>
           <TabPane label="入库单" name="name2">
             <div class="page-datatable">
-              <i-table :columns="columns2" :data="rkdList"></i-table>
+              <SelectRkd
+                ref="selectRkd"
+                :list="rkdList"
+                :editable="true"
+                :projectCode="projectCode"
+              ></SelectRkd>
+              <!-- <i-table :columns="columns2" :data="rkdList"></i-table> -->
             </div>
           </TabPane>
           <TabPane label="机械作业单" name="name3">
             <div class="page-datatable">
-              <i-table :columns="columns3" :data="jxzydList"></i-table>
+              <SelectJxzyd
+                ref="selectJxzyd"
+                :list="jxzydList"
+                :editable="true"
+                :projectCode="projectCode"
+              ></SelectJxzyd>
+              <!-- <i-table :columns="columns3" :data="jxzydList"></i-table> -->
             </div>
           </TabPane>
           <TabPane label="运输小票" name="name4">
             <div class="page-datatable">
-              <i-table :columns="columns4" :data="ysxpList"></i-table>
+              <SelectYsxp
+                ref="selectYsxp"
+                :list="ysxpList"
+                :editable="true"
+                :projectCode="projectCode"
+              ></SelectYsxp>
+              <!-- <i-table :columns="columns4" :data="ysxpList"></i-table> -->
             </div>
           </TabPane>
         </Tabs>
@@ -95,12 +122,18 @@ import pagejs from '@/assets/js/page';
 import ListPageDetail from '@/components/page/ListPageDetail';
 import UploadBox from '@/components/upload/Index';
 import StartProcess from '@/components/workflow/process/Start';
+import SelectRkd from './SelectRkd';
+import SelectJxzyd from './SelectJxzyd';
+import SelectYsxp from './SelectYsxp';
 
 export default {
   components: {
     Loading,
     LayoutHor,
     Editable,
+    SelectRkd,
+    SelectJxzyd,
+    SelectYsxp,
     ListPageDetail,
     //Editable2,
     SelStorage,
@@ -122,6 +155,9 @@ export default {
         dailyId: '',//日报编号
         dayWork: '',//本日进行
         nextDayPlan: '',//明日计划   
+        skillWorkload: '',//技工人数
+        strongWorkload: '',//力工人数
+        remark: '',//工作内容
       },
       formRules: {
         dayWork: [
@@ -134,72 +170,12 @@ export default {
         ],
       },
       list: [],
-      lwygList: [],
       rkdList: [],
       jxzydList: [],
       ysxpList: [],
       nowDate: '',
       oriItem: {},
       storage: [],
-      columns1: [
-        {
-          title: '领工',
-          key: 'leader',
-          align: 'left',
-          width: 120,
-        },
-        {
-          title: '技工人数',
-          key: 'skillWorkload',
-          align: 'left',
-          width: 120,
-        },
-        {
-          title: '技工加班量',
-          key: 'skillWorkloadOvertime',
-          align: 'left',
-          width: 120,
-        },
-        {
-          title: '力工人数',
-          key: 'strongWorkload',
-          align: 'left',
-          width: 120,
-        },
-        {
-          title: '力工加班量',
-          key: 'strongWorkloadOvertime',
-          align: 'left',
-          width: 120,
-        },
-        {
-          title: '金额',
-          key: 'amount',
-          align: 'left',
-          width: 120,
-        },
-        {
-          title: '备注',
-          key: 'remark',
-          align: 'left',
-          minWidth: 80,
-        },
-        {
-          title: '附件',
-          key: 'files',
-          align: 'center',
-          width: 200,
-          render: (h, params) => {
-            var row = params.row;
-            return h(UploadBox, {
-              props: {
-                value: row.files,
-                readonly: true
-              }
-            });
-          }
-        }
-      ],
       columns2: [
         {
           title: '单号',
@@ -547,10 +523,8 @@ export default {
       this.pageFlag = 1;
       this.initNew();
     }
-    this.loadlwygList();
-    this.loadrkdList();
-    this.loadjxzydList();
-    this.loadysxpList();
+    // this.loadjxzydList();
+    // this.loadysxpList();
   },
   computed: {
     pageTitle() {
@@ -568,32 +542,23 @@ export default {
   methods: {
     load() {
       this.loading = 1;
-      this.$http.post("/api/engine/project/daily/get", { dailyId: this.dailyId }).then((res) => {
+      this.$http.post("/api/engine/project/daily/getPc", { dailyId: this.dailyId }).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
           if (res.data.data) {
             console.log(res.data.data);
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
             Object.assign(this.formItem, res.data.data);
-            this.list = res.data.data.detailList;
+            this.list = res.data.data.workloadList;
+            for (var i = 0; i < res.data.data.detailList.length; i++) {
+              var item = res.data.data.detailList[i];
+              if (item.type == 1) {
+                this.rkdList.push({ "stockBillId": item.invoiceCode });
+              }
+            }
           } else {
             this.$Message.error('订单不存在！');
             this.goBack();
-          }
-        } else {
-          this.$Message.error(res.data.message);
-        }
-      }).catch((error) => {
-        this.loading = 0;
-        this.$Message.error("操作失败！")
-      });
-    },
-    loadlwygList: function () {
-      this.$http.post("/api/engine/project/labor/getByProjectList?projectCode=" + this.formItem.projectCode + "&laborDate=" + this.nowDate + " 00:00:00", {}).then((res) => {
-        this.loading = 0;
-        if (res.data.code == 0) {
-          if (res.data.data) {
-            this.lwygList = res.data.data.detailList;
           }
         } else {
           this.$Message.error(res.data.message);
@@ -674,7 +639,8 @@ export default {
     },
     save(proc) {
       var form = {
-        detailList: []
+        detailList: [],
+        workloadList: [],
       };
       Object.assign(form, this.formItem);
       var pass = true;
@@ -688,6 +654,7 @@ export default {
       }
 
       form.detailList = [];
+      form.workloadList = [];
       // 明细
       for (var i = 0; i < this.list.length; i++) {
         var item = this.list[i];
@@ -715,20 +682,25 @@ export default {
             this.$Message.error(msg + '请录入累计完成工程比');
             return;
           }
-          form.detailList.push(item);
+          form.workloadList.push(item);
         }
       }
-      if (form.detailList.length == 0) {
+      debugger
+      if (form.workloadList.length == 0) {
         this.$Message.error('请至少填写一项分部分项工程名');
         return;
       }
-
+      for (var i = 0; i < this.rkdList.length; i++) {
+        var item = this.rkdList[i];
+        var it = { "type": 1, "invoiceCode": item.stockBillId }
+        form.detailList.push(it);
+      }
       form.proc = proc.formItem;
       // 提交
       this.loading = 1;
-      var uri = '/api/engine/project/daily/add';
+      var uri = '/api/engine/project/daily/addPc';
       if (this.pageFlag == 2) {
-        uri = '/api/engine/project/daily/update';
+        uri = '/api/engine/project/daily/updatePc';
       }
 
       this.$http.post(uri, form).then((res) => {
