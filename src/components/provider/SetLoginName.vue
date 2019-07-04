@@ -11,7 +11,7 @@
             class="form-item"
           >
             <FormItem label="账号" prop="loginName">
-              <Input v-model="formItem.loginName" :disabled="isEdit == 1" class="width-1"/>
+              <Input v-model="formItem.loginName" :disabled="isEdit == 1" class="width-1" placeholder="不超过64个字符"/>
             </FormItem>
             <FormItem label="密码" prop="password">
               <Input v-model="formItem.password" placeholder="不超过64个字符"/>
@@ -53,11 +53,11 @@ export default {
       ruleValidate: {
         loginName: [
           { required: true, whitespace: true, message: '账号不能为空', trigger: 'blur' },
-          { type: 'string', max: 50, message: '不能超过50个字', trigger: 'blur' }
+          { type: 'string', max: 50, message: '不能超过64个字', trigger: 'blur' }
         ],
         password: [
           { required: true, whitespace: true, message: '密码不能为空', trigger: 'blur' },
-          { type: 'string', max: 50, message: '不能超过50个字', trigger: 'blur' }
+          { type: 'string', max: 50, message: '不能超过64个字', trigger: 'blur' }
         ],
       }
     }

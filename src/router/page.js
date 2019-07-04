@@ -162,6 +162,10 @@ components.push({ component: 'logger/Index', name: '', path: '/logger' })
 components.push({ component: 'sub/plan/Index', name: '', path: '/sub/plan' })
 components.push({ component: 'sub/plan/Edit', name: '', path: '/sub/plan/edit' })
 components.push({ component: 'sub/plan/View', name: '', path: '/sub/plan/view' })
+//分包合同
+components.push({ component: 'sub/contract/Index', name: '', path: '/sub/contract' })
+components.push({ component: 'sub/contract/Edit', name: '', path: '/sub/contract/edit' })
+components.push({ component: 'sub/contract/View', name: '', path: '/sub/contract/view' })
 // //2.销售合同 -->
 // //客户
 // components.push({ component: 'customer/Index', name: '', path: '/customer' })

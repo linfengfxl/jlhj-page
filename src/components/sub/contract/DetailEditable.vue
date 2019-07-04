@@ -6,11 +6,13 @@
         <th>分包工序</th>
         <th>工作内容</th>
         <th>计量单位</th>
-        <th class="col-quantity">计划工作量</th>
-        <th class="col-price">分包单价</th>
-        <th class="col-price">合价</th>
-        <th class="col-quantity">累计计划工程量</th>
-        <th>备注</th>
+        <th class="col-quantity">工作量</th>
+        <th class="col-price">含税单价</th>
+        <th class="col-price">单价</th>
+        <th class="col-price">金额</th>
+        <th class="col-price">税额</th>
+        <th class="col-price">价税合计</th>
+        <th>备注</th>     
       </thead>
       <tbody>
         <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
@@ -24,21 +26,27 @@
           <td>
             {{$args.getArgText('unit',item.unit)}}
           </td>
-          <td class="col-quantity">
-            {{item.planWorkload}}
+          <td>
+            {{item.workload}}
           </td>
           <td class="col-price">
-            {{item.subPrice}}
+            {{item.taxUnitPrice}}
           </td>
+           <td class="col-price">
+            {{item.unitPrice}}
+          </td > 
           <td class="col-price">
             {{item.amount}}
           </td>
-          <td class="col-quantity">
-            {{item.totalWorkload}}
+           <td class="col-price">
+            {{item.tax}}
+          </td>
+          <td class="col-price">
+            {{item.totalAmount}}
           </td>
           <td>
             {{item.remark}}
-          </td>
+          </td>  
         </tr>
       </tbody>
     </table>
@@ -49,10 +57,13 @@
         <th>分包工序</th>
         <th>工作内容</th>
         <th>计量单位</th>
-        <th class="col-quantity">计划工作量</th>
-        <th class="col-price">分包单价</th>
-        <th class="col-price">合价</th>
-        <th>备注</th>
+        <th class="col-quantity">工作量</th>
+        <th class="col-price">含税单价</th>
+        <th class="col-price">单价</th>
+        <th class="col-price">金额</th>
+        <th class="col-price">税额</th>
+        <th class="col-price">价税合计</th>
+        <th>备注</th>     
       </thead>
       <tbody>
         <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
@@ -60,7 +71,7 @@
             {{index+1}}
             <!--  序号 -->
           </td>
-          <td>
+         <td>
             <Input v-model="item.subProcess" style="width: 150px;"></Input> 
           </td>
           <td>
@@ -79,20 +90,29 @@
             <InputNumber
               :max="999999"
               :min="0"
-              v-model="item.planWorkload"
+              v-model="item.workload"
               @on-change="onAmountChange(item)"
             ></InputNumber>
           </td>
-          <td class="col-quantity">
+          <td class="col-price">
             <InputNumber
               :max="999999"
               :min="0"
-              v-model="item.subPrice"
+              v-model="item.taxUnitPrice"
               @on-change="onAmountChange(item)"
             ></InputNumber>
           </td>
-           <td class="col-quantity">
-           {{item.amount}}
+          <td class="col-price">
+            {{item.unitPrice}}
+          </td>
+          <td class="col-price">
+            {{item.amount}}
+          </td>
+          <td class="col-price">
+            {{item.tax}}
+          </td>
+          <td class="col-price">
+            {{item.totalAmount}}
           </td>
           <td>
             <Input v-model="item.remark" style="width: 200px;"></Input> 
@@ -115,6 +135,10 @@ export default {
       default: function () {
         var arr = [];
       }
+    },
+    taxRate: {
+      type: Object,
+      default: null
     },
     model: {
       type: Object,
@@ -152,10 +176,13 @@ export default {
         subProcess: '',
         content: '',
         unit: '',
-        planWorkload: 0,
-        subPrice: 0,
+        workload: 0,
+        taxUnitPrice: 0,
+        unitPrice: 0,
         amount: 0,
-        remark: '',
+        tax: 0,
+        totalAmount: 0,
+        remark:'',
       };
       return def;
     },
@@ -177,13 +204,18 @@ export default {
     },
     onAmountChange(item){
       var total = {
-        planWorkload:0,
-        amount:0,
+        totalWorkload:0,
+        totalAmount:0,
+        totalTaxAmount:0,
       };
-      item.amount=parseFloat(floatObj.multiply(item.planWorkload,item.subPrice));
+      item.unitPrice=parseFloat(floatObj.multiply(item.taxUnitPrice,floatObj.subtract(1,this.taxRate.taxRate)));//单价
+      item.amount=parseFloat(floatObj.multiply(item.workload,item.unitPrice));//金额
+      item.tax=parseFloat(floatObj.multiply(this.taxRate.taxRate,floatObj.multiply(item.workload,item.taxUnitPrice)));//税额
+      item.totalAmount=parseFloat(floatObj.multiply(item.workload,item.taxUnitPrice));//价税合计
       this.list.map(mater => {
-        total.planWorkload = parseFloat(floatObj.add(total.planWorkload, mater.planWorkload));
-        total.amount = parseFloat(floatObj.add(total.amount, mater.amount));
+        total.totalWorkload = parseFloat(floatObj.add(total.totalWorkload, mater.workload));
+        total.totalAmount = parseFloat(floatObj.add(total.totalAmount, mater.amount));
+        total.totalTaxAmount = parseFloat(floatObj.add(total.totalTaxAmount, mater.totalAmount));
       });
       this.$emit("on-amount-change", total);
     },

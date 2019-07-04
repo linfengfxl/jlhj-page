@@ -18,98 +18,68 @@
               <col width="auto">
               <col width="33%">
             </colgroup>
-            <tr>
+             <tr>
               <td>
-                <FormItem label="合同编号" prop="machineContractId">
-                  {{formItem.machineContractId}}
+                <FormItem label="单据编号" prop="subPlanId">
+                  {{formItem.subPlanId}}
                 </FormItem>
               </td>
-              <td>
-                <FormItem label="合同名称" prop="contractName">
-                  {{formItem.contractName}}
-                </FormItem>
-              </td>
-              <td>
+               <td>
                 <FormItem prop="projectCode" label="工程名称">
                   {{formItem.projectName}}
                 </FormItem>
               </td>
-            </tr>
-            <tr>
               <td>
-                <FormItem label="签订日期" prop>
-                  {{formItem.signDate}}
-                </FormItem>
-              </td>
-              <td>
-                <FormItem label="签订份数" prop="signNum"> 
-                  {{formItem.signNum}}
-                </FormItem>
-              </td>
-              <td>
-                <FormItem prop="providerCode" label="供应商">
-                  {{formItem.providerName}}
+                <FormItem prop="subType" label="分包类型">
+                  {{formItem.subType}}
                 </FormItem>
               </td>
             </tr>
             <tr>
               <td>
-                <FormItem label="联系人" prop>{{formItem.linkMan}}</FormItem>
-              </td>
-              <td>
-                <FormItem label="付款方式" prop="payWay">
-                  {{$args.getArgText('pay_way',formItem.payWay)}}
+                <FormItem prop="levelCode" label="分包项目">
+                  {{formItem.subProjectNames}}
                 </FormItem>
               </td>
               <td>
-                <FormItem label="预付款" prop>
-                  {{formItem.prepayment}}
-                </FormItem>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <FormItem label="质保金金额" prop="warranty">
-                  {{formItem.warranty}}
+                <FormItem label="分包进场日期" prop="entryDate">
+                  {{formItem.entryDate}}
                 </FormItem>
               </td>
               <td>
-                <FormItem label="税率" prop>
-                  {{formItem.taxRate1}}%
-                </FormItem>
-              </td>
-              <td>
-                <FormItem label="租赁方式" prop="leaseType">
-                  {{$args.getArgText('lease_type',formItem.leaseType)}}
-                </FormItem>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <FormItem prop="leasePrice" label="租赁价格">
-                  {{formItem.leasePrice}}
-                </FormItem>
-              </td>
-              <td>
-                <FormItem label="合同状态" prop>
-                  {{formItem.statusToString}}
-                </FormItem>
-              </td>
-              <td>
-                <FormItem label="合同要点" prop="contractPoint">
-                   {{formItem.contractPoint}}
+                <FormItem label="分包退场日期" prop="exitDate">
+                  {{formItem.exitDate}}
                 </FormItem>
               </td>
             </tr>
             <tr>
                <td>
-                <FormItem label="专项条款" prop="specialTerms">
-                   {{formItem.specialTerms}}
+                <FormItem label="工期" prop="duration"> 
+                   {{formItem.duration}}
+                </FormItem>
+              </td>
+              <td colspan="2">
+                <FormItem label="分包原因" prop="reason">
+                  {{formItem.reason}}
+                </FormItem>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="3">
+                <FormItem prop="files" label="附件">
+                  <UploadBox v-model="formItem.files" :readonly="true"></UploadBox>
+                </FormItem>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <FormItem label="数量合计" prop="planWorkload">
+                  {{formItem.planWorkload}}
                 </FormItem>
               </td>
               <td>
-                <FormItem label="风险项" prop="riskItem">
-                  {{formItem.riskItem}}
+                <FormItem label="金额合计" prop="amount">
+                  {{formItem.amount}}
                 </FormItem>
               </td>
             </tr>
@@ -136,61 +106,51 @@ import LayoutHor from '@/components/layout/LayoutHor';
 import Editable from './DetailEditable';
 import page from '@/assets/js/page';
 import floatObj from '@/assets/js/floatObj';
-import SelStorage from '@/components/storage/input/SelStorage';//仓库部门
 import SelectProject from '@/components/page/form/SelectProject';//工程名称
-import SelectMember from '@/components/page/form/SelectMember';//收料员
-import SelectProvider from '@/components/page/form/SelectProvider';//供应商
-import pagejs from '@/assets/js/page';
+import UploadBox from '@/components/upload/Index';
 export default {
   components: {
     Loading,
     LayoutHor,
     Editable,
-    SelStorage,
     SelectProject,
-    SelectMember,
-    SelectProvider,
+    UploadBox
   },
   data() {
     return {
       loading: 0,
-      machineContractId: '',
+      subPlanId: '',
       pageFlag: 1,//1.新建 2.编辑 3.修订
       isEdit: 0,
       formItem: {
-        machineContractId: '',//合同编号
-        contractName: '',//合同名称
+        subPlanId: '',//单据编号
         projectCode: '',//对应工程
         projectName: '',//对应工程
-        signDate: '',//签订日期
-        signNum: 0,//签定份数
-        providerCode: '',//供应商
-        providerName: '',//供应商名称
-        linkMan: '',//供应商联系人
-        payWay: '',//付款方式:从字典中选择
-        prepayment: 0,//  预付款
-        warranty: 0,//    质保金
-        taxRate: '',//    税率
-        taxRate1: 0,//    税率
-        leaseType:'',//租赁方式
-        leasePrice:0,//租赁价格
-        contractPoint: '',//    合同要点
-        specialTerms: '',//   专项条款
-        riskItem: '',//   风险项 
-        status: 1,//  合同状态 1.执行中 2.终止 3.已结算 4.解除 5关闭 
-        statusToString:'', 
+        subType: '',//分包类型
+        levelCode:'',
+        subProjectName:'',
+        entryDate:'',
+        exitDate:'',
+        duration: 0,
+        reason: '',
+        files: '',
+        planWorkload: 0,
+        amount: 0,   
       },
       formRules: {
       },
       list: [],
       oriItem: {},
-      status: ['','执行中','终止','已结算','解除','关闭']
+      subTypes: [
+        {code:'劳务分包',text:'劳务分包'},
+        {code:'专业分包',text:'专业分包'},
+      ],
     }
   },
   
   mounted: function () {
-    this.machineContractId = this.$route.query.id;
-    if (this.machineContractId) {
+    this.subPlanId = this.$route.query.id;
+    if (this.subPlanId) {
       this.pageFlag = 2;
       this.load();
     } else {
@@ -201,38 +161,31 @@ export default {
   computed: {
     pageTitle() {
       if (this.pageFlag == 1) {
-        return '机械租赁合同 - 创建';
+        return '分包需求计划 - 创建';
       }
       if (this.pageFlag == 2) {
-        return '机械租赁合同 - 查看';
+        return '分包需求计划 - 查看';
       }
     }
   },
   methods: {
-    selProvider(data) {
-      if (data) {
-        this.formItem.providerName = data.providerName;
-        this.formItem.providerCode = data.providerCode;
-        this.formItem.linkMan = data.linkMan;//供应商联系人
-      }
-    },
     load() { 
       this.loading = 1;
-      this.$http.post("/api/engine/machine/contract/get", { machineContractId: this.machineContractId }).then((res) => {
+      this.$http.post("/api/engine/sub/plan/get", { subPlanId: this.subPlanId }).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
           if (res.data.data) {
-            console.log(res.data.data);
-            if(res.data.data.signDate!=null){
-              res.data.data.signDate = res.data.data.signDate.length>=10?res.data.data.signDate.substring(0,10):res.data.data.signDate;  
+            if(res.data.data.entryDate!=null){
+              res.data.data.entryDate = res.data.data.entryDate.length>=10?res.data.data.entryDate.substring(0,10):res.data.data.entryDate; 
+            }
+            if(res.data.data.exitDate!=null){
+              res.data.data.exitDate = res.data.data.exitDate.length>=10?res.data.data.exitDate.substring(0,10):res.data.data.exitDate; 
             }
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
             Object.assign(this.formItem, res.data.data);
-            this.formItem.statusToString = this.status[this.formItem.status];
-            this.formItem.taxRate1 = floatObj.multiply(this.formItem.taxRate, 100);//税率
             this.list = res.data.data.detailList;
           } else {
-            this.$Message.error('合同不存在！');
+            this.$Message.error('单据不存在！');
             this.goBack();
           }
         } else {
@@ -245,82 +198,23 @@ export default {
     },
     initNew() {
       Object.assign(this.formItem, {
-        machineContractId: '',//合同编号
-        contractName: '',//合同名称
+        subPlanId: '',//单据编号
         projectCode: '',//对应工程
         projectName: '',//对应工程
-        signDate: '',//签订日期
-        signNum: 0,//签定份数
-        providerCode: '',//供应商
-        providerName: '',//供应商名称
-        linkMan: '',//供应商联系人
-        payWay: '',//付款方式:从字典中选择
-        prepayment: 0,//  预付款
-        warranty: 0,//    质保金
-        taxRate: '',//    税率
-        taxRate1: 0,//   税率
-        leaseType:'',//租赁方式
-        leasePrice:0,//租赁价格
-        contractPoint: '',//    合同要点
-        specialTerms: '',//   专项条款
-        riskItem: '',//   风险项 
-        status: '1',//  合同状态 1.执行中 2.终止 3.已结算 4.解除 5关闭  
-        statusToString:'', 
+        subType: '',//分包类型
+        levelCode:'',
+        subProjectName:'',
+        entryDate:'',
+        exitDate:'',
+        duration: 0,
+        reason: '',
+        files: '',
+        planWorkload: 0,
+        amount: 0,   
       });
       this.list = [];
       this.list.push(this.$refs.editable.listNewRow());
       this.list.push(this.$refs.editable.listNewRow());
-    },
-    save(proc) {
-      var form = {
-        detailList: []
-      };
-      Object.assign(form, this.formItem);
-      form.signDate = page.formatDate(form.signDate);
-      form.taxRate = floatObj.multiply(form.taxRate1, 0.01);//税率
-      var pass = true;
-      this.$refs.form.validate((valid) => {
-        pass = valid;
-      })
-
-      if (!pass) {
-        this.$Message.error('验证未通过！');
-        return;
-      }
-
-      form.detailList = []; 
-      // 明细
-      for (var i = 0; i < this.list.length; i++) {
-        var item = this.list[i];
-        var msg = '明细第 ' + (i + 1) + ' 行，';
-        if (item.machineCode != '') {
-          if (item.taxUnitPrice == 0) {
-            this.$Message.error(msg + '请录入数量');
-            return;
-          }
-          form.detailList.push(item);
-        }
-      }
-
-      // 提交
-      this.loading = 1;
-      var uri = '/api/engine/machine/contract/add';
-      if (this.pageFlag == 2) {
-        uri = '/api/engine/machine/contract/update';
-      }
-
-      this.$http.post(uri, form).then((res) => {
-        this.loading = 0;
-        if (res.data.code == 0) {
-          this.$Message.success("操作成功！");
-          this.goBack();
-        } else {
-          this.$Message.error(res.data.message);
-        }
-      }).catch((error) => {
-        this.loading = 0;
-        this.$Message.error("请求失败，请重新操作")
-      });
     },
     reset() {
       if (this.pageFlag == 1) {

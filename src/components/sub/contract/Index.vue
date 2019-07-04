@@ -1,13 +1,13 @@
 <template>
   <ListPage
     ref="page"
-    api="/api/engine/sub/plan/list"
+    api="/api/engine/sub/contract/list"
     :model="this"
     @onCurrentRowChange="curRowChg"
     :beforeLoad="beforeLoad"
   >
     <div class="page-title" slot="page-title">
-      分包需求计划
+      分包合同
     </div>
     <div class="page-searchbox">
       <table cellpadding="0" cellspacing="0">
@@ -15,35 +15,35 @@
           <td class="page-tools">
             <Button @click="add" v-power icon="plus">添加</Button>&nbsp;
           </td>
+          <td class="page-tools" v-if="queryForm.status==0"></td>
         </tr>
       </table>
     </div>
     <div class="page-searchbox">
       <table cellpadding="0" cellspacing="0">
         <tr>
-          <td style="width:60px;">
-            工程名称
-          </td>
-          <td >
-            <Input v-model="queryForm.projectName" placeholder="工程名称" @keyup.enter.native="query"></Input>
-          </td>
-          <td style="width:60px;">
-            分包项目
-          </td>
-          <td >
-            <Input v-model="queryForm.subProjectName" placeholder="分包项目" @keyup.enter.native="query"></Input>
-          </td>
-          <td style="width:60px;">
-            分包类型
+          <td>
+            <Input v-model="queryForm.subContractCode" placeholder="合同编码" @keyup.enter.native="query"></Input>
           </td>
           <td>
-            <Select v-model="queryForm.subType" style="width:150px;" >
-              <Option
-                v-for="item in subTypes"
-                :value="item.code"
-                :key="item.code"
-              >{{ item.text }}</Option>
-            </Select>
+            <Input v-model="queryForm.subContractName" placeholder="合同名称" @keyup.enter.native="query"></Input>
+          </td>
+          <td>
+            <Input v-model="queryForm.projectName" placeholder="工程名称" @keyup.enter.native="query"></Input>
+          </td>
+          <td>
+            <Input v-model="queryForm.providerName" placeholder="供应商名称" @keyup.enter.native="query"></Input>
+          </td>
+          <td>
+            <DatePicker
+              type="daterange"
+              v-model="queryForm.createTime"
+              split-panels
+              placeholder="创建日期"
+              style="width: 180px"
+              :clearable="true"
+              ::transfer="true"
+            ></DatePicker>
           </td>
           <td>
             <Button @click="query" type="primary" icon="ios-search">查询</Button>
@@ -57,7 +57,7 @@
     <ListPageDetail
       ref="detail"
       slot="page-datatable-detail"
-      api="/api/engine/sub/plan/getDetailList?subPlanId="
+      api="/api/engine/sub/contract/getDetailList?subContractId="
       :columns="columns1"
     ></ListPageDetail>
   </ListPage>
@@ -66,7 +66,6 @@
 import ListPage from '@/components/page/ListPage';
 import ListPageDetail from '@/components/page/ListPageDetail';
 import DataRowOperate from '@/components/commons/DataRowOperate';
-import UploadBox from '@/components/upload/Index';
 
 import page from '@/assets/js/page';
 import floatObj from '@/assets/js/floatObj';
@@ -75,8 +74,7 @@ export default {
   components: {
     ListPage,
     ListPageDetail,
-    DataRowOperate,
-    UploadBox
+    DataRowOperate
   },
   data() {
     let that = this;
@@ -117,7 +115,7 @@ export default {
         },
         {
           title: '单据编号',
-          key: 'subPlanId',
+          key: 'subContractId',
           width: 140,
           fixed: 'left',
           render:(h,params)=>{
@@ -128,81 +126,128 @@ export default {
               },
               on:{
                 click:()=>{
-                  this.$router.push({path:'/sub/plan/view?id=' + row.subPlanId});
+                  this.$router.push({path:'/sub/contract/view?id=' + row.subContractId});
                 }
               }
-            },row.subPlanId);
+            },row.subContractId);
           }
+        },
+        {
+          title: '合同编码',
+          key: 'subContractCode',
+          width: 140,
+          align: 'left',
+        },
+        {
+          title: '合同名称',
+          key: 'subContractName',
+          align: 'left',
+          minWidth: 150,
         },
         {
           title: '工程名称',
           key: 'projectName',
           align: 'left',
-          minWidth: 150,
+          minWidth: 200,
+        },
+        {
+          title: '和同性质',
+          key: 'subContractNature',
+          align: 'left',
+          minWidth: 200,
+        },
+        page.table.initDateColumn({
+          title: '签订日期',
+          key: 'signDate',
+          width: 100,
+          align: 'center',
+        }),
+        {
+          title: '签订份数',
+          key: 'signNum',
+          align: 'center',
+          width: 100,
+        },
+        {
+          title: '合同金额',
+          key: 'amount',
+          align: 'left',
+          minWidth: 120,
         },
         {
           title: '分包类型',
           key: 'subType',
-          align: 'center',
-          width: 100,
+          align: 'left',
+          width: 120,
         },
         {
           title: '分包项目',
           key: 'subProjectName',
-          align: 'center',
-          minWidth: 150,
-        },
-        page.table.initDateColumn({
-          title: '分包进场日期',
-          key: 'entryDate',
-          width: 100,
-          align: 'center',
-        }),
-        page.table.initDateColumn({
-          title: '分包退场日期',
-          key: 'exitDate',
-          width: 100,
-          align: 'center',
-        }),
-        {
-          title: '工期',
-          key: 'duration',
-          align: 'center',
-          width: 100,
+          align: 'left',
+          width: 120,
         },
         {
-          title: '分包原因',
-          key: 'reason',
-          align: 'center',
+          title: '结算方式',
+          key: 'settleMethod',
+          align: 'left',
+          width: 120,
+        },
+        {
+          title: '供应商名称',
+          key: 'providerName',
+          align: 'left',
+          minWidth: 200,
+        },
+        {
+          title: '供应商联系人',
+          key: 'linkMan',
+          align: 'left',
           minWidth: 120,
         },
         {
-          title: '附件',
-          key: 'files',
-          align: 'center',
-          width: 200,
-          render:(h,params)=>{
+          title: '付款方式',
+          key: 'payWay',
+          align: 'left',
+          width: 120,
+          render: (h, params) => {
             var row = params.row;
-            return h(UploadBox,{
-              props:{
-                value:row.files,
-                readonly:true
-              }
-            });
+            return h('span', this.$args.getArgText('pay_way',row.payWay));
           }
         },
         {
-          title: '数量合计',
-          key: 'planWorkload',
+          title: '预付款',
+          key: 'prepayment',
           align: 'left',
-          width: 120,
+          minWidth: 120,
         },
         {
-          title: '金额合计',
-          key: 'amount',
+          title: '质保金',
+          key: 'warranty',
           align: 'left',
-          width: 120,
+          minWidth: 120,
         },
+        {
+          title: "税率",
+          key: "taxRate",
+          width: 90,
+          align: "center",
+          render: (h, params) => {
+            var row = params.row;
+            return h('span', floatObj.multiply(row.taxRate, 100) + "%");
+          }
+        },
+        page.table.initMapColumn({
+          title: '合同状态',
+          key: 'status',
+          width: 100,
+          data: {
+            '1': '执行中',
+            '2': '终止',
+            '3': '已结算',
+            '4': '解除',
+            '5': '关闭',
+          }
+        }),
         {
           title: '创建人',
           key: 'creatorName',
@@ -237,28 +282,40 @@ export default {
           width: 100
         }),
         {
-          title: '计划工作量',
-          key: 'planWorkload',
+          title: '工作量',
+          key: 'workload',
           align: 'left',
           width: 120,
         },
         {
-          title: '分包单价',
-          key: 'subPrice',
+          title: '含税单价',
+          key: 'taxUnitPrice',
           align: 'left',
           width: 120,
         },
         {
-          title: '合价',
+          title: '单价',
+          key: 'unitPrice',
+          align: 'left',
+          width: 120,
+        },
+        {
+          title: '金额',
           key: 'amount',
           align: 'left',
           width: 120,
         },
         {
-          title: '累计计划工程量',
-          key: 'totalWorkload',
+          title: '税额',
+          key: 'tax',
           align: 'left',
-          width: 150,
+          width: 120,
+        },
+        {
+          title: '价税合计',
+          key: 'totalAmount',
+          align: 'left',
+          width: 120,
         },
         {
           title: '备注',
@@ -269,14 +326,12 @@ export default {
         
       ],
       queryForm: {
+        subContractCode: '',
+        subContractName: '',
         projectName: '',
-        subProjectName: '',
-        subType: '',
+        providerName: '',
+        createTime: [],
       },
-      subTypes: [
-        {code:'劳务分包',text:'劳务分包'},
-        {code:'专业分包',text:'专业分包'},
-      ],
       loading: 0
     }
   },
@@ -288,19 +343,31 @@ export default {
       this.$refs.page.query();
     },
     beforeLoad() {
+      var queryParam = this.$refs.page.queryParam;
+      queryParam.createTimeStart = '';
+      queryParam.createTimeEnd = '';
+      delete queryParam.createTime;
+      if (this.queryForm.createTime.length > 0) {
+        queryParam.createTimeStart = page.formatDate(this.queryForm.createTime[0]);
+      }
+      if (this.queryForm.createTime.length > 1) {
+        queryParam.createTimeEnd = page.formatDate(this.queryForm.createTime[1]);
+      }
     },
     reset() {
       Object.assign(this.queryForm, {
+        subContractCode: '',
+        subContractName: '',
         projectName: '',
-        subProjectName: '',
-        subType: '',
+        providerName: '',
+        createTime: [],
       });
       this.query();
     },
     curRowChg(row) {
       if (row != null) {
         this.curRow = row;
-        this.curRowId = row.subPlanId;
+        this.curRowId = row.subContractId;
         this.$refs.detail.load(this.curRowId);
       } else {
         this.curRow = null;
@@ -309,12 +376,12 @@ export default {
       }
     },
     add() {
-      this.$router.push({ path: '/sub/plan/edit' })
+      this.$router.push({ path: '/sub/contract/edit' })
     },
     edit(row) {
       if (row) {
         this.$router.push({
-          path: '/sub/plan/edit?id=' + row.subPlanId
+          path: '/sub/contract/edit?id=' + row.subContractId
         })
       }
     },
@@ -325,8 +392,8 @@ export default {
         onOk: () => {
           if (row) {
             this.loading = 1;
-            this.$http.post('/api/engine/sub/plan/delete', {
-              subPlanId: row.subPlanId,
+            this.$http.post('/api/engine/sub/contract/delete', {
+              subContractId: row.subContractId,
             }).then((res) => {
               this.loading = 0;
               if (res.data.code === 0) {

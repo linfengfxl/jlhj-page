@@ -21,7 +21,7 @@
             <tr>
               <td>
                 <FormItem label="单据编号" prop="subPlanId">
-                  <Input v-model="formItem.subPlanId" readonly class="width-1" placeholder="自动生成"/>
+                  <Input v-model="formItem.subPlanId" disabled  class="width-1" placeholder="自动生成"/>
                 </FormItem>
               </td>
                <td>
@@ -39,22 +39,21 @@
                   <Select v-model="formItem.subType" style="width:100%" >
                     <Option
                       v-for="item in subTypes"
-                      :value="item.argCode"
-                      :key="item.argCode"
-                    >{{ item.argText }}</Option>
+                      :value="item.code"
+                      :key="item.code"
+                    >{{ item.text }}</Option>
                   </Select>
                 </FormItem>
               </td>
             </tr>
             <tr>
               <td>
-                <FormItem prop="subProjectName" label="分包项目">
-                  <Select v-model="formItem.subProjectName" style="width:100%" >
+                <FormItem prop="levelCode" label="分包项目">
+                  <Select v-model="formItem.levelCode" style="width:100%" @on-change="selSubProjectName()">
                     <Option
                       v-for="item in subProjectNames"
-                      :value="item.subProjectName"
-                      :key="item.subProjectName"
-                      @on-select="selSubProjectName"
+                      :value="item.levelCode"
+                      :key="item.levelCode"
                     >{{ item.subProjectName }}</Option>
                   </Select>
                 </FormItem>
@@ -66,6 +65,7 @@
                     style="width:100%"
                     v-model="formItem.entryDate"
                     format="yyyy-MM-dd"
+                    @on-change="getDuration"
                   ></Date-picker>
                 </FormItem>
               </td>
@@ -76,6 +76,7 @@
                     style="width:100%"
                     v-model="formItem.exitDate"
                     format="yyyy-MM-dd"
+                    @on-change="getDuration"
                   ></Date-picker>
                 </FormItem>
               </td>
@@ -102,12 +103,12 @@
             <tr>
               <td>
                 <FormItem label="数量合计" prop="planWorkload">
-                  <Input  v-model="formItem.planWorkload" readonly/>
+                  {{formItem.planWorkload}}
                 </FormItem>
               </td>
               <td>
                 <FormItem label="金额合计" prop="amount">
-                  <Input  v-model="formItem.amount" readonly/>
+                  {{formItem.amount}}
                 </FormItem>
               </td>
             </tr>
@@ -116,7 +117,7 @@
       </div>
       <div>
         <div class="subheader">单据明细</div>
-        <Editable ref="editable" :list="list" :editable="true" :model="formItem"></Editable>
+        <Editable ref="editable" :list="list" :editable="true" :model="formItem" @on-amount-change="onAmountChange"></Editable>
       </div>
       <table class="savebar" cellpadding="0" cellspacing="0">
         <tr>
@@ -134,20 +135,16 @@ import LayoutHor from '@/components/layout/LayoutHor';
 import Editable from './DetailEditable';
 import page from '@/assets/js/page';
 import floatObj from '@/assets/js/floatObj';
-import SelStorage from '@/components/storage/input/SelStorage';//仓库部门
 import SelectProject from '@/components/page/form/SelectProject';//工程名称
-import SelectMember from '@/components/page/form/SelectMember';//收料员
-import SelectProvider from '@/components/page/form/SelectProvider';//供应商
+import UploadBox from '@/components/upload/Index';
 import pagejs from '@/assets/js/page';
 export default {
   components: {
     Loading,
     LayoutHor,
     Editable,
-    SelStorage,
     SelectProject,
-    SelectMember,
-    SelectProvider,
+    UploadBox
   },
   data() {
     return {
@@ -234,6 +231,22 @@ export default {
         });
       }
     },
+    getDuration(){
+      if(this.formItem.entryDate!=''&&this.formItem.exitDate!=''){
+        var sdate = new Date(this.formItem.entryDate); 
+      　 var now = new Date(this.formItem.exitDate); 
+      　 var days = now.getTime() - sdate.getTime(); 
+      　 var day = parseInt(days / (1000 * 60 * 60 * 24)); 
+      　　this.formItem.duration=day+1;
+      }
+    },
+    selSubProjectName(){
+      this.subProjectNames.map((item)=>{
+        if(this.formItem.levelCode==item.levelCode){
+          this.formItem.subProjectName=item.subProjectName;
+        }
+      })      
+    },
     load() { 
       this.loading = 1;
       this.$http.post("/api/engine/sub/plan/get", { subPlanId: this.subPlanId }).then((res) => {
@@ -243,6 +256,7 @@ export default {
             console.log(res.data.data);
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
             Object.assign(this.formItem, res.data.data);
+            this.selProject();
             this.list = res.data.data.detailList;
           } else {
             this.$Message.error('合同不存在！');
@@ -298,10 +312,10 @@ export default {
       for (var i = 0; i < this.list.length; i++) {
         var item = this.list[i];
         var msg = '明细第 ' + (i + 1) + ' 行，';
-        if (item.sub_process == '') {
-            this.$Message.error(msg + '请录入分包工序');
-            return;
-          }
+        if (item.subProcess == '') {
+          this.$Message.error(msg + '请录入分包工序');
+          return;
+        }
 
           form.detailList.push(item);
       }
@@ -325,6 +339,10 @@ export default {
         this.loading = 0;
         this.$Message.error("请求失败，请重新操作")
       });
+    },
+    onAmountChange(total){
+      this.formItem.planWorkload=total.planWorkload;
+      this.formItem.amount=total.amount;
     },
     reset() {
       if (this.pageFlag == 1) {
