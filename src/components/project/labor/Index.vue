@@ -111,16 +111,17 @@ export default {
           title: '人员合计',
           key: 'totalWorkload',
           align: 'center',
-          width: 120,
+          width: 140,
         }, {
           title: '金额合计',
           key: 'totalAmount',
-          align: 'right',
-          width: 120,
+          align: 'center',
+          width: 140,
         }, {
           title: '附件',
           key: 'files',
           align: 'center',
+          width: 300,
           render: (h, params) => {
             var row = params.row;
             return h(UploadBox, {
