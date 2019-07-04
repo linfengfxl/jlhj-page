@@ -63,7 +63,7 @@ export default {
           width: 550,
         }, {
           title: '人数',
-          key: 'peopleNumber',
+          key: 'totalWorkload',
           align: 'center',
           width: 120,
         }, {

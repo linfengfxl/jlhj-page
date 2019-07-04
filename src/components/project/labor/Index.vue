@@ -107,69 +107,21 @@ export default {
           title: '工程名称',
           key: 'projectName',
           align: 'left',
-          width: 550,
         }, {
           title: '人员合计',
-          key: 'peopleNumber',
+          key: 'totalWorkload',
           align: 'center',
-          width: 120,
+          width: 140,
         }, {
           title: '金额合计',
           key: 'totalAmount',
-          align: 'right',
-          width: 120,
+          align: 'center',
+          width: 140,
         }, {
-          title: ' ', 
-        }
-      ],
-      columns1: [
-        {
-          title: '领工',
-          key: 'leader',
-          align: 'left',
-          width: 120,
-        },
-        {
-          title: '技工人数',
-          key: 'skillWorkload',
-          align: 'left',
-          width: 120,
-        },
-        {
-          title: '技工加班量',
-          key: 'skillWorkloadOvertime',
-          align: 'left',
-          width: 120,
-        },
-        {
-          title: '力工人数',
-          key: 'strongWorkload',
-          align: 'left',
-          width: 120,
-        },
-        {
-          title: '力工加班量',
-          key: 'strongWorkloadOvertime',
-          align: 'left',
-          width: 120,
-        },
-        {
-          title: '金额',
-          key: 'amount',
-          align: 'left',
-          width: 120,
-        },
-        {
-          title: '备注',
-          key: 'remark',
-          align: 'left',
-          minWidth: 80,
-        },
-        {
           title: '附件',
           key: 'files',
           align: 'center',
-          width: 200,
+          width: 300,
           render: (h, params) => {
             var row = params.row;
             return h(UploadBox, {
@@ -179,6 +131,30 @@ export default {
               }
             });
           }
+        }
+      ],
+      columns1: [
+        {
+          title: '领工',
+          key: 'leader',
+          align: 'center',
+          width: 200,
+        },
+        {
+          title: '人数',
+          key: 'workload',
+          align: 'center',
+          width: 200,
+        },
+        {
+          title: '金额',
+          key: 'amount',
+          align: 'center',
+          width: 200,
+        },
+        {
+          title: ' ',
+          key: '',
         }
       ],
       queryForm: {
@@ -217,7 +193,7 @@ export default {
     curRowChg(row) {
       if (row != null) {
         this.curRow = row;
-        this.curRowId = "?projectCode=" + row.projectCode + "&laborDate=" + row.laborDate;
+        this.curRowId = "?laborId=" + row.laborId;
         this.$refs.detail.load(this.curRowId);
       } else {
         this.curRow = null;
@@ -230,7 +206,7 @@ export default {
     },
     edit(row) {
       if (row) {
-        this.$router.push({ path: '/project/labor/edit?forward&projectCode=' + row.projectCode + '&laborDate=' + row.laborDate })
+        this.$router.push({ path: '/project/labor/edit?forward&id=' + row.laborId })
       }
     },
     del(row) {
