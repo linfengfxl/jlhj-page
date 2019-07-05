@@ -166,6 +166,10 @@ components.push({ component: 'sub/plan/View', name: '', path: '/sub/plan/view' }
 components.push({ component: 'sub/contract/Index', name: '', path: '/sub/contract' })
 components.push({ component: 'sub/contract/Edit', name: '', path: '/sub/contract/edit' })
 components.push({ component: 'sub/contract/View', name: '', path: '/sub/contract/view' })
+//分包完工验收单
+components.push({ component: 'sub/accept/Index', name: '', path: '/sub/accept' })
+components.push({ component: 'sub/accept/Edit', name: '', path: '/sub/accept/edit' })
+components.push({ component: 'sub/accept/View', name: '', path: '/sub/accept/view' })
 // //2.销售合同 -->
 // //客户
 // components.push({ component: 'customer/Index', name: '', path: '/customer' })

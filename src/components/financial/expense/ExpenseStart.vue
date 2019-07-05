@@ -164,18 +164,6 @@ export default {
         catalog:[
           { required: true, whitespace: true, message: '该项为非空', trigger: 'change' }
         ],
-        projectId: [
-          { required: true, whitespace: true, message: '该项为非空', trigger: 'change' }
-        ],
-        bankOpen:[
-          { required: true, whitespace: true, message: '该项为非空', trigger: 'change' }
-        ],
-        bankAccName:[
-          { required: true, whitespace: true, message: '该项为非空', trigger: 'change' }
-        ],
-        bankAccount:[
-          { required: true, whitespace: true, message: '该项为非空', trigger: 'change' }
-        ],
         payWay: [
           { required: true, whitespace: true, message: '该项为非空', trigger: 'change' }
         ], 

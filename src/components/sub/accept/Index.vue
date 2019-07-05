@@ -1,13 +1,13 @@
 <template>
   <ListPage
     ref="page"
-    api="/api/engine/accept/plan/list"
+    api="/api/engine/sub/accept/list"
     :model="this"
     @onCurrentRowChange="curRowChg"
     :beforeLoad="beforeLoad"
   >
     <div class="page-title" slot="page-title">
-      分包需求计划
+      分包完工验收单
     </div>
     <div class="page-searchbox">
       <table cellpadding="0" cellspacing="0">
@@ -126,7 +126,7 @@ export default {
           title: '验收时间',
           key: 'acceptDate',
           align: 'center',
-          width: 100,
+          width: 150,
         },
         {
           title: '供应商名称',
@@ -156,7 +156,7 @@ export default {
           title: '要求整改时间',
           key: 'rectificationDate',
           align: 'center',
-          width: 120,
+          width: 150,
         },
         {
           title: '参加验收人员',
@@ -197,13 +197,8 @@ export default {
       ],
       queryForm: {
         projectName: '',
-        subProjectName: '',
-        subType: '',
+        providerName: '',
       },
-      subTypes: [
-        {code:'劳务分包',text:'劳务分包'},
-        {code:'专业分包',text:'专业分包'},
-      ],
       loading: 0
     }
   },
@@ -219,27 +214,26 @@ export default {
     reset() {
       Object.assign(this.queryForm, {
         projectName: '',
-        subProjectName: '',
-        subType: '',
+        providerName: '',
       });
       this.query();
     },
     curRowChg(row) {
       if (row != null) {
         this.curRow = row;
-        this.curRowId = row.subPlanId;
+        this.curRowId = row.subAccepCode;
       } else {
         this.curRow = null;
         this.curRowId = null;
       }
     },
     add() {
-      this.$router.push({ path: '/sub/plan/edit' })
+      this.$router.push({ path: '/sub/accept/edit' })
     },
     edit(row) {
       if (row) {
         this.$router.push({
-          path: '/sub/plan/edit?id=' + row.subPlanId
+          path: '/sub/accept/edit?id=' + row.subAccepCode
         })
       }
     },
@@ -250,8 +244,8 @@ export default {
         onOk: () => {
           if (row) {
             this.loading = 1;
-            this.$http.post('/api/engine/sub/plan/delete', {
-              subPlanId: row.subPlanId,
+            this.$http.post('/api/engine/sub/accept/delete', {
+              subAccepCode: row.subAccepCode,
             }).then((res) => {
               this.loading = 0;
               if (res.data.code === 0) {
