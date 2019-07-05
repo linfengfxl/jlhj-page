@@ -151,7 +151,7 @@ export default {
           minWidth: 200,
         },
         {
-          title: '和同性质',
+          title: '合同性质',
           key: 'subContractNature',
           align: 'left',
           minWidth: 200,
