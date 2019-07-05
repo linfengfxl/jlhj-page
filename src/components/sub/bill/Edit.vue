@@ -30,7 +30,6 @@
                     v-model="formItem.projectCode"
                     :model="formItem"
                     :text="formItem.projectName"
-                    @on-select="selProject"
                   />
                 </FormItem>
               </td>
@@ -72,6 +71,8 @@
                   />
                 </FormItem>
               </td>
+            </tr>
+            <tr>
               <td>
                 <FormItem label="联系人" prop>{{formItem.linkMan}}</FormItem>
               </td>
@@ -90,6 +91,8 @@
                   ></Date-picker>
                 </FormItem>
               </td>
+            </tr>
+            <tr>
               <td>
                 <FormItem label="结算结束日期" prop="settleEndDate">
                   <Date-picker
@@ -153,6 +156,7 @@ import Editable from './DetailEditable';
 import page from '@/assets/js/page';
 import floatObj from '@/assets/js/floatObj';
 import SelectProject from '@/components/page/form/SelectProject';//工程名称
+import SelectProvider from '@/components/page/form/SelectProvider';//供应商
 import UploadBox from '@/components/upload/Index';
 import SelectDept from '@/components/page/form/SelectDept';
 import pagejs from '@/assets/js/page';
@@ -163,7 +167,8 @@ export default {
     Editable,
     SelectProject,
     UploadBox,
-    SelectDept
+    SelectDept,
+    SelectProvider
   },
   data() {
     return {
@@ -242,14 +247,13 @@ export default {
   methods: {
     load() { 
       this.loading = 1;
-      this.$http.post("/api/engine/sub/bill/get", { subOrderBillCode: this.subOrderBillCodel }).then((res) => {
+      this.$http.post("/api/engine/sub/bill/get", { subOrderBillCode: this.subOrderBillCode }).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
           if (res.data.data) {
             console.log(res.data.data);
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
             Object.assign(this.formItem, res.data.data);
-            this.selProject();
             this.list = res.data.data.detailList;
           } else {
             this.$Message.error('合同不存在！');
@@ -262,6 +266,19 @@ export default {
         this.loading = 0;
         this.$Message.error("操作失败！")
       });
+    },
+    selProvider(data) {
+      if (data) {
+        this.formItem.providerName = data.providerName;
+        this.formItem.providerCode = data.providerCode;
+        this.formItem.linkMan = data.linkMan;//供应商联系人
+        this.formItem.taxRate = data.taxRate;//税率
+        this.taxRate.taxRate=data.taxRate;//明细需要
+        this.list.map(mater => {
+          this.$refs.editable.onAmountChange(mater);
+        })
+        
+      }
     },
     initNew() {
       Object.assign(this.formItem, {

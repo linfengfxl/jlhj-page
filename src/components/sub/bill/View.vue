@@ -20,8 +20,8 @@
             </colgroup>
              <tr>
               <td>
-                <FormItem label="单据编号" prop="subPlanId">
-                  {{formItem.subPlanId}}
+                <FormItem label="单据编号" prop="subOrderBillCode">
+                  {{formItem.subOrderBillCode}}
                 </FormItem>
               </td>
                <td>
@@ -37,49 +37,67 @@
             </tr>
             <tr>
               <td>
-                <FormItem prop="levelCode" label="分包项目">
-                  {{formItem.subProjectNames}}
+                <FormItem prop="subProjectName" label="分包项目">
+                  {{formItem.subProjectName}}
                 </FormItem>
               </td>
               <td>
-                <FormItem label="分包进场日期" prop="entryDate">
-                  {{formItem.entryDate}}
+                <FormItem label="结算日期" prop="settleDate">
+                  {{formItem.settleDate}}
                 </FormItem>
               </td>
               <td>
-                <FormItem label="分包退场日期" prop="exitDate">
-                  {{formItem.exitDate}}
-                </FormItem>
-              </td>
-            </tr>
-            <tr>
-               <td>
-                <FormItem label="工期" prop="duration"> 
-                   {{formItem.duration}}
-                </FormItem>
-              </td>
-              <td colspan="2">
-                <FormItem label="分包原因" prop="reason">
-                  {{formItem.reason}}
-                </FormItem>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="3">
-                <FormItem prop="files" label="附件">
-                  <UploadBox v-model="formItem.files" :readonly="true"></UploadBox>
+                <FormItem prop="providerCode" label="供应商">
+                  {{formItem.providerName}}
                 </FormItem>
               </td>
             </tr>
             <tr>
               <td>
-                <FormItem label="数量合计" prop="planWorkload">
-                  {{formItem.planWorkload}}
+                <FormItem label="联系人" prop>{{formItem.linkMan}}</FormItem>
+              </td>
+              <td>
+                <FormItem label="税率" prop>
+                  {{formItem.taxRate*100+"%"}}
                 </FormItem>
               </td>
               <td>
-                <FormItem label="金额合计" prop="amount">
-                  {{formItem.amount}}
+                <FormItem label="结算开始日期" prop="settleStartDate">
+                  {{formItem.settleStartDate}}
+                </FormItem>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <FormItem label="结算结束日期" prop="settleEndDate">
+                  {{formItem.settleEndDate}}
+                </FormItem>
+              </td>
+              <td>
+                <FormItem prop="deptId" label="部门">
+                  {{formItem.deptName}}
+                </FormItem>
+              </td> 
+              <td>
+                <FormItem label="备注" prop="remark">
+                  {{formItem.remark}}
+                </FormItem>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <FormItem label="工程量合计" prop="projectQuantity">
+                  {{formItem.projectQuantity}}
+                </FormItem>
+              </td>
+              <td>
+                <FormItem label="金额合计" prop="totalAmount">
+                  {{formItem.totalAmount}}
+                </FormItem>
+              </td>
+              <td>
+                <FormItem label="价税合计" prop="totalPriceTax">
+                  {{formItem.totalPriceTax}}
                 </FormItem>
               </td>
             </tr>
@@ -119,38 +137,39 @@ export default {
   data() {
     return {
       loading: 0,
-      subPlanId: '',
+      subOrderBillCode: '',
       pageFlag: 1,//1.新建 2.编辑 3.修订
       isEdit: 0,
       formItem: {
-        subPlanId: '',//单据编号
+        subOrderBillCode: '',//单据编号
         projectCode: '',//对应工程
         projectName: '',//对应工程
         subType: '',//分包类型
-        levelCode:'',
         subProjectName:'',
-        entryDate:'',
-        exitDate:'',
-        duration: 0,
-        reason: '',
-        files: '',
-        planWorkload: 0,
-        amount: 0,   
+        settleDate:'',
+        providerCode:'',
+        providerName:'',
+        linkMan:'',
+        taxRate:0,
+        settleStartDate:'',
+        settleEndDate:'',
+        deptId:'',
+        deptName:'',
+        remark: '',
+        projectQuantity: 0,
+        totalAmount: 0,   
+        totalPriceTax: 0, 
       },
       formRules: {
       },
       list: [],
       oriItem: {},
-      subTypes: [
-        {code:'劳务分包',text:'劳务分包'},
-        {code:'专业分包',text:'专业分包'},
-      ],
     }
   },
   
   mounted: function () {
-    this.subPlanId = this.$route.query.id;
-    if (this.subPlanId) {
+    this.subOrderBillCode = this.$route.query.id;
+    if (this.subOrderBillCode) {
       this.pageFlag = 2;
       this.load();
     } else {
@@ -161,25 +180,28 @@ export default {
   computed: {
     pageTitle() {
       if (this.pageFlag == 1) {
-        return '分包需求计划 - 创建';
+        return '分包结算会签单 - 创建';
       }
       if (this.pageFlag == 2) {
-        return '分包需求计划 - 查看';
+        return '分包结算会签单 - 查看';
       }
     }
   },
   methods: {
     load() { 
       this.loading = 1;
-      this.$http.post("/api/engine/sub/plan/get", { subPlanId: this.subPlanId }).then((res) => {
+      this.$http.post("/api/engine/sub/bill/get", { subOrderBillCode: this.subOrderBillCode }).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
           if (res.data.data) {
-            if(res.data.data.entryDate!=null){
-              res.data.data.entryDate = res.data.data.entryDate.length>=10?res.data.data.entryDate.substring(0,10):res.data.data.entryDate; 
+            if(res.data.data.settleDate!=null){
+              res.data.data.settleDate = res.data.data.settleDate.length>=10?res.data.data.settleDate.substring(0,10):res.data.data.settleDate; 
             }
-            if(res.data.data.exitDate!=null){
-              res.data.data.exitDate = res.data.data.exitDate.length>=10?res.data.data.exitDate.substring(0,10):res.data.data.exitDate; 
+            if(res.data.data.settleStartDate!=null){
+              res.data.data.settleStartDate = res.data.data.settleStartDate.length>=10?res.data.data.settleStartDate.substring(0,10):res.data.data.settleStartDate; 
+            }
+            if(res.data.data.settleEndDate!=null){
+              res.data.data.settleEndDate = res.data.data.settleEndDate.length>=10?res.data.data.settleEndDate.substring(0,10):res.data.data.settleEndDate; 
             }
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
             Object.assign(this.formItem, res.data.data);
@@ -198,19 +220,24 @@ export default {
     },
     initNew() {
       Object.assign(this.formItem, {
-        subPlanId: '',//单据编号
+        subOrderBillCode: '',//单据编号
         projectCode: '',//对应工程
         projectName: '',//对应工程
         subType: '',//分包类型
-        levelCode:'',
         subProjectName:'',
-        entryDate:'',
-        exitDate:'',
-        duration: 0,
-        reason: '',
-        files: '',
-        planWorkload: 0,
-        amount: 0,   
+        settleDate:'',
+        providerCode:'',
+        providerName:'',
+        linkMan:'',
+        taxRate:0,
+        settleStartDate:'',
+        settleEndDate:'',
+        deptId:'',
+        deptName:'',
+        remark: '',
+        projectQuantity: 0,
+        totalAmount: 0,   
+        totalPriceTax: 0, 
       });
       this.list = [];
       this.list.push(this.$refs.editable.listNewRow());

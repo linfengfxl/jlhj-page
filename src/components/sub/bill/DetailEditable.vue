@@ -140,6 +140,10 @@ export default {
       type: Object,
       default: null
     },
+    taxRate: {
+      type: Object,
+      default: null
+    },
     editable: {
       type: Boolean,
       default: false
@@ -169,13 +173,15 @@ export default {
     },
     listNewRow() {
       var def = {
-        subProcess: '',
-        content: '',
+        name: '',
         unit: '',
-        planWorkload: 0,
-        subPrice: 0,
+        contractProjectQuantity: 0,
+        taxUnitPrice: 0,
+        unitPrice: 0,
+        projectQuantity: 0,
         amount: 0,
-        remark: '',
+        tax: 0,
+        totalPriceTax: 0,
       };
       return def;
     },
@@ -197,13 +203,18 @@ export default {
     },
     onAmountChange(item){
       var total = {
-        planWorkload:0,
-        amount:0,
+        projectQuantity:0,
+        totalAmount:0,
+        totalPriceTax:0,
       };
-      item.amount=parseFloat(floatObj.multiply(item.planWorkload,item.subPrice));
+      item.unitPrice=parseFloat(floatObj.multiply(item.taxUnitPrice,floatObj.subtract(1,this.taxRate.taxRate)));//单价
+      item.amount=parseFloat(floatObj.multiply(item.projectQuantity,item.unitPrice));//金额
+      item.tax=parseFloat(floatObj.multiply(this.taxRate.taxRate,floatObj.multiply(item.projectQuantity,item.taxUnitPrice)));//税额
+      item.totalPriceTax=parseFloat(floatObj.multiply(item.projectQuantity,item.taxUnitPrice));//价税合计
       this.list.map(mater => {
-        total.planWorkload = parseFloat(floatObj.add(total.planWorkload, mater.planWorkload));
-        total.amount = parseFloat(floatObj.add(total.amount, mater.amount));
+        total.projectQuantity = parseFloat(floatObj.add(total.projectQuantity, mater.projectQuantity));
+        total.totalAmount = parseFloat(floatObj.add(total.totalAmount, mater.amount));
+        total.totalPriceTax = parseFloat(floatObj.add(total.totalPriceTax, mater.totalPriceTax));
       });
       this.$emit("on-amount-change", total);
     },
