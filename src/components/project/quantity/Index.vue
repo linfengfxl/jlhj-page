@@ -183,7 +183,8 @@ export default {
           render: (h, params) => {
             var row = params.row;
             if (row.totalReviewWorkload > 0 && row.totalQuantity != null) {
-              return h('span', floatObj.multiply(floatObj.divide(row.totalQuantity, row.totalReviewWorkload), 100) + "%");
+              var per=floatObj.multiply(floatObj.divide(row.totalQuantity, row.totalReviewWorkload), 100);
+              return h('span', (per<0.01?0.01:per) + "%");
             } else {
               return h('span', "");
             }
