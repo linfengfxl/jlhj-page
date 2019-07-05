@@ -138,7 +138,7 @@ export default {
           title: '工程名称',
           key: 'projectName',
           align: 'left',
-          minWidth: 150,
+          minWidth: 200,
         },
         {
           title: '分包类型',
