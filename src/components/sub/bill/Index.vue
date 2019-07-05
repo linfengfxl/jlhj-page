@@ -21,13 +21,13 @@
     <div class="page-searchbox">
       <table cellpadding="0" cellspacing="0">
         <tr>
-          <td style="width:0px;">
+          <td>
             工程名称
           </td>
           <td >
             <Input v-model="queryForm.projectName" placeholder="工程名称" @keyup.enter.native="query"></Input>
           </td>
-          <td style="width:80px;">
+          <td>
             供应商名称
           </td>
           <td >
@@ -228,14 +228,14 @@ export default {
           title: '工序名称',
           key: 'name',
           align: 'left',
-          width: 120,
+          minWidth: 120,
         },
         page.table.initArgColumn({
           title: '计量单位',
           key: 'unit',
           align: 'center',
           group: 'unit',
-          width: 100
+          width: 150
         }),
         {
           title: '合同工程量',
@@ -318,7 +318,7 @@ export default {
       if (row != null) {
         this.curRow = row;
         this.curRowId = row.subOrderBillCode;
-        this.$refs.detail.load(this.subOrderBillCode);
+        this.$refs.detail.load(row.subOrderBillCode);
       } else {
         this.curRow = null;
         this.curRowId = null;
