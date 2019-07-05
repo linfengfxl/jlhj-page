@@ -4,14 +4,19 @@
       <thead>
         <th class="col-xh">序号</th>
         <th>单号</th>
-         
+        <th>材料名称</th>
+        <th>规格型号</th>
+        <th>单位</th>
+        <th>数量</th>
       </thead>
       <tbody>
         <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
           <td>{{index+1}}</td>
-          <td>
-            {{item.stockBillId}} 
-          </td>
+          <td>{{item.stockBillId}}</td>
+          <td>{{item.materName}}</td>
+          <td>{{item.spec}}</td>
+          <td>{{item.unit}}</td>
+          <td>{{item.quantity}}</td>
         </tr>
       </tbody>
     </table>
@@ -19,7 +24,11 @@
     <table cellspacing="0" cellpadding="0" v-else>
       <thead>
         <th class="col-xh">序号</th>
-        <th>单号</th> 
+        <th>单号</th>
+        <th>材料名称</th>
+        <th>规格型号</th>
+        <th>单位</th>
+        <th>数量</th>
       </thead>
       <tbody>
         <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
@@ -28,11 +37,13 @@
             <!--  序号 -->
           </td>
           <td @click="editable && !isImport">
-            <span>
-              {{item.stockBillId}} 
-            </span>
+            <span>{{item.stockBillId}}</span>
             <!--    -->
-          </td> 
+          </td>
+          <td>{{item.materName}}</td>
+          <td>{{item.spec}}</td>
+          <td>{{item.unit}}</td>
+          <td>{{item.quantity}}</td>
         </tr>
       </tbody>
     </table>
@@ -42,7 +53,7 @@
 <script>
 import Editable from '@/components/editable-table';
 import floatObj from '@/assets/js/floatObj';
-import SelectInstock from '@/components/storage/instock/SelectInstock'// 
+import SelectInstock from './SelectRkd2'// 
 export default {
   components: {
     SelectInstock,
@@ -152,14 +163,6 @@ export default {
       if (this.curIndex == -1) {
         this.curIndex = 0;
       }
-    },
-    datePickerChange(item, args) {
-      item.needDate = args[0];
-    },
-    computedWorkload(item) {
-      console.log(item.workload)
-      item.actualWorkload = floatObj.add(item.workload, item.quantity);//累计完成工程量  
-      item.actualPercent = floatObj.multiply(floatObj.divide(item.actualWorkload, item.designWorkload), 100);//累计完成工程比  
     },
   }
 }
