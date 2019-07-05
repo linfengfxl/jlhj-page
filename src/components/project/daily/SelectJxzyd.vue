@@ -4,11 +4,21 @@
       <thead>
         <th class="col-xh">序号</th>
         <th>单号</th>
+        <th>机械名称</th>
+        <th>时间</th>
+        <th>作业用时</th>
+        <th>作业台班</th>
+        <th>加油量</th>
       </thead>
       <tbody>
         <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
           <td>{{index+1}}</td>
-          <td>{{item.stockBillId}}</td>
+          <td>{{item.machineOrderId}}</td>
+          <td>{{item.machineOrderId}}</td>
+          <td>{{item.machineOrderId}}</td>
+          <td>{{item.machineOrderId}}</td>
+          <td>{{item.machineOrderId}}</td>
+          <td>{{item.machineOrderId}}</td>
         </tr>
       </tbody>
     </table>
@@ -17,6 +27,11 @@
       <thead>
         <th class="col-xh">序号</th>
         <th>单号</th>
+        <th>机械名称</th>
+        <th>时间</th>
+        <th>作业用时</th>
+        <th>作业台班</th>
+        <th>加油量</th>
       </thead>
       <tbody>
         <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
@@ -25,9 +40,14 @@
             <!--  序号 -->
           </td>
           <td @click="editable && !isImport">
-            <span>{{item.subProjectName}}</span>
+            <span>{{item.machineOrderId}}</span>
             <!--    -->
           </td>
+          <td>{{item.machineOrderId}}</td>
+          <td>{{item.machineOrderId}}</td>
+          <td>{{item.machineOrderId}}</td>
+          <td>{{item.machineOrderId}}</td>
+          <td>{{item.machineOrderId}}</td>
         </tr>
       </tbody>
     </table>
@@ -37,7 +57,7 @@
 <script>
 import Editable from '@/components/editable-table';
 import floatObj from '@/assets/js/floatObj';
-import SelectMachineOrder from '@/components/machine/order/SelectMachineOrder'// '@/components/page/form/SelectWorkload'
+import SelectMachineOrder from './SelectJxzyd2'// '@/components/page/form/SelectWorkload'
 export default {
   components: {
     SelectMachineOrder,
@@ -122,15 +142,12 @@ export default {
           if (data) {
             var that = this;
             data.map(args => {
-              if (_.findIndex(that.list, { 'workloadId': args.workloadId }) >= 0) {
+              if (_.findIndex(that.list, { 'machineOrderId': args.machineOrderId }) >= 0) {
 
               } else {
                 var item = this.listNewRow();
                 Object.assign(item, args);
-                item.quantity = args.quantity;//累计完成工程量  (初始值)
-                item.designWorkload = args.designWorkload;//设计工程量
-                item.actualWorkload = args.quantity;//累计完成工程量
-                item.actualPercent = floatObj.multiply(floatObj.divide(args.quantity, args.designWorkload), 100);//累计完成工程比  
+                item.machineOrderId = args.machineOrderId;//  
                 that.list.push(item);
               }
             })

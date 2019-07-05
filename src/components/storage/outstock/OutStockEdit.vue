@@ -13,9 +13,9 @@
           >
             <table cellspacing="0" cellpadding="0">
               <colgroup>
-                <col width="33%">
-                <col width="auto">
-                <col width="33%">
+                <col width="33%" />
+                <col width="auto" />
+                <col width="33%" />
               </colgroup>
               <tr>
                 <td>
@@ -44,7 +44,7 @@
               </tr>
               <tr>
                 <td>
-                  <FormItem prop label="出库日期">
+                  <FormItem prop="operateDate" label="出库日期">
                     <Date-picker
                       type="date"
                       placeholder="选择日期"
@@ -76,7 +76,7 @@
               <tr>
                 <td colspan="3">
                   <FormItem prop=" " label="备注">
-                    <Input type="textarea" :rows="2" v-model="formItem.remark"/>
+                    <Input type="textarea" :rows="2" v-model="formItem.remark" />
                   </FormItem>
                 </td>
               </tr>
@@ -89,7 +89,7 @@
           <Editable
             ref="editable"
             :list="list"
-            :editable="true" 
+            :editable="true"
             :editprice="true"
             :model="formItem"
             :style="{display: formItem.deptId?'':'none'}"
@@ -160,6 +160,14 @@ export default {
         ],
         operatorName: [
           { required: true, whitespace: true, message: '请选择收料员', trigger: 'change' }
+        ],
+        operateDate: [
+          {
+            required: true,
+            message: "请选择日期",
+            trigger: "change",
+            pattern: /.+/
+          }
         ],
       },
       list: [],
@@ -250,11 +258,11 @@ export default {
         detailList: []
       };
       Object.assign(form, this.formItem);
-      if(form.signDate){
-          form.signDate = page.formatDate(form.signDate);
+      if (form.signDate) {
+        form.signDate = page.formatDate(form.signDate);
       }
-      if(form.operateDate){
-          form.operateDate = page.formatDate(form.operateDate);
+      if (form.operateDate) {
+        form.operateDate = page.formatDate(form.operateDate);
       }
       var pass = true;
       this.$refs.form.validate((valid) => {
@@ -304,7 +312,7 @@ export default {
         this.loading = 0;
         this.$Message.error("请求失败，请重新操作")
       });
-    }, 
+    },
     reset() {
       if (this.pageFlag == 1) {
         this.initNew();
