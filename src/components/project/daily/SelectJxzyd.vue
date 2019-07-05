@@ -8,7 +8,7 @@
       <tbody>
         <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
           <td>{{index+1}}</td>
-          <td>{{item.stockBillId}}</td>
+          <td>{{item.machineOrderId}}</td>
         </tr>
       </tbody>
     </table>
@@ -25,7 +25,7 @@
             <!--  序号 -->
           </td>
           <td @click="editable && !isImport">
-            <span>{{item.subProjectName}}</span>
+            <span>{{item.machineOrderId}}</span>
             <!--    -->
           </td>
         </tr>
@@ -122,15 +122,12 @@ export default {
           if (data) {
             var that = this;
             data.map(args => {
-              if (_.findIndex(that.list, { 'workloadId': args.workloadId }) >= 0) {
+              if (_.findIndex(that.list, { 'machineOrderId': args.machineOrderId }) >= 0) {
 
               } else {
                 var item = this.listNewRow();
                 Object.assign(item, args);
-                item.quantity = args.quantity;//累计完成工程量  (初始值)
-                item.designWorkload = args.designWorkload;//设计工程量
-                item.actualWorkload = args.quantity;//累计完成工程量
-                item.actualPercent = floatObj.multiply(floatObj.divide(args.quantity, args.designWorkload), 100);//累计完成工程比  
+                item.machineOrderId = args.machineOrderId;//  
                 that.list.push(item);
               }
             })

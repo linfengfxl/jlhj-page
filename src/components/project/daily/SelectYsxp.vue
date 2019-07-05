@@ -4,14 +4,11 @@
       <thead>
         <th class="col-xh">序号</th>
         <th>单号</th>
-         
       </thead>
       <tbody>
         <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
           <td>{{index+1}}</td>
-          <td>
-            {{item.stockBillId}} 
-          </td>
+          <td>{{item.transportOrderId}}</td>
         </tr>
       </tbody>
     </table>
@@ -19,7 +16,7 @@
     <table cellspacing="0" cellpadding="0" v-else>
       <thead>
         <th class="col-xh">序号</th>
-        <th>单号</th> 
+        <th>单号</th>
       </thead>
       <tbody>
         <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
@@ -28,24 +25,22 @@
             <!--  序号 -->
           </td>
           <td @click="editable && !isImport">
-            <span>
-              {{item.subProjectName}} 
-            </span>
+            <span>{{item.transportOrderId}}</span>
             <!--    -->
-          </td> 
+          </td>
         </tr>
       </tbody>
     </table>
-    <selectWorkload ref="selectWorkload" :projectCode="projectCode"></selectWorkload>
+    <selectTransportOrder ref="selectTransportOrder" :projectCode="projectCode"></selectTransportOrder>
   </Editable>
 </template>
 <script>
 import Editable from '@/components/editable-table';
 import floatObj from '@/assets/js/floatObj';
-import SelectWorkload from '@/components/project/workload/SelectWorkload'// '@/components/page/form/SelectWorkload'
+import SelectTransportOrder from '@/components/transport/order/SelectTransportOrder'// 
 export default {
   components: {
-    SelectWorkload,
+    SelectTransportOrder,
     Editable,
   },
   props: {
@@ -84,15 +79,12 @@ export default {
   methods: {
     selProvider(item, args) {
       if (args) {
-        if (_.findIndex(this.list, { 'workloadId': args.workloadId }) >= 0) {
+        if (_.findIndex(this.list, { 'transportOrderId': args.transportOrderId }) >= 0) {
           this.$Message.error('已存在!');
           return;
         }
-        item.workloadId = args.workloadId;
-        item.subProjectName = args.subProjectName; //分部分项工程名  
-        item.levelCode = args.levelCode;//层次编码 
-        item.reviewWorkload = args.reviewWorkload;//复核工程量 
-        item.unit = args.unit;//单位   
+        item.transportOrderId = args.transportOrderId;
+
       }
     },
     load() {
@@ -101,7 +93,7 @@ export default {
     listNewRow() {
       var def = {
         id: 0,
-        workloadId: '',
+        transportOrderId: '',
         projectCode: '',//分部分项工程名 
         levelCode: '',//层次编码 
         reviewWorkload: '',//复核工程量 
@@ -120,22 +112,19 @@ export default {
       // if (!this.isImport) {
       //   this.list.push(this.listNewRow());
       // }
-      var sel = this.$refs.selectWorkload;//引用该控件，赋值给变量对象
+      var sel = this.$refs.selectTransportOrder;//引用该控件，赋值给变量对象
       sel.show({
         ok: (data) => {
           console.log(data);
           if (data) {
             var that = this;
             data.map(args => {
-              if (_.findIndex(that.list, { 'workloadId': args.workloadId }) >= 0) {
+              if (_.findIndex(that.list, { 'transportOrderId': args.transportOrderId }) >= 0) {
 
               } else {
                 var item = this.listNewRow();
                 Object.assign(item, args);
-                item.quantity = args.quantity;//累计完成工程量  (初始值)
-                item.designWorkload = args.designWorkload;//设计工程量
-                item.actualWorkload = args.quantity;//累计完成工程量
-                item.actualPercent = floatObj.multiply(floatObj.divide(args.quantity, args.designWorkload), 100);//累计完成工程比  
+                item.transportOrderId = args.transportOrderId;
                 that.list.push(item);
               }
             })

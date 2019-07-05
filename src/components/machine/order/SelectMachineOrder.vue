@@ -8,6 +8,7 @@
     :width="800"
     class="selmaterial"
     :model="model"
+    :projectCode="projectCode"
   >
     <div class="page">
       <div class="page-searchbox">
@@ -78,6 +79,10 @@ export default {
       default: true
     },
     model: {
+      type: Object,
+      default: null
+    },
+    projectCode: {
       type: Object,
       default: null
     }
@@ -169,19 +174,19 @@ export default {
   },
   computed: {},
   methods: {
-    load() {
+    load() { 
       if (this.model != null) {
         this.title = "选择作业单 " + this.model.projectName + " / " + this.model.providerName + " / " + page.formatDate(this.model.billDate);
-      }
-      console.log(this.model.projectCode)
+      } 
       var pagebar = this.$refs.pagebar;
       this.loading = 1;
       this.queryParam.page = pagebar.currentPage;
       this.queryParam.pageSize = pagebar.currentPageSize;
       this.queryParam.type = this.options.type;
-      this.queryParam.projectCode = this.model.projectCode;//传递的
-      this.queryParam.providerCode = this.model.providerCode;//传递的
-      this.queryParam.jobDate = page.formatDate(this.model.billDate);
+      this.queryParam.projectCode = this.projectCode;//传递的
+      // this.queryParam.projectCode = this.model.projectCode;//传递的
+      // this.queryParam.providerCode = this.model.providerCode;//传递的
+      // this.queryParam.jobDate = page.formatDate(this.model.billDate);
       this.$http.post('/api/engine/machine/order/list', this.queryParam).then((res) => {
         if (res.data.code === 0 && res.data.data != null) {
           this.loading = 0;

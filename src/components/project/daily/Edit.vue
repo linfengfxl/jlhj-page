@@ -27,30 +27,34 @@
               </FormItem>
             </td>
           </tr>
-          <tr>
-            <td>
-              <FormItem label="技工人数" prop>
-                <InputNumber :max="999999" :min="0" v-model="formItem.skillWorkload"></InputNumber>
-              </FormItem>
-            </td>
-            <td>
-              <FormItem label="力工人数" prop>
-                <InputNumber :max="999999" :min="0" v-model="formItem.strongWorkload"></InputNumber>
-              </FormItem>
-            </td>
-          </tr>
-          <tr>
-            <td colspan="2">
-              <FormItem label="工作内容" prop>
-                <Input type="textarea" :rows="1" v-model="formItem.remark" />
-              </FormItem>
-            </td>
-          </tr>
         </table>
       </Form>
     </div>
     <div class="subheader">完成工作项</div>
     <Editable ref="editable" :list="list" :editable="true" :projectCode="projectCode"></Editable>
+    <div class="subheader">劳务用工</div>
+    <div class="editable-table-container editable">
+      <table cellspacing="0" cellpadding="0">
+        <thead>
+          <th>技工人数</th>
+          <th>力工人数</th>
+          <th>工作内容</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <InputNumber :max="999999" :min="0" v-model="formItem.skillWorkload"></InputNumber>
+            </td>
+            <td>
+              <InputNumber :max="999999" :min="0" v-model="formItem.strongWorkload"></InputNumber>
+            </td>
+            <td>
+              <Input type="textarea" :rows="1" v-model="formItem.remark" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <div>
       <div
         class="demo-tabs-style1"
@@ -555,6 +559,12 @@ export default {
               if (item.type == 1) {
                 this.rkdList.push({ "stockBillId": item.invoiceCode });
               }
+              if (item.type == 2) {
+                this.jxzydList.push({ "machineOrderId": item.invoiceCode });
+              }
+              if (item.type == 3) {
+                this.ysxpList.push({ "transportOrderId": item.invoiceCode });
+              }
             }
           } else {
             this.$Message.error('订单不存在！');
@@ -685,7 +695,6 @@ export default {
           form.workloadList.push(item);
         }
       }
-      debugger
       if (form.workloadList.length == 0) {
         this.$Message.error('请至少填写一项分部分项工程名');
         return;
@@ -693,6 +702,16 @@ export default {
       for (var i = 0; i < this.rkdList.length; i++) {
         var item = this.rkdList[i];
         var it = { "type": 1, "invoiceCode": item.stockBillId }
+        form.detailList.push(it);
+      }
+      for (var i = 0; i < this.jxzydList.length; i++) {
+        var item = this.jxzydList[i];
+        var it = { "type": 2, "invoiceCode": item.machineOrderId }
+        form.detailList.push(it);
+      }
+      for (var i = 0; i < this.ysxpList.length; i++) {
+        var item = this.ysxpList[i];
+        var it = { "type": 3, "invoiceCode": item.transportOrderId }
         form.detailList.push(it);
       }
       form.proc = proc.formItem;
