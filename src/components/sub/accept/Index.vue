@@ -21,13 +21,13 @@
     <div class="page-searchbox">
       <table cellpadding="0" cellspacing="0">
         <tr>
-          <td style="width:80px;">
+          <td>
             工程名称
           </td>
           <td >
             <Input v-model="queryForm.projectName" placeholder="工程名称" @keyup.enter.native="query"></Input>
           </td>
-          <td style="width:80px;">
+          <td>
             供应商名称
           </td>
           <td >
