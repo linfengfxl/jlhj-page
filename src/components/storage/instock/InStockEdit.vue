@@ -65,7 +65,12 @@
                   >{{$args.getArgText('invoice_type', formItem.invoiceType)}}</FormItem>
                 </td>
                 <td>
-                  <FormItem prop label="日期">{{formItem.operateDate}}</FormItem>
+                  <FormItem prop="operateDate" label="日期">  <Date-picker
+                      type="date"
+                      placeholder="选择日期"
+                      v-model="formItem.operateDate"
+                      format="yyyy-MM-dd"
+                    ></Date-picker></FormItem>
                 </td>
                 <td>
                   <FormItem prop="operatorName" label="收料员">
@@ -181,6 +186,9 @@ export default {
         ],
         operatorName: [
           { required: true, whitespace: true, message: '请选择收料员', trigger: 'change' }
+        ],
+        operateDate: [
+          { required: true, whitespace: true, message: '请选择日期', trigger: 'change' }
         ],
       },
       list: [],

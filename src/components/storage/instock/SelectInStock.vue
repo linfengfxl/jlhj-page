@@ -1,25 +1,20 @@
 <template>
   <Modal
     v-model="display"
-    :title="title"
+    title="选择入库单"
     :closable="false"
     :mask-closable="false"
+    width="800"
+    class-name="ivu-modal-mask select_provider"
+    class="selprovider"
     :transfer="transfer"
-    :width="800"
-    class="selmaterial"
-    :model="model"
   >
     <div class="page">
       <div class="page-searchbox">
         <table cellpadding="0" cellspacing="0">
           <tr>
             <td>
-              <Input
-                v-model="queryForm.keyword"
-                placeholder="作业单号"
-                style="width:200px;"
-                @keyup.enter.native="query"
-              ></Input>
+              <Input v-model="queryForm.keyword" placeholder @keyup.enter.native="query"></Input>
             </td>
             <td>
               <Button @click="query" type="primary" icon="ios-search">查询</Button>
@@ -33,9 +28,9 @@
       <Loading :loading="loading">
         <div class="page-datatable">
           <i-table
+            ref="table"
             :row-class-name="rowClassName"
             :columns="columns"
-            @on-row-click="innerCheckRow(arguments[1])"
             @on-selection-change="select"
             :data="list"
           ></i-table>
@@ -64,28 +59,26 @@
     </div>
   </Modal>
 </template>
-
-<script> 
+<script>
 import Loading from '@/components/loading';
 import page from '@/assets/js/page';
 export default {
   components: {
-    Loading
+    Loading,
   },
   props: {
     transfer: {
       type: Boolean,
       default: true
     },
-    model: {
-      type: Object,
-      default: null
-    }
+    projectCode: {//产品编号 选择框外面传入
+      type: String,
+      default: ''
+    },
   },
   data() {
     var that = this;
     return {
-      title: "选择作业单",
       columns: [
         // {
         //   title: '选择',
@@ -113,41 +106,44 @@ export default {
         {
           type: 'selection',
           width: 60,
-          align: 'center'
+          align: 'center',
+          fixed: 'left',
         },
         {
           title: '单号',
-          key: 'machineOrderId',
+          key: 'stockBillId',
+          fixed: 'center',
           width: 120,
-        }, {
-          title: '部门',
+        },
+         page.table.initDateColumn({
+          title: '单据日期',
+          key: 'operateDate',
+          align: 'center',
+          width: 100,
+        }),
+        {
+          title: '仓库',
           key: 'deptName',
-          width: 120,
+          align: 'left',
+          width: 160,
         },
         {
           title: '工程名称',
           key: 'projectName',
-          width: 120,
+          align: 'left',
+          minWidth: 120,
         }, {
           title: '供应商',
           key: 'providerName',
-          width: 120,
-        },
-        {
-          title: '机械名称',
-          key: 'machineName',
-          width: 120,
-        },
-        page.table.initDateColumn({
-          title: '作业时间',
-          key: 'jobDate',
-        }),
-        {
-          title: '备注',
-          key: 'remark',
           align: 'left',
-          minWidth: 150
+          width: 200,
+        }, {
+          title: '申请人',
+          key: 'creatorName',
+          align: 'left',
+          width: 100,
         },
+
       ],
       display: false,
       list: [],
@@ -155,14 +151,15 @@ export default {
       queryParam: {},
       queryForm: {
         keyword: '',
+        industry: '',
+        status: 1
       },
+      industry: [],
       selected: [],
       selection: [],
       loading: 0,
-      options: {
-        type: 1
-      }
-    };
+      options: {}
+    }
   },
   mounted: function () {
     this.query()
@@ -170,72 +167,45 @@ export default {
   computed: {},
   methods: {
     load() {
-      if (this.model != null) {
-        this.title = "选择作业单 " + this.model.projectName + " / " + this.model.providerName + " / " + page.formatDate(this.model.billDate);
-      }
-      console.log(this.model.projectCode)
       var pagebar = this.$refs.pagebar;
       this.loading = 1;
       this.queryParam.page = pagebar.currentPage;
       this.queryParam.pageSize = pagebar.currentPageSize;
-      this.queryParam.type = this.options.type;
-      this.queryParam.projectCode = this.model.projectCode;//传递的
-      this.queryParam.providerCode = this.model.providerCode;//传递的
-      this.queryParam.jobDate = page.formatDate(this.model.billDate);
-      this.$http.post('/api/engine/machine/order/list', this.queryParam).then((res) => {
-        if (res.data.code === 0 && res.data.data != null) {
+      this.queryParam.projectCode = this.projectCode;
+      this.$http.post("/api/engine/storage/instock/list", this.queryParam).then((res) => {
+        this.loading = 0;
+        if (res.data.code === 0) {
           this.loading = 0;
-          var rows = res.data.data.rows;
-          rows.map((item) => { item._checked = false; })
-          this.list = rows;
+          var list = res.data.data.rows;
+          list.map((item) => { item._checked = false; });
+          this.list = list;
           this.total = res.data.data.total;
+          this.selection = [];
           // 同步条件信息到表单
-          $.extend(this.queryForm, this.queryParam);
+          Object.assign(this.queryForm, this.queryParam);
         } else {
           this.loading = 0;
-          this.$Message.error(res.data.message)
+          this.list = null;
+          this.total = 0;
+          this.$Message.error(res.data.message);
         }
       }).catch((error) => {
         this.loading = 0;
-        this.$Message.error(error.message)
+        this.$Message.error("请求失败，请重新发送")
       });
     },
-    refresh: function () {
-      this.query();
-      var pagebar = this.$refs.pagebar;
-      pagebar.current = 1;
-      pagebar.currentPage = 1;
-      pagebar.currentPageSize = 10;
-    },
     query: function () {
-      $.extend(this.queryParam, this.queryForm);
-      this.$refs.pagebar.currentPage = 1;
+      Object.assign(this.queryParam, this.queryForm)
       this.load();
-    },
-    reset: function () {
-      this.queryForm = {
-        materId: '',
-        drawing: '',
-      }
-
-      var pagebar = this.$refs.pagebar;
-      pagebar.current = 1;
-      pagebar.currentPage = 1;
-      pagebar.currentPageSize = 10;
-
-      this.query();
     },
     pageChange: function (page) {
       this.load();
     },
     pageSizeChange: function (pageSize) {
       var pagebar = this.$refs.pagebar;
-      if (pagebar.currentPage === 1) {
+      if (pagebar.currentPage == 1) {
         this.load();
       }
-    },
-    select: function (selection) {
-      this.selection = selection;
     },
     innerCheckRow(index) {
       for (var i = 0; i < this.list.length; i++) {
@@ -243,59 +213,77 @@ export default {
         item._checked = index == i && item.status != 2;
       }
     },
+    select: function (selection) {
+      this.selection = selection;
+    },
     reset: function () {
       Object.assign(this.queryForm, {
-        keyword: ''
+        keyword: '',
+        industry: '',
+        status: 1
       });
-      this.list = [];
+
+      var pagebar = this.$refs.pagebar;
+      pagebar.current = 1;
+      pagebar.currentPage = 1;
+      pagebar.currentPageSize = 10;
+
       this.query();
     },
     rowClassName(row, index) {
       return row._checked ? 'row-checked' : '';
     },
+    // 对外方法
     show(options) {
       Object.assign(this.options, {
         ok: (data) => { },
-        cancel: () => { },
-        type: 1,
+        cancel: () => { }
       }, options);
       this.display = true;
       this.reset();
     },
     close() {
       this.display = false;
-      this.options.cancel();
     },
     onOK() {
-      // var select = null;
-      // this.list.map((item) => {
-      //   if (item._checked) {
-      //     select = item;
-      //   }
-      // });
-      // if (select == null) {
-      //   this.$Message.error('请选择物料');
-      //   return;
-      // }
+      var selectList = this.$refs.table.getSelection();
+      if (selectList.length == 0) {
+        this.$Message.error('请选择');
+        return;
+      }
       // this.display = false;
       // this.options.ok(select);
       this.display = false;
-      this.options.ok(this.selection);
+      this.options.ok(selectList);
     },
     onCancel() {
       this.display = false;
-      this.options.cancel();
     }
   }
 }
+
 </script>
 
-<style>
-.selmaterial .page {
+<style type="text/css">
+.selprovider .page {
   padding: 0px;
 }
-.selmaterial .footer {
-  text-align: center;
+.selprovider .page-searchbox {
+  margin-top: 0px;
+}
+.selprovider .status-2 {
+  color: #ff6600;
+}
+.selprovider .footer {
+  text-align: right;
+  padding-left: 10px;
+}
+.selprovider .row-checked td {
+  background-color: #e8f8fd;
+  /*color:#20bfee;*/
+  font-weight: bold;
+}
+.select_provider {
+  z-index: 10000;
 }
 </style>
-
