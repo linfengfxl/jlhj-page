@@ -14,7 +14,21 @@
         <table cellpadding="0" cellspacing="0">
           <tr>
             <td>
-              <Input v-model="queryForm.keyword" placeholder @keyup.enter.native="query"></Input>
+              <Input v-model="queryForm.materName" placeholder="材料名称" @keyup.enter.native="query"></Input>
+            </td>
+            <td>
+              <Input v-model="queryForm.spec" placeholder="规格型号" @keyup.enter.native="query"></Input>
+            </td>
+            <td>
+              <DatePicker
+                type="daterange"
+                v-model="queryForm.createTime"
+                split-panels
+                placeholder="入库日期"
+                style="width: 180px"
+                :clearable="true"
+                ::transfer="true"
+              ></DatePicker>
             </td>
             <td>
               <Button @click="query" type="primary" icon="ios-search">查询</Button>
@@ -121,7 +135,9 @@ export default {
       queryParam: {},
       queryForm: {
         keyword: '',
-        industry: '', 
+        materName: '',
+        spec: '',
+        createTime: []
       },
       industry: [],
       selected: [],
@@ -141,6 +157,13 @@ export default {
       this.queryParam.page = pagebar.currentPage;
       this.queryParam.pageSize = pagebar.currentPageSize;
       this.queryParam.projectCode = this.projectCode;
+
+      if (this.queryParam.createTime.length > 0) {
+        this.queryParam.operateDateStart = page.formatDate(this.queryParam.createTime[0]);
+      }
+      if (this.queryParam.createTime.length > 1) {
+        this.queryParam.operateDateEnd = page.formatDate(this.queryParam.createTime[1]);
+      }
       this.$http.post("/api/engine/project/daily/selectInstockList", this.queryParam).then((res) => {
         this.loading = 0;
         if (res.data.code === 0) {
@@ -188,7 +211,8 @@ export default {
     reset: function () {
       Object.assign(this.queryForm, {
         keyword: '',
-        industry: '', 
+        materName: '',
+        spec: '',
       });
 
       var pagebar = this.$refs.pagebar;

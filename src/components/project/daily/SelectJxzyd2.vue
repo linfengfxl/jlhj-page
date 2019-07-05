@@ -16,12 +16,18 @@
         <table cellpadding="0" cellspacing="0">
           <tr>
             <td>
-              <Input
-                v-model="queryForm.keyword"
-                placeholder="作业单号"
-                style="width:200px;"
-                @keyup.enter.native="query"
-              ></Input>
+              <Input v-model="queryForm.machineName" placeholder="机械名称" @keyup.enter.native="query"></Input>
+            </td>
+            <td>
+              <DatePicker
+                type="daterange"
+                v-model="queryForm.createTime"
+                split-panels
+                placeholder="时间"
+                style="width: 180px"
+                :clearable="true"
+                ::transfer="true"
+              ></DatePicker>
             </td>
             <td>
               <Button @click="query" type="primary" icon="ios-search">查询</Button>
@@ -153,14 +159,15 @@ export default {
       total: 0,
       queryParam: {},
       queryForm: {
-        keyword: '',
+        machineName: '',
+        createTime: []
       },
       selected: [],
       selection: [],
       loading: 0,
       options: {
         type: 1
-      }
+      },
     };
   },
   mounted: function () {
@@ -181,6 +188,13 @@ export default {
       // this.queryParam.projectCode = this.model.projectCode;//传递的
       // this.queryParam.providerCode = this.model.providerCode;//传递的
       // this.queryParam.jobDate = page.formatDate(this.model.billDate);
+
+      if (this.queryParam.createTime.length > 0) {
+        this.queryParam.timeStart = page.formatDate(this.queryParam.createTime[0]);
+      }
+      if (this.queryParam.createTime.length > 1) {
+        this.queryParam.timeEnd = page.formatDate(this.queryParam.createTime[1]);
+      }
       this.$http.post('/api/engine/project/daily/selectMachineOrderList', this.queryParam).then((res) => {
         if (res.data.code === 0 && res.data.data != null) {
           this.loading = 0;
@@ -213,8 +227,8 @@ export default {
     },
     reset: function () {
       this.queryForm = {
-        materId: '',
-        drawing: '',
+        machineName: '',
+        createTime: []
       }
 
       var pagebar = this.$refs.pagebar;

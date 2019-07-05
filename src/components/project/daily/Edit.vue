@@ -159,8 +159,8 @@ export default {
         dailyId: '',//日报编号
         dayWork: '',//本日进行
         nextDayPlan: '',//明日计划   
-        skillWorkload: '',//技工人数
-        strongWorkload: '',//力工人数
+        skillWorkload: '0',//技工人数
+        strongWorkload: '0',//力工人数
         remark: '',//工作内容
       },
       formRules: {
@@ -330,12 +330,18 @@ export default {
       this.$refs.form.validate((valid) => {
         pass = valid;
       })
-
       if (!pass) {
         this.$Message.error('验证未通过！');
         return;
       }
-
+      if (this.formItem.skillWorkload == '' || this.formItem.skillWorkload == null) {
+        this.$Message.error('请录入技工人数');
+        return;
+      }
+      if (this.formItem.strongWorkload == '' || this.formItem.strongWorkload == null) {
+        this.$Message.error('请录入力工人数');
+        return;
+      }
       form.detailList = [];
       form.workloadList = [];
       // 明细
