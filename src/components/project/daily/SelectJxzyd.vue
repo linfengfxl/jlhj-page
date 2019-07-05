@@ -14,11 +14,11 @@
         <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
           <td>{{index+1}}</td>
           <td>{{item.machineOrderId}}</td>
-          <td>{{item.machineOrderId}}</td>
-          <td>{{item.machineOrderId}}</td>
-          <td>{{item.machineOrderId}}</td>
-          <td>{{item.machineOrderId}}</td>
-          <td>{{item.machineOrderId}}</td>
+          <td>{{item.machineName}}</td>
+          <td>{{item.startTime}}</td>
+          <td>{{item.useTime}}</td>
+          <td>{{item.taiban}}</td>
+          <td>{{item.addFuel}}</td> 
         </tr>
       </tbody>
     </table>
@@ -40,14 +40,13 @@
             <!--  序号 -->
           </td>
           <td @click="editable && !isImport">
-            <span>{{item.machineOrderId}}</span>
-            <!--    -->
+            <span>{{item.machineOrderId}}</span> 
           </td>
-          <td>{{item.machineOrderId}}</td>
-          <td>{{item.machineOrderId}}</td>
-          <td>{{item.machineOrderId}}</td>
-          <td>{{item.machineOrderId}}</td>
-          <td>{{item.machineOrderId}}</td>
+          <td>{{item.machineName}}</td>
+          <td>{{item.startTime}}</td>
+          <td>{{item.useTime}}</td>
+          <td>{{item.taiban}}</td>
+          <td>{{item.addFuel}}</td> 
         </tr>
       </tbody>
     </table>
@@ -115,19 +114,12 @@ export default {
     },
     listNewRow() {
       var def = {
-        id: 0,
-        workloadId: '',
-        projectCode: '',//分部分项工程名 
-        levelCode: '',//层次编码 
-        reviewWorkload: '',//复核工程量 
-        unit: '',//单位  
-        place: '',//部位
-        workloadPlan: 0,//今日计划工程量
-        workload: 0,//今日完成工程量 
-        actualWorkload: 0,//累计完成工程量 
-        actualPercent: 0,//累计完成工程比 
-        startPile: '',//起始桩号 
-        leftRight: '',//左右幅
+        machineOrderId: '',
+        machineName: '',//  
+        startTime: '',// 
+        useTime: '',// 
+        taiban: '',
+        addFuel: '',
       };
       return def;
     },
@@ -147,7 +139,13 @@ export default {
               } else {
                 var item = this.listNewRow();
                 Object.assign(item, args);
-                item.machineOrderId = args.machineOrderId;//  
+                item.machineOrderId = args.machineOrderId;//   
+                item.machineName = args.machineName;//  
+                item.startTime = args.startTime;//  
+                item.useTime = args.useTime;//  
+                item.taiban = args.taiban;//  
+                item.addFuel = args.addFuel;//  
+
                 that.list.push(item);
               }
             })

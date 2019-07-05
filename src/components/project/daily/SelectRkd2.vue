@@ -80,29 +80,6 @@ export default {
     var that = this;
     return {
       columns: [
-        // {
-        //   title: '选择',
-        //   key: '_checked',
-        //   width: 60,
-        //   render: function (h, params) {
-        //     var row = params.row;
-        //     var index = params.index;
-        //     var props = {
-        //       value: row._checked,
-        //     };
-        //     if (row.status == "2") {
-        //       props.disabled = true;
-        //     }
-        //     return h('Checkbox', {
-        //       props: props,
-        //       on: {
-        //         'on-change': () => {
-        //           that.innerCheckRow(index);
-        //         }
-        //       }
-        //     });
-        //   }
-        // },
         {
           type: 'selection',
           width: 60,
@@ -111,39 +88,32 @@ export default {
         },
         {
           title: '单号',
-          key: 'stockBillId',
+          key: 'id',
           fixed: 'center',
           width: 120,
         },
-         page.table.initDateColumn({
-          title: '单据日期',
-          key: 'operateDate',
-          align: 'center',
-          width: 100,
-        }),
         {
-          title: '仓库',
-          key: 'deptName',
+          title: '材料名称',
+          key: 'materName',
           align: 'left',
           width: 160,
         },
         {
-          title: '工程名称',
-          key: 'projectName',
+          title: '规格型号',
+          key: 'spec',
           align: 'left',
           minWidth: 120,
         }, {
-          title: '供应商',
-          key: 'providerName',
+          title: '单位',
+          key: 'unit',
           align: 'left',
           width: 200,
         }, {
-          title: '申请人',
-          key: 'creatorName',
+          title: '数量',
+          key: 'quantity',
           align: 'left',
           width: 100,
         },
-
       ],
       display: false,
       list: [],
@@ -151,8 +121,7 @@ export default {
       queryParam: {},
       queryForm: {
         keyword: '',
-        industry: '',
-        status: 1
+        industry: '', 
       },
       industry: [],
       selected: [],
@@ -172,7 +141,7 @@ export default {
       this.queryParam.page = pagebar.currentPage;
       this.queryParam.pageSize = pagebar.currentPageSize;
       this.queryParam.projectCode = this.projectCode;
-      this.$http.post("/api/engine/storage/instock/list", this.queryParam).then((res) => {
+      this.$http.post("/api/engine/project/daily/selectInstockList", this.queryParam).then((res) => {
         this.loading = 0;
         if (res.data.code === 0) {
           this.loading = 0;
@@ -219,8 +188,7 @@ export default {
     reset: function () {
       Object.assign(this.queryForm, {
         keyword: '',
-        industry: '',
-        status: 1
+        industry: '', 
       });
 
       var pagebar = this.$refs.pagebar;

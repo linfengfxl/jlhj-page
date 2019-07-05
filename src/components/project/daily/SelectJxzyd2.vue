@@ -10,7 +10,7 @@
     :model="model"
     :projectCode="projectCode"
   >
-  <!-- 作业单号 -->
+    <!-- 作业单号 -->
     <div class="page">
       <div class="page-searchbox">
         <table cellpadding="0" cellspacing="0">
@@ -126,34 +126,27 @@ export default {
           key: 'machineOrderId',
           width: 120,
         }, {
-          title: '部门',
-          key: 'deptName',
-          width: 120,
-        },
-        {
-          title: '工程名称',
-          key: 'projectName',
-          width: 120,
-        }, {
-          title: '供应商',
-          key: 'providerName',
-          width: 120,
-        },
-        {
           title: '机械名称',
           key: 'machineName',
           width: 120,
+        }, {
+          title: '时间',
+          key: 'startTime',
+          width: 120,
+        },
+        {
+          title: '作业时间',
+          key: 'useTime',
+          width: 120,
+        }, {
+          title: '作业台班',
+          key: 'taiban',
+          width: 120,
         },
         page.table.initDateColumn({
-          title: '作业时间',
-          key: 'jobDate',
+          title: '加油量',
+          key: 'addFuel',
         }),
-        {
-          title: '备注',
-          key: 'remark',
-          align: 'left',
-          minWidth: 150
-        },
       ],
       display: false,
       list: [],
@@ -175,10 +168,10 @@ export default {
   },
   computed: {},
   methods: {
-    load() { 
+    load() {
       if (this.model != null) {
         this.title = "选择作业单 " + this.model.projectName + " / " + this.model.providerName + " / " + page.formatDate(this.model.billDate);
-      } 
+      }
       var pagebar = this.$refs.pagebar;
       this.loading = 1;
       this.queryParam.page = pagebar.currentPage;
@@ -188,7 +181,7 @@ export default {
       // this.queryParam.projectCode = this.model.projectCode;//传递的
       // this.queryParam.providerCode = this.model.providerCode;//传递的
       // this.queryParam.jobDate = page.formatDate(this.model.billDate);
-      this.$http.post('/api/engine/machine/order/list', this.queryParam).then((res) => {
+      this.$http.post('/api/engine/project/daily/selectMachineOrderList', this.queryParam).then((res) => {
         if (res.data.code === 0 && res.data.data != null) {
           this.loading = 0;
           var rows = res.data.data.rows;

@@ -12,7 +12,7 @@
       <tbody>
         <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
           <td>{{index+1}}</td>
-          <td>{{item.stockBillId}}</td>
+          <td>{{item.id}}</td>
           <td>{{item.materName}}</td>
           <td>{{item.spec}}</td>
           <td>{{item.unit}}</td>
@@ -37,7 +37,7 @@
             <!--  序号 -->
           </td>
           <td @click="editable && !isImport">
-            <span>{{item.stockBillId}}</span>
+            <span>{{item.id}}</span>
             <!--    -->
           </td>
           <td>{{item.materName}}</td>
@@ -93,37 +93,16 @@ export default {
     }
   },
   methods: {
-    selProvider(item, args) {
-      if (args) {
-        if (_.findIndex(this.list, { 'stockBillId': args.stockBillId }) >= 0) {
-          this.$Message.error('已存在!');
-          return;
-        }
-        item.workloadId = args.workloadId;
-        item.subProjectName = args.subProjectName; //分部分项工程名  
-        item.levelCode = args.levelCode;//层次编码 
-        item.reviewWorkload = args.reviewWorkload;//复核工程量 
-        item.unit = args.unit;//单位   
-      }
-    },
     load() {
 
     },
     listNewRow() {
       var def = {
         id: 0,
-        workloadId: '',
-        projectCode: '',//分部分项工程名 
-        levelCode: '',//层次编码 
-        reviewWorkload: '',//复核工程量 
-        unit: '',//单位  
-        place: '',//部位
-        workloadPlan: 0,//今日计划工程量
-        workload: 0,//今日完成工程量 
-        actualWorkload: 0,//累计完成工程量 
-        actualPercent: 0,//累计完成工程比 
-        startPile: '',//起始桩号 
-        leftRight: '',//左右幅
+        materName: '',
+        spec: '',// 
+        unit: '',// 
+        quantity: '',// 
       };
       return def;
     },
@@ -138,12 +117,11 @@ export default {
           if (data) {
             var that = this;
             data.map(args => {
-              if (_.findIndex(that.list, { 'stockBillId': args.stockBillId }) >= 0) {
+              if (_.findIndex(that.list, { 'id': args.id }) >= 0) {
 
               } else {
                 var item = this.listNewRow();
                 Object.assign(item, args);
-                item.stockBillId = args.stockBillId;//  
                 that.list.push(item);
               }
             })
