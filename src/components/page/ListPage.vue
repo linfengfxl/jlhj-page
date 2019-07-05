@@ -93,7 +93,8 @@
         showSlotPageTitle:true && this.$slots['page-title'], 
         // 当前行对象
         currentRow:null,
-        _loaded:false
+        _loaded:false,
+        apiRult:null,
       }
     },
     computed: {
@@ -125,6 +126,7 @@
         this.queryParam.pageSize = pagebar.currentPageSize;
         this.$http.post(this.api, this.queryParam).then((res) => {
           this.loading = 0;
+          this.apiRult = res.data;
           if (res.data.code === 0) { 
             this.loading = 0;
             var data = res.data.data; 
@@ -146,7 +148,7 @@
             }
             this.total = data.total; 
             Object.assign(this.queryForm, this.queryParam);
-            this.$emit('on-load');
+            this.$emit('on-load',this);
           } else {
             this.loading = 0;
             this.list = [];
