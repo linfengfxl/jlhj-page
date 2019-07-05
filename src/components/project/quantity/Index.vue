@@ -2,9 +2,10 @@
   <ListPage
     ref="page"
     title="工程量统计"
-    api="/api/engine/project/quantity/list"
+    api="/api/engine/project/quantity/list1"
     :model="this"
     :beforeLoad="beforeLoad"
+    @onCurrentRowChange="curRowChg"
   >
     <div class="page-searchbox">
       <table cellpadding="0" cellspacing="0">
@@ -37,10 +38,17 @@
         </tr>
       </table>
     </div>
+    <ListPageDetail
+      ref="detail"
+      slot="page-datatable-detail"
+      api="/api/engine/project/quantity/getDetailList?projectCode="
+      :columns="columns1"
+    ></ListPageDetail>
   </ListPage>
 </template>
 <script>    
 import ListPage from '@/components/page/ListPage';
+import ListPageDetail from '@/components/page/ListPageDetail';
 import DataRowOperate from '@/components/commons/DataRowOperate';
 import page from '@/assets/js/page';
 import floatObj from '@/assets/js/floatObj';
@@ -49,6 +57,7 @@ export default {
   components: {
     ListPage,
     DataRowOperate,
+    ListPageDetail
   },
   data() {
     let that = this;
@@ -61,10 +70,38 @@ export default {
           align: 'center'
         },
         {
+          title: '工程编码',
+          key: 'projectCode',
+          width: 120,
+          align: 'left',
+        },
+        {
           title: '工程名称',
           key: 'projectName',
           minWidth: 120,
           align: 'left',
+        },
+        {
+          title: '施工总量',
+          key: 'totalQuantity',
+          align: 'center',
+          width: 120,
+          render: (h, params) => {
+            var row = params.row;
+            if (row.totalQuantity != null) {
+              return h('span', row.totalQuantity);
+            } else {
+              return h('span', "");
+            }
+          },
+        },  
+      ],
+      columns1: [
+        {
+          title: '序号',
+          type: 'index',
+          width: 60,
+          align: 'center'
         },
         {
           title: '层级编码',
@@ -75,7 +112,7 @@ export default {
           title: '分部分项工程名称',
           key: 'subProjectName',
           align: 'left',
-          minWidth: 200
+          minWidth: 140
         },
         page.table.initArgColumn({
           title: '单位',
@@ -93,13 +130,13 @@ export default {
             var row = params.row;
             if (row.quantity != null) {
               return h('span', row.quantity);
-            } else {
+            }else{
               return h('span', "");
-            }
+            }   
           },
-        }
+        },
       ],
-      columns1: [
+      columns2: [
         {
           title: '序号',
           type: 'index',
@@ -107,9 +144,58 @@ export default {
           align: 'center'
         },
         {
+          title: '工程编码',
+          key: 'projectCode',
+          width: 120,
+          align: 'left',
+        },
+        {
           title: '工程名称',
           key: 'projectName',
           minWidth: 120,
+          align: 'left',
+        },
+        {
+          title: '复核工程总量',
+          key: 'totalReviewWorkload',
+          width: 120,
+          align: 'left',
+        },
+        {
+          title: '施工总量',
+          key: 'totalQuantity',
+          align: 'center',
+          width: 120,
+          render: (h, params) => {
+            var row = params.row;
+            if (row.totalQuantity != null) {
+              return h('span', row.totalQuantity);
+            } else {
+              return h('span', "");
+            }
+          },
+        },
+        {
+          title: '累计完成百分比',
+          key: 'totalPercent',
+          align: 'center',
+          width: 140,
+          render: (h, params) => {
+            var row = params.row;
+            if (row.totalReviewWorkload > 0 && row.totalQuantity != null) {
+              return h('span', floatObj.multiply(floatObj.divide(row.totalQuantity, row.totalReviewWorkload), 100) + "%");
+            } else {
+              return h('span', "");
+            }
+          },
+        }    
+      ],
+      columns3: [
+        {
+          title: '序号',
+          type: 'index',
+          width: 60,
+          align: 'center'
         },
         {
           title: '层级编码',
@@ -156,7 +242,7 @@ export default {
           },
         },
         {
-          title: '累计完成百分比',
+          title: '完成百分比',
           key: 'percent',
           align: 'center',
           width: 140,
@@ -182,7 +268,8 @@ export default {
   },
   mounted: function () {
     if (this.$user.hasPower('wdsx.gcltjszkj')) {
-      this.columns = this.columns1;
+      this.columns = this.columns2;
+      this.columns1 = this.columns3;
     }
     this.query();
   },
@@ -198,6 +285,17 @@ export default {
       }
       if (this.queryForm.createTime.length > 1) {
         queryParam.createTimeEnd = page.formatDate(this.queryForm.createTime[1]);
+      }
+    },
+    curRowChg(row) {
+      if (row != null) {
+        this.curRow = row;
+        this.curRowId = row.projectCode;
+        this.$refs.detail.load(row.projectCode);
+      } else {
+        this.curRow = null;
+        this.curRowId = null;
+        this.$refs.detail.clear();
       }
     },
     query() {
