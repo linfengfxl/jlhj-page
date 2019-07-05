@@ -1,13 +1,13 @@
 <template>
   <ListPage
     ref="page"
-    api="/api/engine/sub/accept/list"
+    api="/api/engine/sub/bill/list"
     :model="this"
     @onCurrentRowChange="curRowChg"
     :beforeLoad="beforeLoad"
   >
     <div class="page-title" slot="page-title">
-      分包完工验收单
+      分包结算会签单
     </div>
     <div class="page-searchbox">
       <table cellpadding="0" cellspacing="0">
@@ -21,7 +21,7 @@
     <div class="page-searchbox">
       <table cellpadding="0" cellspacing="0">
         <tr>
-          <td style="width:80px;">
+          <td style="width:0px;">
             工程名称
           </td>
           <td >
@@ -42,6 +42,12 @@
         </tr>
       </table>
     </div>
+    <ListPageDetail
+      ref="detail"
+      slot="page-datatable-detail"
+      api="/api/engine/sub/bill/getDetailList?subOrderBillCode="
+      :columns="columns1"
+    ></ListPageDetail>
   </ListPage>
 </template>
 <script>
@@ -99,7 +105,7 @@ export default {
         },
         {
           title: '单据编号',
-          key: 'subAccepCode',
+          key: 'subOrderBillCode',
           width: 140,
           fixed: 'left',
           render:(h,params)=>{
@@ -110,10 +116,10 @@ export default {
               },
               on:{
                 click:()=>{
-                  this.$router.push({path:'/sub/accept/view?id=' + row.subAccepCode});
+                  this.$router.push({path:'/sub/bill/view?id=' + row.subOrderBillCode});
                 }
               }
-            },row.subAccepCode);
+            },row.subOrderBillCode);
           }
         },
         {
@@ -123,64 +129,86 @@ export default {
           minWidth: 150,
         },
         {
-          title: '验收时间',
-          key: 'acceptDate',
+          title: '分包类型',
+          key: 'subType',
           align: 'center',
-          width: 150,
+          width: 100,
         },
         {
-          title: '供应商名称',
+          title: '分包项目',
+          key: 'subProjectName',
+          align: 'center',
+          minWidth: 150,
+        },
+        page.table.initDateColumn({
+          title: '结算日期',
+          key: 'settleDate',
+          width: 100,
+          align: 'center',
+        }),
+        {
+          title: '供应商',
           key: 'providerName',
           align: 'center',
           minWidth: 150,
         },
         {
-          title: '竣工组织部门',
-          key: 'deptName',
+          title: '联系人',
+          key: 'linkMan',
           align: 'center',
-          width: 100,
-        },
-        page.table.initDateColumn({
-          title: '开工日期',
-          key: 'startDate',
-          width: 100,
-          align: 'center',
-        }),
-        page.table.initDateColumn({
-          title: '竣工日期',
-          key: 'endDate',
-          width: 100,
-          align: 'center',
-        }),
-        {
-          title: '要求整改时间',
-          key: 'rectificationDate',
-          align: 'center',
-          width: 150,
-        },
-        {
-          title: '参加验收人员',
-          key: 'acceptPerson',
-          align: 'center',
-          minWidth: 120,
-        },
-        {
-          title: '验收内容',
-          key: 'acceptContent',
-          align: 'left',
           minWidth: 150,
         },
         {
-          title: '验收问题',
-          key: 'acceptProblem',
+          title: "税率",
+          key: "taxRate",
+          width: 90,
+          align: "center",
+          render: (h, params) => {
+            var row = params.row;
+            return h('span', floatObj.multiply(row.taxRate, 100) + "%");
+          }
+        },
+        page.table.initDateColumn({
+          title: '结算开始日期',
+          key: 'settleStartDate',
+          width: 100,
+          align: 'center',
+        }),
+        page.table.initDateColumn({
+          title: '结算结束日期',
+          key: 'settleEndDate',
+          width: 100,
+          align: 'center',
+        }), 
+        {
+          title: '部门',
+          key: 'deptName',
           align: 'left',
-          minWidth: 120,
+          width: 100,
         },
         {
           title: '备注',
           key: 'remark',
           align: 'left',
           minWidth: 120,
+        },
+        {
+          title: '工程量合计',
+          key: 'projectQuantity',
+          align: 'left',
+          width: 120,
+        },
+        {
+          title: '金额合计',
+          key: 'totalAmount',
+          align: 'left',
+          width: 120,
+        },
+        {
+          title: '价税合计',
+          key: 'totalPriceTax',
+          align: 'left',
+          width: 120,
         },
         {
           title: '创建人',
@@ -195,10 +223,78 @@ export default {
           width: 100,
         }),
       ],
+      columns1: [
+        {
+          title: '工序名称',
+          key: 'name',
+          align: 'left',
+          width: 120,
+        },
+        page.table.initArgColumn({
+          title: '计量单位',
+          key: 'unit',
+          align: 'center',
+          group: 'unit',
+          width: 100
+        }),
+        {
+          title: '合同工程量',
+          key: 'contractProjectQuantity',
+          align: 'left',
+          width: 150,
+        },  
+        {
+          title: '含税单价',
+          key: 'taxUnitPrice',
+          align: 'left',
+          width: 120,
+        },
+        {
+          title: '单价',
+          key: 'unitPrice',
+          align: 'left',
+          width: 120,
+        },
+        {
+          title: '工程量',
+          key: 'projectQuantity',
+          align: 'left',
+          width: 120,
+        },
+        {
+          title: '金额',
+          key: 'amount',
+          align: 'left',
+          width: 120,
+        },
+        {
+          title: '税额',
+          key: 'tax',
+          align: 'left',
+          width: 120,
+        },
+        {
+          title: '价税合计',
+          key: 'totalPriceTax',
+          align: 'left',
+          width: 120,
+        },
+        {
+          title: '累计计划工程量',
+          key: 'totalProjectQuantity',
+          align: 'left',
+          width: 120,
+        }
+        
+      ],
       queryForm: {
         projectName: '',
         providerName: '',
       },
+      subTypes: [
+        {code:'劳务分包',text:'劳务分包'},
+        {code:'专业分包',text:'专业分包'},
+      ],
       loading: 0
     }
   },
@@ -221,19 +317,21 @@ export default {
     curRowChg(row) {
       if (row != null) {
         this.curRow = row;
-        this.curRowId = row.subAccepCode;
+        this.curRowId = row.subOrderBillCode;
+        this.$refs.detail.load(this.subOrderBillCode);
       } else {
         this.curRow = null;
         this.curRowId = null;
+        this.$refs.detail.clear();
       }
     },
     add() {
-      this.$router.push({ path: '/sub/accept/edit' })
+      this.$router.push({ path: '/sub/bill/edit' })
     },
     edit(row) {
       if (row) {
         this.$router.push({
-          path: '/sub/accept/edit?id=' + row.subAccepCode
+          path: '/sub/bill/edit?id=' + row.subOrderBillCode
         })
       }
     },
@@ -244,8 +342,8 @@ export default {
         onOk: () => {
           if (row) {
             this.loading = 1;
-            this.$http.post('/api/engine/sub/accept/delete', {
-              subAccepCode: row.subAccepCode,
+            this.$http.post('/api/engine/sub/bill/delete', {
+              subOrderBillCode: row.subOrderBillCode,
             }).then((res) => {
               this.loading = 0;
               if (res.data.code === 0) {

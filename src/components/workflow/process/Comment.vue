@@ -15,7 +15,7 @@
         </div>
       </div>
       <div class="row">
-        <Input v-model="comment" type="textarea" :rows="4" placeholder="评论"></Input>
+        <Input v-model="comment" type="textarea" :rows="4" placeholder="批注"></Input>
         <div style="margin-top: 10px;">
           <Button type="primary" @click="btnSave" :loading="loading==1">确定</Button>
         </div>

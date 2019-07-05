@@ -2,7 +2,7 @@
   <ListPage
     ref="page"
     title="工程量统计"
-    api="/api/engine/project/quantity/list1"
+    api="/api/engine/project/quantity/list"
     :model="this"
     :beforeLoad="beforeLoad"
     @onCurrentRowChange="curRowChg"
@@ -183,8 +183,8 @@ export default {
           render: (h, params) => {
             var row = params.row;
             if (row.totalReviewWorkload > 0 && row.totalQuantity != null) {
-              var per=floatObj.multiply(floatObj.divide(row.totalQuantity, row.totalReviewWorkload), 100);
-              return h('span', (per<0.01?0.01:per) + "%");
+              var per=floatObj.divide(floatObj.multiply(row.totalQuantity, 100), row.totalReviewWorkload);
+              return h('span', per + "%");
             } else {
               return h('span', "");
             }
@@ -250,8 +250,8 @@ export default {
           render: (h, params) => {
             var row = params.row;
             if (row.designWorkload > 0 && row.quantity != null) {
-              var pe=floatObj.multiply(floatObj.divide(row.quantity, row.designWorkload), 100);
-              return h('span', (pe<0.01?0.01:pe) + "%");
+              var pe=floatObj.divide(floatObj.multiply(row.quantity, 100), row.designWorkload);
+              return h('span', pe + "%");
             } else {
               return h('span', "");
             }

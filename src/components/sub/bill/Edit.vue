@@ -20,8 +20,8 @@
             </colgroup>
             <tr>
               <td>
-                <FormItem label="单据编号" prop="subAccepCode">
-                  <Input v-model="formItem.subAccepCode" disabled  class="width-1" placeholder="自动生成"/>
+                <FormItem label="单据编号" prop="subOrderBillCode">
+                  <Input v-model="formItem.subOrderBillCode" disabled  class="width-1" placeholder="自动生成"/>
                 </FormItem>
               </td>
                <td>
@@ -34,86 +34,110 @@
                 </FormItem>
               </td>
               <td>
-                <FormItem label="验收时间" prop="acceptDate">
-                  <Date-picker
-                    type="datetime"
-                    style="width:100%"
-                    v-model="formItem.acceptDate"
-                  ></Date-picker>
+                <FormItem prop="subType" label="分包类型">
+                  <Select v-model="formItem.subType" style="width:100%" >
+                    <Option
+                      v-for="item in subTypes"
+                      :value="item.code"
+                      :key="item.code"
+                    >{{ item.text }}</Option>
+                  </Select>
                 </FormItem>
               </td>
             </tr>
             <tr>
+              <td>
+                <FormItem prop="subProjectName" label="分包项目">
+                  <Input v-model="formItem.subProjectName" />
+                </FormItem>
+              </td>
+              <td>
+                <FormItem label="结算日期" prop="settleDate">
+                  <Date-picker
+                    type="date"
+                    style="width:100%"
+                    v-model="formItem.settleDate"
+                    format="yyyy-MM-dd"
+                  ></Date-picker>
+                </FormItem>
+              </td>
               <td>
                 <FormItem prop="providerCode" label="供应商">
                   <SelectProvider
                     v-model="formItem.providerCode"
                     :model="formItem"
                     :text="formItem.providerName"
+                    @on-select="selProvider"
                   />
                 </FormItem>
               </td>
+            </tr>
+            <tr>
               <td>
-                <FormItem prop="deptId" label="竣工组织部门">
+                <FormItem label="联系人" prop>{{formItem.linkMan}}</FormItem>
+              </td>
+              <td>
+                <FormItem label="税率" prop>
+                  {{formItem.taxRate*100+"%"}}
+                </FormItem>
+              </td>
+              <td>
+                <FormItem label="结算开始日期" prop="settleStartDate">
+                  <Date-picker
+                    type="date"
+                    style="width:100%"
+                    v-model="formItem.settleStartDate"
+                    format="yyyy-MM-dd"
+                  ></Date-picker>
+                </FormItem>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <FormItem label="结算结束日期" prop="settleEndDate">
+                  <Date-picker
+                    type="date"
+                    style="width:100%"
+                    v-model="formItem.settleEndDate"
+                    format="yyyy-MM-dd"
+                  ></Date-picker>
+                </FormItem>
+              </td>
+              <td>
+                <FormItem prop="deptId" label="部门">
                   <SelectDept v-model="formItem.deptId" :model="formItem" :text="formItem.deptName" />
                 </FormItem>
               </td> 
-              <td>
-                <FormItem label="开工日期" prop="startDate">
-                  <Date-picker
-                    type="date"
-                    style="width:100%"
-                    v-model="formItem.startDate"
-                    format="yyyy-MM-dd"
-                  ></Date-picker>
-                </FormItem>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <FormItem label="竣工日期" prop="endDate">
-                  <Date-picker
-                    type="date"
-                    style="width:100%"
-                    v-model="formItem.endDate"
-                    format="yyyy-MM-dd"
-                  ></Date-picker>
-                </FormItem>
-              </td>
-              <td>
-                <FormItem label="要求整改时间" prop="rectificationDate">
-                  <Date-picker
-                    type="datetime"
-                    style="width:100%"
-                    v-model="formItem.rectificationDate"
-                  ></Date-picker>
-                </FormItem>
-              </td>
-              <td>
-                <FormItem label="参加验收人员" prop="acceptPerson">
-                  <Input v-model="formItem.acceptPerson"/>
-                </FormItem>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <FormItem label="验收内容" prop="acceptContent">
-                  <Input type="textarea" :rows="2" v-model="formItem.acceptContent"/>
-                </FormItem>
-              </td>
-              <td>
-                <FormItem label="验收问题" prop="acceptProblem">
-                  <Input type="textarea" :rows="2" v-model="formItem.acceptProblem"/>
-                </FormItem>
-              </td>
               <td>
                 <FormItem label="备注" prop="remark">
                   <Input v-model="formItem.remark"/>
                 </FormItem>
               </td>
             </tr>
+            <tr>
+              <td>
+                <FormItem label="工程量合计" prop="projectQuantity">
+                  {{formItem.projectQuantity}}
+                </FormItem>
+              </td>
+              <td>
+                <FormItem label="金额合计" prop="totalAmount">
+                  {{formItem.totalAmount}}
+                </FormItem>
+              </td>
+              <td>
+                <FormItem label="价税合计" prop="totalPriceTax">
+                  {{formItem.totalPriceTax}}
+                </FormItem>
+              </td>
+            </tr>
           </table>
         </Form>
+      </div>
+      <div>
+        <div class="subheader">单据明细</div>
+        <Editable ref="editable" :list="list" :editable="true" :taxRate="taxRate" 
+        :model="formItem" @on-amount-change="onAmountChange"></Editable>
       </div>
       <table class="savebar" cellpadding="0" cellspacing="0">
         <tr>
@@ -128,16 +152,19 @@
 <script>
 import Loading from '@/components/loading';
 import LayoutHor from '@/components/layout/LayoutHor';
+import Editable from './DetailEditable';
 import page from '@/assets/js/page';
 import floatObj from '@/assets/js/floatObj';
 import SelectProject from '@/components/page/form/SelectProject';//工程名称
 import SelectProvider from '@/components/page/form/SelectProvider';//供应商
 import UploadBox from '@/components/upload/Index';
 import SelectDept from '@/components/page/form/SelectDept';
+import pagejs from '@/assets/js/page';
 export default {
   components: {
     Loading,
     LayoutHor,
+    Editable,
     SelectProject,
     UploadBox,
     SelectDept,
@@ -146,42 +173,55 @@ export default {
   data() {
     return {
       loading: 0,
-      subAccepCode: '',
+      subOrderBillCode: '',
       pageFlag: 1,//1.新建 2.编辑 3.修订
       isEdit: 0,
       formItem: {
-        subAccepCode: '',//单据编号
+        subOrderBillCode: '',//单据编号
         projectCode: '',//对应工程
         projectName: '',//对应工程
-        acceptDate:'',//验收时间
+        subType: '',//分包类型
+        subProjectName:'',
+        settleDate:'',
         providerCode:'',
         providerName:'',
+        linkMan:'',
+        taxRate:0,
+        settleStartDate:'',
+        settleEndDate:'',
         deptId:'',
         deptName:'',
-        startDate: '',
-        endDate:'',
-        rectificationDate:'',
-        acceptPerson:'',
-        acceptContent:'',
-        acceptProblem: '',
-        remark: '', 
+        remark: '',
+        projectQuantity: 0,
+        totalAmount: 0,   
+        totalPriceTax: 0, 
       },
       formRules: {
         projectCode: [
           { required: true, whitespace: true, message: '请选择工程', trigger: 'change' }
         ],
-        acceptDate: [
-          {type: 'date', required: true, whitespace: true, message: '验收日期不能为空', trigger: 'change' },
+        providerCode: [
+          { required: true, whitespace: true, message: '请选择供应商', trigger: 'change' }
         ],
+        settleDate: [
+          {type: 'date', required: true, whitespace: true, message: '结算日期不能为空', trigger: 'change' },
+        ],
+      },
+      taxRate:{
+        taxRate:0,
       },
       list: [],
       oriItem: {},
+      subTypes: [
+        {code:'劳务分包',text:'劳务分包'},
+        {code:'专业分包',text:'专业分包'},
+      ],
     }
   },
   
   mounted: function () {
-    this.subAccepCode = this.$route.query.id;
-    if (this.subAccepCode) {
+    this.subOrderBillCode = this.$route.query.id;
+    if (this.subOrderBillCode) {
       this.pageFlag = 2;
       this.isEdit=1;
       this.load();
@@ -194,26 +234,27 @@ export default {
   computed: {
     pageTitle() {
       if (this.pageFlag == 1) {
-        return '分包完工验收单 - 创建';
+        return '分包结算会签单 - 创建';
       }
       if (this.pageFlag == 2) {
-        return '分包完工验收单 - 编辑';
+        return '分包结算会签单 - 编辑';
       }
       if (this.pageFlag == 3) {
-        return '分包完工验收单 - 修订';
+        return '分包结算会签单 - 修订';
       }
     }
   },
   methods: {
     load() { 
       this.loading = 1;
-      this.$http.post("/api/engine/sub/accept/get", { subAccepCode: this.subAccepCode }).then((res) => {
+      this.$http.post("/api/engine/sub/bill/get", { subOrderBillCode: this.subOrderBillCode }).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
           if (res.data.data) {
             console.log(res.data.data);
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
             Object.assign(this.formItem, res.data.data);
+            this.list = res.data.data.detailList;
           } else {
             this.$Message.error('合同不存在！');
             this.goBack();
@@ -226,32 +267,52 @@ export default {
         this.$Message.error("操作失败！")
       });
     },
+    selProvider(data) {
+      if (data) {
+        this.formItem.providerName = data.providerName;
+        this.formItem.providerCode = data.providerCode;
+        this.formItem.linkMan = data.linkMan;//供应商联系人
+        this.formItem.taxRate = data.taxRate;//税率
+        this.taxRate.taxRate=data.taxRate;//明细需要
+        this.list.map(mater => {
+          this.$refs.editable.onAmountChange(mater);
+        })
+        
+      }
+    },
     initNew() {
       Object.assign(this.formItem, {
-        subAccepCode: '',//单据编号
+        subOrderBillCode: '',//单据编号
         projectCode: '',//对应工程
         projectName: '',//对应工程
-        acceptDate:'',//验收时间
+        subType: '',//分包类型
+        subProjectName:'',
+        settleDate:'',
         providerCode:'',
         providerName:'',
+        linkMan:'',
+        taxRate:0,
+        settleStartDate:'',
+        settleEndDate:'',
         deptId:'',
         deptName:'',
-        startDate: '',
-        endDate:'',
-        rectificationDate:'',
-        acceptPerson:'',
-        acceptContent:'',
-        acceptProblem: '',
-        remark: '', 
+        remark: '',
+        projectQuantity: 0,
+        totalAmount: 0,   
+        totalPriceTax: 0, 
       });
+      this.list = [];
+      this.list.push(this.$refs.editable.listNewRow());
+      this.list.push(this.$refs.editable.listNewRow());
     },
     save(proc) {
-      var form = {};
+      var form = {
+        detailList: []
+      };
       Object.assign(form, this.formItem);
-      form.acceptDate = page.formatDateTime(form.acceptDate);
-      form.rectificationDate = page.formatDateTime(form.rectificationDate);
-      form.startDate = page.formatDate(form.startDate);
-      form.endDate = page.formatDate(form.endDate);
+      form.settleDate = page.formatDate(form.settleDate);
+      form.settleStartDate = page.formatDate(form.settleStartDate);
+      form.settleEndDate = page.formatDate(form.settleEndDate);
       var pass = true;
       this.$refs.form.validate((valid) => {
         pass = valid;
@@ -261,11 +322,25 @@ export default {
         this.$Message.error('验证未通过！');
         return;
       }
+
+      form.detailList = []; 
+      // 明细
+      for (var i = 0; i < this.list.length; i++) {
+        var item = this.list[i];
+        var msg = '明细第 ' + (i + 1) + ' 行，';
+        if (item.name == '') {
+          this.$Message.error(msg + '请录入工序名称');
+          return;
+        }
+
+          form.detailList.push(item);
+      }
+
       // 提交
       this.loading = 1;
-      var uri = '/api/engine/sub/accept/add';
+      var uri = '/api/engine/sub/bill/add';
       if (this.pageFlag == 2) {
-        uri = '/api/engine/sub/accept/update';
+        uri = '/api/engine/sub/bill/update';
       }
 
       this.$http.post(uri, form).then((res) => {
@@ -280,6 +355,11 @@ export default {
         this.loading = 0;
         this.$Message.error("请求失败，请重新操作")
       });
+    },
+    onAmountChange(total){
+      this.formItem.projectQuantity=total.projectQuantity;
+      this.formItem.totalAmount=total.totalAmount;
+      this.formItem.totalPriceTax=total.totalPriceTax;
     },
     reset() {
       if (this.pageFlag == 1) {
