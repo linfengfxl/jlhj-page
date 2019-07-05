@@ -170,6 +170,10 @@ components.push({ component: 'sub/contract/View', name: '', path: '/sub/contract
 components.push({ component: 'sub/accept/Index', name: '', path: '/sub/accept' })
 components.push({ component: 'sub/accept/Edit', name: '', path: '/sub/accept/edit' })
 components.push({ component: 'sub/accept/View', name: '', path: '/sub/accept/view' })
+//分包结算会签单
+components.push({ component: 'sub/bill/Index', name: '', path: '/sub/bill' })
+components.push({ component: 'sub/bill/Edit', name: '', path: '/sub/bill/edit' })
+components.push({ component: 'sub/bill/View', name: '', path: '/sub/bill/view' })
 // //2.销售合同 -->
 // //客户
 // components.push({ component: 'customer/Index', name: '', path: '/customer' })
