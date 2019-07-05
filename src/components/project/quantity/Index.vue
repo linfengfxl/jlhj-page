@@ -250,7 +250,8 @@ export default {
           render: (h, params) => {
             var row = params.row;
             if (row.designWorkload > 0 && row.quantity != null) {
-              return h('span', floatObj.multiply(floatObj.divide(row.quantity, row.designWorkload), 100) + "%");
+              var pe=floatObj.multiply(floatObj.divide(row.quantity, row.designWorkload), 100);
+              return h('span', (pe<0.01?0.01:pe) + "%");
             } else {
               return h('span', "");
             }
