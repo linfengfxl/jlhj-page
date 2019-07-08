@@ -14,21 +14,44 @@
   </div>
 </template>
 <script>
-  import defineCfg from '@/components/workflow/defineCfg'
-
   export default {
     components: { 
     },
     data() {       
-      return { 
+      return {         
         list:[] 
       }
     },
-    mounted: function () {
-       this.list = defineCfg.formModules;
+    mounted: function () { 
+      this.load();
     },
     computed: {},
     methods: {
+      load:function(id){
+        this.$http.post('/api/engine/workflow/form/list').then((res) => {
+          if (res.data.code === 0) {
+            this.list = [
+              {id:'1',title:'财务',forms:[]},
+              {id:'2',title:'仓库',forms:[]},
+              {id:'3',title:'运输',forms:[]},
+              {id:'9',title:'其它',forms:[]}
+            ];
+
+            res.data.data.map(item=>{
+              this.list.map(group=>{
+                if(item.module == group.id){
+                  group.forms.push(item);
+                }
+              });
+            });
+
+          } else {
+            this.$Message.error(res.data.message);
+          }
+        }).catch((error) => {
+            this.$Message.error(error.toString())
+        })
+      },
       goPage(item){
         if(item.startUrl == ''){
           this.$Message.error('未配置 url');

@@ -14,7 +14,34 @@
         <table cellpadding="0" cellspacing="0">
           <tr>
             <td>
-              <Input v-model="queryForm.keyword" placeholder @keyup.enter.native="query"></Input>
+              <Select v-model="queryForm.transportType" placeholder="运输类型">
+                <Option
+                  v-for="item in transportType"
+                  :value="item.code"
+                  :key="item.code"
+                >{{ item.text }}</Option>
+              </Select>
+            </td>
+            <td>
+              <Input
+                v-model="queryForm.machineName"
+                placeholder="运输设备名称"
+                @keyup.enter.native="query"
+              ></Input>
+            </td>
+            <td>
+              <Input
+                v-model="queryForm.transportStart"
+                placeholder="运输起点"
+                @keyup.enter.native="query"
+              ></Input>
+            </td>
+            <td>
+              <Input
+                v-model="queryForm.transportEnd"
+                placeholder="运输终点"
+                @keyup.enter.native="query"
+              ></Input>
             </td>
             <td>
               <Button @click="query" type="primary" icon="ios-search">查询</Button>
@@ -82,29 +109,6 @@ export default {
     var that = this;
     return {
       columns: [
-        // {
-        //   title: '选择',
-        //   key: '_checked',
-        //   width: 60,
-        //   render: function (h, params) {
-        //     var row = params.row;
-        //     var index = params.index;
-        //     var props = {
-        //       value: row._checked,
-        //     };
-        //     if (row.status == "2") {
-        //       props.disabled = true;
-        //     }
-        //     return h('Checkbox', {
-        //       props: props,
-        //       on: {
-        //         'on-change': () => {
-        //           that.innerCheckRow(index);
-        //         }
-        //       }
-        //     });
-        //   }
-        // },
         {
           type: 'selection',
           width: 60,
@@ -117,54 +121,28 @@ export default {
           fixed: 'center',
           width: 120,
         },
-         {
-          title: "所属部门",
-          key: "deptName",
+        {
+          title: "运输类别",
+          key: "transportType",
           width: 100,
           align: "center"
-        },
-        {
-          title: "工程名称",
-          key: "projectName",
-          width: 120,
-          align: "left"
-        },
-        {
-          title: "供应商名称",
-          key: "providerName",
-          width: 140,
-          align: "left"
-        },
-        {
-          title: "供应商联系人",
-          key: "linkMan",
-          width: 100,
-          align: "center"
-        },
-        {
-          title: "税率",
-          key: "taxRate",
-          width: 90,
-          align: "center",
-          render: (h, params) => {
-            var row = params.row;
-            return h('span', floatObj.multiply(row.taxRate, 100) + "%");
-          }
         },
         {
           title: "运输设备名称",
           key: "machineName",
           width: 100,
           align: "left"
-        }, {
-          title: "运输时间",
-          key: "transportDate",
-          width: 140,
+        },
+        {
+          title: "运输起点",
+          key: "transportStart",
+          width: 100,
           align: "left"
-        }, {
-          title: "车牌号",
-          key: "vehicleNum",
-          width: 80,
+        },
+        {
+          title: "运输终点",
+          key: "transportEnd",
+          width: 100,
           align: "left"
         },
         {
@@ -185,91 +163,27 @@ export default {
           width: 60,
           align: "center"
         },
-        {
-          title: "含税单价",
-          key: "taxUnitPrice",
-          width: 80,
-          align: "center"
-        },
-        {
-          title: "扣款金额",
-          key: "deductAmount",
-          width: 80,
-          align: "center"
-        },
-        {
-          title: "金额",
-          key: "amount",
-          width: 60,
-          align: "center"
-        },
-        {
-          title: "税额",
-          key: "tax",
-          width: 60,
-          align: "center"
-        },
-        {
-          title: "价税合计",
-          key: "totalPriceTax",
-          width: 80,
-          align: "center"
-        },
-        {
-          title: "运输起点",
-          key: "transportStart",
-          width: 100,
-          align: "left"
-        },
-        {
-          title: "运输终点",
-          key: "transportEnd",
-          width: 100,
-          align: "left"
-        },
-        {
-          title: "抵达时间",
-          key: "arrivalTime",
-          width: 140,
-          align: "left"
-        },
-        {
-          title: "运输类别",
-          key: "transportType",
-          width: 100,
-          align: "center"
-        },
-        {
-          title: "运输内容",
-          key: "transportContent",
-          width: 120,
-          align: "left"
-        },
-        page.table.initMapColumn({
-          title: '来源',
-          key: 'source',
-          width: 80,
-          data: {
-            '1': 'PC端',
-            '2': 'APP',
-          },  
-        }),
-
       ],
       display: false,
       list: [],
       total: 0,
       queryParam: {},
       queryForm: {
-        keyword: '',
-        industry: '',
-        status: 1
+        transportType: '',
+        machineName: '',
+        transportStart: '',
+        transportEnd: '',
       },
       industry: [],
       selected: [],
       selection: [],
       loading: 0,
-      options: {}
+      options: {},
+      transportType: [
+        { code: '内倒', text: '内倒' },
+        { code: '外弃', text: '外弃' },
+        { code: '运材料', text: '运材料' },
+      ],
     }
   },
   mounted: function () {
@@ -281,9 +195,9 @@ export default {
       var pagebar = this.$refs.pagebar;
       this.loading = 1;
       this.queryParam.page = pagebar.currentPage;
-      this.queryParam.pageSize = pagebar.currentPageSize; 
+      this.queryParam.pageSize = pagebar.currentPageSize;
       this.queryParam.projectCode = this.projectCode;
-      this.$http.post("/api/engine/transport/order/list", this.queryParam).then((res) => {
+      this.$http.post("/api/engine/project/daily/selectTransportOrderList", this.queryParam).then((res) => {
         this.loading = 0;
         if (res.data.code === 0) {
           this.loading = 0;
@@ -329,9 +243,10 @@ export default {
     },
     reset: function () {
       Object.assign(this.queryForm, {
-        keyword: '',
-        industry: '',
-        status: 1
+        transportType: '',
+        machineName: '',
+        transportStart: '',
+        transportEnd: '',
       });
 
       var pagebar = this.$refs.pagebar;

@@ -68,8 +68,7 @@
       </div>
   </div>
 </template>
-<script>
-  import defineCfg from '@/components/workflow/defineCfg'
+<script>   
   import AuditLogs from './AuditLogs'
   import Comment from './Comment'
   import Loading from '@/components/loading'
@@ -114,7 +113,8 @@
           cur:0,
           nodeList:[]
         },
-        showPrint:false
+        showPrint:false,
+        form:null,  //表单定义
       }
     },
     mounted: function () {
@@ -152,15 +152,8 @@
             if(data){
               Object.assign(this.instance,data);              
               this.formItem.instId = data.id;
-              this.$emit('on-load',this,this.instance);
-
-              var form = defineCfg.getFormByDefine(this.instance.defineId);
-              if(form && form.printUrl){ 
-                this.showPrint = true;
-              }else{
-                this.showPrint = false;
-              }
-
+              this.loadForm(data.defineId);
+              this.$emit('on-load',this,this.instance); 
             }else{
               this.$Message.info("流程实例不存在！");
             }
@@ -172,12 +165,28 @@
           this.$Message.error(error.toString())
         })
       }, 
+      loadForm(defineId){
+        this.$http.post('/api/engine/workflow/form/getByDefine',{defineId:defineId}).then((res) => {
+          if (res.data.code === 0) {
+            this.form = res.data.data;
+            if(form && form.printUrl){ 
+              this.showPrint = true;
+            }else{
+              this.showPrint = false;
+            }
+          } else {
+            this.$Message.error(res.data.message);
+          }
+        }).catch((error) => {
+            this.$Message.error(error.toString())
+        }) 
+      },
       goBack(){
         this.$router.go(-1);
       },
       print(){
         if(this.instance.id){
-          var form = defineCfg.getFormByDefine(this.instance.defineId);
+          var form = this.form;
           if(form && form.printUrl){
             window.open(form.printUrl + this.instance.businessKey);
           }

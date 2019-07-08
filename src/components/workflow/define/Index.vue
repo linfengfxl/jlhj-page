@@ -7,6 +7,15 @@
     :beforeLoad="beforeLoad"
     class="workflow-define"
   >
+     <div class="page-tools">
+      <table cellpadding="0" cellspacing="0">
+        <tr>
+          <td>
+            <Button @click="add" icon="plus">添加</Button>
+          </td>
+        </tr>
+      </table>
+    </div>
     <div class="page-searchbox">
       <table cellpadding="0" cellspacing="0">
         <tr>
@@ -69,6 +78,8 @@ export default {
               props: {
                 btns: [{
                   key: 'edit',
+                },{
+                  key:"delete"
                 }]
               },
               on: {
@@ -100,6 +111,20 @@ export default {
           title: '审批层级',
           key: 'nodeNames',
           align: 'left',
+        } ,
+        {
+          title: '系统设定',
+          key: 'isSys',
+          align: 'center',
+          width:80,
+          render: (h, params) => {
+            var row = params.row;
+            if(row.isSys == 1){
+              return h('span','是');
+            }else{
+              return h('span','--');
+            }
+          }
         } 
       ],
       list: [],
@@ -136,6 +161,10 @@ export default {
     },
     rowCommand: function (name, params) {
       if (name == '删除') {
+        if(params.row.isSys){
+          this.$Message.error('系统数据不能删除!');
+          return;
+        }
         this.delete(params.row.id);
         return;
       }
@@ -145,14 +174,14 @@ export default {
         return;
       }
     },
-    delete: function (id) {
+    delete: function (id) {      
       var that = this;
       this.$Modal.confirm({
         title: '删除确认',
         content: '<p>删除后不能恢复，确定删除该条记录吗？</p>',
         onOk: () => {
           that.loading = 1;
-          this.$http.post('/api/engine/material/delete?id=' + id, {}).then((res) => {
+          this.$http.post('/api/engine/workflow/define/update', {id:id,disabled:1}).then((res) => {
             if (res.data.code === 0) {
               that.loading = 0;
               this.$Message.success("删除成功");
@@ -169,7 +198,7 @@ export default {
       });
     },
     add: function () {
-      this.$refs.editDefine.open({ materCode: '', resourceType: this.queryForm.resourceType, code: this.queryForm.resourceType });
+      this.$refs.editDefine.open({id:0});
     },
     update: function (row) {
       // 打开DefineEdit组件

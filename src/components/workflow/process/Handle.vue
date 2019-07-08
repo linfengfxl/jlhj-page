@@ -186,12 +186,14 @@
         var cur = this.formItem.nextCur;
         if(cur >= 0){ 
           var node = this.nextNodes[cur*1];
-          if(node.key == '--'){
-            this.formItem.nextUser = '0';
-            this.formItem.nextUserName = '结束';
-            this.users = [{userId:'0',trueName:'结束'}];
-          }else{
-            this.loadUsers(node.key);  
+            if(node){
+              if(node.key == '--'){
+              this.formItem.nextUser = '0';
+              this.formItem.nextUserName = '结束';
+              this.users = [{userId:'0',trueName:'结束'}];
+            }else{
+              this.loadUsers(node.key);  
+            } 
           } 
         } 
       },
