@@ -3,8 +3,6 @@
 </template>
 <script>
 
-import defineCfg from '@/components/workflow/defineCfg'
-
 export default {
   components: {
   },
@@ -24,40 +22,49 @@ export default {
       var defineId = this.$route.query.define;
       var businessKey = this.$route.query.businessKey; 
        
-      var form = defineCfg.getFormByDefine(defineId);
-      if(form == null){
-        this.$Message.error('未知的流程定义 ' + defineId);
-        this.$router.go(-1);
-        return;
-      }
+      this.$http.post('/api/engine/workflow/form/getByDefine',{defineId:defineId}).then((res) => {
+          if (res.data.code === 0) {
+            var form = res.data.data;
+            if(form == null){
+              this.$Message.error('未知的流程定义 ' + defineId);
+              this.$router.go(-1);
+              return;
+            }
 
-      var url = '';
-      
-      if (action == 'handle') { 
-        url = form.handleUrl;
-      }
+            var url = '';
+            
+            if (action == 'handle') { 
+              url = form.handleUrl;
+            }
 
-      if (action == 'restart') { 
-        url = form.startUrl;
-      } 
+            if (action == 'restart') { 
+              url = form.startUrl;
+            } 
 
-      if (action == 'view') { 
-        url = form.viewUrl;        
-      } 
+            if (action == 'view') { 
+              url = form.viewUrl;        
+            } 
 
-      if (url) {
-        url += '?forward&inst=' + instId;
-        if(action == 'restart'){
-          url += '&id=' + businessKey;
-        }
+            if (url) {
+              url += '?forward&inst=' + instId;
+              if(action == 'restart'){
+                url += '&id=' + businessKey;
+              }
 
-        this.$router.replace({
-          path: url
-        })
-      } else {
-        this.$Message.error('表单未配置 url');
-        this.$router.go(-1);
-      }
+              this.$router.replace({
+                path: url
+              })
+            } else {
+              this.$Message.error('表单未配置 url');
+              this.$router.go(-1);
+            }
+
+          } else {
+            this.$Message.error(res.data.message);
+          }
+        }).catch((error) => {
+            this.$Message.error(error.toString())
+        }) 
     },
   }
 }
