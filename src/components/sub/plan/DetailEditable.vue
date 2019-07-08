@@ -103,7 +103,7 @@
   </Editable>
 </template>
 <script>
-import Editable from './Editable-table';
+import Editable from './Editable';
 import floatObj from '@/assets/js/floatObj';
 export default {
   components: {
