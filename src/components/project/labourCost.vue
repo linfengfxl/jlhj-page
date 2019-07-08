@@ -4,6 +4,7 @@
     api="/api/engine/project/labourCost/list"
     :model="this"
     :beforeLoad="beforeLoad"
+    @on-load="onLoadData"
   >
     <div class="page-title" slot="page-title">工程人工成本统计</div>
 
@@ -19,9 +20,14 @@
               placeholder="工程名称"
             />
           </td>
-          <td v-if="!queryForm.projectCode">
-            <div style="color:red;">请选择工程</div>
-            <!-- <Button @click="query" type="primary" icon="ios-search">查询</Button> -->
+          <td style="width:60px"></td>
+          <td style="font-weight: bold;color:#999;">
+            人数合计：
+            <span style="color:green">{{sumInfo.totalWorkload}}</span>
+          </td>
+          <td style="font-weight: bold;color:#999;padding-left:20px;">
+            金额合计：
+            <span style="color:red">{{sumInfo.totalAmount}}</span>
           </td>
         </tr>
       </table>
@@ -63,7 +69,7 @@ export default {
           width: 550,
         }, {
           title: '人数',
-          key: 'peopleNumber',
+          key: 'totalWorkload',
           align: 'center',
           width: 120,
         }, {
@@ -77,6 +83,10 @@ export default {
       ],
       queryForm: {
         projectCode: '',
+      },
+      sumInfo: {
+        totalWorkload: '0',
+        totalAmount: '0',
       },
       loading: 0
     }
@@ -102,6 +112,11 @@ export default {
     },
     goPage(page) {
       this.$router.push({ path: page });
+    },
+    onLoadData(comp) {
+      if (comp.apiRult && comp.apiRult.data.sum) {
+        this.sumInfo = comp.apiRult.data.sum;
+      }
     }
   }
 }

@@ -31,16 +31,19 @@
       </table>
     </div>
     <Edit ref="edit" @on-save="query"></Edit>
+    <SetLoginName ref="setLoginName" @on-save="query"></SetLoginName>
   </ListPage>
 </template>
 <script>    
 import Edit from '@/components/provider/Edit';
+import SetLoginName from '@/components/provider/SetLoginName';
 import ListPage from '@/components/page/ListPage';
 import DataRowOperate from '@/components/commons/DataRowOperate';
 
 export default {
   components: {
     Edit,
+    SetLoginName,
     ListPage,
     DataRowOperate,
   },
@@ -62,15 +65,18 @@ export default {
         },*/
         {
           title: '操作',
-          width: 120,
+          width: 150,
           align: 'center',
           render: (h, params) => {
             var row = params.row;
             return h(DataRowOperate, {
               props: {
                 btns: [{
+                  key: 'set',
+                  text:'设置账号'
+                },
+                {
                   key: 'edit',
-
                 },
                 {
                   key: 'delete',
@@ -78,6 +84,9 @@ export default {
               },
               on: {
                 click: (key) => {
+                  if (key == "set") {
+                    this.$refs.setLoginName.open(row.id);
+                  }
                   if (key == "edit") {
                     this.rowCommand("编辑", params);
                   }
@@ -117,6 +126,12 @@ export default {
         {
           title: '地址',
           key: 'address',
+          align: 'left',
+          minWidth: 150
+        },
+        {
+          title: '登录账号',
+          key: 'loginName',
           align: 'left',
           minWidth: 150
         },

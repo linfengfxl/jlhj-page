@@ -1,19 +1,20 @@
 <template>
   <ListPage
     ref="page"
-    api="/api/engine/project/labor/list"
+    api="/api/engine/sub/accept/list"
     :model="this"
     @onCurrentRowChange="curRowChg"
     :beforeLoad="beforeLoad"
   >
-    <div class="page-title" slot="page-title">劳务用工登记</div>
+    <div class="page-title" slot="page-title">
+      分包完工验收单
+    </div>
     <div class="page-searchbox">
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td class="page-tools">
-            <Button @click="add" v-power icon="plus">登记</Button>&nbsp;
+            <Button @click="add" v-power icon="plus">添加</Button>&nbsp;
           </td>
-          <td class="page-tools" v-if="queryForm.status==0"></td>
         </tr>
       </table>
     </div>
@@ -21,18 +22,16 @@
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td>
+            工程名称
+          </td>
+          <td >
             <Input v-model="queryForm.projectName" placeholder="工程名称" @keyup.enter.native="query"></Input>
           </td>
           <td>
-            <DatePicker
-              type="daterange"
-              v-model="queryForm.createTime"
-              split-panels
-              placeholder="日期"
-              style="width: 180px"
-              :clearable="true"
-              ::transfer="true"
-            ></DatePicker>
+            供应商名称
+          </td>
+          <td >
+            <Input v-model="queryForm.providerName" placeholder="供应商名称" @keyup.enter.native="query"></Input>
           </td>
           <td>
             <Button @click="query" type="primary" icon="ios-search">查询</Button>
@@ -43,12 +42,6 @@
         </tr>
       </table>
     </div>
-    <ListPageDetail
-      ref="detail"
-      slot="page-datatable-detail"
-      api="/api/engine/project/labor/getByProjectList"
-      :columns="columns1"
-    ></ListPageDetail>
   </ListPage>
 </template>
 <script>
@@ -58,13 +51,14 @@ import DataRowOperate from '@/components/commons/DataRowOperate';
 import UploadBox from '@/components/upload/Index';
 
 import page from '@/assets/js/page';
+import floatObj from '@/assets/js/floatObj';
 
 export default {
   components: {
     ListPage,
     ListPageDetail,
     DataRowOperate,
-    UploadBox,
+    UploadBox
   },
   data() {
     let that = this;
@@ -82,6 +76,12 @@ export default {
               props: {
                 btns: [{
                   key: 'edit',
+                  //power: 'ckgl.rk.edit',
+                  //disabled: row.status != 0
+                }, {
+                  key: 'delete',
+                  //power: 'ckgl.rk.edit',
+                  //disabled: row.status != 0
                 }]
               },
               on: {
@@ -97,69 +97,107 @@ export default {
             });
           }
         },
-        page.table.initDateColumn({
-          title: '日期',
-          key: 'laborDate',
-          align: 'center',
-          width: 120,
-        }),
+        {
+          title: '单据编号',
+          key: 'subAccepCode',
+          width: 140,
+          fixed: 'left',
+          render:(h,params)=>{
+            var row = params.row;
+            return h('a',{
+              props:{
+
+              },
+              on:{
+                click:()=>{
+                  this.$router.push({path:'/sub/accept/view?id=' + row.subAccepCode});
+                }
+              }
+            },row.subAccepCode);
+          }
+        },
         {
           title: '工程名称',
           key: 'projectName',
           align: 'left',
-        }, {
-          title: '人员合计',
-          key: 'totalWorkload',
-          align: 'center',
-          width: 140,
-        }, {
-          title: '金额合计',
-          key: 'totalAmount',
-          align: 'center',
-          width: 140,
-        }, {
-          title: '附件',
-          key: 'files',
-          align: 'center',
-          width: 300,
-          render: (h, params) => {
-            var row = params.row;
-            return h(UploadBox, {
-              props: {
-                value: row.files,
-                readonly: true
-              }
-            });
-          }
-        }
-      ],
-      columns1: [
-        {
-          title: '领工',
-          key: 'leader',
-          align: 'center',
-          width: 200,
+          minWidth: 150,
         },
         {
-          title: '人数',
-          key: 'workload',
+          title: '验收时间',
+          key: 'acceptDate',
           align: 'center',
-          width: 200,
+          width: 150,
         },
         {
-          title: '金额',
-          key: 'amount',
+          title: '供应商名称',
+          key: 'providerName',
           align: 'center',
-          width: 200,
+          minWidth: 150,
         },
         {
-          title: ' ',
-          key: '',
-        }
+          title: '竣工组织部门',
+          key: 'deptName',
+          align: 'center',
+          width: 100,
+        },
+        page.table.initDateColumn({
+          title: '开工日期',
+          key: 'startDate',
+          width: 100,
+          align: 'center',
+        }),
+        page.table.initDateColumn({
+          title: '竣工日期',
+          key: 'endDate',
+          width: 100,
+          align: 'center',
+        }),
+        {
+          title: '要求整改时间',
+          key: 'rectificationDate',
+          align: 'center',
+          width: 150,
+        },
+        {
+          title: '参加验收人员',
+          key: 'acceptPerson',
+          align: 'center',
+          minWidth: 120,
+        },
+        {
+          title: '验收内容',
+          key: 'acceptContent',
+          align: 'left',
+          minWidth: 150,
+        },
+        {
+          title: '验收问题',
+          key: 'acceptProblem',
+          align: 'left',
+          minWidth: 120,
+        },
+        {
+          title: '备注',
+          key: 'remark',
+          align: 'left',
+          minWidth: 120,
+        },
+        {
+          title: '创建人',
+          key: 'creatorName',
+          align: 'center',
+          width: 100,
+        },
+        page.table.initDateColumn({
+          title: '创建日期',
+          key: 'createTime',
+          align: 'center',
+          width: 100,
+        }),
       ],
       queryForm: {
         projectName: '',
-        createTime: null,
+        providerName: '',
       },
       loading: 0
     }
@@ -172,41 +210,31 @@ export default {
       this.$refs.page.query();
     },
     beforeLoad() {
-      var queryParam = this.$refs.page.queryParam;
-      queryParam.createTimeStart = '';
-      queryParam.createTimeEnd = '';
-      delete queryParam.createTime;
-      if (this.queryForm.createTime.length > 0) {
-        queryParam.createTimeStart = page.formatDate(this.queryForm.createTime[0]);
-      }
-      if (this.queryForm.createTime.length > 1) {
-        queryParam.createTimeEnd = page.formatDate(this.queryForm.createTime[1]);
-      }
     },
     reset() {
       Object.assign(this.queryForm, {
         projectName: '',
-        createTime: []//[page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())]
+        providerName: '',
       });
       this.query();
     },
     curRowChg(row) {
       if (row != null) {
         this.curRow = row;
-        this.curRowId = "?laborId=" + row.laborId;
-        this.$refs.detail.load(this.curRowId);
+        this.curRowId = row.subAccepCode;
       } else {
         this.curRow = null;
         this.curRowId = null;
-        this.$refs.detail.clear();
       }
     },
     add() {
-      this.$router.push({ path: '/project/labor/edit?forward' })
+      this.$router.push({ path: '/sub/accept/edit' })
     },
     edit(row) {
       if (row) {
-        this.$router.push({ path: '/project/labor/edit?forward&id=' + row.laborId })
+        this.$router.push({
+          path: '/sub/accept/edit?id=' + row.subAccepCode
+        })
       }
     },
     del(row) {
@@ -216,8 +244,8 @@ export default {
         onOk: () => {
           if (row) {
             this.loading = 1;
-            this.$http.post('/api/engine/storage/instock/delete', {
-              stockBillId: row.stockBillId,
+            this.$http.post('/api/engine/sub/accept/delete', {
+              subAccepCode: row.subAccepCode,
             }).then((res) => {
               this.loading = 0;
               if (res.data.code === 0) {

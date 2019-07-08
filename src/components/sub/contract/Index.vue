@@ -1,13 +1,13 @@
 <template>
   <ListPage
     ref="page"
-    api="/api/engine/transport/contract/list"
+    api="/api/engine/sub/contract/list"
     :model="this"
     @onCurrentRowChange="curRowChg"
     :beforeLoad="beforeLoad"
   >
     <div class="page-title" slot="page-title">
-      运输合同
+      分包合同
     </div>
     <div class="page-searchbox">
       <table cellpadding="0" cellspacing="0">
@@ -23,10 +23,10 @@
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td>
-            <Input v-model="queryForm.transportContractId" placeholder="合同编号" @keyup.enter.native="query"></Input>
+            <Input v-model="queryForm.subContractCode" placeholder="合同编码" @keyup.enter.native="query"></Input>
           </td>
           <td>
-            <Input v-model="queryForm.contractName" placeholder="合同名称" @keyup.enter.native="query"></Input>
+            <Input v-model="queryForm.subContractName" placeholder="合同名称" @keyup.enter.native="query"></Input>
           </td>
           <td>
             <Input v-model="queryForm.projectName" placeholder="工程名称" @keyup.enter.native="query"></Input>
@@ -57,7 +57,7 @@
     <ListPageDetail
       ref="detail"
       slot="page-datatable-detail"
-      api="/api/engine/transport/contract/getDetailList?transportContractId="
+      api="/api/engine/sub/contract/getDetailList?subContractId="
       :columns="columns1"
     ></ListPageDetail>
   </ListPage>
@@ -114,8 +114,8 @@ export default {
           }
         },
         {
-          title: '合同编号',
-          key: 'transportContractId',
+          title: '单据编号',
+          key: 'subContractId',
           width: 140,
           fixed: 'left',
           render:(h,params)=>{
@@ -126,21 +126,33 @@ export default {
               },
               on:{
                 click:()=>{
-                  this.$router.push({path:'/transport/contract/view?id=' + row.transportContractId});
+                  this.$router.push({path:'/sub/contract/view?id=' + row.subContractId});
                 }
               }
-            },row.transportContractId);
+            },row.subContractId);
           }
         },
         {
+          title: '合同编码',
+          key: 'subContractCode',
+          width: 140,
+          align: 'left',
+        },
+        {
           title: '合同名称',
-          key: 'contractName',
+          key: 'subContractName',
           align: 'left',
           minWidth: 150,
         },
         {
           title: '工程名称',
           key: 'projectName',
+          align: 'left',
+          minWidth: 200,
+        },
+        {
+          title: '合同性质',
+          key: 'subContractNature',
           align: 'left',
           minWidth: 200,
         },
@@ -155,6 +167,30 @@ export default {
           key: 'signNum',
           align: 'center',
           width: 100,
+        },
+        {
+          title: '合同金额',
+          key: 'amount',
+          align: 'left',
+          minWidth: 120,
+        },
+        {
+          title: '分包类型',
+          key: 'subType',
+          align: 'left',
+          width: 120,
+        },
+        {
+          title: '分包项目',
+          key: 'subProjectName',
+          align: 'left',
+          width: 120,
+        },
+        {
+          title: '结算方式',
+          key: 'settleMethod',
+          align: 'left',
+          width: 120,
         },
         {
           title: '供应商名称',
@@ -200,28 +236,6 @@ export default {
             return h('span', floatObj.multiply(row.taxRate, 100) + "%");
           }
         },
-        {
-          title: '合同金额',
-          key: 'amount',
-          align: 'left',
-          minWidth: 120,
-        },
-        {
-          title: '租赁方式',
-          key: 'leaseType',
-          align: 'left',
-          width: 120,
-          render: (h, params) => {
-            var row = params.row;
-            return h('span', this.$args.getArgText('lease_type',row.leaseType));
-          }
-        },
-        {
-          title: '租赁价格',
-          key: 'leasePrice',
-          align: 'left',
-          minWidth: 120,
-        },
         page.table.initMapColumn({
           title: '合同状态',
           key: 'status',
@@ -246,52 +260,19 @@ export default {
           align: 'center',
           width: 100,
         }),
-        {
-          title: ' ',
-        },
       ],
       columns1: [
         {
-          title: '运输类别',
-          key: 'transportType',
+          title: '分包工序',
+          key: 'subProcess',
           align: 'left',
           width: 120,
         },
         {
-          title: '工程名称',
-          key: 'projectName',
+          title: '工作内容',
+          key: 'content',
           align: 'left',
-          minWidth: 120,
-        },
-        {
-          title: '材料名称',
-          key: 'materName',
-          align: 'left',
-          minWidth: 120,
-        },
-        {
-          title: '规格型号',
-          key: 'spec',
-          align: 'left',
-          width: 120,
-        },
-        {
-          title: '运输起点',
-          key: 'transportStart',
-          align: 'left',
-          width: 150,
-        },
-        {
-          title: '运输终点',
-          key: 'transportEnd',
-          align: 'left',
-          width: 150,
-        },
-        {
-          title: '运输距离',
-          key: 'milage',
-          align: 'left',
-          width: 120,
+          minWidth: 150,
         },
         page.table.initArgColumn({
           title: '计量单位',
@@ -301,16 +282,52 @@ export default {
           width: 100
         }),
         {
+          title: '工作量',
+          key: 'workload',
+          align: 'left',
+          width: 120,
+        },
+        {
+          title: '含税单价',
+          key: 'taxUnitPrice',
+          align: 'left',
+          width: 120,
+        },
+        {
           title: '单价',
           key: 'unitPrice',
           align: 'left',
           width: 120,
         },
+        {
+          title: '金额',
+          key: 'amount',
+          align: 'left',
+          width: 120,
+        },
+        {
+          title: '税额',
+          key: 'tax',
+          align: 'left',
+          width: 120,
+        },
+        {
+          title: '价税合计',
+          key: 'totalAmount',
+          align: 'left',
+          width: 120,
+        },
+        {
+          title: '备注',
+          key: 'remark',
+          align: 'left',
+          width: 150,
+        },
         
       ],
       queryForm: {
-        transportContractId: '',
-        contractName: '',
+        subContractCode: '',
+        subContractName: '',
         projectName: '',
         providerName: '',
         createTime: [],
@@ -339,8 +356,8 @@ export default {
     },
     reset() {
       Object.assign(this.queryForm, {
-        transportContractId: '',
-        contractName: '',
+        subContractCode: '',
+        subContractName: '',
         projectName: '',
         providerName: '',
         createTime: [],
@@ -350,7 +367,7 @@ export default {
     curRowChg(row) {
       if (row != null) {
         this.curRow = row;
-        this.curRowId = row.transportContractId;
+        this.curRowId = row.subContractId;
         this.$refs.detail.load(this.curRowId);
       } else {
         this.curRow = null;
@@ -359,12 +376,12 @@ export default {
       }
     },
     add() {
-      this.$router.push({ path: '/transport/contract/edit' })
+      this.$router.push({ path: '/sub/contract/edit' })
     },
     edit(row) {
       if (row) {
         this.$router.push({
-          path: '/transport/contract/edit?id=' + row.transportContractId
+          path: '/sub/contract/edit?id=' + row.subContractId
         })
       }
     },
@@ -375,8 +392,8 @@ export default {
         onOk: () => {
           if (row) {
             this.loading = 1;
-            this.$http.post('/api/engine/transport/contract/delete', {
-              transportContractId: row.transportContractId,
+            this.$http.post('/api/engine/sub/contract/delete', {
+              subContractId: row.subContractId,
             }).then((res) => {
               this.loading = 0;
               if (res.data.code === 0) {

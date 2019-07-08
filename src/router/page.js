@@ -9,6 +9,7 @@ components.push({ component: 'customer/Index', name: '', path: '/customer' })
 components.push({ component: 'material/Index', name: '', path: '/material' })
 //资源档案
 components.push({ component: 'machine/Index', name: '', path: '/machine' })
+components.push({ component: 'machine/type/Index', name: '', path: '/machine/type' })
 components.push({ component: 'address/Index', name: '', path: '/address' })
 //物质库存 
 //入库单
@@ -34,6 +35,7 @@ components.push({ component: 'storage/inventory/Edit', name: '', path: '/storage
 components.push({ component: 'storage/inventory/Handle', name: '', path: '/storage/inventory/handle' })
 components.push({ component: 'storage/inventory/View', name: '', path: '/storage/inventory/view' })  
 
+components.push({ component: 'storage/sendAndReceive/Index', name: '', path: '/storage/sendAndReceive' })
 
 //低值耗材结算单
 components.push({ component: 'storage/low/Index', name: '', path: '/storage/low' })
@@ -154,6 +156,24 @@ components.push({ component: 'transport/contract/View', name: '', path: '/transp
 
 // 系统日志
 components.push({ component: 'logger/Index', name: '', path: '/logger' })
+
+//分包管理
+//分包需求计划
+components.push({ component: 'sub/plan/Index', name: '', path: '/sub/plan' })
+components.push({ component: 'sub/plan/Edit', name: '', path: '/sub/plan/edit' })
+components.push({ component: 'sub/plan/View', name: '', path: '/sub/plan/view' })
+//分包合同
+components.push({ component: 'sub/contract/Index', name: '', path: '/sub/contract' })
+components.push({ component: 'sub/contract/Edit', name: '', path: '/sub/contract/edit' })
+components.push({ component: 'sub/contract/View', name: '', path: '/sub/contract/view' })
+//分包完工验收单
+components.push({ component: 'sub/accept/Index', name: '', path: '/sub/accept' })
+components.push({ component: 'sub/accept/Edit', name: '', path: '/sub/accept/edit' })
+components.push({ component: 'sub/accept/View', name: '', path: '/sub/accept/view' })
+//分包结算会签单
+components.push({ component: 'sub/bill/Index', name: '', path: '/sub/bill' })
+components.push({ component: 'sub/bill/Edit', name: '', path: '/sub/bill/edit' })
+components.push({ component: 'sub/bill/View', name: '', path: '/sub/bill/view' })
 // //2.销售合同 -->
 // //客户
 // components.push({ component: 'customer/Index', name: '', path: '/customer' })

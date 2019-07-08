@@ -13,8 +13,8 @@
       <Form ref="form" class="page-form" :model="formItem" :rules="formRules" :label-width="120">
         <table cellspacing="0" cellpadding="0">
           <colgroup>
-            <col width="50%">
-            <col width="50%">
+            <col width="50%" />
+            <col width="50%" />
           </colgroup>
           <tr>
             <td>
@@ -35,6 +35,61 @@
     <div>
       <div class="subheader">完成工作项</div>
       <Editable ref="editable" :list="list" :editable="false" :projectCode="projectCode"></Editable>
+      <div class="subheader">劳务用工</div>
+      <div class="editable-table-container editable">
+        <table cellspacing="0" cellpadding="0">
+          <thead>
+            <th>技工人数</th>
+            <th>力工人数</th>
+            <th>工作内容</th>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{formItem.skillWorkload}}</td>
+              <td>{{formItem.strongWorkload}}</td>
+              <td>{{formItem.remark}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div
+        class="demo-tabs-style1"
+        style="background: #e3e8ee;padding:2px;width:100%; margin-top:30px;"
+      >
+        <Tabs type="card">
+          <TabPane label="入库单" name="name2">
+            <div class="page-datatable">
+              <SelectRkd
+                ref="selectRkd"
+                :list="rkdList"
+                :editable="false"
+                :projectCode="projectCode"
+              ></SelectRkd>
+            </div>
+          </TabPane>
+          <TabPane label="机械作业单" name="name3">
+            <div class="page-datatable">
+              <SelectJxzyd
+                ref="selectJxzyd"
+                :list="jxzydList"
+                :editable="false"
+                :projectCode="projectCode"
+              ></SelectJxzyd>
+            </div>
+          </TabPane>
+          <TabPane label="运输小票" name="name4">
+            <div class="page-datatable">
+              <SelectYsxp
+                ref="selectYsxp"
+                :list="ysxpList"
+                :editable="false"
+                :projectCode="projectCode"
+              ></SelectYsxp>
+            </div>
+          </TabPane>
+        </Tabs>
+      </div>
     </div>
     <!-- <div>
         <div class="subheader">劳务用工登记</div>
@@ -61,6 +116,9 @@ import SelectProject from '@/components/page/form/SelectProject';//工程名称
 import SelectMember from '@/components/page/form/SelectMember';//收料员
 import SelectProvider from '@/components/page/form/SelectProvider';//供应商
 import pagejs from '@/assets/js/page';
+import SelectRkd from './SelectRkd';
+import SelectJxzyd from './SelectJxzyd';
+import SelectYsxp from './SelectYsxp';
 
 import HandleProcess from '@/components/workflow/process/Handle';
 export default {
@@ -73,7 +131,10 @@ export default {
     SelectProject,
     SelectMember,
     SelectProvider,
-    HandleProcess
+    HandleProcess,
+    SelectRkd,
+    SelectJxzyd,
+    SelectYsxp
   },
   data() {
     return {
@@ -103,7 +164,11 @@ export default {
       list: [],
       list2: [],
       oriItem: {},
-      storage: []
+      storage: [],
+      lwygList: [],
+      rkdList: [],
+      jxzydList: [],
+      ysxpList: [],
     }
   },
   mounted: function () {
@@ -122,14 +187,17 @@ export default {
     },
     load() {
       this.loading = 1;
-      this.$http.post("/api/engine/project/daily/get", { dailyId: this.dailyId }).then((res) => {
+      this.$http.post("/api/engine/project/daily/getPc", { dailyId: this.dailyId }).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
           if (res.data.data) {
             console.log(res.data.data);
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
             Object.assign(this.formItem, res.data.data);
-            this.list = res.data.data.detailList;
+            this.list = res.data.data.workloadList;
+            this.rkdList = res.data.data.rkdList;
+            this.jxzydList = res.data.data.jxzydList;
+            this.ysxpList = res.data.data.ysxpList;
           } else {
             this.$Message.error('订单不存在！');
             this.goBack();
@@ -305,5 +373,19 @@ export default {
   border-radius: 3px;
   color: #666;
   margin-top: 10px;
+}
+
+.demo-tabs-style1 > .ivu-tabs-card > .ivu-tabs-content {
+  height: auto;
+  margin-top: -16px;
+}
+
+.demo-tabs-style1 > .ivu-tabs-card > .ivu-tabs-content > .ivu-tabs-tabpane {
+  background: #fff;
+  padding: 16px;
+}
+
+.demo-tabs-style1 > .ivu-tabs.ivu-tabs-card > .ivu-tabs-bar .ivu-tabs-tab {
+  border-color: transparent;
 }
 </style>

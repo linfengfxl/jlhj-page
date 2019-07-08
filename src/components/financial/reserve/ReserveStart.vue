@@ -196,9 +196,6 @@ export default {
         finalPaymentDate:[
           { required: true,  message: '该项为非空', trigger: 'change', pattern: /.+/ }
         ],
-        files:[
-          {}
-        ],
       },
       reserveApplyId:'',
       oriItem: {},
@@ -295,10 +292,10 @@ export default {
         this.$Message.error('验证未通过！');
         return;
       }
-      if (form.files==null||form.files=="") {
+      /*if (form.files==null||form.files=="") {
         this.$Message.error('请上传附件！');
         return;
-      }
+      }*/
       form.applicant = form.operator;
       form.applicantName = form.operatorName;
       form.applyDeptId = form.deptId;

@@ -168,18 +168,25 @@ export default {
         ]
       },
       list: [],
+      ExcelList: [],
+      fileId:'',//导入文件id
       analysisId:'',
       oriItem: {},
+      
     };
   },
   mounted: function () {
     this.analysisId = this.$route.query.id;
+    this.fileId = this.$route.query.fileId;
     if (this.analysisId) {
       this.pageFlag = 2;
       this.load();
     } else {
       this.pageFlag = 1;
       this.initNew();
+      if(this.fileId){
+        this.importExcel(this.fileId);
+      }
     }
   },
   computed: {
@@ -370,7 +377,59 @@ export default {
     },
     goBack() {
       this.$router.go(-1);
-    }
+    },
+     //导入excel
+    importExcel(fileId){
+      this.$http.post('/api/engine/project/analysis/import', {fileId:fileId}).then((res) => {
+        if (res.data.code === 0) {
+          this.ExcelList=res.data.data;
+          //主表
+          this.formItem.projectCode=this.ExcelList[0][0];
+          this.formItem.projectName=this.ExcelList[0][1];
+          this.formItem.calcPeople=this.ExcelList[this.ExcelList.length-1][1];
+          this.formItem.reviewPeople=this.ExcelList[this.ExcelList.length-1][5];
+          this.formItem.auditPeople=this.ExcelList[this.ExcelList.length-1][9];
+          this.formItem.analysisDate=this.ExcelList[this.ExcelList.length-1][13];
+          this.formItem.materialPercent=this.ExcelList[this.ExcelList.length-2][12];
+          this.formItem.laborPercent=this.ExcelList[this.ExcelList.length-2][13];
+          this.formItem.machinePercent=this.ExcelList[this.ExcelList.length-2][14];
+          this.formItem.totalProjectAmount=this.ExcelList[this.ExcelList.length-3][10];
+          this.formItem.totalCostAmount=this.ExcelList[this.ExcelList.length-3][11];
+          this.formItem.totalMaterialAmount=this.ExcelList[this.ExcelList.length-3][12];
+          this.formItem.totalLaborAmount=this.ExcelList[this.ExcelList.length-3][13];
+          this.formItem.totalMachineAmount=this.ExcelList[this.ExcelList.length-3][14];
+          //明细
+          var obj={}
+          for(var i=2;i<this.ExcelList.length-3;i++){
+            if(this.ExcelList[i][0]!=''){
+              obj = {
+                levelCode: this.ExcelList[i][0], 
+                subProjectName: this.ExcelList[i][1], 
+                workload: parseInt(this.ExcelList[i][2]), 
+                unit: this.ExcelList[i][3], 
+                materialFee: parseInt(this.ExcelList[i][4]), 
+                laborFee: parseInt(this.ExcelList[i][5]), 
+                machineFee: parseInt(this.ExcelList[i][6]), 
+                totalFee: parseInt(this.ExcelList[i][7]), 
+                reviewPrice: parseInt(this.ExcelList[i][8]), 
+                differPrice: parseInt(this.ExcelList[i][9]), 
+                projectAmount: parseInt(this.ExcelList[i][10]), 
+                costAmount: parseInt(this.ExcelList[i][11]), 
+                materialAmount: parseInt(this.ExcelList[i][12]), 
+                laborAmount: parseInt(this.ExcelList[i][13]), 
+                machineAmount: parseInt(this.ExcelList[i][14]),
+                remark: this.ExcelList[i][15]
+              };
+              this.list.push(obj);
+            }
+          }
+        } else {
+          this.$Message.error(res.data.message)
+        }
+      }).catch((error) => {
+        this.$Message.error(error.toString())
+      });
+    },
   }
 };
 </script>

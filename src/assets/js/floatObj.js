@@ -65,7 +65,7 @@ var floatObj = function () {
      *
      */
     function operation(a, b, digits, op) {
-        if (!digits) { digits = 2 }
+        if (digits === undefined || digits === null || digits === '') { digits = 2 }
         var o1 = toInteger(a)
         var o2 = toInteger(b)
         var n1 = o1.num

@@ -8,18 +8,26 @@
     :width="800"
     class="selmaterial"
     :model="model"
+    :projectCode="projectCode"
   >
+    <!-- 作业单号 -->
     <div class="page">
       <div class="page-searchbox">
         <table cellpadding="0" cellspacing="0">
           <tr>
             <td>
-              <Input
-                v-model="queryForm.keyword"
-                placeholder="作业单号"
-                style="width:200px;"
-                @keyup.enter.native="query"
-              ></Input>
+              <Input v-model="queryForm.machineName" placeholder="机械名称" @keyup.enter.native="query"></Input>
+            </td>
+            <td>
+              <DatePicker
+                type="daterange"
+                v-model="queryForm.createTime"
+                split-panels
+                placeholder="时间"
+                style="width: 180px"
+                :clearable="true"
+                ::transfer="true"
+              ></DatePicker>
             </td>
             <td>
               <Button @click="query" type="primary" icon="ios-search">查询</Button>
@@ -80,6 +88,10 @@ export default {
     model: {
       type: Object,
       default: null
+    },
+    projectCode: {
+      type: Object,
+      default: null
     }
   },
   data() {
@@ -120,48 +132,42 @@ export default {
           key: 'machineOrderId',
           width: 120,
         }, {
-          title: '部门',
-          key: 'deptName',
-          width: 120,
-        },
-        {
-          title: '工程名称',
-          key: 'projectName',
-          width: 120,
-        }, {
-          title: '供应商',
-          key: 'providerName',
-          width: 120,
-        },
-        {
           title: '机械名称',
           key: 'machineName',
           width: 120,
+        }, {
+          title: '时间',
+          key: 'startTime',
+          width: 120,
+        },
+        {
+          title: '作业时间',
+          key: 'useTime',
+          width: 120,
+        }, {
+          title: '作业台班',
+          key: 'taiban',
+          width: 120,
         },
         page.table.initDateColumn({
-          title: '作业时间',
-          key: 'jobDate',
+          title: '加油量',
+          key: 'addFuel',
         }),
-        {
-          title: '备注',
-          key: 'remark',
-          align: 'left',
-          minWidth: 150
-        },
       ],
       display: false,
       list: [],
       total: 0,
       queryParam: {},
       queryForm: {
-        keyword: '',
+        machineName: '',
+        createTime: []
       },
       selected: [],
       selection: [],
       loading: 0,
       options: {
         type: 1
-      }
+      },
     };
   },
   mounted: function () {
@@ -178,10 +184,18 @@ export default {
       this.queryParam.page = pagebar.currentPage;
       this.queryParam.pageSize = pagebar.currentPageSize;
       this.queryParam.type = this.options.type;
-      this.queryParam.projectCode = this.model.projectCode;//传递的
-      this.queryParam.providerCode = this.model.providerCode;//传递的
-      this.queryParam.jobDate = page.formatDate(this.model.billDate);
-      this.$http.post('/api/engine/machine/order/list', this.queryParam).then((res) => {
+      this.queryParam.projectCode = this.projectCode;//传递的
+      // this.queryParam.projectCode = this.model.projectCode;//传递的
+      // this.queryParam.providerCode = this.model.providerCode;//传递的
+      // this.queryParam.jobDate = page.formatDate(this.model.billDate);
+
+      if (this.queryParam.createTime.length > 0) {
+        this.queryParam.timeStart = page.formatDate(this.queryParam.createTime[0]);
+      }
+      if (this.queryParam.createTime.length > 1) {
+        this.queryParam.timeEnd = page.formatDate(this.queryParam.createTime[1]);
+      }
+      this.$http.post('/api/engine/project/daily/selectMachineOrderList', this.queryParam).then((res) => {
         if (res.data.code === 0 && res.data.data != null) {
           this.loading = 0;
           var rows = res.data.data.rows;
@@ -213,8 +227,8 @@ export default {
     },
     reset: function () {
       this.queryForm = {
-        materId: '',
-        drawing: '',
+        machineName: '',
+        createTime: []
       }
 
       var pagebar = this.$refs.pagebar;

@@ -3,24 +3,16 @@
     <table cellspacing="0" cellpadding="0" v-if="!editable">
       <thead>
         <th class="col-xh">序号</th>
-        <th>领工</th>
-        <th>技工人数</th>
-        <th>技工加班（h）</th>
-        <th>力工人数</th>
-        <th>力工加班（h）</th>
-        <th>金额</th>
-        <th>备注</th>
+        <th>领工</th> 
+        <th>人数</th>
+        <th>金额</th> 
       </thead>
       <tbody>
         <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
           <td :class="{'col-xh':true,'cur':index==curIndex}">{{index+1}}</td>
-          <td>{{item.leader}}</td>
-          <td>{{item.skillWorkload}}</td>
-          <td>{{item.skillWorkloadOvertime}}</td>
-          <td>{{item.strongWorkload}}</td>
-          <td>{{item.strongWorkloadOvertime}}</td>
-          <td>{{item.amount}}</td>
-          <th>{{item.remark}}</th>
+          <td>{{item.leader}}</td> 
+          <td>{{item.workload}}</td>
+          <td>{{item.amount}}</td> 
         </tr>
       </tbody>
     </table>
@@ -28,14 +20,9 @@
     <table cellspacing="0" cellpadding="0" v-else>
       <thead>
         <th class="col-xh">序号</th>
-        <th>领工</th>
-        <th>技工人数</th>
-        <th>技工加班（h）</th>
-        <th>力工人数</th>
-        <th>力工加班（h）</th>
-        <th>金额</th>
-        <th>备注</th>
-        <th>附件</th>
+        <th>领工</th> 
+        <th>人数</th>
+        <th>金额</th> 
       </thead>
       <tbody>
         <tr v-for="(item,index) in list" :key="'mater_'+index" @click="curIndex = index">
@@ -49,21 +36,9 @@
             </div>
           </td>
           <td>
-            <InputNumber :max="999999" :min="0" v-model="item.skillWorkload"></InputNumber>
-            <!--技工人数  -->
-          </td>
-          <td>
-            <InputNumber :max="999999" :min="0" v-model="item.skillWorkloadOvertime"></InputNumber>
-            <!--技工加班量  -->
-          </td>
-          <td>
-            <InputNumber :max="999999" :min="0" v-model="item.strongWorkload"></InputNumber>
-            <!--力工人数  -->
-          </td>
-          <td>
-            <InputNumber :max="999999" :min="0" v-model="item.strongWorkloadOvertime"></InputNumber>
-            <!--力工加班量  -->
-          </td>
+            <InputNumber :max="999999" :min="0" v-model="item.workload"   @on-change="computedWorkload(item)"></InputNumber>
+            <!--人数  -->
+          </td>  
           <td>
             <InputNumber
               :max="999999"
@@ -71,16 +46,7 @@
               v-model="item.amount"
               @on-change="computedAmount(item)"
             ></InputNumber>
-          </td>
-          <!--金额	-->
-          <td>
-            <div style="width:100px;">
-              <Input v-model="item.remark"/>
-            </div>
-          </td>
-          <td>
-            <UploadBox v-model="item.files" :readonly="false"></UploadBox>
-          </td>
+          </td> 
         </tr>
       </tbody>
     </table>
@@ -88,11 +54,9 @@
 </template>
 <script>
 import Editable from '@/components/editable-table';
-import floatObj from '@/assets/js/floatObj';
-import UploadBox from '@/components/upload/Index';
+import floatObj from '@/assets/js/floatObj'; 
 export default {
-  components: {
-    UploadBox,
+  components: { 
     Editable,
   },
   props: {
@@ -119,6 +83,7 @@ export default {
   watch: {
     list(val, old) {
       this.$emit('on-amount-change', this.sumAmount());
+      this.$emit('on-workload-change', this.sumWorkload());
     }
   },
   methods: {
@@ -128,10 +93,8 @@ export default {
     listNewRow() {
       var def = {
         id: 0,
-        skillWorkload: null,//技工人数
-        skillWorkloadOvertime: null,//技工加班量
-        strongWorkload: null,//力工人数
-        strongWorkloadOvertime: null,//力工工作加班量
+        leader:'',//领工
+        workload: null,//人数 
         amount: null,//金额
         remak: '',
         files: '',
@@ -152,9 +115,13 @@ export default {
         this.curIndex = 0;
       }
       this.$emit('on-amount-change', this.sumAmount());
+      this.$emit('on-workload-change', this.computedWorkload());
     },
     computedAmount(item) {
       this.$emit('on-amount-change', this.sumAmount());
+    },
+    computedWorkload(){
+      this.$emit('on-workload-change', this.sumWorkload());
     },
     sumAmount() {
       var totals = 0;
@@ -163,6 +130,13 @@ export default {
       });
       return totals;
     },
+    sumWorkload(){
+      var totals = 0;
+      this.list.map((mater) => {
+        totals = floatObj.add(totals, mater.workload);
+      });
+      return totals;
+    }
   }
 }
 

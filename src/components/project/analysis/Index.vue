@@ -20,7 +20,9 @@
           <td>
             <Button @click="add" icon="plus">添加</Button>
           </td>
-          <td class="page-tools" v-if="queryForm.status==0"></td>
+          <td class="page-tools">
+            <UploadButton @on-upload="importExcel"></UploadButton>
+          </td>
         </tr>
       </table>
     </div>
@@ -60,6 +62,7 @@ import ListPage from "@/components/page/ListPage";
 import DataRowOperate from "@/components/commons/DataRowOperate";
 import SelectProject from "@/components/page/form/SelectProject"; // 工程
 import SelectProvider from "@/components/page/form/SelectProvider"; //供应商
+import UploadButton from '@/components/upload/UploadButton';
 import page from "@/assets/js/page";
 import floatObj from '@/assets/js/floatObj';
 
@@ -68,6 +71,7 @@ export default {
     ListPage,
     DataRowOperate,
     SelectProject,
+    UploadButton,
     SelectProvider
   },
   data() {
@@ -409,6 +413,12 @@ export default {
       }).catch((error) => {
         this.loading = 0;
         this.$Message.error("请求失败，请重新发送")
+      });
+    },
+    //导入
+    importExcel(fileId){
+      this.$router.push({
+        path: "/project/analysis/start?forward&fileId="+fileId
       });
     },
     reset() {

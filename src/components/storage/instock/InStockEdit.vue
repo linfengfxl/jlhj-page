@@ -13,9 +13,9 @@
           >
             <table cellspacing="0" cellpadding="0">
               <colgroup>
-                <col width="33%">
-                <col width="auto">
-                <col width="33%">
+                <col width="33%" />
+                <col width="auto" />
+                <col width="33%" />
               </colgroup>
               <tr>
                 <td>
@@ -65,7 +65,14 @@
                   >{{$args.getArgText('invoice_type', formItem.invoiceType)}}</FormItem>
                 </td>
                 <td>
-                  <FormItem prop label="日期">{{formItem.operateDate}}</FormItem>
+                  <FormItem prop="operateDate" label="日期">
+                    <Date-picker
+                      type="date"
+                      placeholder="选择日期"
+                      v-model="formItem.operateDate"
+                      format="yyyy-MM-dd"
+                    ></Date-picker>
+                  </FormItem>
                 </td>
                 <td>
                   <FormItem prop="operatorName" label="收料员">
@@ -88,7 +95,7 @@
                 </td>
                 <td colspan="2">
                   <FormItem prop=" " label="备注">
-                    <Input type="textarea" :rows="2" v-model="formItem.remark"/>
+                    <Input type="textarea" :rows="2" v-model="formItem.remark" />
                   </FormItem>
                 </td>
               </tr>
@@ -182,6 +189,14 @@ export default {
         operatorName: [
           { required: true, whitespace: true, message: '请选择收料员', trigger: 'change' }
         ],
+        operateDate: [
+          {
+            required: true,
+            message: "请选择日期",
+            trigger: "change",
+            pattern: /.+/
+          }
+        ],
       },
       list: [],
       oriItem: {},
@@ -273,7 +288,10 @@ export default {
       };
       Object.assign(form, this.formItem);
       form.signDate = page.formatDate(form.signDate);
-
+      
+      if (form.operateDate) {
+        form.operateDate = page.formatDate(form.operateDate);
+      }
       var pass = true;
       this.$refs.form.validate((valid) => {
         pass = valid;

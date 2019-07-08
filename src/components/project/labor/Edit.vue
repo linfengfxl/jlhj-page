@@ -1,5 +1,5 @@
 <template>
-  <div class="page page-bill page-bill-max">
+  <div class="page page-bill">
     <div class="page-bar">
       <LayoutHor>
         <div slot="left">
@@ -14,9 +14,9 @@
         <Form ref="form" class="page-form" :model="formItem" :rules="formRules" :label-width="120">
           <table cellspacing="0" cellpadding="0">
             <colgroup>
-              <col width="33%">
-              <col width="auto">
-              <col width="33%">
+              <col width="33%" />
+              <col width="auto" />
+              <col width="33%" />
             </colgroup>
             <tr>
               <td>
@@ -38,13 +38,22 @@
                   />
                 </FormItem>
               </td>
+              <td></td>
             </tr>
             <tr>
               <td>
-                <FormItem label="人数合计">{{list.length}}</FormItem>
+                <FormItem label="人数合计">{{formItem.totalWorkload}}</FormItem>
               </td>
               <td>
                 <FormItem label="金额合计">{{formItem.totalAmount}}</FormItem>
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <FormItem label="附件">
+                  <UploadBox v-model="formItem.files" :readonly="false"></UploadBox>
+                </FormItem>
               </td>
             </tr>
           </table>
@@ -52,7 +61,13 @@
       </div>
       <div>
         <div class="subheader">明细</div>
-        <Editable ref="editable" :list="list" :editable="true" @on-amount-change="onAmountChange"></Editable>
+        <Editable
+          ref="editable"
+          :list="list"
+          :editable="true"
+          @on-amount-change="onAmountChange"
+          @on-workload-change="onWorkloadChange"
+        ></Editable>
       </div>
       <table class="savebar" cellpadding="0" cellspacing="0">
         <tr>
@@ -71,12 +86,13 @@ import Editable from './DetailEditable';
 import page from '@/assets/js/page';
 import floatObj from '@/assets/js/floatObj';
 import pagejs from '@/assets/js/page';
-
+import UploadBox from '@/components/upload/Index';
 import SelectProject from '@/components/page/form/SelectProject';
 
 
 export default {
   components: {
+    UploadBox,
     Loading,
     LayoutHor,
     Editable,
@@ -95,8 +111,9 @@ export default {
         projectCode: '',//工程代码
         projectName: '',//工程名 
         remark: '',//备注 
-        totalNumber: 0,
+        totalWorkload: 0,
         totalAmount: 0,
+        files: ""
       },
       formRules: {
         projectCode: [
@@ -112,9 +129,9 @@ export default {
     }
   },
   mounted: function () {
-    this.formItem.projectCode = this.$route.query.projectCode;
-    this.formItem.laborDate = this.$route.query.laborDate;
-    if (this.formItem.projectCode) {
+    this.laborId = this.$route.query.id;
+    this.formItem.laborId = this.$route.query.id;
+    if (this.laborId) {
       this.pageFlag = 2;
       this.load();
     } else {
@@ -135,12 +152,12 @@ export default {
   methods: {
     load() {
       this.loading = 1;
-      this.$http.post("/api/engine/project/labor/getByProjectList?projectCode=" + this.formItem.projectCode + "&laborDate=" + this.formItem.laborDate).then((res) => {
+      this.$http.post("/api/engine/project/labor/get", { "laborId": this.laborId }).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
           if (res.data.data) {
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
-            Object.assign(this.formItem, res.data.data.detailList[0]);
+            Object.assign(this.formItem, res.data.data);
             this.list = res.data.data.detailList;
           } else {
             this.$Message.error('订单不存在！');
@@ -162,6 +179,9 @@ export default {
         projectCode: '',//工程代码
         projectName: '',//工程名 
         remark: '',//备注 
+        totalWorkload: 0,
+        totalAmount: 0,
+        files: ""
       });
       this.list = [];
       this.list.push(this.$refs.editable.listNewRow());
@@ -191,18 +211,18 @@ export default {
       for (var i = 0; i < this.list.length; i++) {
         var item = this.list[i];
         var msg = '明细第 ' + (i + 1) + ' 行，';
-        // if (item.startTime == '') {
-        //   this.$Message.error(msg + '请选择时间');
-        //   return;
-        // }
-        // if (item.endTime == '') {
-        //   this.$Message.error(msg + '请选择时间');
-        //   return;
-        // }
-        // if (item.taiban == 0) {
-        //   this.$Message.error(msg + '请录入作业台班');
-        //   return;
-        // }  
+        if (item.leader == '' || item.leader == null) {
+          this.$Message.error(msg + '请录入领工');
+          return;
+        }
+        if (item.workload == '' || item.workload == null) {
+          this.$Message.error(msg + '请录入人数');
+          return;
+        }
+        if (item.amount == '' || item.amount == null) {
+          this.$Message.error(msg + '请录入金额');
+          return;
+        }
         form.detailList.push(item);
       }
       console.log(form);
@@ -238,10 +258,13 @@ export default {
     onAmountChange(val) {
       this.formItem.totalAmount = val;
     },
+    onWorkloadChange(val) {
+      this.formItem.totalWorkload = val;
+    }
   }
 }
 
 </script>
 
-<style type="text/css"> 
+<style type="text/css">
 </style>
