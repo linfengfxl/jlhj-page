@@ -1,7 +1,7 @@
 <template>
   <ListPage
     ref="page"
-    title="机械"
+    title="机械设备"
     api="/api/engine/machine/list"
     :model="this"
     :beforeLoad="beforeLoad"

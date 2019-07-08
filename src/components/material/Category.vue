@@ -152,10 +152,13 @@ export default {
     },
     add() {
       this.contextmenu.show = false;
-      this.$refs.editDept.openAdd({ parentCode: this.currentItem.code });
+      this.$refs.editDept.openAdd({ parentCode: this.currentItem.code,parentName: this.currentItem.title==null?'类别':this.currentItem.title });
     },
     update() {
       this.contextmenu.show = false;
+      if(this.currentItem.parentName==null){
+        this.currentItem.parentName='类别';
+      }
       this.$refs.editDept.openEdit(this.currentItem);
     },
     onSave(dept) {

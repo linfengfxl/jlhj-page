@@ -287,8 +287,7 @@ export default {
         amount: 0,   
       });
       this.list = [];
-      this.list.push(this.$refs.editable.listNewRow());
-      this.list.push(this.$refs.editable.listNewRow());
+
     },
     save(proc) {
       var form = {

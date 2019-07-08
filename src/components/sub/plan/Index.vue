@@ -14,7 +14,7 @@
         <tr>
           <td class="page-tools">
             <Button @click="add" v-power icon="plus">添加</Button>&nbsp;
-          </td>
+          </td>       
         </tr>
       </table>
     </div>
@@ -76,7 +76,7 @@ export default {
     ListPage,
     ListPageDetail,
     DataRowOperate,
-    UploadBox
+    UploadBox,
   },
   data() {
     let that = this;

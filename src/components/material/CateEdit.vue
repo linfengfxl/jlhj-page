@@ -10,14 +10,17 @@
             <FormItem label="名称" prop="title">
               <Input size="small" v-model="formItem.title"></Input>
             </FormItem>
-            <FormItem label="上级" prop="parentCode">
-              <Input size="small" v-model="formItem.parentCode"></Input>
+            <FormItem label="上级" prop="parentName">
+              <Input size="small" v-model="formItem.parentName"></Input>
             </FormItem>
             <FormItem label="种类">
               <Radio-group v-model="formItem.resourceType">
                 <Radio label="材料">材料</Radio>
                 <Radio label="机械">机械</Radio>
               </Radio-group>
+            </FormItem>
+            <FormItem label="是否有效">
+              <i-switch v-model="formItem.status" :true-value="1" :false-value="2"></i-switch>
             </FormItem>
             <FormItem label="排序" prop="seq">
               <Input size="small" v-model="formItem.seq"></Input>
@@ -49,6 +52,8 @@ export default {
         title: '',
         parentCode: '',
         resourceType: '材料',
+        parentName: '',
+        sttaus: 1,
         seq: 0,
       },
       title: '新建',
@@ -72,6 +77,7 @@ export default {
         code: '',
         title: '',
         parentCode: '',
+        parentName:'',
         resourceType: '',
         seq: 0,
       }, init);
@@ -86,7 +92,9 @@ export default {
         code: '',
         title: '',
         parentCode: '',
+        parentName:'',
         resourceType: '材料',
+        status:1,
         seq: 0,
       }, init);
 

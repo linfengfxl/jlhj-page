@@ -193,17 +193,26 @@ export default {
           title: '删除确认',
           content: '<p>删除后不能恢复，确定删除已选择的记录吗？</p>',
           onOk: () => {
-            this.$http.post('/api/engine/provider/delete?id=' + params.row.id, {}).then((res) => {
-              if (res.data.code === 0) {
-                this.$Message.success("删除成功");
-                $.extend(this.queryForm, this.queryParam);
-                this.query();
+             this.$http.post('/api/engine/a.canDelete', {providerCode:params.row.providerCode}).then((res) => {
+              if (res.data.code === 0&&res.data.data === true) {
+                this.$http.post('/api/engine/provider/delete?id=' + params.row.id, {}).then((res) => {
+                  if (res.data.code === 0) {
+                    this.$Message.success("删除成功");
+                    $.extend(this.queryForm, this.queryParam);
+                    this.query();
+                  } else {
+                    this.$Message.error(res.data.message)
+                  }
+                }).catch((error) => {
+                  this.$Message.error(error.toString())
+                });
               } else {
-                this.$Message.error(res.data.message)
+                this.$Message.error("此供应商已被使用，无法删除")
               }
             }).catch((error) => {
               this.$Message.error(error.toString())
             });
+            
           }
         });
       }

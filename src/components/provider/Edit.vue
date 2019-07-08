@@ -95,7 +95,7 @@
               <i-switch v-model="formItem.commonUse" :true-value="1" :false-value="0"></i-switch>
             </FormItem>
             <FormItem label="是否停用" prop>
-              <i-switch v-model="formItem.status" :true-value="2" :false-value="1"></i-switch>
+              <i-switch v-model="formItem.status" :true-value="2" :false-value="1" @on-change="onStatusChange"></i-switch>
             </FormItem>
             <FormItem label="停用日期" prop>
               <Date-picker
@@ -104,6 +104,7 @@
                 v-model="formItem.disableTime"
                 format="yyyy-MM-dd"
                 :disabled="formItem.status == 1"
+                :readonly="formItem.status == 1"
               ></Date-picker>
             </FormItem>
             <FormItem>
@@ -156,7 +157,7 @@ export default {
         mainBusiness: '',//主营业务',
         developTime: '',//发展日期',
         disableTime: '',//停用日期',
-        status: '',//状态（1 正常 2 禁用） 
+        status: 1,//状态（1 正常 2 禁用） 
         commonUse:0,//是否常用(0.否 1.是)
       },
       //验证
@@ -238,7 +239,11 @@ export default {
         this.formItem['taxRate'] = 0;
         this.formItem['taxRate1'] = 0;
         this.formItem['commonUse']=0;
+        this.formItem['status']=1;
       }
+    },
+    onStatusChange(){
+      this.formItem.disableTime="";
     },
     get(id) {
       this.loading = 1;
