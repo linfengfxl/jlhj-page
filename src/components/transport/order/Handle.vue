@@ -109,7 +109,14 @@
                     <FormItem label="运输终点" prop>{{formItem.transportEnd}}</FormItem>
                   </td>
                   <td>
-                    <Form-item label="抵达时间" prop>{{formItem.arrivalTime}}</Form-item>
+                     
+                    <Form-item label="抵达时间" prop  v-if="$user.hasPower('wdsx.ysxpddsj')">
+                    <Date-picker
+                      type="datetime"
+                      placeholder="选择日期"
+                      v-model="formItem.arrivalTime" 
+                    ></Date-picker>
+                  </Form-item>
                   </td>
                   <td></td>
                 </tr>
@@ -197,10 +204,8 @@ export default {
       var form = {};
       Object.assign(form, this.formItem);
 
-      form.transportDate = page.formatDate(
-        this.formItem.transportDate
-      ); //运输日期
-      form.arrivalTime = page.formatDate(this.formItem.arrivalTime); //抵达时间
+      form.transportDate = page.formatDateTime(this.formItem.transportDate); //运输日期
+      form.arrivalTime = page.formatDateTime(this.formItem.arrivalTime); //抵达时间
       if (!form.transportDate) {
         form.transportDate = null;
       }

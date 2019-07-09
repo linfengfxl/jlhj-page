@@ -175,12 +175,12 @@
                   <FormItem label="价税合计" prop>{{formItem.totalPriceTax}}</FormItem>
                 </td>
                 <td>
-                  <Form-item label="抵达时间" prop>
+                  <Form-item label="抵达时间" prop  v-if="$user.hasPower('wdsx.ysxpddsj')">
                     <Date-picker
                       type="datetime"
                       placeholder="选择日期"
                       v-model="formItem.arrivalTime"
-                      style="width:100%"
+                      style="width:100%" 
                     ></Date-picker>
                   </Form-item>
                 </td>

@@ -169,7 +169,7 @@
         this.$http.post('/api/engine/workflow/form/getByDefine',{defineId:defineId}).then((res) => {
           if (res.data.code === 0) {
             this.form = res.data.data;
-            if(form && form.printUrl){ 
+            if(this.form && this.form.printUrl){ 
               this.showPrint = true;
             }else{
               this.showPrint = false;

@@ -1,20 +1,21 @@
 <template>
-  <ViewProcess ref="ViewProcess" :instId="instId" :title="title" @on-load="instLoaded" @on-submit="save">
+  <ViewProcess
+    ref="ViewProcess"
+    :instId="instId"
+    :title="title"
+    @on-load="instLoaded"
+    @on-submit="save"
+  >
     <div class="page instock-edit">
       <Loading :loading="loading">
         <div class="baseinfo">
           <div class="page-tools"></div>
-          <Form
-            ref="form"
-            class="page-form"
-            :model="formItem" 
-            :label-width="120"
-          >
+          <Form ref="form" class="page-form" :model="formItem" :label-width="120">
             <table cellspacing="0" cellpadding="0">
               <colgroup>
-                <col width="33%">
-                <col width="auto">
-                <col width="33%">
+                <col width="33%" />
+                <col width="auto" />
+                <col width="33%" />
               </colgroup>
               <tr>
                 <td>
@@ -65,7 +66,10 @@
                     </template>
                   </FormItem>
                 </td>
-                <td colspan="2">
+                <td>
+                  <FormItem prop label="车牌号">{{formItem.vehicleNum}}</FormItem>
+                </td>
+                <td>
                   <FormItem prop=" " label="备注">{{formItem.remark}}</FormItem>
                 </td>
               </tr>
@@ -125,7 +129,7 @@ export default {
       loading: 0,
       stockBillId: '',
       instId: 0,
-      title:'',
+      title: '',
       formItem: {
         stockBillId: '',//入库单号
         type: 2,//类型:1.出库, 2.入库
@@ -140,9 +144,10 @@ export default {
         taxpayerType: '',//纳税人类型
         invoiceType: '',//发票类型
         taxRate: '',//税率 
-        taxRate1:'',
+        taxRate1: '',
         inboundType: 1,//红蓝字:1.“蓝字”表示入库，2.“红字”表示退货
         operateDate: page.formatDate(new Date(), 'yyyy-MM-dd'),
+        vehicleNum: '',
         remark: '',
         operator: '',//
         operatorName: '',
@@ -163,7 +168,7 @@ export default {
       this.stockBillId = proc.instance.businessKey;
       this.title = "入库单_" + this.stockBillId;
       this.load();
-    }, 
+    },
     load() {
       this.loading = 1;
       this.$http.post("/api/engine/storage/instock/get", { stockBillId: this.stockBillId }).then((res) => {
@@ -172,7 +177,7 @@ export default {
           if (res.data.data) {
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
             Object.assign(this.formItem, res.data.data);
-            this.formItem.taxRate1= floatObj.multiply(this.formItem.taxRate, 100);
+            this.formItem.taxRate1 = floatObj.multiply(this.formItem.taxRate, 100);
             this.list = res.data.data.detailList;
           } else {
             this.$Message.error('订单不存在！');

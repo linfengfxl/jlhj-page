@@ -93,7 +93,12 @@
                     </Radio-group>
                   </FormItem>
                 </td>
-                <td colspan="2">
+                <td>
+                  <FormItem prop label="车牌号">
+                    <Input v-model="formItem.vehicleNum" />
+                  </FormItem>
+                </td>
+                <td>
                   <FormItem prop=" " label="备注">
                     <Input type="textarea" :rows="2" v-model="formItem.remark" />
                   </FormItem>
@@ -173,6 +178,7 @@ export default {
         inboundType: 1,//红蓝字:1.“蓝字”表示入库，2.“红字”表示退货
         operateDate: page.formatDate(new Date(), 'yyyy-MM-dd'),
         remark: '',
+        vehicleNum: '',//车牌号
         operator: '',//
         operatorName: '',
       },
@@ -244,10 +250,13 @@ export default {
       this.$http.post("/api/engine/storage/instock/get", { stockBillId: this.stockBillId }).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
-          if (res.data.data) {
+          if (res.data.data) { 
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
             Object.assign(this.formItem, res.data.data);
             this.list = res.data.data.detailList;
+            if(this.formItem.taxRate) {
+              this.formItem.taxRate1 = floatObj.multiply(this.formItem.taxRate, 100);//税率 
+            }   
           } else {
             this.$Message.error('订单不存在！');
             this.goBack();
@@ -288,7 +297,7 @@ export default {
       };
       Object.assign(form, this.formItem);
       form.signDate = page.formatDate(form.signDate);
-      
+
       if (form.operateDate) {
         form.operateDate = page.formatDate(form.operateDate);
       }

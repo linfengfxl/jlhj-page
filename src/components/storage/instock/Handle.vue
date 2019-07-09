@@ -13,19 +13,34 @@
           <Form ref="form" class="page-form" :model="formItem" :label-width="120">
             <table cellspacing="0" cellpadding="0">
               <colgroup>
-                <col width="33%">
-                <col width="auto">
-                <col width="33%">
+                <col width="33%" />
+                <col width="auto" />
+                <col width="33%" />
               </colgroup>
               <tr>
                 <td>
-                  <FormItem label="入往仓库">{{formItem.deptName}}</FormItem>
+                  <FormItem label="入往仓库">
+                    <SelStorage v-model="formItem.deptId" :model="formItem"></SelStorage>
+                  </FormItem>
                 </td>
                 <td>
-                  <FormItem label="工程名称">{{formItem.projectName}}</FormItem>
+                  <FormItem label="工程名称">
+                    <SelectProject
+                      v-model="formItem.projectCode"
+                      :model="formItem"
+                      :text="formItem.projectName"
+                    />
+                  </FormItem>
                 </td>
                 <td>
-                  <FormItem label="供应商">{{formItem.providerName}}</FormItem>
+                  <FormItem label="供应商">
+                    <SelectProvider
+                      v-model="formItem.providerCode"
+                      :model="formItem"
+                      :text="formItem.providerName"
+                      @on-select="selProvider"
+                    />
+                  </FormItem>
                 </td>
               </tr>
               <tr>
@@ -46,24 +61,40 @@
                   <FormItem label="发票类型">{{$args.getArgText('invoice_type', formItem.invoiceType)}}</FormItem>
                 </td>
                 <td>
-                  <FormItem label="日期">{{formItem.operateDate}}</FormItem>
+                  <FormItem label="日期">
+                    <Date-picker
+                      type="date"
+                      placeholder="选择日期"
+                      v-model="formItem.operateDate"
+                      format="yyyy-MM-dd"
+                    ></Date-picker>
+                  </FormItem>
                 </td>
                 <td>
-                  <FormItem label="收料员">{{formItem.operatorName}}</FormItem>
+                  <FormItem label="收料员">
+                    <SelectMember
+                      v-model="formItem.operator"
+                      :model="formItem"
+                      :text="formItem.operatorName"
+                    />
+                  </FormItem>
                 </td>
               </tr>
               <tr>
                 <td>
-                  <FormItem label="红蓝字">
-                    <template v-if="formItem.inboundType==1">
-                      <span style="color:blue;">蓝字</span>
-                    </template>
-                    <template v-if="formItem.inboundType==2">
-                      <span style="color:red;">红字</span>
-                    </template>
+                  <FormItem label="红蓝字"> 
+                     <Radio-group v-model="formItem.inboundType">
+                      <Radio :label="1" style="color:blue;">蓝字</Radio>
+                      <Radio :label="2" style="color:red;">红字</Radio>
+                    </Radio-group> 
                   </FormItem>
                 </td>
-                <td colspan="2">
+                <td>
+                  <FormItem prop label="车牌号">
+                    <Input v-model="formItem.vehicleNum" />
+                  </FormItem>
+                </td>
+                <td>
                   <FormItem label="备注">{{formItem.remark}}</FormItem>
                 </td>
               </tr>
@@ -76,7 +107,7 @@
           <Editable
             ref="editable"
             :list="list"
-            :editable="false"
+            :editable="true"
             :editprice="true"
             :deptId="formItem.deptId"
             :model="formItem"
@@ -143,6 +174,7 @@ export default {
         taxRate1: '',
         inboundType: 1,//红蓝字:1.“蓝字”表示入库，2.“红字”表示退货
         operateDate: page.formatDate(new Date(), 'yyyy-MM-dd'),
+        vehicleNum: '',
         remark: '',
         operator: '',//
         operatorName: '',
@@ -173,6 +205,7 @@ export default {
         this.formItem.taxpayerType = data.taxpayerType;//纳税人类型
         this.formItem.invoiceType = data.invoiceType;//发票类型
         this.formItem.taxRate = data.taxRate;//税率 
+        this.formItem.taxRate1 = floatObj.multiply(this.formItem.taxRate, 100);
       }
     },
     load() {
@@ -227,7 +260,9 @@ export default {
 
       Object.assign(form, this.formItem);
       form.signDate = page.formatDate(form.signDate);
-
+      if (form.operateDate) {
+        form.operateDate = page.formatDate(form.operateDate);
+      }
       var pass = true;
       this.$refs.form.validate((valid) => {
         pass = valid;
@@ -258,7 +293,7 @@ export default {
       form.proc = proc.formItem;
       // 提交
       this.loading = 1;
-      var uri = '/api/engine/storage/instock/submit'; 
+      var uri = '/api/engine/storage/instock/submit';
       this.$http.post(uri, form).then((res) => {
         this.loading = 0;
         if (res.data.code == 0) {
