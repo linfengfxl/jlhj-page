@@ -93,7 +93,7 @@
                     <FormItem label="运输终点" prop>{{formItem.transportEnd}}</FormItem>
                   </td>
                   <td>
-                    <Form-item label="抵达时间" prop>{{formItem.arrivalTime}}</Form-item>
+                    <Form-item label="抵达时间" prop v-if="$user.hasPower('wdsx.ysxpddsj')">{{formItem.arrivalTime}}</Form-item>
                   </td>
                   <td></td>
                 </tr>
