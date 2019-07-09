@@ -7,127 +7,144 @@
     @on-submit="save"
     :loading="loading"
   >
-      <div class="baseinfo">
-          <div class="page-form">
-            <Form :model="formItem" ref="form" :label-width="100" class="form-item">
-              <table cellspacing="0" cellpadding="0">
-                <colgroup>
-                  <col width="33%">
-                  <col width="auto">
-                  <col width="33%">
-                </colgroup>
-                 <tr>
-                   <td>
-                    <FormItem label="运输类别" prop>{{formItem.transportType}}</FormItem>
-                  </td>
-                  <td>
-                    <FormItem prop label="所属部门">{{formItem.deptName}}</FormItem>
-                  </td>
-                  <td>
-                    <FormItem prop label="工程名称">{{formItem.projectName}}</FormItem>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <FormItem prop label="供应商名称">{{formItem.providerName}}</FormItem>
-                  </td>
-                  <td>
-                    <FormItem label="供应商联系人" prop>{{formItem.linkMan}}</FormItem>
-                  </td>
-                  <td>
-                    <FormItem label="税率" prop>{{formItem.taxRate}}%</FormItem>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <FormItem label="运输设备名称" prop>{{formItem.machineName}}</FormItem>
-                  </td>
-                  <td>
-                    <FormItem label="车牌号" prop>{{formItem.vehicleNum}}</FormItem>
-                  </td>
-                  <td>
-                    <FormItem label="运输时间" prop>{{formItem.transportDate}}</FormItem>
-                  </td>
-                </tr>
+    <div class="baseinfo">
+      <div class="page-form">
+        <Form
+          :model="formItem"
+          ref="form"
+          :label-width="100"
+          class="form-item"
+          :rules="ruleValidate"
+        >
+          <table cellspacing="0" cellpadding="0">
+            <colgroup>
+              <col width="33%" />
+              <col width="auto" />
+              <col width="33%" />
+            </colgroup>
+            <tr>
+              <td>
+                <FormItem label="运输类别" prop>{{formItem.transportType}}</FormItem>
+              </td>
+              <td>
+                <FormItem prop label="所属部门">{{formItem.deptName}}</FormItem>
+              </td>
+              <td>
+                <FormItem prop label="工程名称">{{formItem.projectName}}</FormItem>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <FormItem prop="providerCode" label="供应商名称">
+                  <SelectProvider
+                    v-model="formItem.providerCode"
+                    :model="formItem"
+                    :text="formItem.providerName"
+                    @on-select="selProvider"
+                  />
+                </FormItem>
+              </td>
+              <td>
+                <FormItem label="供应商联系人" prop>{{formItem.linkMan}}</FormItem>
+              </td>
+              <td>
+                <FormItem label="税率" prop>{{formItem.taxRate}}%</FormItem>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <FormItem label="运输设备名称" prop="machineCode">
+                  <Select v-model="formItem.machineCode" placeholder="运输设备名称">
+                    <Option
+                      v-for="item in machines"
+                      :value="item.machineCode"
+                      :key="item.machineCode"
+                    >{{ item.machineName }}</Option>
+                  </Select>
+                </FormItem>
+              </td>
+              <td>
+                <FormItem label="车牌号" prop="vehicleNum">
+                  <Input v-model="formItem.vehicleNum" placeholder="车牌号不能为空" />
+                </FormItem>
+              </td>
+              <td>
+                <FormItem label="运输时间" prop>{{formItem.transportDate}}</FormItem>
+              </td>
+            </tr>
 
-                <tr>
-                  <td>
-                    <FormItem label="数量" prop>{{formItem.num}}</FormItem>
-                  </td>
-                  <td>
-                    <FormItem label="单位" prop>{{formItem.unit}}</FormItem>
-                  </td>
-                  <td>
-                    <FormItem label="里程数" prop>{{formItem.milage}}</FormItem>
-                  </td> 
-                </tr>
+            <tr>
+              <td>
+                <FormItem label="数量" prop>{{formItem.num}}</FormItem>
+              </td>
+              <td>
+                <FormItem label="单位" prop>{{formItem.unit}}</FormItem>
+              </td>
+              <td>
+                <FormItem label="里程数" prop>
+                  <Input-number v-model="formItem.milage" :min="0" @on-change="onChangeAmount"></Input-number>
+                </FormItem>
+              </td>
+            </tr>
 
-                <tr>
-                   <td>
-                      <FormItem label="含税单价" prop>
-                    <Input-number
-                      v-model="formItem.taxUnitPrice"
-                      :min="0"
-                      @on-change="onChangeAmount" 
-                      v-if="$user.hasPower('wdsx.ysxpxgjg')"
-                    ></Input-number>
-                      <template v-else>{{formItem.taxUnitPrice}}</template> 
-                  </FormItem>
-                   
-                  </td>
-                  <td> 
-                    <FormItem label="扣款金额" prop>
-                    <Input-number
-                      v-model="formItem.deductAmount"
-                      :min="0"
-                      @on-change="onChangeAmount" 
-                      v-if="$user.hasPower('wdsx.ysxpxgjg')"
-                    ></Input-number>
-                      <template v-else>{{formItem.deductAmount}}</template>
-                    </FormItem>
-                  </td>
-                  <td>
-                    <FormItem label="金额" prop>{{formItem.amount}}</FormItem>
-                  </td>
-                 
-                </tr>
+            <tr>
+              <td>
+                <FormItem label="含税单价" prop>
+                  <Input-number
+                    v-model="formItem.taxUnitPrice"
+                    :min="0"
+                    @on-change="onChangeAmount"
+                    v-if="$user.hasPower('wdsx.ysxpxgjg')"
+                  ></Input-number>
+                  <template v-else>{{formItem.taxUnitPrice}}</template>
+                </FormItem>
+              </td>
+              <td>
+                <FormItem label="扣款金额" prop>
+                  <Input-number
+                    v-model="formItem.deductAmount"
+                    :min="0"
+                    @on-change="onChangeAmount"
+                    v-if="$user.hasPower('wdsx.ysxpxgjg')"
+                  ></Input-number>
+                  <template v-else>{{formItem.deductAmount}}</template>
+                </FormItem>
+              </td>
+              <td>
+                <FormItem label="金额" prop>{{formItem.amount}}</FormItem>
+              </td>
+            </tr>
 
-                <tr>
-                   <td>
-                    <FormItem label="税额" prop>{{formItem.tax}}</FormItem>
-                  </td>
-                  <td>
-                    <FormItem label="价税合计" prop>{{formItem.totalPriceTax}}</FormItem>
-                  </td>
-                  <td>
-                    <FormItem label="运输起点" prop>{{formItem.transportStart}}</FormItem>
-                  </td>
-                 
-                </tr>
-                <tr>
-                   <td>
-                    <FormItem label="运输终点" prop>{{formItem.transportEnd}}</FormItem>
-                  </td>
-                  <td>
-                     
-                    <Form-item label="抵达时间" prop  v-if="$user.hasPower('wdsx.ysxpddsj')">
-                    <Date-picker
-                      type="datetime"
-                      placeholder="选择日期"
-                      v-model="formItem.arrivalTime" 
-                    ></Date-picker>
-                  </Form-item>
-                  </td>
-                  <td></td>
-                </tr>
-                 <tr>
-                  <td colspan="3"> 
-                    <FormItem label="运输内容" prop>{{formItem.transportContent}}</FormItem>
-                  </td>
-                </tr>
-              </table>
-            </Form>
-          </div>
+            <tr>
+              <td>
+                <FormItem label="税额" prop>{{formItem.tax}}</FormItem>
+              </td>
+              <td>
+                <FormItem label="价税合计" prop>{{formItem.totalPriceTax}}</FormItem>
+              </td>
+              <td>
+                <FormItem label="运输起点" prop>{{formItem.transportStart}}</FormItem>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <FormItem label="运输终点" prop>{{formItem.transportEnd}}</FormItem>
+              </td>
+              <td>
+                <Form-item label="抵达时间" prop v-if="$user.hasPower('wdsx.ysxpddsj')">
+                  <Date-picker type="datetime" placeholder="选择日期" v-model="formItem.arrivalTime"></Date-picker>
+                </Form-item>
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <td colspan="3">
+                <FormItem label="运输内容" prop>{{formItem.transportContent}}</FormItem>
+              </td>
+            </tr>
+          </table>
+        </Form>
+      </div>
     </div>
     <div slot="footer"></div>
   </HandleProcess>
@@ -167,10 +184,47 @@ export default {
         { code: '外弃', text: '外弃' },
         { code: '运材料', text: '运材料' },
       ],
+      ruleValidate: {
+        providerCode: [
+          {
+            required: true,
+            whitespace: true,
+            message: "请选择供应商",
+            trigger: "change"
+          }
+        ],
+        transportType: [
+          {
+            required: true,
+            whitespace: true,
+            message: "请填写运输设备名称",
+            trigger: "blur"
+          }
+        ],
+        vehicleNum: [
+          {
+            required: true,
+            whitespace: true,
+            message: "请填写车牌号",
+            trigger: "blur"
+          }
+        ],
+      }
     }
   },
   mounted: function () {
     this.instId = this.$route.query.inst;
+    this.$http.post("/api/engine/machine/listAll", {}).then(res => {
+      this.loading = 0;
+      if (res.data.code === 0) {
+        this.machines = res.data.data.rows;
+      } else {
+        this.$Message.error(res.data.message);
+      }
+    }).catch(error => {
+      this.loading = 0;
+      this.$Message.error(error.message);
+    });
   },
 
   computed: {
@@ -289,7 +343,7 @@ export default {
         this.onChangeAmount();
       }
     },
-    onChangeAmount() {  
+    onChangeAmount() {
       if (this.formItem.transportType != "" && this.formItem.transportType != null) {
         var milage = 0;
         if (this.formItem.transportType == "内倒") {
