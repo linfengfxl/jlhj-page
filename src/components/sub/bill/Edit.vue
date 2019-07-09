@@ -255,6 +255,7 @@ export default {
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
             Object.assign(this.formItem, res.data.data);
             this.list = res.data.data.detailList;
+            this.taxRate.taxRate=this.formItem.taxRate;//明细需要
           } else {
             this.$Message.error('合同不存在！');
             this.goBack();

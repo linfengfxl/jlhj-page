@@ -128,7 +128,7 @@ export default {
           group: 'unit',
           width: 100
         }),
-        {
+        /*{
           title: '状态',
           key: 'status',
           align: 'center',
@@ -141,7 +141,7 @@ export default {
             }
             return h('span', { class: 'status-' + status }, setButton);
           }
-        },
+        },*/
 
       ],
       list: [],

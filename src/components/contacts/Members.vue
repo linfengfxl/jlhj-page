@@ -227,7 +227,7 @@
               this.loading = 0;
               if (res.data.code === 0) {
                 this.$Message.success("删除成功");
-                this.$refs.page.load();
+                this.$refs.page.query();
               } else {
                 this.$Message.error(res.data.message)
               }

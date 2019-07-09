@@ -382,6 +382,7 @@ export default {
         this.initNew();
       } else {
         Object.assign(this.formItem, this.oriItem);
+        this.formItem.status = this.formItem.status.toString();
       }
     },
     goBack() {

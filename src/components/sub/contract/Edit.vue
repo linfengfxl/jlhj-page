@@ -372,6 +372,20 @@ export default {
             //this.formItem.taxRate1 = floatObj.multiply(this.formItem.taxRate, 100);//税率
             Object.assign(this.formItem, res.data.data);
             this.list = res.data.data.detailList;
+            this.taxRate.taxRate=this.formItem.taxRate;//明细需要
+            var total = {
+              totalWorkload:0,
+              totalAmount:0,
+              totalTaxAmount:0,
+            };
+            this.list.map(mater => {
+              total.totalWorkload = parseFloat(floatObj.add(total.totalWorkload, mater.workload));
+              total.totalAmount = parseFloat(floatObj.add(total.totalAmount, mater.amount));
+              total.totalTaxAmount = parseFloat(floatObj.add(total.totalTaxAmount, mater.totalAmount));
+            });
+            this.formItem.totalWorkload=total.totalWorkload;
+            this.formItem.totalAmount=total.totalAmount;
+            this.formItem.totalTaxAmount=total.totalTaxAmount;
           } else {
             this.$Message.error('合同不存在！');
             this.goBack();

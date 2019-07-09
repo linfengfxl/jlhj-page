@@ -65,7 +65,7 @@
                     style="width:100%"
                     v-model="formItem.entryDate"
                     format="yyyy-MM-dd"
-                    @on-change="getDuration"
+                    @on-change="getDuration(0)"
                   ></Date-picker>
                 </FormItem>
               </td>
@@ -76,7 +76,7 @@
                     style="width:100%"
                     v-model="formItem.exitDate"
                     format="yyyy-MM-dd"
-                    @on-change="getDuration"
+                    @on-change="getDuration(1)"
                   ></Date-picker>
                 </FormItem>
               </td>
@@ -231,11 +231,23 @@ export default {
         });
       }
     },
-    getDuration(){
+    getDuration(index){
       if(this.formItem.entryDate!=''&&this.formItem.exitDate!=''){
         var sdate = new Date(this.formItem.entryDate); 
       　 var now = new Date(this.formItem.exitDate); 
       　 var days = now.getTime() - sdate.getTime(); 
+        if(days<0){
+          if(index==0){
+            this.formItem.entryDate='',
+            this.$Message.error("分包进场日期不能比分包出场日期大")
+            return;
+          }
+          if(index==1){
+            this.formItem.exitDate='',
+            this.$Message.error("分包出场日期不能比分包进场日期小")
+            return;
+          }
+        }
       　 var day = parseInt(days / (1000 * 60 * 60 * 24)); 
       　　this.formItem.duration=day+1;
       }

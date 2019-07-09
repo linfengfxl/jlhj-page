@@ -39,6 +39,7 @@ import Edit from '@/components/provider/Edit';
 import SetLoginName from '@/components/provider/SetLoginName';
 import ListPage from '@/components/page/ListPage';
 import DataRowOperate from '@/components/commons/DataRowOperate';
+import page from '@/assets/js/page';
 
 export default {
   components: {
@@ -135,6 +136,14 @@ export default {
           align: 'left',
           minWidth: 150
         },
+        page.table.initMapColumn({
+          title: '状态',
+          key: 'status',
+          data:{
+            '1':'正常',
+            '2':'停用',
+          }
+        }), 
         {
           title: '创建人',
           key: 'creatorName',

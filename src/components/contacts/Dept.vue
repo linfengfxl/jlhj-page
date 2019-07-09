@@ -162,12 +162,25 @@ export default {
             title: '删除确认',
             content: '<p>删除后不能恢复，确定删除已选择的记录吗？</p>',
             onOk: () => {
-              this.$http.post('/api/engine/dept/delete', {deptId:this.currentDept.deptId}).then((res) => {
+
+              this.$http.post('/api/engine/a.canDelete', {deptId:this.currentDept.deptId}).then((res) => {
                 if (res.data.code === 0) {
-                  this.$Message.success("删除成功");
-                  this.load();
-                  this.tree.setSelect([this.currentDept.parentId]);
-                  this.$emit("on-select",this.currentDept);
+                  if(res.data.data){
+                    this.$http.post('/api/engine/dept/delete', {deptId:this.currentDept.deptId}).then((res) => {
+                      if (res.data.code === 0) {
+                        this.$Message.success("删除成功");
+                        this.load();
+                        this.tree.setSelect([this.currentDept.parentId]);
+                        this.$emit("on-select",this.currentDept);
+                      } else {
+                        this.$Message.error(res.data.message)
+                      }
+                    }).catch((error) => {
+                      this.$Message.error(error.toString())
+                    });
+                  }else{
+                    this.$Message.error("部门已被使用，无法删除");
+                  }
                 } else {
                   this.$Message.error(res.data.message)
                 }
