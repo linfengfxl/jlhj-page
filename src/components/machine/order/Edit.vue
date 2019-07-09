@@ -1,133 +1,135 @@
 <template>
-<StartProcess ref="startProcess" defineId="12" :title="pageTitle" @on-submit="save">
-  <div class="page page-bill"> 
-    <Loading :loading="loading">
-      <div class="baseinfo">
-        <div class="page-tools"></div>
-        <Form ref="form" class="page-form" :model="formItem" :rules="formRules" :label-width="120">
-          <table cellspacing="0" cellpadding="0">
-            <colgroup>
-              <col width="33%">
-              <col width="auto">
-              <col width="33%">
-            </colgroup>
-            <tr>
-              <td>
-                <FormItem prop="deptId" label="部门">
-                  <SelStorage v-model="formItem.deptId" @on-select="selDept"></SelStorage>
-                </FormItem>
-              </td>
-              <td>
-                <FormItem prop="jobDate" label="作业日期">
-                  <Date-picker
-                    type="date"
-                    placeholder="选择日期"
-                    v-model="formItem.jobDate"
-                    format="yyyy-MM-dd"
-                  ></Date-picker>
-                </FormItem>
-              </td>
-              <td>
-                <FormItem prop="projectCode" label="工程名称">
-                  <SelectProject
-                    v-model="formItem.projectCode"
-                    :model="formItem"
-                    :text="formItem.projectName"
-                  />
-                </FormItem>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <FormItem prop="providerCode" label="供应商">
-                  <SelectProvider
+  <StartProcess
+    ref="startProcess"
+    defineId="12"
+    :title="pageTitle"
+    :loading="loading"
+    @on-submit="save"
+  >
+    <div class="baseinfo">
+      <div class="page-tools"></div>
+      <Form ref="form" class="page-form" :model="formItem" :rules="formRules" :label-width="120">
+        <table cellspacing="0" cellpadding="0">
+          <colgroup>
+            <col width="33%" />
+            <col width="auto" />
+            <col width="33%" />
+          </colgroup>
+          <tr>
+            <td>
+              <FormItem prop="deptId" label="部门">
+                <SelStorage v-model="formItem.deptId" @on-select="selDept"></SelStorage>
+              </FormItem>
+            </td>
+            <td>
+              <FormItem prop="jobDate" label="作业日期">
+                <Date-picker
+                  type="date"
+                  placeholder="选择日期"
+                  v-model="formItem.jobDate"
+                  format="yyyy-MM-dd"
+                ></Date-picker>
+              </FormItem>
+            </td>
+            <td>
+              <FormItem prop="projectCode" label="工程名称">
+                <SelectProject
+                  v-model="formItem.projectCode"
+                  :model="formItem"
+                  :text="formItem.projectName"
+                />
+              </FormItem>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <FormItem prop="machineName" label="机械名称">
+                <SelectMachine
+                  v-model="formItem.machineCode"
+                  :model="formItem"
+                  :text="formItem.machineName"
+                  @on-select="selMachine"
+                />
+              </FormItem>
+            </td>
+            <td>
+              <FormItem prop label="租赁方式">{{$args.getArgText('lease_type', formItem.leaseType)}}</FormItem>
+            </td>
+            <td>
+              <FormItem prop label="加油数量">
+                <Input v-model="formItem.addFuel" />
+              </FormItem>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <FormItem label="机械代码">{{formItem.machineCode}}</FormItem>
+            </td>
+            <td>
+              <FormItem prop label="机械型号">{{formItem.machineModel}}</FormItem>
+            </td>
+            <td>
+              <FormItem prop label=" 司机/操作手姓名">
+                <Input v-model="formItem.operator" />
+              </FormItem>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <FormItem prop label="供应商">
+                <!-- <SelectProvider
                     v-model="formItem.providerCode"
                     :model="formItem"
                     :text="formItem.providerName"
                     @on-select="selProvider"
-                  />
-                </FormItem>
-              </td>
-              <td>
-                <FormItem prop label="供应商联系人">{{formItem.linkMan}}</FormItem>
-              </td>
-              <td>
-                <FormItem prop label="加班时长">
-                  <Input v-model="formItem.overtime"/>
-                </FormItem>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <FormItem prop="machineName" label="机械名称">
-                  <SelectMachine
-                    v-model="formItem.machineCode"
-                    :model="formItem"
-                    :text="formItem.machineName"
-                    @on-select="selMachine"
-                  />
-                </FormItem>
-              </td>
-              <td>
-                <FormItem prop label="租赁方式">{{$args.getArgText('lease_type', formItem.leaseType)}}</FormItem>
-              </td>
-              <td>
-                <FormItem prop label="加油数量">
-                  <Input v-model="formItem.addFuel"/>
-                </FormItem>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <FormItem label="机械代码">{{formItem.machineCode}}</FormItem>
-              </td>
-              <td>
-                <FormItem prop label="机械型号">{{formItem.machineModel}}</FormItem>
-              </td>
-              <td>
-                <FormItem prop label=" 司机/操作手姓名">
-                  <Input v-model="formItem.operator"/>
-                </FormItem>
-              </td>
-            </tr>
-
-            <tr>
-              <td>
-                <FormItem prop label="司机/操作手电话">
-                  <Input v-model="formItem.operatorTel"/>
-                </FormItem>
-              </td>
-              <td colspan="2">
-                <FormItem prop=" " label="备注">
-                  <Input type="textarea" :rows="2" v-model="formItem.remark"/>
-                </FormItem>
-              </td>
-            </tr>
-          </table>
-        </Form>
-      </div>
-      <div>
-        <div class="subheader">单据明细</div>
-        <Alert v-if="!formItem.deptId">请选择部门</Alert>
-        <Editable
-          ref="editable"
-          :list="list"
-          :editable="true"
-          :deptId="formItem.deptId"
-          @on-amount-change="onAmountChange"
-          :style="{display: formItem.deptId?'':'none'}"
-        ></Editable>
-      </div>
-      <!-- <table class="savebar" cellpadding="0" cellspacing="0">
+                />-->
+                {{formItem.providerName}}
+              </FormItem>
+            </td>
+            <td>
+              <FormItem prop label="供应商联系人">{{formItem.linkMan}}</FormItem>
+            </td>
+            <td>
+              <FormItem prop label="加班时长">
+                <Input v-model="formItem.overtime" />
+              </FormItem>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <FormItem prop label="司机/操作手电话">
+                <Input v-model="formItem.operatorTel" />
+              </FormItem>
+            </td>
+            <td colspan="2">
+              <FormItem prop=" " label="备注">
+                <Input type="textarea" :rows="2" v-model="formItem.remark" />
+              </FormItem>
+            </td>
+          </tr>
+        </table>
+      </Form>
+    </div>
+    <div>
+      <div class="subheader">单据明细</div>
+      <Alert v-if="!formItem.deptId">请选择部门</Alert>
+      <Editable
+        ref="editable"
+        :list="list"
+        :editable="true"
+        :deptId="formItem.deptId"
+        @on-amount-change="onAmountChange"
+        :style="{display: formItem.deptId?'':'none'}"
+      ></Editable>
+    </div>
+    <!-- <table class="savebar" cellpadding="0" cellspacing="0">
         <tr>
           <td class="save" @click="save" v-if="pageFlag<=2">保存</td>
           <td class="reset" @click="reset">重置</td>
           <td></td>
         </tr>
-      </table> -->
-    </Loading>
-  </div>
-</StartProcess>
+    </table>-->
+  </StartProcess>
 </template>
 <script>
 import Loading from '@/components/loading';
@@ -155,7 +157,7 @@ export default {
     SelectProject,
     SelectMachine,
     SelectProvider,
-    
+
     StartProcess,
   },
   data() {
@@ -235,7 +237,7 @@ export default {
         if (res.data.code == 0) {
           if (res.data.data) {
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
-            res.data.data.jobDate=res.data.data.jobDate.length>=10?res.data.data.jobDate.substring(0,10):res.data.data.jobDate; 
+            res.data.data.jobDate = res.data.data.jobDate.length >= 10 ? res.data.data.jobDate.substring(0, 10) : res.data.data.jobDate;
             Object.assign(this.formItem, res.data.data);
             this.list = res.data.data.detailList;
             this.list.map(p => {
@@ -315,7 +317,7 @@ export default {
         if (item.taiban == 0) {
           this.$Message.error(msg + '请录入作业台班');
           return;
-        } 
+        }
         item['startTime'] = page.formatDateTime(item['startTime']);
         item['endTime'] = page.formatDateTime(item['endTime']);
         form.detailList.push(item);
@@ -325,7 +327,7 @@ export default {
       form.taiban = taiban;//作业台班 合计
       form.useTime = useTime;//作用用时 合计
       console.log(form);
-      
+
       form.proc = proc.formItem;
       // 提交
       this.loading = 1;
@@ -362,10 +364,13 @@ export default {
       if (data) {
         this.formItem.leaseType = data.leaseType;
         this.formItem.machineModel = data.machineModel;
+        this.formItem.providerName = data.providerName;
+        this.formItem.providerCode = data.providerCode;
+        this.formItem.linkMan = data.linkMan;//供应商联系人  
       }
     },
-    selDept(row){
-      this.formItem.deptName=row.deptName;
+    selDept(row) {
+      this.formItem.deptName = row.deptName;
     },
     onAmountChange(val) {
       this.formItem.amount = val;
