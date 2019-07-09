@@ -13,14 +13,14 @@
             <tr>
               <td>
                 <FormItem prop="fundsPlan" label="资金计划类型"> 
-                  <Select v-model="formItem.fundsPlan" @on-change="onFundsPlanChange">
+                  <Select v-model="formItem.fundsPlan" @on-change="barnchChange">
                     <Option v-for="item in fundsPlan" :value="item.code" :key="item.code">{{ item.text }}</Option>
                   </Select>
                 </FormItem>
               </td>
               <td>
-                <FormItem prop="payType" label="付款分类"> 
-                  <Select v-model="formItem.payType" @on-change="">
+                <FormItem prop="payType" label="付款分类" > 
+                  <Select v-model="formItem.payType" @on-change="barnchChange">
                     <Option v-for="item in payType" :value="item.code" :key="item.code">{{ item.text }}</Option>
                   </Select>
                 </FormItem>
@@ -233,12 +233,7 @@ export default {
         if (res.data.code == 0) {
           if (res.data.data) {
             this.oriItem = eval('(' + JSON.stringify(res.data.data) + ')');
-            Object.assign(this.formItem, res.data.data);     
-            if(this.formItem.fundsPlan=="计划内"){
-              this.defineId=7;
-            }else{
-              this.defineId=8;
-            }    
+            Object.assign(this.formItem, res.data.data);
           } else {
             this.$Message.error('单据不存在！');
             this.goBack();
@@ -327,12 +322,19 @@ export default {
     onAmountChange(){
       this.formItem.amountCapital=this.digitUppercase(this.formItem.amount);
     },
-    onFundsPlanChange(){
-      if(this.formItem.fundsPlan=="计划内"){
-        this.defineId=7;
-      }else{
-        this.defineId=8;
-      }  
+    barnchChange(){
+      this.$http.post("/api/engine/workflow/define/getByForm", {key:'fkd',branch1:this.formItem.fundsPlan,branch2:this.formItem.payType}).then((res) => {
+        this.loading = 0;
+        if (res.data.code == 0) {
+           if(res.data.data != null){
+             this.defineId = res.data.data.id;
+           }
+        } else {
+          this.$Message.error(res.data.message);
+        }
+      }).catch((error) => {           
+        this.$Message.error("操作失败！")
+      }); 
     },
     digitUppercase(n) {
       var fraction = ['角', '分'];
