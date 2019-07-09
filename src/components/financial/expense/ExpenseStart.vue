@@ -14,8 +14,8 @@
           <tr>
             <td>
               <FormItem prop="catalog" label="报销分类"> 
-                <Select v-model="formItem.catalog">
-                  <Option v-for="item in catalog" :value="item.code" :key="item.code">{{ item.text }}</Option>
+                <Select v-model="formItem.catalog" @on-change="catalogChange">
+                  <Option v-for="item in catalog" :value="item.code" :key="item.code" >{{ item.text }}</Option>
                 </Select>
               </FormItem>
             </td>
@@ -190,7 +190,8 @@ export default {
         {code:'伙食类',text:'伙食类'},
         {code:'业务招待费',text:'业务招待费'},
         {code:'其他类',text:'其他类'}
-      ]
+      ],
+      defineId:1
     }
   },
   mounted: function () {
@@ -211,12 +212,6 @@ export default {
       if (this.pageFlag == 2) {
         return '报销单 - 重新发起';
       }
-    },
-    defineId(){
-      if(this.formItem.catalog == '业务招待费'){
-        return 10;
-      }
-      return 1;
     }
   },
   methods: {
@@ -267,6 +262,24 @@ export default {
       this.list = [];
       this.list.push(this.$refs.editable.listNewRow());
       this.list.push(this.$refs.editable.listNewRow());
+    },
+    catalogChange(){
+      if(this.formItem.catalog == '业务招待费'){
+        this.defineId = 10
+      }else{
+        this.$http.post("/api/engine/workflow/define/getByForm", {key:'fybxd',branch1:this.formItem.catalog}).then((res) => {
+          this.loading = 0;
+          if (res.data.code == 0) {
+             if(res.data.data != null){
+               this.defineId = res.data.data.id;
+             }
+          } else {
+            this.$Message.error(res.data.message);
+          }
+        }).catch((error) => {           
+          this.$Message.error("操作失败！")
+        });
+      }
     },
     save(proc) {
       var form = {
