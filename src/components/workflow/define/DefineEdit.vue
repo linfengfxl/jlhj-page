@@ -235,7 +235,7 @@ export default {
     },
     save() {
       var url = "/api/engine/workflow/define/update";
-      var msg = "修改成功";
+      var msg = "操作成功";
       this.loading = 1;
       this.$http
         .post(url, this.formItem)

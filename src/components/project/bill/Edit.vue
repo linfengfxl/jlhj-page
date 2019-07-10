@@ -70,7 +70,7 @@
           </Form>
         </div>
         <div>
-          <div class="subheader">成本分析明细</div>
+          <div class="subheader">结算明细</div>
           <Editable
             ref="editable"
             :list="list"

@@ -69,8 +69,8 @@ export default {
       columns: [
         {
           title: '序号',
-          type: 'selection',
           width: 50,
+          type:'index',
           align: 'center',
         },
         {
