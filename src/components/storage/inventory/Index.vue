@@ -71,7 +71,7 @@ export default {
       columns: [
         {
           title: '操作',
-          width: 90,
+          width: 120,
           align: 'center',
           fixed: 'left',
           render: (h, params) => {
@@ -80,6 +80,9 @@ export default {
               props: {
                 btns: [{
                   key: 'edit',
+                },
+                {
+                  key: 'delete',
                 }]
               },
               on: {
@@ -194,6 +197,29 @@ export default {
         this.curRowId = null;
         this.$refs.detail.clear();
       }
+    },
+    del: function (row) {
+        this.$Modal.confirm({
+          title: "删除确认",
+          content: "<p>删除后不能恢复，确定删除已选择的记录吗？</p>",
+          onOk: () => {
+            this.$http
+              .post("/api/engine/material/inventory/delete", {
+                inventoryCode: row.inventoryCode
+              })
+              .then(res => {
+                if (res.data.code === 0) {
+                  this.$Message.success("删除成功");
+                  this.query();
+                } else {
+                  this.$Message.error(res.data.message);
+                }
+              })
+              .catch(error => {
+                this.$Message.error(error.toString());
+              });
+          }
+        });
     },
     add() {
       this.$router.push({ path: '/storage/inventory/edit' })

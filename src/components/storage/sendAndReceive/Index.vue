@@ -140,6 +140,7 @@ export default {
     }
   },
   mounted: function () {
+    this.reset();
     this.query();
   },
   computed: {},
@@ -152,6 +153,7 @@ export default {
       if (this.queryForm.createTime.length > 0) {
         queryParam.createTimeStart = page.formatDate(this.queryForm.createTime[0]);
         queryParam.year = page.formatDateYear(this.queryForm.createTime[0]);
+        queryParam.year = queryParam.year.length>4?queryParam.year.substring(0,4):queryParam.year;
       }
       if (this.queryForm.createTime.length > 1) {
         queryParam.createTimeEnd = page.formatDate(this.queryForm.createTime[1]);
@@ -166,8 +168,8 @@ export default {
         projectName: '',
         deptName: '',
         materName: '',
-        year: '',
-        createTime: []//[page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 60)), page.formatDate(new Date())]
+        year:'',
+        createTime:[page.formatDate(new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 180)), page.formatDate(new Date())]
       });
       this.query();
     },
