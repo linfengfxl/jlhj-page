@@ -423,6 +423,9 @@ export default {
               this.list.push(obj);
             }
           }
+          for(var i=0;i<this.list.length;i++){
+            this.$refs.editable.computedAmount(i);
+          }
         } else {
           this.$Message.error(res.data.message)
         }

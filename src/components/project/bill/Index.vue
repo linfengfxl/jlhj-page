@@ -23,6 +23,9 @@
           <td class="page-tools">
             <UploadButton @on-upload="importExcel"></UploadButton>
           </td>
+          <td>
+            <Button @click="exportDownModel" type="info" icon="ios-download-outline">下载模板</Button>
+          </td>
         </tr>
       </table>
     </div>
@@ -291,6 +294,23 @@ export default {
     exportDown(row){
       this.loading = 1;         
       this.$http.post('/api/engine/project/bill/get', Object.assign({},row,{_action:'export'})).then((res) => {
+        this.loading = 0;
+        if (res.data.code === 0) { 
+          this.loading = 0;
+          var data = res.data.data;
+          window.open(this.$http.defaults.baseURL + '/api/file/download?fileId=' + data);
+        } else {
+          this.loading = 0;             
+          this.$Message.error(res.data.message);
+        }
+      }).catch((error) => {
+        this.loading = 0;
+        this.$Message.error("请求失败，请重新发送")
+      });
+    },
+    exportDownModel(){
+      this.loading = 1;         
+      this.$http.post('/api/engine/project/bill/get', {_action:'exportModel'}).then((res) => {
         this.loading = 0;
         if (res.data.code === 0) { 
           this.loading = 0;
