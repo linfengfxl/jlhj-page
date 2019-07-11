@@ -1,109 +1,105 @@
 <template>
-  <StartProcess ref="startProcess" defineId="3" :title="pageTitle" @on-submit="save">
-    <div class="page page-bill">
-      <Loading :loading="loading">
-        <div class="baseinfo">
-          <div class="page-tools"></div>
-          <Form
-            ref="form"
-            class="page-form"
-            :model="formItem"
-            :rules="formRules"
-            :label-width="120"
-          >
-            <table cellspacing="0" cellpadding="0">
-              <colgroup>
-                <col width="33%" />
-                <col width="auto" />
-                <col width="33%" />
-              </colgroup>
-              <tr>
-                <td>
-                  <FormItem prop="deptId" label="出往仓库">
-                    <SelStorage v-model="formItem.deptId" :model="formItem"></SelStorage>
-                  </FormItem>
-                </td>
-                <td>
-                  <FormItem prop="projectCode" label="工程名称">
-                    <SelectProject
-                      v-model="formItem.projectCode"
-                      :model="formItem"
-                      :text="formItem.projectName"
-                    />
-                  </FormItem>
-                </td>
-                <td>
-                  <FormItem prop="operatorName" label="领料员">
-                    <SelectMember
-                      v-model="formItem.operator"
-                      :model="formItem"
-                      :text="formItem.operatorName"
-                    />
-                  </FormItem>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <FormItem prop="operateDate" label="出库日期">
-                    <Date-picker
-                      type="date"
-                      placeholder="选择日期"
-                      v-model="formItem.operateDate"
-                      format="yyyy-MM-dd"
-                    ></Date-picker>
-                  </FormItem>
-                </td>
-                <td>
-                  <FormItem prop label="红蓝字">
-                    <Radio-group v-model="formItem.inboundType">
-                      <Radio :label="1" style="color:blue;">蓝字</Radio>
-                      <Radio :label="2" style="color:red;">红字</Radio>
-                    </Radio-group>
-                  </FormItem>
-                </td>
-                <td>
-                  <FormItem prop label="出库类别">
-                    <Select v-model="formItem.materialType" style="width:150px" placeholder="类型">
-                      <Option
-                        v-for="item in $args.getArgGroup('provider_type')"
-                        :value="item.argCode"
-                        :key="item.argCode"
-                      >{{ item.argText }}</Option>
-                    </Select>
-                  </FormItem>
-                </td>
-              </tr>
-              <tr>
-                <td colspan="3">
-                  <FormItem prop=" " label="备注">
-                    <Input type="textarea" :rows="2" v-model="formItem.remark" />
-                  </FormItem>
-                </td>
-              </tr>
-            </table>
-          </Form>
-        </div>
-        <div>
-          <div class="subheader">单据明细</div>
-          <Alert v-if="!formItem.deptId">请选择仓库</Alert>
-          <Editable
-            ref="editable"
-            :list="list"
-            :editable="true"
-            :editprice="true"
-            :model="formItem"
-            :style="{display: formItem.deptId?'':'none'}"
-          ></Editable>
-        </div>
-        <!-- <table class="savebar" cellpadding="0" cellspacing="0">
+  <StartProcess
+    ref="startProcess"
+    defineId="3"
+    :title="pageTitle"
+    :loading="loading"
+    @on-submit="save"
+  >
+    <div class="baseinfo">
+      <div class="page-tools"></div>
+      <Form ref="form" class="page-form" :model="formItem" :rules="formRules" :label-width="120">
+        <table cellspacing="0" cellpadding="0">
+          <colgroup>
+            <col width="33%" />
+            <col width="auto" />
+            <col width="33%" />
+          </colgroup>
+          <tr>
+            <td>
+              <FormItem prop="deptId" label="出往仓库">
+                <SelStorage v-model="formItem.deptId" :model="formItem"></SelStorage>
+              </FormItem>
+            </td>
+            <td>
+              <FormItem prop="projectCode" label="工程名称">
+                <SelectProject
+                  v-model="formItem.projectCode"
+                  :model="formItem"
+                  :text="formItem.projectName"
+                />
+              </FormItem>
+            </td>
+            <td>
+              <FormItem prop="operatorName" label="领料员">
+                <SelectMember
+                  v-model="formItem.operator"
+                  :model="formItem"
+                  :text="formItem.operatorName"
+                />
+              </FormItem>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <FormItem prop="operateDate" label="出库日期">
+                <Date-picker
+                  type="date"
+                  placeholder="选择日期"
+                  v-model="formItem.operateDate"
+                  format="yyyy-MM-dd"
+                ></Date-picker>
+              </FormItem>
+            </td>
+            <td>
+              <FormItem prop label="红蓝字">
+                <Radio-group v-model="formItem.inboundType">
+                  <Radio :label="1" style="color:blue;">蓝字</Radio>
+                  <Radio :label="2" style="color:red;">红字</Radio>
+                </Radio-group>
+              </FormItem>
+            </td>
+            <td>
+              <FormItem prop label="出库类别">
+                <Select v-model="formItem.materialType" style="width:150px" placeholder="类型">
+                  <Option
+                    v-for="item in $args.getArgGroup('stock_out_type')"
+                    :value="item.argCode"
+                    :key="item.argCode"
+                  >{{ item.argText }}</Option>
+                </Select>
+              </FormItem>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="3">
+              <FormItem prop=" " label="备注">
+                <Input type="textarea" :rows="2" v-model="formItem.remark" />
+              </FormItem>
+            </td>
+          </tr>
+        </table>
+      </Form>
+    </div>
+    <div>
+      <div class="subheader">单据明细</div>
+      <Alert v-if="!formItem.deptId">请选择仓库</Alert>
+      <Editable
+        ref="editable"
+        :list="list"
+        :editable="true"
+        :editprice="true"
+        :model="formItem"
+        :style="{display: formItem.deptId?'':'none'}"
+      ></Editable>
+    </div>
+    <!-- <table class="savebar" cellpadding="0" cellspacing="0">
         <tr>
           <td class="save" @click="save" v-if="pageFlag<=2">保存</td>
           <td class="reset" @click="reset">重置</td>
           <td></td>
         </tr>
-        </table>-->
-      </Loading>
-    </div>
+    </table>-->
   </StartProcess>
 </template>
 <script>

@@ -31,10 +31,27 @@
       </Form>
     </div>
     <div class="subheader">完成工作项</div>
-    <Editable ref="editable" :list="list" :editable="true" :projectCode="projectCode"></Editable>
-    <div class="subheader">劳务用工</div>
-    <div class="editable-table-container editable">
-      <table cellspacing="0" cellpadding="0">
+    <Editable ref="editable" :list="list" :editable="true" :projectCode="projectCode"></Editable> 
+    <div>
+      <div
+        class="demo-tabs-style1"
+        style="background: #e3e8ee;padding:2px;width:100%; margin-top:30px;"
+      >
+        <Tabs type="card">
+           <TabPane label="机械作业单" name="name1">
+            <div class="page-datatable">
+              <SelectJxzyd
+                ref="selectJxzyd"
+                :list="jxzydList"
+                :editable="true"
+                :projectCode="projectCode"
+              ></SelectJxzyd>
+              <!-- <i-table :columns="columns3" :data="jxzydList"></i-table> -->
+            </div>
+          </TabPane>
+             <TabPane label="劳务用工" name="name2">
+       <div class="editable-table-container editable">
+            <table cellspacing="0" cellpadding="0">
         <thead>
           <th>技工人数</th>
           <th>力工人数</th>
@@ -54,36 +71,9 @@
           </tr>
         </tbody>
       </table>
-    </div>
-    <div>
-      <div
-        class="demo-tabs-style1"
-        style="background: #e3e8ee;padding:2px;width:100%; margin-top:30px;"
-      >
-        <Tabs type="card">
-          <TabPane label="入库单" name="name2">
-            <div class="page-datatable">
-              <SelectRkd
-                ref="selectRkd"
-                :list="rkdList"
-                :editable="true"
-                :projectCode="projectCode"
-              ></SelectRkd>
-              <!-- <i-table :columns="columns2" :data="rkdList"></i-table> -->
             </div>
-          </TabPane>
-          <TabPane label="机械作业单" name="name3">
-            <div class="page-datatable">
-              <SelectJxzyd
-                ref="selectJxzyd"
-                :list="jxzydList"
-                :editable="true"
-                :projectCode="projectCode"
-              ></SelectJxzyd>
-              <!-- <i-table :columns="columns3" :data="jxzydList"></i-table> -->
-            </div>
-          </TabPane>
-          <TabPane label="运输小票" name="name4">
+          </TabPane>  
+          <TabPane label="运输小票" name="name3">
             <div class="page-datatable">
               <SelectYsxp
                 ref="selectYsxp"
@@ -92,6 +82,17 @@
                 :projectCode="projectCode"
               ></SelectYsxp>
               <!-- <i-table :columns="columns4" :data="ysxpList"></i-table> -->
+            </div>
+          </TabPane>
+             <TabPane label="入库单" name="name4">
+            <div class="page-datatable">
+              <SelectRkd
+                ref="selectRkd"
+                :list="rkdList"
+                :editable="true"
+                :projectCode="projectCode"
+              ></SelectRkd>
+              <!-- <i-table :columns="columns2" :data="rkdList"></i-table> -->
             </div>
           </TabPane>
         </Tabs>
