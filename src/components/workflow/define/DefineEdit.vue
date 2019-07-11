@@ -30,6 +30,11 @@
             <template v-if="isEdit || defineLoaded">
             <FormItem label="流程名称" prop="title">{{formItem.title}}</FormItem>
             <FormItem label="标题格式" prop="instTitle">{{formItem.instTitle}}</FormItem>
+            <FormItem label="发起人" prop="">
+              <Select v-model="startNodes" style="width:335px" multiple>
+                  <Option v-for="item in roles" :value="item.roleId" :key="item.roleId">{{ item.roleName }}</Option>
+              </Select>
+            </FormItem>
             <FormItem label="审批层级" prop="nodes">
                <table class="nodestable" cellspacing="0" cellpadding="0">
                  <tr v-for="(item,index) in nodes">
@@ -83,6 +88,8 @@ export default {
       isEdit: 0,       
       //表单对象formItem
       formItem: this.initItem(),
+
+      startNodes:[],
       nodes:[{roleId:''}],
       roles:[],
       ruleValidate: {         
@@ -103,7 +110,8 @@ export default {
     initItem() {
       return {
         id: 0,
-        nodes: [],
+        startNodes:'',
+        nodes: '',
         nodeNames:"",
         title: "",
         instTitle: "",
@@ -225,6 +233,8 @@ export default {
         return;
       }
 
+      this.formItem.startNodes = this.startNodes.join(',');
+
       this.formItem.nodes = this.nodes.map(item=>{return item.roleId}).join(',');
 
       this.$refs["form"].validate(valid => {
@@ -261,6 +271,7 @@ export default {
       item = JSON.parse(JSON.stringify(item));        
       this.formItem = Object.assign(this.initItem(), item);
       this.nodes = this.formItem.nodeArr;
+      this.startNodes = (this.formItem.startNodes || '').split(',');
       this.formKey = '';
       this.branch1Key = '';
       this.branch2Key = '';

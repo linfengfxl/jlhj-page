@@ -108,10 +108,16 @@ export default {
           width: 200,
         },
         {
+          title: '发起人',
+          key: 'startNodeNames',
+          align: 'left',
+          width: 200,
+        },
+        {
           title: '审批层级',
           key: 'nodeNames',
           align: 'left',
-        } ,
+        },
         {
           title: '系统设定',
           key: 'isSys',
@@ -174,18 +180,17 @@ export default {
         return;
       }
     },
-    delete: function (id) {      
-      var that = this;
+    delete: function (id) {
       this.$Modal.confirm({
         title: '删除确认',
         content: '<p>删除后不能恢复，确定删除该条记录吗？</p>',
         onOk: () => {
-          that.loading = 1;
+          this.loading = 1;
           this.$http.post('/api/engine/workflow/define/update', {id:id,disabled:1}).then((res) => {
             if (res.data.code === 0) {
-              that.loading = 0;
+              this.loading = 0;
               this.$Message.success("删除成功");
-              that.query();
+              this.load();
             } else {
               this.loading = 0;
               this.$Message.error(res.data.message)
