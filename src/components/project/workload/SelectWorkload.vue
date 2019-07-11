@@ -107,32 +107,29 @@ export default {
           type: 'selection',
           width: 60,
           align: 'center',
-          fixed: 'left',
         },
         {
           title: '层级编码',
           key: 'levelCode',
-          fixed: 'left',
           width: 100,
         },
         {
           title: '分部分项工程名称',
           key: 'subProjectName',
           width: 220,
-          fixed: 'left',
         },
-        {
-          title: '设计工作量',
-          key: 'designWorkload',
-          align: 'left',
-          minWidth: 120
-        },
-        {
-          title: '复核工作量',
-          key: 'reviewWorkload',
-          align: 'center',
-          width: 130,
-        },
+        // {
+        //   title: '设计工作量',
+        //   key: 'designWorkload',
+        //   align: 'left',
+        //   minWidth: 120
+        // },
+        // {
+        //   title: '复核工作量',
+        //   key: 'reviewWorkload',
+        //   align: 'center',
+        //   width: 130,
+        // },
         page.table.initArgColumn({
           title: '单位',
           key: 'unit',
@@ -145,6 +142,9 @@ export default {
           key: 'quantity',
           align: 'center',
           width: 100,
+        },
+        {
+          title: ' ',
         },
 
       ],
