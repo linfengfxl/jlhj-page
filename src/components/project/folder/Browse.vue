@@ -23,7 +23,7 @@
           <tr v-if="parentId==0"></tr>
           <tr v-else>
             <td>
-              <UploadButton text="上传" @on-upload="doUpload"></UploadButton>              
+              <UploadButton text="上传" @on-upload="doUpload" multiple></UploadButton>              
             </td>
             <td>
               <Button icon="plus" type="default" @click="createDir" v-power="'xmwjj.add'" >目录</Button>
@@ -254,7 +254,7 @@
         this.$http.post('/api/engine/project/folder/move',items).then((res) => {
           this.loading = 0;
           if (res.data.code === 0) {
-            this.$Message.success('操作成功');
+            this.$Message.success('成功移动 '+ res.data.data + ' 条');
             this.clipboard = [];
             this.load();
           } else {
