@@ -34,16 +34,22 @@
             <Input v-model="queryForm.billId" placeholder="报销单号" @keyup.enter.native="query"></Input>
           </td>
           <td>
-            <Select v-model="queryForm.catalog" style="width:100px;" placeholder="报销分类">
+            <Select v-model="queryForm.catalog" style="width:100px;" placeholder="报销分类" @on-change="query">
               <Option v-for="item in catalog" :value="item.code" :key="item.code">{{ item.text }}</Option>
             </Select>
           </td>
           <td>
-            <SelectProject v-model="queryForm.projectId" :model="queryForm" :text="queryForm.projectName" textProp="projectName" placeholder="工程名称" />
+            <SelectProject v-model="queryForm.projectId" 
+            :model="queryForm" 
+            :text="queryForm.projectName" 
+            textProp="projectName" 
+            placeholder="工程名称" 
+            @on-select="query"
+            />
           </td>
-          <td><Input v-model="queryForm.operatorName" placeholder="经办人"/></td>
+          <td><Input v-model="queryForm.operatorName" placeholder="经办人" @keyup.enter.native="query"/></td>
           <td>
-            <Select v-model="queryForm.legal" style="width:100px;" placeholder="法律主体">
+            <Select v-model="queryForm.legal" style="width:100px;" placeholder="法律主体" @on-change="query">
               <Option v-for="item in $args.getArgGroup('legal')" :value="item.argCode" :key="item.argCode">{{ item.argCode }}</Option>
             </Select>
           </td>

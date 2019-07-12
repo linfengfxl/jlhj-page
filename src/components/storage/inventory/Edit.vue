@@ -44,7 +44,18 @@
       </div>
       <div>
         <div class="subheader">单据明细</div>
-        <UploadButton v-if="formItem.deptId" @on-upload="importExcel"></UploadButton>
+        <div class="page-tools">
+          <table cellpadding="0" cellspacing="0">
+            <tr>
+              <td class="page-tools" v-if="formItem.deptId"> 
+                 <UploadButton  @on-upload="importExcel"></UploadButton>
+              </td>
+              <td v-if="formItem.deptId">
+                <Button @click="exportDownModel" type="info" icon="ios-download-outline">下载模板</Button>
+              </td>
+            </tr>
+          </table>
+        </div>
         <div style="height:5px;"></div>
         <Alert v-if="!formItem.deptId">请选择仓库</Alert>
         <Editable
@@ -184,6 +195,23 @@ export default {
         this.$Message.error(error.toString())
       });
     },
+    exportDownModel(){
+      this.loading = 1;         
+      this.$http.post('/api/engine/material/inventory/import', {_action:'exportModel'}).then((res) => {
+        this.loading = 0;
+        if (res.data.code === 0) { 
+          this.loading = 0;
+          var data = res.data.data;
+          window.open(this.$http.defaults.baseURL + '/api/file/download?fileId=' + data);
+        } else {
+          this.loading = 0;             
+          this.$Message.error(res.data.message);
+        }
+      }).catch((error) => {
+        this.loading = 0;
+        this.$Message.error("请求失败，请重新发送")
+      });
+    },
     initNew() {
       Object.assign(this.formItem, {
         inventoryCode: '',//
@@ -192,8 +220,6 @@ export default {
         remark: '',//备注 
       });
       this.list = [];
-      this.list.push(this.$refs.editable.listNewRow());
-      this.list.push(this.$refs.editable.listNewRow());
     },
     save() {
       var form = {

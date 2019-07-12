@@ -95,7 +95,7 @@
                   </FormItem>
                 </td>
                 <td>
-                  <FormItem label="运输时间" prop>
+                  <FormItem label="运输时间" prop="transportDate">
                     <Date-picker
                       type="datetime"
                       placeholder="选择日期"
