@@ -251,9 +251,10 @@ export default {
             data.map(args => {
               if (_.findIndex(that.list, { 'workloadId': args.workloadId }) >= 0) {
 
-              } else {
+              } else { 
                 var item = this.listNewRow();
                 Object.assign(item, args);
+                 console.log(args);
                 item.quantity = args.quantity;//累计完成工程量  (初始值)
                 item.designWorkload = args.designWorkload;//设计工程量
                 item.actualWorkload = args.quantity;//累计完成工程量
