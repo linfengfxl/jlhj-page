@@ -7,7 +7,8 @@
     :beforeLoad="beforeLoad"
   >
     <div class="page-title" slot="page-title">
-      <a @click="goPage('/workload')">工程量导入</a> -&gt;工程量明细导入_{{name}}
+      <a @click="goPage('/workload')">工程量导入</a>
+      -&gt;工程量明细导入_{{name}}
     </div>
     <div class="page-tools">
       <table cellpadding="0" cellspacing="0">
@@ -31,13 +32,16 @@
       <table cellpadding="0" cellspacing="0">
         <tr>
           <td>
-            <Input v-model="queryForm.subProjectName" placeholder="名称" @on-enter="query"/>
+            <Input v-model="queryForm.subProjectName" placeholder="名称" @on-enter="query" />
           </td>
           <td>
             <Button @click="query" type="primary" icon="ios-search">查询</Button>
           </td>
           <td>
             <Button @click="reset" type="default">重置</Button>
+          </td>
+          <td>
+            <Button @click="del" type="primary">删除</Button>
           </td>
           <td>&nbsp;</td>
           <td></td>
@@ -68,9 +72,14 @@ export default {
       tabName: '1',
       columns: [
         {
+          type: 'selection',
+          width: 60,
+          align: 'center'
+        },
+        {
           title: '序号',
           width: 50,
-          type:'index',
+          type: 'index',
           align: 'center',
         },
         {
@@ -140,7 +149,7 @@ export default {
         subProjectName: '',
       },
       selection: [],
-      name:'',
+      name: '',
       loading: 0
     }
   },
@@ -153,7 +162,7 @@ export default {
       this.$Message.error("请选择工程");
       this.goBack();
     }
-    
+
   },
   computed: {},
   methods: {
@@ -171,35 +180,76 @@ export default {
     select: function (selection) {
       this.selection = selection;
     },
+    del: function () {
+      var selection = this.$refs.page.getSelection();
+      if (selection.length == 0) {
+        this.$Message.error('请选择要删除的数据行');
+        return;
+      }
+      this.$Modal.confirm({
+        title: '删除确认',
+        content: '<p>删除后不能恢复，确定删除已选择的记录吗？</p>',
+        onOk: () => {
+          var start = 0;
+          var handle = () => {
+            if (start >= selection.length) {
+              return;
+            }
+            var item = selection[start];
+            this.$http.post('/api/engine/project/workload/delete', { workloadId: item.workloadId }).then((res) => {
+              if (res.data.code === 0) {
+                start++;
+                if (start < selection.length) {
+                  handle();
+                } else {
+                  this.$Message.success("删除成功");
+                  this.$refs.page.load();
+                  this.query();
+                }
+              } else {
+                this.$Message.error(res.data.message)
+              }
+            }).catch((error) => {
+              this.loading = 0;
+              this.$Message.error(error.toString())
+            });
+          }
+          handle();
+        }
+      });
+    },
     rowCommand: function (name, params) {
       if (name === '编辑') {
         this.updateRole(params.row.workloadId);
         return;
       }
       if (name === '删除') {
-        this.$Modal.confirm({
-          title: '删除确认',
-          content: '<p>删除后不能恢复，确定删除已选择的记录吗？</p>',
-          onOk: () => {
-            this.$http.post('/api/engine/project/workload/delete?workloadId=' + params.row.workloadId, {workloadId:params.row.workloadId}).then((res) => {
-              if (res.data.code === 0) {
-                this.$Message.success("删除成功");
-                this.query();
-              } else {
-                this.$Message.error(res.data.message)
-              }
-            }).catch((error) => {
-              this.$Message.error(error.toString())
-            });
-          }
-        });
+        this.delConfirm(params.row.workloadId);
       }
+    },
+    delConfirm: function (id) {
+      this.$Modal.confirm({
+        title: '删除确认',
+        content: '<p>删除后不能恢复，确定删除已选择的记录吗？</p>',
+        onOk: () => {
+          this.$http.post('/api/engine/project/workload/delete', { workloadId: id }).then((res) => {
+            if (res.data.code === 0) {
+              this.$Message.success("删除成功");
+              this.query();
+            } else {
+              this.$Message.error(res.data.message)
+            }
+          }).catch((error) => {
+            this.$Message.error(error.toString())
+          });
+        }
+      });
     },
     goBack: function () {
       this.$router.go(-1);
     },
-    goPage(path){
-      this.$router.push({ path: path})
+    goPage(path) {
+      this.$router.push({ path: path })
     },
     add: function () {
       this.$refs.edit.openAdd(this.queryForm.projectCode);
@@ -207,10 +257,10 @@ export default {
     updateRole: function (roleId) {
       this.$refs.edit.openEdit(roleId);
     },
-    importExcel(fileId){
-      this.$http.post('/api/engine/project/workload/import', {projectCode:this.$route.query.projectCode,fileId:fileId}).then((res) => {
+    importExcel(fileId) {
+      this.$http.post('/api/engine/project/workload/import', { projectCode: this.$route.query.projectCode, fileId: fileId }).then((res) => {
         if (res.data.code === 0) {
-          this.$Message.success("导入成功, 添加:"+ res.data.data.add +" 条, 更新:" + res.data.data.update + " 条");
+          this.$Message.success("导入成功, 添加:" + res.data.data.add + " 条, 更新:" + res.data.data.update + " 条");
           this.reset();
         } else {
           this.$Message.error(res.data.message)
@@ -219,19 +269,19 @@ export default {
         this.$Message.error(error.toString())
       });
     },
-    exportDown(){
+    exportDown() {
       this.$refs.page.exportDown();
     },
-    exportDownModel(){
-      this.loading = 1;         
-      this.$http.post('/api/engine/project/workload/list', {_action:'exportModel'}).then((res) => {
+    exportDownModel() {
+      this.loading = 1;
+      this.$http.post('/api/engine/project/workload/list', { _action: 'exportModel' }).then((res) => {
         this.loading = 0;
-        if (res.data.code === 0) { 
+        if (res.data.code === 0) {
           this.loading = 0;
           var data = res.data.data;
           window.open(this.$http.defaults.baseURL + '/api/file/download?fileId=' + data);
         } else {
-          this.loading = 0;             
+          this.loading = 0;
           this.$Message.error(res.data.message);
         }
       }).catch((error) => {
