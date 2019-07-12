@@ -258,7 +258,7 @@
 
 
   .wfprocess-footer .label{
-    width:70px;text-align: right;
+    width:80px;text-align: right;
     padding-right: 10px;  
   } 
   .wfprocess-footer .btn-submit{

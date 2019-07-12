@@ -1,5 +1,6 @@
 <template>
   <Upload name="file"
+        :multiple="multiple"
         :show-upload-list="false" 
         :action="action"
         :on-success="onUpload">
@@ -40,7 +41,11 @@
       disabled:{
         type:Boolean,
         default:false,
-      }
+      },
+      multiple:{
+        type:[Boolean,String,Number],
+        default:false,
+      },
     },
     watch:{
       value(new_val,old_val){
@@ -49,6 +54,7 @@
     },
     methods: { 
       onUpload(response, file, fileList){
+        debugger;
         if(response.code == 0){ 
           this.$emit('input-value',response.data);
           this.$emit('on-upload',response.data);
