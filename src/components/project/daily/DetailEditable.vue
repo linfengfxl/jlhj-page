@@ -4,7 +4,7 @@
       <thead>
         <th class="col-xh">序号</th>
         <th>分部分项工程名</th>
-        <th>层次编码</th>
+        <th>层级编码</th>
         <th v-if="$user.hasPower('wdsx.sgrbtbkj')">设计工程量</th>
         <th v-if="$user.hasPower('wdsx.sgrbtbkj')">复核工程量</th>
         <th>单位</th>
@@ -37,7 +37,7 @@
           </td>
           <td>
             {{item.levelCode}}
-            <!--  层次编码  -->
+            <!--  层级编码  -->
           </td>
           <td v-if="$user.hasPower('wdsx.sgrbtbkj')">
             {{item.designWorkload}}
@@ -87,7 +87,7 @@
       <thead>
         <th class="col-xh">序号</th>
         <th>分部分项工程名</th>
-        <th>层次编码</th>
+        <th>层级编码</th>
         <th v-if="$user.hasPower('wdsx.sgrbtbkj')">设计工作量</th>
         <th v-if="$user.hasPower('wdsx.sgrbtbkj')">复核工程量</th>
         <th>单位</th>
@@ -118,7 +118,7 @@
           </td>
           <td>
             {{item.levelCode}}
-            <!--  层次编码 -->
+            <!--  层级编码 -->
           </td>
           <td v-if="$user.hasPower('wdsx.sgrbtbkj')">
             {{item.designWorkload}}
@@ -212,7 +212,7 @@ export default {
         }
         item.workloadId = args.workloadId;
         item.subProjectName = args.subProjectName; //分部分项工程名  
-        item.levelCode = args.levelCode;//层次编码 
+        item.levelCode = args.levelCode;//层级编码 
         item.reviewWorkload = args.reviewWorkload;//复核工程量 
         item.unit = args.unit;//单位   
       }
@@ -225,7 +225,7 @@ export default {
         id: 0,
         workloadId: '',
         projectCode: '',//分部分项工程名 
-        levelCode: '',//层次编码 
+        levelCode: '',//层级编码 
         reviewWorkload: '',//复核工程量 
         unit: '',//单位  
         place: '',//部位
@@ -251,9 +251,10 @@ export default {
             data.map(args => {
               if (_.findIndex(that.list, { 'workloadId': args.workloadId }) >= 0) {
 
-              } else {
+              } else { 
                 var item = this.listNewRow();
                 Object.assign(item, args);
+                 console.log(args);
                 item.quantity = args.quantity;//累计完成工程量  (初始值)
                 item.designWorkload = args.designWorkload;//设计工程量
                 item.actualWorkload = args.quantity;//累计完成工程量

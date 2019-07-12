@@ -31,14 +31,16 @@
       </Form>
     </div>
     <div class="subheader">完成工作项</div>
-    <Editable ref="editable" :list="list" :editable="true" :projectCode="projectCode"></Editable> 
+    <UploadButton @on-upload="importExcel"></UploadButton>
+    <div style="height:5px;"></div>
+    <Editable ref="editable" :list="list" :editable="true" :projectCode="projectCode"></Editable>
     <div>
       <div
         class="demo-tabs-style1"
         style="background: #e3e8ee;padding:2px;width:100%; margin-top:30px;"
       >
         <Tabs type="card">
-           <TabPane label="机械作业单" name="name1">
+          <TabPane label="机械作业单" name="name1">
             <div class="page-datatable">
               <SelectJxzyd
                 ref="selectJxzyd"
@@ -49,30 +51,30 @@
               <!-- <i-table :columns="columns3" :data="jxzydList"></i-table> -->
             </div>
           </TabPane>
-             <TabPane label="劳务用工" name="name2">
-       <div class="editable-table-container editable">
-            <table cellspacing="0" cellpadding="0">
-        <thead>
-          <th>技工人数</th>
-          <th>力工人数</th>
-          <th>工作内容</th>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <InputNumber :max="999999" :min="0" v-model="formItem.skillWorkload"></InputNumber>
-            </td>
-            <td>
-              <InputNumber :max="999999" :min="0" v-model="formItem.strongWorkload"></InputNumber>
-            </td>
-            <td>
-              <Input type="textarea" :rows="1" v-model="formItem.remark" />
-            </td>
-          </tr>
-        </tbody>
-      </table>
+          <TabPane label="劳务用工" name="name2">
+            <div class="editable-table-container editable">
+              <table cellspacing="0" cellpadding="0">
+                <thead>
+                  <th>技工人数</th>
+                  <th>力工人数</th>
+                  <th>工作内容</th>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <InputNumber :max="999999" :min="0" v-model="formItem.skillWorkload"></InputNumber>
+                    </td>
+                    <td>
+                      <InputNumber :max="999999" :min="0" v-model="formItem.strongWorkload"></InputNumber>
+                    </td>
+                    <td>
+                      <Input type="textarea" :rows="1" v-model="formItem.remark" />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-          </TabPane>  
+          </TabPane>
           <TabPane label="运输小票" name="name3">
             <div class="page-datatable">
               <SelectYsxp
@@ -84,7 +86,7 @@
               <!-- <i-table :columns="columns4" :data="ysxpList"></i-table> -->
             </div>
           </TabPane>
-             <TabPane label="入库单" name="name4">
+          <TabPane label="入库单" name="name4">
             <div class="page-datatable">
               <SelectRkd
                 ref="selectRkd"
@@ -130,6 +132,7 @@ import StartProcess from '@/components/workflow/process/Start';
 import SelectRkd from './SelectRkd';
 import SelectJxzyd from './SelectJxzyd';
 import SelectYsxp from './SelectYsxp';
+import UploadButton from '@/components/upload/UploadButton';
 
 export default {
   components: {
@@ -147,6 +150,7 @@ export default {
     SelectProvider,
     StartProcess,
     UploadBox,
+    UploadButton
   },
   data() {
     return {
@@ -429,6 +433,53 @@ export default {
     },
     goBack() {
       this.$router.go(-1);
+    },
+    importExcel(fileId) {
+      var that = this;
+      this.$http.post('/api/engine/project/daily/import', { fileId: fileId, projectCode: that.projectCode }).then((res) => {
+        if (res.data.code === 0) {
+          for (var i = 0; i < res.data.data.length; i++) {
+            var item = res.data.data[i];
+            var it = {
+              workloadId: item["workloadId"],
+              levelCode: item["层级编码"],
+              subProjectName: item["分部分项工程名称"],
+              designWorkload: item["设计工作量"],
+              reviewWorkload: item["复核工作量"],
+              unit: item["单位"],
+              quantity: item["施工总量"],
+              actualWorkload: item["施工总量"]
+            }
+            it.actualPercent = floatObj.multiply(floatObj.divide(it.quantity, it.designWorkload), 100);//累计完成工程比  
+            if (_.findIndex(that.list, { 'levelCode': it.levelCode }) >= 0) {
+              continue;
+            }
+            var def = {
+              id: 0,
+              workloadId: '',
+              projectCode: '',//分部分项工程名 
+              levelCode: '',//层次编码 
+              reviewWorkload: '',//复核工程量 
+              unit: '',//单位  
+              place: '',//部位
+              workloadPlan: 0,//今日计划工程量
+              workload: 0,//今日完成工程量 
+              actualWorkload: 0,//累计完成工程量 
+              actualPercent: 0,//累计完成工程比 
+              startPile: '',//起始桩号 
+              leftRight: '',//左右幅
+            };
+            Object.assign(def, it);
+            that.list.push(def);
+          }
+          this.$Message.success("导入成功, 添加:" + res.data.data.length + "条");
+
+        } else {
+          this.$Message.error(res.data.message)
+        }
+      }).catch((error) => {
+        this.$Message.error(error.toString())
+      });
     },
   }
 }
