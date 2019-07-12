@@ -66,8 +66,11 @@
                 <td>
                   <FormItem prop label="司机/操作手电话">{{formItem.operatorTel}}</FormItem>
                 </td>
-                <td colspan="2">
+                 <td>
                   <FormItem prop=" " label="备注">{{formItem.remark}}</FormItem>
+                </td>
+                <td>
+                  <FormItem prop=" " label="开票人">{{formItem.invoiceUser}}</FormItem>
                 </td>
               </tr>
             </table>
@@ -139,6 +142,7 @@ export default {
         leaseType: '',//租赁方式
         taibanPrice: '',//台班单价
         remark: '',//备注
+        invoiceUser:'',//开票人
         overtime: '',//加班时长
         addFuel: '',//加油数量
         taibanPrice: null,//
@@ -205,6 +209,7 @@ export default {
         leaseType: '',//租赁方式
         taibanPrice: '',//台班单价
         remark: '',//备注
+        invoiceUser:'',//开票人
         overtime: '',//加班时长
         addFuel: '',//加油数量
         taibanPrice: null,//

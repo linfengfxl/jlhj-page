@@ -251,7 +251,6 @@ export default {
       item.needDate = args[0];
     },
     computedAmount(item) {
-      debugger;
       item.amount = floatObj.multiply(item.quantity, item.taxUnitPrice);//数量*含税单价   
       item.unitPrice = floatObj.multiply(item.taxUnitPrice, floatObj.subtract(1, this.model.taxRate));//含税单价*(1-税率)
       item.tax = floatObj.multiply(item.amount, this.model.taxRate);//数量*含税单价*税率

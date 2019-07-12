@@ -291,6 +291,11 @@ export default {
           width: 120,
           align: "left"
         },
+        {
+          title: '开票人',
+          key: 'invoiceUser',
+          width: 120,
+        },
         page.table.initMapColumn({
           title: '来源',
           key: 'source',

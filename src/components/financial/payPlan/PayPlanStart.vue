@@ -112,7 +112,7 @@
                   <Input v-model="formItem.contractBillPeriod"/>
                 </FormItem>
               </td>
-               <td>
+              <td>
                 <FormItem prop="operatorName" label="申请人">
                   <SelectMember
                     v-model="formItem.operator"

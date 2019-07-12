@@ -35,27 +35,22 @@
                 </FormItem>
               </td>
               <td>
-                <FormItem prop label="计算">
-                  {{formItem.calcPeople}}
-                </FormItem>
-              </td>
-              <td>
-                <FormItem prop label="复核">
-                  {{formItem.reviewPeople}}
+                <FormItem prop label="备注">
+                  {{formItem.remark}}
                 </FormItem>
               </td>
             </tr>
             <tr> 
-              <td>
-                <FormItem prop label="审核">
-                  {{formItem.auditPeople}}
-                </FormItem>
+              <td colspan="3">
+                <FormItem prop="files" label="附件">
+                  <UploadBox v-model="formItem.files" :readonly="true"></UploadBox>
+               </FormItem> 
               </td>
             </tr>
           </table>
         </Form>
       </div>
-      <div>
+      <!-- <div>
        <div class="subheader">成本分析明细</div>
           <Editable
             ref="editable"
@@ -63,7 +58,7 @@
             :editable="false"
             @on-amount-change="onAmountChange"
           ></Editable>
-      </div>       
+      </div>       --> 
 </HandleProcess>  
 </template>
 <script>
@@ -91,7 +86,7 @@ export default {
   },
   data() {
     return {
-      title:'工程结算表',
+      title:'分包结算表',
       loading: 0,
       instId:0,       
       analysisId:'',
@@ -112,7 +107,7 @@ export default {
   methods: {
     instLoaded(proc){ 
       this.projectBillCode = proc.instance.businessKey;
-      this.title = "工程结算表_" + this.projectBillCode;
+      this.title = "分包结算表_" + this.projectBillCode;
       this.load();
     },
     load() {
@@ -152,9 +147,8 @@ export default {
         projectTeam:'',
         billDate: "", 
         totalAmount: 0,   
-        calcPeople: "",
-        reviewPeople: "", 
-        auditPeople: "", 
+        files: "",
+        remark: "", 
         status: 0 //  审批状态
       };
       return obj;

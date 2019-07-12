@@ -22,7 +22,6 @@
                       v-model="formItem.projectCode"
                       :model="formItem"
                       :text="formItem.projectName"
-                      @on-select="onQueryChange"
                     />
                   </FormItem>
                 </td>
@@ -45,31 +44,26 @@
               <tr>
                 <td>
                   <FormItem prop label="合价合计">
-                    <Input v-model="formItem.totalAmount" readonly="readonly" placeholder="自动计算"/>
+                    <Input v-model="formItem.totalAmount" />
                   </FormItem>
                 </td>
                 <td>
-                  <FormItem prop label="计算">
-                    <Input v-model="formItem.calcPeople"/>
-                  </FormItem>
-                </td>
-                <td>
-                  <FormItem prop label="复核">
-                    <Input v-model="formItem.reviewPeople" />
+                  <FormItem prop label="备注">
+                    <Input v-model="formItem.remark" />
                   </FormItem>
                 </td>
               </tr>
-              <tr> 
-                <td>
-                  <FormItem prop label="审核">
-                    <Input v-model="formItem.auditPeople"/>
-                  </FormItem>
+              <tr>
+                <td colspan="3">
+                  <FormItem prop="files" label="附件">
+                    <UploadBox v-model="formItem.files" :readonly="false"></UploadBox>
+                  </FormItem> 
                 </td>
               </tr>
             </table>
           </Form>
         </div>
-        <div>
+        <!-- <div>
           <div class="subheader">结算明细</div>
           <Editable
             ref="editable"
@@ -78,7 +72,7 @@
             @on-import="onImport"
             @on-amount-change="onAmountChange"
           ></Editable>
-        </div>
+        </div> -->
   </StartProcess>
 </template>
 <script>
@@ -89,13 +83,15 @@ import page from "@/assets/js/page";
 import floatObj from "@/assets/js/floatObj";
 import SelectProject from "@/components/page/form/SelectProject";
 import StartProcess from "@/components/workflow/process/Start";
+import UploadBox from '@/components/upload/Index';
 export default {
   components: {
     Loading,
     LayoutHor,
     Editable,
     SelectProject,
-    StartProcess
+    StartProcess,
+    UploadBox
   },
   props: {
     api: {
@@ -150,10 +146,10 @@ export default {
   computed: {
     pageTitle() {
       if (this.pageFlag == 1) {
-        return "工程结算表 - 创建";
+        return "分包结算表 - 创建";
       }
       if (this.pageFlag == 2) {
-        return "工程结算表 - 编辑";
+        return "分包结算表 - 编辑";
       }
     }
   },
@@ -254,9 +250,8 @@ export default {
         projectTime: "", 
         billDate: "",   
         totalAmount: 0, 
-        calcPeople: "",
-        reviewPeople: "", 
-        auditPeople: "", 
+        remark: "",
+        files: "", 
         status: 0 //  审批状态
       };
       return obj;
@@ -314,7 +309,7 @@ export default {
     goBack() {
       this.$router.go(-1);
     },
-    //导入excel
+    //导入
     importExcel(fileId){
       this.$http.post('/api/engine/project/bill/import', {fileId:fileId}).then((res) => {
         if (res.data.code === 0) {

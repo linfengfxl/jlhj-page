@@ -186,7 +186,7 @@
                 </td>
               </tr>
               <tr>
-                <td colspan="3">
+                <td colspan="2">
                   <FormItem label="运输内容" prop="transportContent">
                     <Input
                       type="textarea"
@@ -197,6 +197,11 @@
                     />
                   </FormItem>
                 </td>
+                <td>
+                  <FormItem prop="invoiceUser" label="开票人">
+                    <Input v-model="formItem.invoiceUser" />
+                  </FormItem>
+                </td> 
               </tr>
               <tr>
                 <td>
@@ -506,7 +511,8 @@ export default {
         transportEnd: "", //运输终点',
         arrivalTime: "", //抵达时间',
         transportType: "", //运输类别
-        transportContent: "" //运输内容
+        transportContent: "", //运输内容
+        invoiceUser:this.$user.trueName,//开票人
       };
       return obj;
     },
@@ -519,6 +525,8 @@ export default {
           if (res.data.code === 0) {
             Object.assign(this.formItem, res.data.data);
             this.formItem.taxRate = floatObj.multiply(this.formItem.taxRate, 100);
+            this.address1 = this.formItem.transportStart;
+            this.address2 = this.formItem.transportEnd;
           } else {
             this.$Message.error(res.data.message);
           }

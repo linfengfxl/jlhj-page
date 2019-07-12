@@ -95,6 +95,11 @@
                   </FormItem>
                 </td>
                 <td>
+                  <FormItem label="开票人">{{formItem.invoiceUser}}</FormItem>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="3">
                   <FormItem label="备注">{{formItem.remark}}</FormItem>
                 </td>
               </tr>
@@ -179,6 +184,7 @@ export default {
         operator: '',//
         operatorName: '',
         instId: 0,
+        invoiceUser:''
       },
       list: [],
       oriItem: {},
@@ -248,6 +254,7 @@ export default {
         remark: '',
         operator: '',//
         operatorName: '',
+        invoiceUser:''
       });
       this.list = [];
       this.list.push(this.$refs.editable.listNewRow());

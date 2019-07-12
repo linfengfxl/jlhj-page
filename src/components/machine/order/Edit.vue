@@ -101,11 +101,16 @@
                 <Input v-model="formItem.operatorTel" />
               </FormItem>
             </td>
-            <td colspan="2">
+            <td>
               <FormItem prop=" " label="备注">
                 <Input type="textarea" :rows="2" v-model="formItem.remark" />
               </FormItem>
             </td>
+            <td>
+              <FormItem prop="invoiceUser" label="开票人">
+                <Input v-model="formItem.invoiceUser" />
+              </FormItem>
+            </td> 
           </tr>
         </table>
       </Form>
@@ -182,6 +187,7 @@ export default {
         leaseType: '',//租赁方式
         taibanPrice: '',//台班单价
         remark: '',//备注
+        invoiceUser:'',//开票人
         overtime: '',//加班时长
         addFuel: '',//加油数量
         taibanPrice: null,//
@@ -273,11 +279,13 @@ export default {
         leaseType: '',//租赁方式
         taibanPrice: '',//台班单价
         remark: '',//备注
+        invoiceUser:'',//开票人
         overtime: '',//加班时长
         addFuel: '',//加油数量
         taibanPrice: null,//
         source: 1,
       });
+      this.formItem.invoiceUser=this.$user.trueName;
       this.list = [];
       this.list.push(this.$refs.editable.listNewRow());
       this.list.push(this.$refs.editable.listNewRow());
