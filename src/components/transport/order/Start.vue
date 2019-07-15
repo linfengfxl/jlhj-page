@@ -32,12 +32,13 @@
                 </td>
                 <td>
                   <FormItem prop="deptId" label="所属部门">
-                    <SelectDept
+                     <SelStorage v-model="formItem.deptId" :model="formItem"></SelStorage>
+                    <!-- <SelectDept
                       v-model="formItem.deptId"
                       :model="formItem"
                       :text="formItem.deptName"
                       :transfer="false"
-                    />
+                    /> -->
                   </FormItem>
                 </td>
                 <td>
@@ -245,6 +246,7 @@ import Loading from "@/components/loading";
 import SelectProject from "@/components/page/form/SelectProject"; // 工程
 import SelectProvider from "@/components/page/form/SelectProvider"; //供应商
 import SelectDept from "@/components/page/form/SelectDept"; // 所属部门
+import SelStorage from '@/components/storage/input/SelStorage';
 import SelContacts from "@/components/selcontacts";
 import page from "@/assets/js/page";
 import floatObj from '@/assets/js/floatObj';
@@ -256,7 +258,8 @@ export default {
     SelectProject,
     SelContacts,
     SelectProvider,
-    SelectDept
+    SelectDept,
+    SelStorage
   },
   data() {
     return {
@@ -317,14 +320,14 @@ export default {
             trigger: "change"
           }
         ],
-        transportType: [
-          {
-            required: true,
-            whitespace: true,
-            message: "请填写运输设备名称",
-            trigger: "blur"
-          }
-        ],
+        // transportType: [
+        //   {
+        //     required: true,
+        //     whitespace: true,
+        //     message: "请填写运输设备名称",
+        //     trigger: "blur"
+        //   }
+        // ],
         vehicleNum: [
           {
             required: true,

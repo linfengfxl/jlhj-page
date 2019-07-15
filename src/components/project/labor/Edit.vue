@@ -51,6 +51,18 @@
             </tr>
             <tr>
               <td colspan="2">
+                <FormItem label="备注">
+                  <Input
+                    v-model="formItem.remark"
+                    type="textarea"
+                    :autosize="{minRows: 2,maxRows: 5}"
+                    placeholder
+                  />
+                </FormItem>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2">
                 <FormItem label="附件">
                   <UploadBox v-model="formItem.files" :readonly="false"></UploadBox>
                 </FormItem>
@@ -113,7 +125,7 @@ export default {
         remark: '',//备注 
         totalWorkload: 0,
         totalAmount: 0,
-        files: ""
+        files: "", 
       },
       formRules: {
         projectCode: [

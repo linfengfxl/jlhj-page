@@ -40,6 +40,7 @@
               placeholder="选择时间"
               style="width: 300px"
               @on-change="computedAmount(item)"
+              split-panels
             ></DatePicker>
           </td>
           <td>{{item.useTime}}</td>
