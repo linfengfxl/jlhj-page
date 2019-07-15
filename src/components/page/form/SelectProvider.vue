@@ -1,17 +1,20 @@
 <template>
 <!-- 选择供应商 -->
   <div class="page-form-select">
-    <Input v-model="text" readonly="readonly" :placeholder="placeholder" icon="search" @on-click="selProvider"></Input>
+    <AutoComplete  @input="onInput" :readonly="readonly" :placeholder="placeholder" 
+    :textProp="textProp" :text="text" @on-click="selProvider" @on-remote-search="onRemoteSearch"
+    :model="model"></AutoComplete>
     <selProvider ref="selProvider"></selProvider>
   </div>
 </template>
 
 <script>  
 import selProvider from '@/components/provider/SelectProvider'
-
+import AutoComplete from './AutoComplete'
 export default { 
   components: { 
-    selProvider
+    selProvider,
+    AutoComplete
   },
   props:{
     value:{
@@ -64,7 +67,7 @@ export default {
     }
   },
   methods:{ 
-    selProvider(row) {
+    selProvider() {
       var sel = this.$refs.selProvider;//引用该控件，赋值给变量对象
       sel.show({
         ok: (data) => {
@@ -78,6 +81,28 @@ export default {
         }
       });
     },
+    onInput(e,sender){
+      this.$emit('input',e); 
+      this.$emit('on-select',sender.selectItem);
+    },
+    onRemoteSearch(sender){
+      sender.loading = true;
+      sender.$http.post("/api/engine/provider/list", {keyword:sender.innerText}).then((res) => {
+        sender.loading = false;
+        if (res.data.code === 0) {           
+          var list = res.data.data.rows; 
+          sender.items = list.map((item) => {
+            item.label = item.providerName;
+            item.value = item.providerCode;
+            return item;
+          });
+        } else {
+
+        }
+      }).catch((error) => {
+        sender.loading = false;
+      });
+    }
   }
 }
 </script>

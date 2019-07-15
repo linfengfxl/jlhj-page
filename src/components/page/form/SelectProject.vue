@@ -1,18 +1,22 @@
 <template>
 <!-- 选择工程 -->
-  <div class="page-form-select">
-    <Input v-model="text" readonly="readonly" :placeholder="placeholder" icon="search" @on-click="selProject"></Input>
+  <div class="page-form-select">         
+    <AutoComplete  @input="onInput" :readonly="readonly" :placeholder="placeholder" 
+    :textProp="textProp" :text="text" @on-click="selProject" @on-remote-search="onRemoteSearch"
+    :model="model"></AutoComplete>
     <SelProject ref="selProject"></SelProject>
   </div>
 </template>
 
 <script>  
 import SelProject from '@/components/project/SelectProject'
+import AutoComplete from './AutoComplete'
 
 export default { 
   components: { 
-    SelProject
-  },
+    SelProject,
+    AutoComplete
+  },  
   props:{
     value:{
       type:String,
@@ -22,15 +26,15 @@ export default {
       type:Object,
       default:null
     },
+    textProp:{
+      type:String,
+      default:"projectName"
+    },
     text:{
       type:String,
       default:''
     },
     // 控件显示文本对应 model 属性
-    textProp:{
-      type:String,
-      default:"projectName"
-    },
     placeholder:{
       type:String,
       default:""
@@ -64,7 +68,7 @@ export default {
     }
   },
   methods:{ 
-    selProject(row) {
+    selProject() {
       var sel = this.$refs.selProject;//引用该控件，赋值给变量对象
       sel.show({
         ok: (data) => {
@@ -78,6 +82,23 @@ export default {
         }
       });
     },
+    onInput(e){
+      this.$emit('input',e);
+    },
+    onRemoteSearch(sender){
+      sender.loading = true;
+      sender.$http.post("/api/engine/project/list", {keyword:sender.innerText}).then((res) => {
+        sender.loading = false;
+        if (res.data.code === 0) {           
+          var list = res.data.data.rows; 
+          sender.items = list.map((item) => { return { label:item.name,value:item.projectCode} });
+        } else {
+
+        }
+      }).catch((error) => {
+        sender.loading = false;
+      });
+    }
   }
 }
 </script>

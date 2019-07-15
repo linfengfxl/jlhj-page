@@ -1,17 +1,20 @@
 <template>
 <!-- 选择机械 -->
-  <div class="page-form-select">
-    <Input v-model="text" readonly="readonly" :placeholder="placeholder" icon="search" @on-click="selMachine"></Input>
+  <div class="page-form-select">     
+    <AutoComplete  @input="onInput" :readonly="readonly" :placeholder="placeholder" 
+    :textProp="textProp" :text="text" @on-click="selMachine" @on-remote-search="onRemoteSearch"
+    :model="model"></AutoComplete>
     <selMachine ref="selMachine"></selMachine>
   </div>
 </template>
 
 <script>  
 import selMachine from '@/components/machine/Selectmachine'
-
+import AutoComplete from './AutoComplete'
 export default { 
   components: { 
-    selMachine
+    selMachine,
+    AutoComplete
   },
   props:{
     value:{
@@ -78,6 +81,28 @@ export default {
         }
       });
     },
+    onInput(e,sender){
+      this.$emit('input',e); 
+      this.$emit('on-select',sender.selectItem);
+    },
+    onRemoteSearch(sender){
+      sender.loading = true;
+      sender.$http.post("/api/engine/machine/list", {keyword:sender.innerText}).then((res) => {
+        sender.loading = false;
+        if (res.data.code === 0) {           
+          var list = res.data.data.rows; 
+          sender.items = list.map((item) => {
+            item.label = item.machineName;
+            item.value = item.machineCode;
+            return item;
+          });
+        } else {
+
+        }
+      }).catch((error) => {
+        sender.loading = false;
+      });
+    }
   }
 }
 </script>
