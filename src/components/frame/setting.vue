@@ -149,19 +149,27 @@ export default {
       });
     },
     clearFile(){
-      this.loading = 1;
-      this.$http.post('/api/engine/setting/temp/clear', {}).then((res) => {
-        if (res.data.code === 0) {
-          this.loading = 0;
-          this.$Message.success("清除成功");
-        } else {
-          this.loading = 0;
-          this.$Message.error(res.data.message);
-        }
-      }).catch((error) => {
-        this.loading = 0;
-        this.$Message.error(error.toString());
-      });
+      this.$Modal.confirm({
+          title: "清除确认",
+          content: "<p>清除后不能恢复，确定清除所有临时文件吗？</p>",
+          onOk: () => {
+            this.loading = 1;
+            this.$http.post('/api/engine/setting/temp/clear', {}).then((res) => {
+              if (res.data.code === 0) {
+                this.loading = 0;
+                this.$Message.success("清除成功");
+                this.getFiles();
+              } else {
+                this.loading = 0;
+                this.$Message.error(res.data.message);
+              }
+            }).catch((error) => {
+              this.loading = 0;
+              this.$Message.error(error.toString());
+            });
+          }
+        });
+      
     },
     resetFile(){
       this.getFiles();
