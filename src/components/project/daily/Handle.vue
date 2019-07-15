@@ -34,41 +34,13 @@
     </div>
     <div>
       <div class="subheader">完成工作项</div>
-      <Editable ref="editable" :list="list" :editable="false" :projectCode="projectCode"></Editable>
-      <div class="subheader">劳务用工</div>
-      <div class="editable-table-container editable">
-        <table cellspacing="0" cellpadding="0">
-          <thead>
-            <th>技工人数</th>
-            <th>力工人数</th>
-            <th>工作内容</th>
-          </thead>
-          <tbody>
-            <tr>
-              <td>{{formItem.skillWorkload}}</td>
-              <td>{{formItem.strongWorkload}}</td>
-              <td>{{formItem.remark}}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
+      <Editable ref="editable" :list="list" :editable="false" :projectCode="projectCode"></Editable> 
       <div
         class="demo-tabs-style1"
         style="background: #e3e8ee;padding:2px;width:100%; margin-top:30px;"
       >
-        <Tabs type="card">
-          <TabPane label="入库单" name="name2">
-            <div class="page-datatable">
-              <SelectRkd
-                ref="selectRkd"
-                :list="rkdList"
-                :editable="false"
-                :projectCode="projectCode"
-              ></SelectRkd>
-            </div>
-          </TabPane>
-          <TabPane label="机械作业单" name="name3">
+        <Tabs type="card"> 
+          <TabPane label="机械作业单" name="name1">
             <div class="page-datatable">
               <SelectJxzyd
                 ref="selectJxzyd"
@@ -78,7 +50,25 @@
               ></SelectJxzyd>
             </div>
           </TabPane>
-          <TabPane label="运输小票" name="name4">
+           <TabPane label="劳务用工" name="name2">
+            <div class="editable-table-container editable">
+              <table cellspacing="0" cellpadding="0">
+                <thead>
+                  <th>技工人数</th>
+                  <th>力工人数</th>
+                  <th>工作内容</th>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{{formItem.skillWorkload}}</td>
+                    <td>{{formItem.strongWorkload}}</td>
+                    <td>{{formItem.remark}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </TabPane>
+          <TabPane label="运输小票" name="name3">
             <div class="page-datatable">
               <SelectYsxp
                 ref="selectYsxp"
@@ -86,6 +76,16 @@
                 :editable="false"
                 :projectCode="projectCode"
               ></SelectYsxp>
+            </div>
+          </TabPane>
+           <TabPane label="入库单" name="name4">
+            <div class="page-datatable">
+              <SelectRkd
+                ref="selectRkd"
+                :list="rkdList"
+                :editable="false"
+                :projectCode="projectCode"
+              ></SelectRkd>
             </div>
           </TabPane>
         </Tabs>

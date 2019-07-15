@@ -1,7 +1,7 @@
 <template>
   <ListPage
     ref="page"
-    title="工程结算表"
+    title="分包结算表"
     api="/api/engine/project/bill/list"
     :model="this"
     :beforeLoad="beforeLoad"
@@ -20,12 +20,12 @@
           <td>
             <Button @click="add" icon="plus">添加</Button>
           </td>
-          <td class="page-tools">
+          <!-- <td class="page-tools">
             <UploadButton @on-upload="importExcel"></UploadButton>
           </td>
           <td>
             <Button @click="exportDownModel" type="info" icon="ios-download-outline">下载模板</Button>
-          </td>
+          </td> -->
         </tr>
       </table>
     </div>
@@ -73,6 +73,7 @@ import DataRowOperate from "@/components/commons/DataRowOperate";
 import SelectProject from "@/components/page/form/SelectProject"; // 工程
 import SelectProvider from "@/components/page/form/SelectProvider"; //供应商
 import UploadButton from '@/components/upload/UploadButton';
+import UploadBox from '@/components/upload/Index';
 import page from "@/assets/js/page";
 import floatObj from '@/assets/js/floatObj';
 
@@ -82,7 +83,8 @@ export default {
     DataRowOperate,
     SelectProject,
     SelectProvider,
-    UploadButton
+    UploadButton,
+    UploadBox
   },
   data() {
     let that = this;
@@ -101,10 +103,6 @@ export default {
                   {
                     key: "edit",
                     disabled: row.status !== 3
-                  },
-                   {
-                    key: "export",
-                    text:"导出"
                   }
                 ]
               },
@@ -172,22 +170,25 @@ export default {
           align: "center"
         },
         {
-          title: "计算",
-          key: "calcPeople",
-          width: 80,
-          align: "center"
+          title: '附件',
+          key: 'files',
+          align: 'center',
+          minWidth: 200,
+          render:(h,params)=>{
+            var row = params.row;
+            return h(UploadBox,{
+              props:{
+                value:row.files,
+                readonly:true
+              }
+            });
+          }
         },
         {
-          title: "复核",
-          key: "reviewPeople",
-          width: 80,
-          align: "center"
-        },
-        {
-          title: "审核",
-          key: "auditPeople",
-          width: 80,
-          align: "center"
+          title: "备注",
+          key: "remark",
+          width: 150,
+          align: "left"
         },
         {
           title: '创建人',

@@ -32,11 +32,11 @@
               placeholder="供应商名称"
               style="width:240px"
             />-->
-             <Input v-model="queryForm.providerName" placeholder="供应商名称"></Input>
+             <Input v-model="queryForm.providerName" placeholder="供应商名称" @keyup.enter.native="query"></Input>
           </td>
           <td>供应商类别</td>
           <td>
-            <Select v-model="queryForm.providerType" style="width:240px" placeholder="类型">
+            <Select v-model="queryForm.providerType" style="width:240px" placeholder="类型" @on-change="query">
               <Option
                 v-for="item in $args.getArgGroup('provider_type')"
                 :value="item.argCode"

@@ -97,6 +97,13 @@
                   </FormItem>
                 </td>
                 <td>
+                  <FormItem prop="invoiceUser" label="开票人">
+                    <Input  v-model="formItem.invoiceUser" />
+                  </FormItem>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="3">
                   <FormItem prop=" " label="备注">
                     <Input type="textarea" :rows="2" v-model="formItem.remark" />
                   </FormItem>
@@ -178,6 +185,7 @@ export default {
         vehicleNum: '',//车牌号
         operator: '',//
         operatorName: '',
+        invoiceUser:'',
       },
       formRules: {
         deptId: [
@@ -283,7 +291,9 @@ export default {
         remark: '',
         operator: '',//
         operatorName: '',
+        invoiceUser:''
       });
+      this.formItem.invoiceUser=this.$user.trueName;
       this.list = [];
       this.list.push(this.$refs.editable.listNewRow());
       this.list.push(this.$refs.editable.listNewRow());

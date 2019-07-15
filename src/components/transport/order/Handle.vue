@@ -135,7 +135,9 @@
                   <Date-picker type="datetime" placeholder="选择日期" v-model="formItem.arrivalTime"></Date-picker>
                 </Form-item>
               </td>
-              <td></td>
+              <td>
+                <FormItem label="开票人" prop>{{formItem.invoiceUser}}</FormItem>
+              </td>
             </tr>
             <tr>
               <td colspan="3">
@@ -312,7 +314,8 @@ export default {
         arrivalTime: "", //抵达时间',
         transportType: "", //运输类别
         transportContent: "",//运输内容
-        instId: 0
+        instId: 0,
+        invoiceUser:'',//开票人
       };
       return obj;
     },

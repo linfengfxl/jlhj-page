@@ -95,7 +95,9 @@
                   <td>
                     <Form-item label="抵达时间" prop v-if="$user.hasPower('wdsx.ysxpddsj')">{{formItem.arrivalTime}}</Form-item>
                   </td>
-                  <td></td>
+                  <td>
+                    <FormItem label="开票人" prop>{{formItem.invoiceUser}}</FormItem>
+                  </td>
                 </tr>
                  <tr>
                   <td colspan="3"> 
@@ -237,7 +239,8 @@ export default {
         arrivalTime: "", //抵达时间',
         transportType: "", //运输类别
         transportContent: "",//运输内容
-        instId: 0
+        instId: 0,
+        invoiceUser:'',//开票人
       };
       return obj;
     },

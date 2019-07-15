@@ -11,7 +11,7 @@
             class="form-item"
           >
             <FormItem label="编码" prop="providerCode">
-              <Input v-model="formItem.providerCode" :disabled="isEdit == 1" class="width-1"/>
+              <Input v-model="formItem.providerCode" :disabled="isEdit == 1" class="width-1" :placeholder="maxCode"/>
             </FormItem>
             <FormItem label="名称" prop="providerName">
               <Input v-model="formItem.providerName" placeholder="不超过64个字符"/>
@@ -160,6 +160,7 @@ export default {
         status: 1,//状态（1 正常 2 禁用） 
         commonUse:0,//是否常用(0.否 1.是)
       },
+      maxCode:"当前最大供应商编码为12345",
       //验证
       ruleValidate: {
         providerCode: [
@@ -240,6 +241,26 @@ export default {
         this.formItem['taxRate1'] = 0;
         this.formItem['commonUse']=0;
         this.formItem['status']=1;
+        this.$http.post('/api/engine/provider/listAll', {}).then((res) => {
+          this.loading = 0;
+          if (res.data.code === 0) {
+            var list = res.data.data;
+            var reg = /(^[\-0-9][0-9]*(.[0-9]+)?)$/;
+            var pattern = new RegExp(reg);
+            var maxCode=0;
+            list.map((item)=>{
+              if(pattern.test(item.providerCode)){
+                maxCode=parseInt(item.providerCode)>maxCode?parseInt(item.providerCode):maxCode
+              }
+            })
+            this.maxCode="当前最大供应商编码为"+maxCode;
+          } else {
+            this.$Message.error(res.data.message)
+          }
+        }).catch((error) => {
+          this.loading = 0;
+          this.$Message.error(error.message)
+        });
       }
     },
     onStatusChange(){

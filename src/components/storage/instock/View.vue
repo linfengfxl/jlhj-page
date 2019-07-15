@@ -70,7 +70,12 @@
                   <FormItem prop label="车牌号">{{formItem.vehicleNum}}</FormItem>
                 </td>
                 <td>
-                  <FormItem prop=" " label="备注">{{formItem.remark}}</FormItem>
+                  <FormItem label="开票人">{{formItem.invoiceUser}}</FormItem>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="3">
+                  <FormItem label="备注">{{formItem.remark}}</FormItem>
                 </td>
               </tr>
             </table>
@@ -152,6 +157,7 @@ export default {
         operator: '',//
         operatorName: '',
         instId: 0,
+        invoiceUser:''
       },
       list: [],
       oriItem: {},
@@ -209,6 +215,7 @@ export default {
         remark: '',
         operator: '',//
         operatorName: '',
+        invoiceUser:''
       });
       this.list = [];
       this.list.push(this.$refs.editable.listNewRow());

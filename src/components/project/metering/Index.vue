@@ -58,10 +58,41 @@ export default {
       curRow: null,
       columns: [ 
         {
-          title: '序号',
-          width: 100,
-          type:'index',
+          title: '操作',
+          width: 120,
           align: 'center',
+          fixed:'left',
+          render: (h, params) => {
+            var row = params.row;
+            var loginName=this.$user.trueName;
+            var createName='';
+            if(row.createMetering == 1&&row.detailList!=null){
+              createName=row.detailList[0].creatorName;
+            }
+            return h(DataRowOperate, {
+              props: {
+                btns: [{
+                  key: 'edit',
+                  disabled: row.createMetering == 0||loginName!=createName//只有创建人才可编辑
+                },
+                {
+                  key: 'add',
+                  text:'添加计量表',
+                  disabled: row.createMetering == 1
+                },]
+              },
+              on: {
+                click: (key) => {
+                  if (key == "add") {
+                    this.add(row);
+                  }
+                  if (key == "edit") {
+                    this.edit(row);
+                  }
+                }
+              }
+            });
+          }
         },
         {
           title: '工程编号',
@@ -76,35 +107,70 @@ export default {
           minWidth: 150,
         },
         {
-          title: '拨付合计',
-          key: 'total',
+          title: '计量金额合计',
+          key: 'totalmeteringamount',
           align: 'left',
           width: 150,
           render: (h, params) => {
             var row = params.row;
-            return h('span',row.total>0?row.total:'');
+            return h('span',row.totalmeteringamount>0?row.totalmeteringamount:'');
+          }
+        },
+        {
+          title: '批复金额合计',
+          key: 'totalreplyamount',
+          align: 'left',
+          width: 150,
+          render: (h, params) => {
+            var row = params.row;
+            return h('span',row.totalreplyamount>0?row.totalreplyamount:'');
           }
         }
       ],
       columns1: [ 
         {
-          title: '拨付次数',
-          width: 200,
+          title: '序号',
+          type: 'index',           
           align: 'center',
-          render: (h, params) => {
-            return h('span','第'+(params.index+1)+'次拨付');
-          }
+          width: 100,
+        },
+        page.table.initDateColumn({
+          title: "日期",
+          key: "meteringDate",
+        }),
+        {
+          title: '计量金额',
+          key: 'meteringAmount',           
+          align: 'left',
+          width: 150,
         },
         {
-          title: '拨付金额',
-          key: 'receiptAmount',           
+          title: '批复金额',
+          key: 'replyAmount',           
           align: 'left',
           minWidth: 150,
         },
-        page.table.initDateColumn({
-          title: "拨付日期",
-          key: "receiptDate",
-        }),
+        {
+          title: '附件',
+          key: 'files',
+          align: 'center',
+          width: 350,
+          render:(h,params)=>{
+            var row = params.row;
+            return h(UploadBox,{
+              props:{
+                value:row.files,
+                readonly:true
+              }
+            });
+          }
+        },
+        {
+          title: '创建人',
+          key: 'creatorName',           
+          align: 'center',
+          width: 150,
+        },
       ],
       queryForm: { 
         projectName:'',
@@ -140,6 +206,16 @@ export default {
     },
     exportDown(){
       this.$refs.page.exportDown();
+    },
+    add: function (row) {
+      this.$router.push({
+        path: "/project/metering/edit?forward&projectCode="+row.projectCode+"&projectName="+row.projectName+"&click=add"
+      });
+    },
+    edit: function (row) {
+      this.$router.push({
+        path: "/project/metering/edit?forward&projectCode="+row.projectCode+"&projectName="+row.projectName+"&click=edit"
+      });
     },
     goPage(page) {
       this.$router.push({ path: page });

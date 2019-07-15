@@ -65,8 +65,9 @@ components.push({ component: 'project/bill/Index', name: '', path: '/project/bil
 components.push({ component: 'project/bill/Edit', name: '', path: '/project/bill/start' })
 components.push({ component: 'project/bill/Handle', name: '', path: '/project/bill/handle' }) 
 components.push({ component: 'project/bill/View', name: '', path: '/project/bill/view' })
-//工程结算表
+//工程计量汇总表
 components.push({ component: 'project/metering/Index', name: '', path: '/project/metering' })
+components.push({ component: 'project/metering/Edit', name: '', path: '/project/metering/edit' })
 //项目文件
 components.push({ component: 'project/folder/Index', name: '', path: '/project/folder' })
 components.push({ component: 'project/folder/Browse', name: '', path: '/project/folder/browse' })
