@@ -9,9 +9,12 @@
             :label-width="80"
             :rules="ruleValidate"
             class="form-item"
-          >
-            <FormItem label="编码" prop="providerCode">
-              <Input v-model="formItem.providerCode" :disabled="isEdit == 1" class="width-1" :placeholder="maxCode"/>
+          > 
+            <FormItem label="最大编码"> 
+               {{maxCode}}
+            </FormItem>
+            <FormItem label="编码" prop="providerCode"> 
+              <Input v-model="formItem.providerCode" :disabled="isEdit == 1" class="width-1" placeholder="请输入编码"/>
             </FormItem>
             <FormItem label="名称" prop="providerName">
               <Input v-model="formItem.providerName" placeholder="不超过64个字符"/>
@@ -253,7 +256,7 @@ export default {
                 maxCode=parseInt(item.providerCode)>maxCode?parseInt(item.providerCode):maxCode
               }
             })
-            this.maxCode="当前最大供应商编码为"+maxCode;
+            this.maxCode=maxCode;
           } else {
             this.$Message.error(res.data.message)
           }

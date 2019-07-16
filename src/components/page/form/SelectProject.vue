@@ -82,8 +82,9 @@ export default {
         }
       });
     },
-    onInput(e){
+    onInput(e,sender){
       this.$emit('input',e);
+      this.$emit('on-select',sender.selectItem);
     },
     onRemoteSearch(sender){
       sender.loading = true;

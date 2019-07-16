@@ -33,6 +33,7 @@
               :model="queryForm"
               :text="queryForm.projectName"
               placeholder="工程名称"
+              @on-select="query"
             />
           </td>
 
@@ -44,7 +45,7 @@
               @on-select="selProvider"
               placeholder="供应商名称"
             />-->
-            <Input v-model="queryForm.providerName" placeholder="供应商名称"></Input>
+            <Input v-model="queryForm.providerName" placeholder="供应商名称"  @keyup.enter.native="query"></Input>
           </td>
           <td>
             <Input
